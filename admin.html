@@ -386,10 +386,10 @@ tbody tr:hover td{background:rgba(255,255,255,.02)}
 </div>
 
 <script>
-var SHEET = 'https://script.google.com/macros/s/AKfycbzY_DalI-VcLXLIpipZVDdeubKa00KI27_HfnYXklZSAtuhtoa-658WI3jYkEDodR2XTQ/exec';
+var SHEET = 'https://script.google.com/macros/s/AKfycbxRy8HbpiLdEnVBEyPipx_pUusyem0IquL4NgNLMBgSNJ_67ygfSpZ28q6cPqnt4b0YuA/exec';
 var PW    = localStorage.getItem('a213pw') || '1472';
-var SLOTS = JSON.parse(localStorage.getItem('a213slots')||'null') || {일반:60,중급:20,고급:5,특급:1};
-var GR    = JSON.parse(localStorage.getItem('a213gr')||'null')    || {일반:{min:0,max:89},중급:{min:90,max:139},고급:{min:140,max:169},특급:{min:170,max:400}};
+var SLOTS = {일반:60,중급:20,고급:5,특급:1};
+var GR    = {일반:{min:0,max:89},중급:{min:90,max:139},고급:{min:140,max:169},특급:{min:170,max:400}};
 var TIERS = ['일반','중급','고급','특급'];
 var TCOLORS = {일반:'#94a3b8',중급:'#60a5fa',고급:'#c4b5fd',특급:'#fb923c'};
 var rows=[], statusFilter='all', fServer='', fGrade='', fIndustry='', fSquad='';
@@ -416,7 +416,18 @@ function loginSuccess(pw){
  PW=pw; localStorage.setItem('a213pw',pw);
  document.getElementById('pw-overlay').classList.add('hide');
  document.getElementById('app').style.display='block';
- buildCfg(); loadData();
+ loadConfig();
+}
+
+function loadConfig(){
+ var url=SHEET+'?action=getConfig&t='+Date.now();
+ fetch(url).then(function(r){return r.json();}).then(function(j){
+  if(j.result==='ok'){
+   try{ SLOTS=JSON.parse(j.slots); }catch(e){}
+   try{ GR=JSON.parse(j.grades); }catch(e){}
+  }
+  buildCfg(); loadData();
+ }).catch(function(){ buildCfg(); loadData(); });
 }
 function loginFail(){
  document.getElementById('pw-error').classList.add('on');
@@ -445,8 +456,24 @@ function buildCfg(){
  TIERS.forEach(function(t){gc.innerHTML+='<div class="cfg-row"><span class="tp tp-'+t+'" style="min-width:36px;justify-content:center">'+t+'</span><input type="number" class="cfg-inp" id="gmin-'+t+'" value="'+(GR[t]?GR[t].min:0)+'"><span class="cfg-sep">~</span><input type="number" class="cfg-inp" id="gmax-'+t+'" value="'+(GR[t]?GR[t].max:999)+'"><span class="cfg-unit">M</span></div>';});
 }
 function toggleCfg(){document.getElementById('cfg-panel').classList.toggle('on');document.getElementById('cfg-btn').classList.toggle('active');}
-function saveSlots(){TIERS.forEach(function(t){SLOTS[t]=parseInt(document.getElementById('sl-'+t).value)||0;});localStorage.setItem('a213slots',JSON.stringify(SLOTS));toast('✅ 슬롯 저장됨');renderAll();}
-function saveGrades(){TIERS.forEach(function(t){if(!GR[t])GR[t]={};GR[t].min=parseInt(document.getElementById('gmin-'+t).value)||0;GR[t].max=parseInt(document.getElementById('gmax-'+t).value)||999;});localStorage.setItem('a213gr',JSON.stringify(GR));toast('✅ 등급 기준 저장됨');renderAll();}
+function saveSlots(){
+ TIERS.forEach(function(t){SLOTS[t]=parseInt(document.getElementById('sl-'+t).value)||0;});
+ toast('💾 슬롯 설정 저장 중...');
+ var url=SHEET+'?action=saveSlots&value='+encodeURIComponent(JSON.stringify(SLOTS))+'&t='+Date.now();
+ fetch(url).then(function(r){return r.json();}).then(function(j){toast(j.result==='ok'?'✅ 슬롯 저장 완료 (모든 기기 적용)':'⚠ 저장 실패');}).catch(function(){toast('⚠ 네트워크 오류');});
+ renderAll();
+}
+function saveGrades(){
+ TIERS.forEach(function(t){if(!GR[t])GR[t]={};GR[t].min=parseInt(document.getElementById('gmin-'+t).value)||0;GR[t].max=parseInt(document.getElementById('gmax-'+t).value)||999;});
+ toast('💾 등급 기준 저장 및 재계산 중...');
+ var url=SHEET+'?action=saveGrades&value='+encodeURIComponent(JSON.stringify(GR))+'&t='+Date.now();
+ fetch(url).then(function(r){return r.json();}).then(function(j){
+  if(j.result==='ok'){
+   toast('✅ 등급 기준 저장 완료 — '+(j.updatedCount||0)+'명 등급 재계산 (Sheets 반영)');
+   loadData(); // 재계산된 데이터 다시 불러오기
+  } else toast('⚠ 저장 실패');
+ }).catch(function(){toast('⚠ 네트워크 오류');});
+}
 
 // ══ 데이터 ══
 async function loadData(){
