@@ -1,0 +1,1742 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>213서버 통합 시트</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+<script>
+/* ============================================================
+   ★★★ 여기만 수정하면 됩니다 ★★★
+   Supabase 대시보드 → Settings → API 에서 복사해서 붙여넣기
+   LOGIN_EMAIL은 가이드 3단계의 운영진 계정 이메일과 같아야 합니다
+   ============================================================ */
+const CONFIG = {
+  SUPABASE_URL: "https://lrvjbtesukremdyxwvtd.supabase.co",        // 예: https://abcdefgh.supabase.co
+  SUPABASE_ANON_KEY: "sb_publishable_PONTt2Zs-JrF2Z9wxC_znA_-JojDjw_",  // 아주 긴 문자열
+  LOGIN_EMAIL: "admin@server213.app"                    // 운영진 계정 (그대로 둬도 됨)
+};
+</script>
+
+<style>
+:root{
+  --bg:#0B0E14; --panel:#141926; --panel2:#1B2231; --line:#262F42;
+  --text:#EDF1F9; --muted:#8D97AC; --dim:#5B6478;
+  --ours:#54A3FF; --ours-soft:rgba(84,163,255,.14);
+  --enemy:#FF6357; --enemy-soft:rgba(255,99,87,.13);
+  --gold:#F2C14E; --gold2:#FFDE8A; --green:#3DDC97; --red:#FF6B6B;
+  --shadow:0 10px 30px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:15px}
+body{
+  background:
+    radial-gradient(900px 460px at 12% -6%, rgba(84,163,255,.10), transparent 60%),
+    radial-gradient(760px 400px at 88% -8%, rgba(242,193,78,.07), transparent 55%),
+    var(--bg);
+  color:var(--text);font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;min-height:100vh}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-thumb{background:#2A3346;border-radius:6px;border:2px solid var(--bg)}
+::-webkit-scrollbar-track{background:transparent}
+::selection{background:rgba(84,163,255,.35)}
+button{font-family:inherit;cursor:pointer}
+input,select{font-family:inherit;background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:8px 10px;font-size:.95rem;outline:none;max-width:100%}
+input:focus,select:focus{border-color:var(--ours);box-shadow:0 0 0 3px rgba(84,163,255,.18)}
+input[type=number]{font-variant-numeric:tabular-nums;text-align:right;width:88px}
+::placeholder{color:var(--dim)}
+option{background:#1C222E;color:#E9EDF5}
+
+header{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 20px;border-bottom:1px solid var(--line);flex-wrap:wrap;background:rgba(11,14,20,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.brand{display:flex;flex-direction:column;gap:2px;min-width:0}
+.brand h1{font-size:1.18rem;font-weight:900;letter-spacing:-.02em;white-space:nowrap;background:linear-gradient(92deg,#FFDE8A 0%,#F2C14E 45%,#E9EDF5 46%,#E9EDF5 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.brand img{filter:drop-shadow(0 3px 10px rgba(242,193,78,.35))}
+.brand span{color:var(--dim);font-size:.74rem}
+.editor-chip{display:flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:5px 5px 5px 12px;font-size:.85rem;color:var(--muted)}
+.editor-chip b{color:var(--text)}
+.editor-chip button{background:var(--panel2);border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:4px 9px;font-size:.75rem}
+
+nav{display:flex;gap:2px;padding:10px 14px 0;border-bottom:1px solid var(--line);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{background:none;border:none;color:var(--muted);font-size:.92rem;font-weight:700;padding:10px 13px 12px;border-bottom:2px solid transparent;white-space:nowrap;position:relative;transition:color .15s;border-radius:8px 8px 0 0}
+nav button:hover{color:var(--text)}
+nav button.active{color:var(--text);border-bottom-color:var(--gold)}
+nav button.active::after{content:'';position:absolute;left:12%;right:12%;bottom:-2px;height:2px;background:var(--gold);filter:blur(4px);opacity:.85}
+.badge{display:inline-block;min-width:17px;height:17px;line-height:17px;background:var(--red);color:#fff;border-radius:999px;font-size:.66rem;font-weight:800;text-align:center;padding:0 4px;vertical-align:2px;margin-left:3px}
+
+main{max-width:1180px;margin:0 auto;padding:20px}
+.view{display:none}
+.view.active{display:block}
+.panel{background:linear-gradient(180deg,rgba(255,255,255,.022),transparent 34%),var(--panel);border:1px solid var(--line);border-radius:15px;padding:17px 18px;box-shadow:0 1px 0 rgba(255,255,255,.03) inset}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+h2{font-size:1rem;font-weight:700;margin-bottom:12px}
+.hint{color:var(--muted);font-size:.84rem;line-height:1.5}
+.btn{background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:9px;padding:9px 15px;font-size:.9rem;font-weight:700;transition:transform .12s,box-shadow .12s,border-color .12s}
+.btn:hover{border-color:#39445C;transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:linear-gradient(180deg,#6CB2FF,#3E8EF0);border-color:#3E8EF0;color:#06101F;box-shadow:0 4px 14px rgba(84,163,255,.28)}
+.btn.primary:hover{box-shadow:0 6px 20px rgba(84,163,255,.4)}
+.btn.ok{color:var(--green)}
+.btn.danger{color:var(--red)}
+.btn.sm{padding:5px 10px;font-size:.78rem;border-radius:7px}
+
+/* ---------- 게이트 ---------- */
+#gate{position:fixed;inset:0;background:radial-gradient(800px 400px at 50% -10%, rgba(78,155,255,.10), transparent),var(--bg);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
+.gate-box{width:100%;max-width:390px;background:linear-gradient(180deg,rgba(242,193,78,.05),transparent 30%),var(--panel);border:1px solid #2E3648;border-radius:20px;padding:36px 30px;text-align:center;box-shadow:var(--shadow),0 0 0 1px rgba(242,193,78,.08);position:relative;overflow:hidden}
+.gate-box::before{content:'';position:absolute;top:0;left:12%;right:12%;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.7}
+.gate-box img{filter:drop-shadow(0 6px 18px rgba(242,193,78,.35))}
+.gate-box .emblem{font-size:2.5rem;margin-bottom:10px}
+.gate-box h1{font-size:1.4rem;font-weight:900;letter-spacing:-.02em}
+.gate-box .sub{color:var(--muted);font-size:.87rem;margin:8px 0 22px;line-height:1.5}
+.gate-box input{width:100%;padding:13px 14px;font-size:1.05rem;text-align:center;letter-spacing:.15em}
+.gate-box .btn{width:100%;padding:13px;margin-top:12px;font-size:1rem}
+.gate-msg{font-size:.83rem;color:var(--red);min-height:20px;margin-top:10px;line-height:1.4}
+.gate-credit{margin-top:24px;color:var(--dim);font-size:.76rem}
+.gate-credit b{color:var(--muted)}
+
+/* ---------- 모달 ---------- */
+.overlay{position:fixed;inset:0;background:rgba(5,8,14,.78);display:none;align-items:center;justify-content:center;z-index:110;padding:20px}
+.overlay.show{display:flex}
+.modal{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;max-width:400px;width:100%}
+.modal h3{margin-bottom:6px}
+.modal p{color:var(--muted);font-size:.86rem;margin-bottom:14px;line-height:1.5}
+.modal input{width:100%;margin-bottom:12px}
+
+/* ---------- 세그먼트 토글 ---------- */
+.segwrap{display:flex;flex-direction:column;gap:4px}
+.seglb{font-size:.68rem;font-weight:800;letter-spacing:.09em;color:var(--dim);text-transform:uppercase;padding-left:3px}
+.seg{display:inline-flex;background:rgba(11,14,20,.6);border:1px solid var(--line);border-radius:11px;padding:3px;flex-wrap:wrap}
+.seg button{background:none;border:none;color:var(--muted);padding:7px 13px;border-radius:8px;font-weight:700;font-size:.86rem;white-space:nowrap;transition:color .12s}
+.seg button:hover{color:var(--text)}
+.seg button.active{background:linear-gradient(180deg,#242E42,#1C2434);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.35),0 0 0 1px #303B52 inset}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.toolbar .lbl{font-size:.78rem;color:var(--dim);font-weight:700}
+
+/* ---------- 비교 ---------- */
+.vs-picker{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-bottom:16px}
+.vs-side{display:flex;flex-direction:column;gap:6px;min-width:0}
+.vs-side label{font-size:.76rem;font-weight:800;letter-spacing:.06em}
+.vs-side.a label{color:var(--ours)} .vs-side.b label{color:var(--enemy)}
+.vs-side select{width:100%;font-size:.98rem;padding:11px 12px}
+.vs-mid{font-weight:900;font-size:1.2rem;color:var(--dim);padding-top:16px}
+
+.verdict{margin:16px 0;padding:28px 22px;border-radius:18px;text-align:center;border:1px solid #2C3548;background:
+  radial-gradient(500px 160px at 50% 0%, rgba(84,163,255,.10), transparent 70%),
+  linear-gradient(180deg,rgba(255,255,255,.025),transparent 40%),var(--panel);
+  box-shadow:var(--shadow)}
+.verdict .who{font-size:1.95rem;font-weight:900;letter-spacing:-.03em;word-break:keep-all;text-shadow:0 2px 24px rgba(84,163,255,.3)}
+.chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.chip2{background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:7px 15px;font-size:.9rem;font-weight:800;font-variant-numeric:tabular-nums}
+.chip2.good{border-color:rgba(61,220,151,.45);color:var(--green);background:rgba(61,220,151,.07)}
+.chip2.warn{border-color:rgba(242,193,78,.4);color:var(--gold)}
+.chip2.dim{color:var(--muted);font-weight:600;font-size:.82rem}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:12px;margin:16px 0}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px 16px}
+.kpi .kt{color:var(--muted);font-size:.78rem;font-weight:700;margin-bottom:9px}
+.kpi .kv{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+.kpi .kva{color:var(--ours);font-weight:900;font-size:1.42rem;letter-spacing:-.02em}
+.kpi .kvb{color:var(--enemy);font-weight:700;font-size:1.02rem}
+.kpi .kvs{color:var(--dim);font-size:.7rem}
+.delta{display:inline-block;margin-top:9px;font-size:.74rem;font-weight:800;border-radius:999px;padding:3px 11px}
+.delta.up{background:rgba(61,220,151,.12);color:var(--green)}
+.delta.down{background:rgba(242,193,78,.13);color:var(--gold)}
+.delta.eq{background:var(--panel2);color:var(--dim)}
+@media(hover:hover){
+  .panel,.kpi{transition:transform .16s ease,box-shadow .16s ease}
+  .panel:hover,.kpi:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,0,0,.38)}
+}
+.powerbar{height:40px;border-radius:11px;overflow:hidden;display:flex;margin:16px 0 7px;border:1px solid var(--line)}
+.powerbar>div{display:flex;align-items:center;font-weight:900;font-size:1.02rem;font-variant-numeric:tabular-nums;min-width:0;overflow:hidden;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.powerbar .pa{background:linear-gradient(90deg,#2E6FD0,var(--ours));color:#06101F;justify-content:flex-start;padding-left:10px}
+.powerbar .pb{background:linear-gradient(90deg,var(--enemy),#C93A30);color:#1E0705;justify-content:flex-end;padding-right:10px}
+.bar-names{display:flex;justify-content:space-between;gap:8px;font-size:.82rem;color:var(--muted);font-weight:600}
+.bar-names span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.stat-table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.stat-table th,.stat-table td{padding:11px 12px;text-align:center;border-bottom:1px solid #1E2430;font-size:.93rem;white-space:nowrap}
+.stat-table th{color:var(--muted);font-size:.76rem;font-weight:600}
+.stat-table td:first-child,.stat-table th:first-child{text-align:left;color:var(--muted)}
+.stat-table .va{color:var(--ours);font-weight:700}
+.stat-table .vb{color:var(--enemy);font-weight:700}
+.win-a{color:var(--ours);font-weight:700}.win-b{color:var(--enemy);font-weight:700}.win-eq{color:var(--dim)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+.top-list{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:.86rem}
+.top-list td{padding:8px 9px;border-bottom:1px solid #1E2430}
+.top-list tr.t1 td{background:rgba(242,193,78,.08);font-weight:700}
+.top-list tr.t2 td{background:rgba(200,205,220,.05)}
+.top-list tr.t3 td{background:rgba(205,140,80,.05)}
+.top-list .rk{font-size:.95rem}
+.top-list .rk{color:var(--dim);width:28px}
+.top-list td:nth-child(2){max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.top-list .pw{text-align:right;font-weight:700;white-space:nowrap}
+
+/* ---------- 순위 ---------- */
+.rank-table{width:100%;max-width:860px;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.rank-table th:first-child,.rank-table td:first-child{width:52px}
+.rank-table td:nth-child(n+3),.rank-table th:nth-child(n+3){text-align:right}
+.rank-table td:nth-child(2){max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rank-table th,.rank-table td{padding:10px 10px;border-bottom:1px solid var(--line);font-size:.92rem;text-align:right;white-space:nowrap}
+.rank-table th{color:var(--muted);font-size:.73rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.rank-table tr:hover td{background:rgba(255,255,255,.02)}
+.rank-table td:nth-child(1),.rank-table th:nth-child(1){text-align:center;width:52px}
+.rank-table td:nth-child(2),.rank-table th:nth-child(2){text-align:left}
+.rank-table td:nth-child(2){font-weight:700}
+.rank-table tr.mine td{background:var(--ours-soft)}
+.rank-table tr.t1 td{background:rgba(242,193,78,.07)}
+.rank-table tr.t1.mine td{background:linear-gradient(90deg,rgba(242,193,78,.09),var(--ours-soft))}
+.rank-table .sub2{color:var(--dim);font-size:.76rem;font-weight:400}
+
+/* ---------- 입력 ---------- */
+.entry-table{width:max-content;min-width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:.88rem}
+.entry-table th{color:var(--muted);font-size:.76rem;font-weight:600;padding:8px 6px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap;background:var(--bg)}
+.entry-table td{padding:5px;border-bottom:1px solid var(--line);background:var(--bg)}
+.entry-table input,.entry-table select{padding:6px 8px;font-size:.86rem}
+.entry-table input.nick{width:140px}
+.entry-table input.pwr{width:96px;text-align:right}
+.entry-table select{width:84px}
+.entry-table input.ind{width:58px;text-align:center}
+.entry-table .meta{font-size:.72rem;color:var(--dim);white-space:nowrap}
+.entry-table tr.dirty td{background:#1A1A12}
+.entry-table tr.dirty .meta{color:var(--gold)}
+.entry-table th:nth-child(2),.entry-table td:nth-child(2){position:sticky;left:0;z-index:2}
+.sum-cell{text-align:right;color:var(--muted);white-space:nowrap}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:14px}
+.savebar{position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 30%);padding:14px 0 6px;display:flex;justify-content:flex-end;gap:10px;align-items:center;flex-wrap:wrap}
+
+/* ---------- 제출 ---------- */
+.sub-card{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:13px 15px;margin-bottom:10px}
+.sub-card .top{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;margin-bottom:6px}
+.sub-card .top b{font-size:1rem}
+.sub-card .top .where{color:var(--muted);font-size:.82rem}
+.sub-card .top .when{color:var(--dim);font-size:.76rem;margin-left:auto}
+.sub-card .vals{color:var(--muted);font-size:.86rem;font-variant-numeric:tabular-nums;line-height:1.6}
+.sub-card .vals b{color:var(--text)}
+.sub-card .acts{display:flex;gap:8px;margin-top:10px}
+.sub-card.done{opacity:.55}
+.st-tag{font-size:.72rem;font-weight:700;border-radius:999px;padding:2px 9px}
+.st-tag.applied{background:rgba(61,220,151,.12);color:var(--green)}
+.st-tag.rejected{background:rgba(255,107,107,.12);color:var(--red)}
+
+/* ---------- 관리 ---------- */
+.srv-card{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:13px 15px;margin-bottom:11px}
+.srv-card .head{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.srv-card .head b{font-size:1.02rem}
+.srv-card .head .cnt{color:var(--muted);font-size:.8rem}
+.alli-chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.chip{display:inline-flex;align-items:center;gap:5px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:5px 6px 5px 11px;font-size:.83rem}
+.chip button{background:none;border:none;color:var(--dim);font-size:.83rem;padding:0 4px}
+.chip button:hover{color:var(--red)}
+
+/* ---------- 이력 ---------- */
+.hist-item{display:flex;gap:10px;padding:11px 2px;border-bottom:1px solid var(--line);font-size:.88rem;flex-wrap:wrap;align-items:baseline}
+.hist-item .when{color:var(--dim);font-size:.78rem;min-width:108px;font-variant-numeric:tabular-nums}
+.hist-item .who{color:var(--gold);font-weight:600}
+.hist-item .what b{color:var(--text)}
+.hist-item .vals{color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* ---------- 모바일 입력 카드 ---------- */
+#serverList{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:10px}
+#serverList .srv-card{margin-bottom:0}
+#entryCards{display:none}
+.mcard{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:9px;cursor:pointer}
+.mcard .t{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.mcard .t b{font-size:1.02rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mcard .t .pw{color:var(--ours);font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.mcard .s{color:var(--muted);font-size:.8rem;margin-top:4px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.mcard .meta{color:var(--dim);font-size:.72rem}
+.mfield{margin-bottom:10px}
+.mfield label{display:block;font-size:.76rem;font-weight:700;color:var(--muted);margin-bottom:4px}
+.mfield input,.mfield select{width:100%}
+.noblack .colblack{display:none}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+
+/* ---------- 버터플라이 차트 ---------- */
+.bfly{display:grid;grid-template-columns:1fr 86px 1fr;align-items:center;gap:7px;margin:8px 0}
+.bfly .lb{text-align:center;color:var(--muted);font-size:.8rem;font-weight:700;white-space:nowrap}
+.bfly .bl,.bfly .br{display:flex;align-items:center;gap:7px;min-width:0}
+.bfly .bl{justify-content:flex-end}
+.bfly .bar{height:15px;border-radius:5px;min-width:2px;transition:width .5s cubic-bezier(.2,.8,.2,1)}
+.bfly .bar.a{background:linear-gradient(270deg,var(--ours),#2E6FD0)}
+.bfly .bar.b{background:linear-gradient(90deg,var(--enemy),#C93A30)}
+.bfly .cnt{font-size:.8rem;font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap}
+.bfly .bl .cnt{color:var(--ours)} .bfly .br .cnt{color:var(--enemy)}
+
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:rgba(27,34,49,.92);backdrop-filter:blur(10px);border:1px solid #33405A;border-radius:11px;padding:12px 19px;font-size:.89rem;font-weight:600;z-index:120;display:none;max-width:92vw;text-align:center;box-shadow:var(--shadow)}
+.toast.show{display:block}
+.empty{color:var(--dim);text-align:center;padding:38px 0;font-size:.9rem}
+#appShell{display:none}
+footer{text-align:center;color:var(--dim);font-size:.74rem;padding:28px 16px}
+footer b{color:var(--muted)}
+
+/* ---------- 모바일 ---------- */
+@media(max-width:820px){
+  .grid2{grid-template-columns:1fr}
+  .vs-picker{grid-template-columns:1fr;gap:8px}
+  .vs-mid{display:none}
+}
+@media(max-width:640px){
+  html{font-size:13.5px}
+  #entryTableBox table{display:none}
+  #entryCards{display:block}
+  input,select{font-size:16px}
+  main{padding:13px}
+  header{padding:11px 13px}
+  .brand h1{font-size:1.05rem}
+  .panel{padding:13px;border-radius:12px}
+  .stat-table th,.stat-table td{padding:8px 7px;font-size:.86rem}
+  .verdict{padding:16px 12px}
+  .verdict .who{font-size:1.25rem}
+  .powerbar{height:32px}
+  .powerbar>div{font-size:.88rem}
+  .kpis{grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:9px}
+  .kpi .kva{font-size:1.12rem}
+  .entry-table input.pwr{width:74px}
+  .entry-table input.nick{width:106px}
+  .entry-table select{width:76px}
+  .rank-table th,.rank-table td{padding:9px 7px;font-size:.86rem}
+  .toolbar{gap:7px}
+  .seg button{padding:6px 10px;font-size:.8rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ 비밀번호 게이트 ============ -->
+<div id="gate">
+  <div class="gate-box">
+    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTQwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZCIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGOUU3QTAiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIwLjQ1IiBzdG9wLWNvbG9yPSIjRUZDOTVFIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0I4ODYyQiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZDIiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkNFRkMwIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0Q5QTkzRSIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPCEtLSDsmZXqtIAgLS0+CiAgPHBhdGggZD0iTTI3IDQ2IEwyOSAyNCBMNDQgMzQgTDYwIDE1IEw3NiAzNCBMOTEgMjQgTDkzIDQ2IFoiIGZpbGw9InVybCgjZ29sZCkiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIxLjIiLz4KICA8Y2lyY2xlIGN4PSIyOSIgY3k9IjIxIiByPSIzLjQiIGZpbGw9InVybCgjZ29sZDIpIiBzdHJva2U9IiM4QTY0MjAiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iMTIiIHI9IjMuOCIgZmlsbD0idXJsKCNnb2xkMikiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPGNpcmNsZSBjeD0iOTEiIGN5PSIyMSIgcj0iMy40IiBmaWxsPSJ1cmwoI2dvbGQyKSIgc3Ryb2tlPSIjOEE2NDIwIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8cmVjdCB4PSIyNyIgeT0iNDgiIHdpZHRoPSI2NiIgaGVpZ2h0PSI2LjUiIHJ4PSIyLjUiIGZpbGw9InVybCgjZ29sZDIpIiBzdHJva2U9IiM4QTY0MjAiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iNTEuMiIgcj0iMiIgZmlsbD0iIzhBNjQyMCIvPgogIDxjaXJjbGUgY3g9IjQyIiBjeT0iNTEuMiIgcj0iMS41IiBmaWxsPSIjOEE2NDIwIi8+CiAgPGNpcmNsZSBjeD0iNzgiIGN5PSI1MS4yIiByPSIxLjUiIGZpbGw9IiM4QTY0MjAiLz4KICA8IS0tIDIxMyAtLT4KICA8dGV4dCB4PSI2MCIgeT0iOTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCAnVGltZXMgTmV3IFJvbWFuJywgc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9InVybCgjZ29sZCkiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIwLjYiPjIxMzwvdGV4dD4KICA8IS0tIFNFUlZFUiAtLT4KICA8dGV4dCB4PSI2MyIgeT0iMTEzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTIuNSIgbGV0dGVyLXNwYWNpbmc9IjUuNSIgZmlsbD0iI0Q5QjQ1QyI+U0VSVkVSPC90ZXh0PgogIDwhLS0g7ZWY64uoIOyepeyLnSAtLT4KICA8cGF0aCBkPSJNMzggMTIyIEw2MCAxMzEgTDgyIDEyMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ1cmwoI2dvbGQpIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iMTMxIiByPSIyLjIiIGZpbGw9IiNFRkM5NUUiLz4KPC9zdmc+Cg==" alt="213 SERVER" style="height:96px;display:block;margin:0 auto 14px">
+    <h1>213서버 통합 시트</h1>
+    <div class="sub">운영진 전용 페이지입니다.<br>비밀번호를 입력하세요.</div>
+    <input id="gatePw" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn primary" onclick="doLogin()">입장하기</button>
+    <div class="gate-msg" id="gateMsg"></div>
+    <div class="gate-credit">Powered by <b>213 NXT · 부앙(Bu-ang)</b></div>
+  </div>
+</div>
+
+<!-- ============ 본 앱 ============ -->
+<div id="appShell">
+<header>
+  <div class="brand" style="flex-direction:row;align-items:center;gap:9px"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTQwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZCIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGOUU3QTAiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIwLjQ1IiBzdG9wLWNvbG9yPSIjRUZDOTVFIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0I4ODYyQiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZDIiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkNFRkMwIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0Q5QTkzRSIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPCEtLSDsmZXqtIAgLS0+CiAgPHBhdGggZD0iTTI3IDQ2IEwyOSAyNCBMNDQgMzQgTDYwIDE1IEw3NiAzNCBMOTEgMjQgTDkzIDQ2IFoiIGZpbGw9InVybCgjZ29sZCkiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIxLjIiLz4KICA8Y2lyY2xlIGN4PSIyOSIgY3k9IjIxIiByPSIzLjQiIGZpbGw9InVybCgjZ29sZDIpIiBzdHJva2U9IiM4QTY0MjAiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iMTIiIHI9IjMuOCIgZmlsbD0idXJsKCNnb2xkMikiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPGNpcmNsZSBjeD0iOTEiIGN5PSIyMSIgcj0iMy40IiBmaWxsPSJ1cmwoI2dvbGQyKSIgc3Ryb2tlPSIjOEE2NDIwIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8cmVjdCB4PSIyNyIgeT0iNDgiIHdpZHRoPSI2NiIgaGVpZ2h0PSI2LjUiIHJ4PSIyLjUiIGZpbGw9InVybCgjZ29sZDIpIiBzdHJva2U9IiM4QTY0MjAiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iNTEuMiIgcj0iMiIgZmlsbD0iIzhBNjQyMCIvPgogIDxjaXJjbGUgY3g9IjQyIiBjeT0iNTEuMiIgcj0iMS41IiBmaWxsPSIjOEE2NDIwIi8+CiAgPGNpcmNsZSBjeD0iNzgiIGN5PSI1MS4yIiByPSIxLjUiIGZpbGw9IiM4QTY0MjAiLz4KICA8IS0tIDIxMyAtLT4KICA8dGV4dCB4PSI2MCIgeT0iOTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCAnVGltZXMgTmV3IFJvbWFuJywgc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9InVybCgjZ29sZCkiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIwLjYiPjIxMzwvdGV4dD4KICA8IS0tIFNFUlZFUiAtLT4KICA8dGV4dCB4PSI2MyIgeT0iMTEzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTIuNSIgbGV0dGVyLXNwYWNpbmc9IjUuNSIgZmlsbD0iI0Q5QjQ1QyI+U0VSVkVSPC90ZXh0PgogIDwhLS0g7ZWY64uoIOyepeyLnSAtLT4KICA8cGF0aCBkPSJNMzggMTIyIEw2MCAxMzEgTDgyIDEyMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ1cmwoI2dvbGQpIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iMTMxIiByPSIyLjIiIGZpbGw9IiNFRkM5NUUiLz4KPC9zdmc+Cg==" alt="" style="height:38px"><div style="display:flex;flex-direction:column;gap:2px"><h1>213서버 통합 시트</h1><span>Powered by 213 NXT · 부앙(Bu-ang)</span></div></div>
+  <div class="editor-chip">입력자 <b id="editorName">-</b><button onclick="askEditor()">변경</button><button onclick="doLogout()">잠금</button></div>
+</header>
+
+<nav>
+  <button class="active" data-view="compare" onclick="switchView('compare')">📊 전력 비교</button>
+  <button data-view="rank" onclick="switchView('rank')">🏆 순위</button>
+  <button data-view="entry" onclick="switchView('entry')">✏️ 입력</button>
+  <button data-view="subs" onclick="switchView('subs')">📥 제출<span class="badge" id="subBadge" style="display:none">0</span></button>
+  <button data-view="manage" onclick="switchView('manage')">🗂 관리</button>
+  <button data-view="history" onclick="switchView('history')">🕘 이력</button>
+</nav>
+
+<div id="noPerm" style="display:none">
+  <div style="max-width:420px;margin:60px auto;padding:0 20px">
+    <div class="panel" style="text-align:center;padding:32px 24px">
+      <div style="font-size:2.4rem;margin-bottom:10px">⏳</div>
+      <h2 style="margin-bottom:8px;font-size:1.25rem">권한 대기 중</h2>
+      <p class="hint" style="margin-bottom:20px">닉네임 등록이 완료되었습니다.<br>관리자(부앙)가 권한을 승인하면 이용할 수 있습니다.<br>등록 후 관리자에게 말씀해 주세요.</p>
+      <button class="btn" style="width:100%" onclick="recheckPerms()">권한 다시 확인</button>
+      <button class="btn" style="width:100%;margin-top:8px" onclick="unlockAsAdmin()">🔐 관리자 PIN으로 잠금 해제</button>
+      <button class="btn danger" style="width:100%;margin-top:8px" onclick="doLogout()">잠금</button>
+    </div>
+  </div>
+</div>
+
+<main>
+<!-- ============ 비교 ============ -->
+<section class="view active" id="view-compare">
+  <div class="toolbar">
+    <div class="segwrap"><span class="seglb">비교 모드</span>
+    <div class="seg" id="modeSeg">
+      <button class="active" data-m="server" onclick="setMode('server')">서버 vs 서버</button>
+      <button data-m="alliance" onclick="setMode('alliance')">연맹 vs 연맹</button>
+      <button data-m="faction" onclick="setMode('faction')">파벌 vs 파벌</button>
+    </div></div>
+    <div class="segwrap"><span class="seglb">편대 기준</span>
+    <div class="seg" id="basisSeg" title="비교에 사용할 편대 범위">
+      <button class="active" data-b="1" onclick="setBasis(1)">1편대만</button>
+      <button data-b="2" onclick="setBasis(2)">1~2편대</button>
+      <button data-b="3" onclick="setBasis(3)">1~3편대</button>
+      <button data-b="4" onclick="setBasis(4)">1~4편대</button>
+    </div></div>
+    <div class="segwrap"><span class="seglb">분석 범위 (상위 몇 명끼리 비교)</span>
+    <div class="seg" id="topSeg" title="양쪽에서 상위 몇 명까지 분석할지">
+      <button class="active" data-t="0" onclick="setTopN(0)">전체</button>
+      <button data-t="10" onclick="setTopN(10)">Top 10</button>
+      <button data-t="20" onclick="setTopN(20)">Top 20</button>
+      <button data-t="30" onclick="setTopN(30)">Top 30</button>
+      <button data-t="40" onclick="setTopN(40)">Top 40</button>
+      <button data-t="50" onclick="setTopN(50)">Top 50</button>
+    </div></div>
+  </div>
+  <div class="vs-picker">
+    <div class="vs-side a"><label>OUR SIDE</label><select id="pickA" onchange="runCompare()"></select></div>
+    <div class="vs-mid">VS</div>
+    <div class="vs-side b"><label>OPPONENT</label><select id="pickB" onchange="runCompare()"></select></div>
+  </div>
+  <div id="compareResult"><div class="empty">양쪽을 선택하면 비교 결과가 나옵니다</div></div>
+</section>
+
+<!-- ============ 순위 ============ -->
+<section class="view" id="view-rank">
+  <div class="toolbar">
+    <div class="segwrap"><span class="seglb">순위 종류</span>
+    <div class="seg" id="rankSeg">
+      <button class="active" data-r="server" onclick="setRankMode('server')">🌐 서버</button>
+      <button data-r="alliance" onclick="setRankMode('alliance')">🛡 연맹</button>
+      <button data-r="faction" onclick="setRankMode('faction')">⚜️ 파벌</button>
+      <button data-r="user" onclick="setRankMode('user')">👤 유저</button>
+    </div></div>
+    <div class="segwrap"><span class="seglb">집계 범위 (그룹별 상위 몇 명 합계)</span>
+    <div class="seg" id="rankTopSeg" title="각 그룹에서 상위 몇 명 합계로 순위를 매길지">
+      <button class="active" data-t="0" onclick="setRankTop(0)">전체</button>
+      <button data-t="10" onclick="setRankTop(10)">Top 10</button>
+      <button data-t="20" onclick="setRankTop(20)">Top 20</button>
+      <button data-t="30" onclick="setRankTop(30)">Top 30</button>
+      <button data-t="40" onclick="setRankTop(40)">Top 40</button>
+      <button data-t="50" onclick="setRankTop(50)">Top 50</button>
+    </div></div>
+    <button class="btn sm" onclick="loadRank(true)">새로고침</button>
+    <div style="display:flex;flex-direction:column;gap:2px">
+      <span class="hint" id="rankScopeHint">1편대 총합 기준</span>
+      <span class="hint" id="rankUpdated" style="color:var(--gold)"></span>
+    </div>
+  </div>
+  <div class="panel table-scroll" id="rankBox"><div class="empty">불러오는 중...</div></div>
+</section>
+
+<!-- ============ 입력 ============ -->
+<section class="view" id="view-entry">
+  <div class="panel">
+    <div class="row">
+      <select id="entryServer" onchange="onEntryServerChange()"></select>
+      <select id="entryAlliance" onchange="loadEntryTable()"></select>
+      <button class="btn" onclick="loadEntryTable()">불러오기</button>
+      <button class="btn" onclick="addMemberRow()">＋ 인원 추가</button>
+      <button class="btn" onclick="$('xlsxFile').click()">📤 엑셀 일괄 입력</button>
+      <input type="file" id="xlsxFile" accept=".xlsx,.xls,.csv" style="display:none" onchange="importExcel(this.files[0])">
+    </div>
+    <p class="hint" style="margin-top:9px">전투력은 <b>6.22G / 6220</b> 어느 쪽으로 적어도 인식 · 산업은 레벨 숫자만 · 수정 후 아래 <b>저장</b>. 엑셀 일괄 입력: 헤더에 닉네임·1편대 등이 있는 파일을 올리면 서버 전체를 한 번에 입력합니다.</p>
+  </div>
+  <div class="table-wrap"><div id="entryTableBox"><div class="empty">서버와 연맹을 선택하세요</div></div><div id="entryCards"></div></div>
+  <div class="savebar" id="saveBar" style="display:none">
+    <span class="hint" id="dirtyCount"></span>
+    <button class="btn primary" onclick="saveEntries()">💾 변경사항 저장</button>
+  </div>
+</section>
+
+<!-- ============ 제출 확인 ============ -->
+<section class="view" id="view-subs">
+  <div class="panel" style="margin-bottom:14px">
+    <div class="row">
+      <button class="btn sm" onclick="loadSubs()">새로고침</button>
+      <span class="hint">연맹원들이 제출 페이지(submit.html)로 보낸 전투력입니다. <b>✓ 반영</b>을 누르면 해당 인원 기록에 자동 입력됩니다.</span>
+    </div>
+  </div>
+  <div id="subList"><div class="empty">불러오는 중...</div></div>
+</section>
+
+<!-- ============ 관리 ============ -->
+<section class="view" id="view-manage">
+  <div class="panel" style="margin-bottom:14px">
+    <h2>🗂 서버 & 연맹</h2>
+    <div class="row">
+      <input id="newServerName" placeholder="서버 번호 (예: 213)" style="width:150px" onkeydown="if(event.key==='Enter')addServer()">
+      <button class="btn primary" onclick="addServer()">＋ 서버 추가</button>
+      <span style="flex:1"></span>
+      <button class="btn sm" onclick="exportExcel()">📊 엑셀 내보내기</button>
+      <button class="btn sm" onclick="downloadBackup()">📦 백업</button>
+    </div>
+    <p class="hint" style="margin-top:8px">각 서버 카드 안에서 <b>새 연맹</b>을 바로 추가하고, 연맹 이름(✎)을 누르면 이름·소속 서버를 수정할 수 있어요. 백업(JSON)은 가끔 받아서 보관해두세요.</p>
+    <div id="serverList" style="margin-top:12px"></div>
+  </div>
+  <div class="panel" style="margin-bottom:14px">
+    <h2>⚜️ 파벌 관리 <span class="hint" style="font-weight:400">(시즌: 여러 서버 = 한 편)</span></h2>
+    <div class="row">
+      <input id="newFactionName" placeholder="파벌 이름 (예: 우리파벌)" style="width:190px" onkeydown="if(event.key==='Enter')addFaction()">
+      <button class="btn primary" onclick="addFaction()">＋ 파벌 만들기</button>
+    </div>
+    <p class="hint" style="margin-top:8px">파벌을 만든 뒤 아래에서 서버를 넣으세요 (개수 제한 없음). 시즌마다 서버만 넣었다 빼면 됩니다.</p>
+    <div id="factionList" style="margin-top:12px"></div>
+  </div>
+  <div class="panel" style="margin-bottom:14px">
+    <h2>🔐 탭 권한 관리 <span class="hint" style="font-weight:400">(관리자 PIN 필요)</span></h2>
+    <div class="row">
+      <button class="btn" onclick="openPerms()">권한 관리 열기</button>
+      <span class="hint">운영진마다 볼 수 있는 탭을 정합니다. 체크 해제된 탭은 그 사람 화면에서 사라집니다.</span>
+    </div>
+    <div id="permPanel" style="margin-top:12px"></div>
+  </div>
+</section>
+
+<!-- ============ 이력 ============ -->
+<section class="view" id="view-history">
+  <div class="panel" style="margin-bottom:14px">
+    <div class="row">
+      <select id="histServer" onchange="loadHistory()"></select>
+      <button class="btn" onclick="loadHistory()">새로고침</button>
+    </div>
+  </div>
+  <div class="panel" id="histList"><div class="empty">불러오는 중...</div></div>
+</section>
+</main>
+<footer>213서버 통합 시트 · Powered by <b>213 NXT · 부앙(Bu-ang)</b></footer>
+</div>
+
+<!-- 연맹 수정 -->
+<div class="overlay" id="alliOverlay">
+  <div class="modal">
+    <h3>연맹 수정</h3>
+    <p class="hint" style="margin-bottom:12px">이민·시즌으로 연맹 이름이나 소속 서버가 바뀌면 여기서 수정하세요. 소속 인원과 기록은 그대로 따라갑니다.</p>
+    <div class="mfield"><label>연맹 이름</label><input id="aName"></div>
+    <div class="mfield"><label>소속 서버</label><select id="aServer"></select></div>
+    <button class="btn primary" style="width:100%" onclick="saveAlliModal()">저장</button>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn" style="flex:1" onclick="document.getElementById('alliOverlay').classList.remove('show')">취소</button>
+      <button class="btn danger" style="flex:1" onclick="alliModalDelete()">연맹 삭제</button>
+    </div>
+  </div>
+</div>
+
+<!-- 인원 수정 (모바일) -->
+<div class="overlay" id="memOverlay">
+  <div class="modal" style="max-height:88vh;overflow-y:auto">
+    <h3 id="memTitle">인원 수정</h3>
+    <p class="hint" style="margin-bottom:12px">전투력: 6.22G, 6220 어느 쪽으로 적어도 됩니다</p>
+    <div class="mfield"><label>닉네임 *</label><input id="mNick"></div>
+    <div class="mgrid">
+      <div class="mfield"><label>병종</label><select id="mTroop"><option value=""></option><option>슈터</option><option>파이터</option><option>라이더</option></select></div>
+      <div class="mfield"><label>산업</label><input id="mShelter" inputmode="numeric" placeholder="0"></div>
+    </div>
+    <div class="mgrid">
+      <div class="mfield"><label>1편대</label><input id="mS1" inputmode="decimal" placeholder="예: 6.22G"></div>
+      <div class="mfield"><label>2편대</label><input id="mS2" inputmode="decimal" placeholder="예: 4.5G"></div>
+      <div class="mfield"><label>3편대</label><input id="mS3" inputmode="decimal" placeholder=""></div>
+      <div class="mfield"><label>4편대</label><input id="mS4" inputmode="decimal" placeholder=""></div>
+      <div class="mfield" id="mBlackWrap"><label>블머</label><input id="mBlack" inputmode="decimal"></div>
+      <div class="mfield"><label>킬수</label><input id="mKills" inputmode="decimal"></div>
+    </div>
+    <button class="btn primary" style="width:100%" onclick="memModalSave()">💾 저장</button>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn" style="flex:1" onclick="closeMemModal()">취소</button>
+      <button class="btn danger" style="flex:1" onclick="memModalRemove()">목록에서 제외</button>
+    </div>
+  </div>
+</div>
+
+<!-- 이름 등록 -->
+<div class="overlay" id="nameOverlay">
+  <div class="modal">
+    <h3>운영진 등록</h3>
+    <p>입력 및 수정 내역에는 등록한 닉네임이 기록됩니다.<br>게임 내 닉네임과 <b>본인만 아는 4자리 숫자 PIN</b>을 설정해 주세요.</p>
+    <input id="nameInput" placeholder="닉네임 (예: 부앙)">
+    <input id="pinInput" inputmode="numeric" maxlength="4" placeholder="4자리 숫자 PIN" onkeydown="if(event.key==='Enter')saveEditor()">
+    <div class="gate-msg" id="nameMsg" style="margin:-4px 0 10px;text-align:left"></div>
+    <button class="btn primary" style="width:100%" onclick="saveEditor()">등록하기</button>
+    <p class="hint" style="margin-top:12px;font-size:.78rem;line-height:1.5">설정한 PIN은 본인 확인용입니다. 다른 사람이 같은 닉네임을 사용하는 것을 방지하며, 다른 기기에서도 동일한 PIN으로 인증할 수 있습니다.<br>※ PIN을 잊어버리면 관리자에게 재등록을 요청해야 합니다.</p>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+let sb=null, servers=[], alliances=[], factions=[], factionServers=[], mode='server', basis=1, topN=0, rankMode='server', rankTopN=0, entryIsOurs=true;
+let entryRows=[], rankCache=null, lastCmp=null, cmpShowAll=false, editorPerms=null, adminPin=null;
+const TABS=[['compare','📊 전력 비교'],['rank','🏆 순위'],['entry','✏️ 입력'],['subs','📥 제출'],['manage','🗂 관리'],['history','🕘 이력']];
+const $=id=>document.getElementById(id);
+const BASIS_LABEL=['1편대','1~2편대','1~3편대','1~4편대'];
+const BANDS=[['1G 미만',0,1000],['1G대',1000,2000],['2G대',2000,3000],['3G대',3000,4000],['4G대',4000,5000],['5G대',5000,6000],['6~9G대',6000,10000],['10~14G대',10000,15000],['15~19G대',15000,20000],['20~29G대',20000,30000],['30~49G대',30000,50000],['50G+',50000,1e15]];
+
+/* ---------- 공통 ---------- */
+/* "6.22g"→6220, "6220"→6220, "6.22"→6220, "900m"/"900"→900 (100 미만 단위없음=G) */
+function parsePower(t){
+  if(t==null) return null;
+  t=String(t).trim().toLowerCase().replace(/,/g,'').replace(/\s/g,'');
+  if(t==='') return null;
+  const m=t.match(/^([0-9]*\.?[0-9]+)(g|m)?$/);
+  if(!m) return NaN;
+  let v=parseFloat(m[1]);
+  if(m[2]==='g') v*=1000;
+  else if(m[2]==='m'){}
+  else if(v<100) v*=1000;
+  return v;
+}
+function fmtG(m){ if(m==null||isNaN(m)) return '-'; if(Math.abs(m)>=1000) return (m/1000).toFixed(2).replace(/\.?0+$/,'')+'G'; return (+m.toFixed(1))+'M'; }
+function fmtTime(t){ const d=new Date(t); return `${d.getFullYear()%100}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; }
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2600); }
+function chunk(a,n){ const r=[]; for(let i=0;i<a.length;i+=n) r.push(a.slice(i,i+n)); return r; }
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+
+function getEditor(){ return localStorage.getItem('editorName')||''; }
+function getDeviceId(){
+  let d=localStorage.getItem('deviceId');
+  if(!d){ d=(crypto.randomUUID?crypto.randomUUID():'d-'+Date.now()+'-'+Math.random().toString(36).slice(2)); localStorage.setItem('deviceId',d); }
+  return d;
+}
+function getDeviceInfo(){
+  const ua=navigator.userAgent;
+  let os='기타 기기';
+  if(/Android/i.test(ua)) os='Android 폰';
+  else if(/iPhone/i.test(ua)) os='iPhone';
+  else if(/iPad/i.test(ua)) os='iPad';
+  else if(/Windows/i.test(ua)) os='Windows PC';
+  else if(/Macintosh/i.test(ua)) os='Mac';
+  let br='브라우저';
+  if(/Edg\//i.test(ua)) br='Edge';
+  else if(/SamsungBrowser/i.test(ua)) br='삼성 인터넷';
+  else if(/Whale/i.test(ua)) br='웨일';
+  else if(/Chrome/i.test(ua)) br='Chrome';
+  else if(/Safari/i.test(ua)) br='Safari';
+  else if(/Firefox/i.test(ua)) br='Firefox';
+  return os+' · '+br;
+}
+function askEditor(){ $('nameInput').value=getEditor(); $('pinInput').value=''; $('nameMsg').textContent=''; $('nameOverlay').classList.add('show'); setTimeout(()=>$('nameInput').focus(),50); }
+async function saveEditor(){
+  const name=$('nameInput').value.trim(), pin=$('pinInput').value.trim();
+  if(!name){$('nameMsg').textContent='닉네임을 입력해주세요.';return;}
+  if(!/^\d{4}$/.test(pin)){$('nameMsg').textContent='PIN은 숫자 4자리로 입력해주세요.';return;}
+  $('nameMsg').style.color='var(--muted)'; $('nameMsg').textContent='확인 중...';
+  const {data,error}=await sb.rpc('claim_editor',{p_name:name,p_pin:pin,p_device_id:getDeviceId(),p_device_info:getDeviceInfo()});
+  if(error){$('nameMsg').style.color='var(--red)';$('nameMsg').textContent='오류: '+error.message;return;}
+  if(data==='wrong_pin'){$('nameMsg').style.color='var(--red)';$('nameMsg').textContent='이미 사용 중인 닉네임입니다. 본인이 맞다면 처음 정했던 PIN을 입력해주세요.';return;}
+  if(data==='unauthorized'){$('nameMsg').style.color='var(--red)';$('nameMsg').textContent='세션이 만료됐습니다. 새로고침 후 다시 입장해주세요.';return;}
+  localStorage.setItem('editorName',name);
+  $('editorName').textContent=name; $('nameOverlay').classList.remove('show');
+  applyWatermark();
+  loadPerms();
+  toast(data==='created'?`'${name}' 닉네임을 등록했습니다`:'본인 확인 완료');
+}
+
+/* ---------- 게이트 ---------- */
+async function doLogin(){
+  const pw=$('gatePw').value;
+  if(!pw){$('gateMsg').textContent='비밀번호를 입력해주세요.';return;}
+  $('gateMsg').style.color='var(--muted)'; $('gateMsg').textContent='확인 중...';
+  const {error}=await sb.auth.signInWithPassword({email:CONFIG.LOGIN_EMAIL,password:pw});
+  if(error){
+    $('gateMsg').style.color='var(--red)';
+    $('gateMsg').textContent=/Invalid login/i.test(error.message)?'비밀번호가 틀렸습니다.':error.message;
+    return;
+  }
+  $('gatePw').value='';
+  await enterApp();
+}
+async function doLogout(){ await sb.auth.signOut(); location.reload(); }
+function applyWatermark(){
+  const name=getEditor()||'미등록';
+  const d=new Date();
+  const text=('열람: '+name+' · '+d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0'))
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/'/g,'');
+  const svg=`<svg xmlns='http://www.w3.org/2000/svg' width='300' height='190'><text x='16' y='95' font-size='14' fill='rgba(150,160,185,0.044)' font-weight='700' transform='rotate(-18 140 90)' font-family='sans-serif'>${text}</text></svg>`;
+  let wm=document.getElementById('wm');
+  if(!wm){ wm=document.createElement('div'); wm.id='wm'; document.body.appendChild(wm); }
+  wm.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:95;background-image:url("data:image/svg+xml,'+encodeURIComponent(svg)+'")';
+}
+async function loadPerms(){
+  const name=getEditor();
+  if(!name){ editorPerms=new Set(); applyPerms(); return; }
+  const {data}=await sb.rpc('get_editor_perms',{p_name:name,p_device_id:getDeviceId()});
+  if(data==='*') editorPerms=new Set(TABS.map(([k])=>k));
+  else editorPerms=new Set((data||'').split(',').map(s=>s.trim()).filter(Boolean));
+  applyPerms();
+}
+function canView(v){ return editorPerms&&editorPerms.has(v); }
+function applyPerms(){
+  const none=!editorPerms||editorPerms.size===0;
+  document.querySelector('nav').style.display=none?'none':'flex';
+  document.querySelector('main').style.display=none?'none':'block';
+  $('noPerm').style.display=none?'block':'none';
+  if(none) return;
+  document.querySelectorAll('nav button').forEach(b=>{ b.style.display=canView(b.dataset.view)?'':'none'; });
+  const cur=document.querySelector('.view.active');
+  const curKey=cur?cur.id.replace('view-',''):null;
+  if(curKey&&!canView(curKey)){
+    const first=TABS.find(([k])=>canView(k));
+    if(first) switchView(first[0]);
+  }
+}
+async function recheckPerms(){
+  await loadPerms();
+  if(editorPerms.size===0) toast('아직 부여된 권한이 없습니다. 관리자에게 요청하세요.');
+}
+async function unlockAsAdmin(){
+  const pin=prompt('🔐 관리자 PIN을 입력하세요:');
+  if(pin===null) return;
+  const name=getEditor(); if(!name){askEditor();return;}
+  const {data,error}=await sb.rpc('admin_set_perms',{p_pin:pin.trim(),p_name:name,p_perms:'*'});
+  if(error){toast('오류: '+error.message);return;}
+  if(data!==true){toast('❌ 관리자 PIN이 올바르지 않습니다');return;}
+  adminPin=pin.trim();
+  await loadPerms();
+  toast('👑 관리자 권한으로 전체 탭이 열렸습니다');
+}
+async function enterApp(){
+  $('gate').style.display='none'; $('appShell').style.display='block';
+  $('editorName').textContent=getEditor()||'-';
+  editorPerms=new Set(); applyPerms(); // 권한 확인 전엔 아무것도 안 보임
+  if(!getEditor()) askEditor();
+  else sb.rpc('touch_device',{p_name:getEditor(),p_device_id:getDeviceId()});
+  applyWatermark();
+  await loadBase();
+  await loadPerms();
+  refreshSubBadge();
+}
+
+/* ---------- 초기화 ---------- */
+window.onerror=function(msg,src,line){
+  try{
+    var el=document.getElementById('gateMsg')||document.getElementById('formMsg');
+    if(el){el.style.color='#FF6B6B';el.textContent='오류: '+msg+' (줄 '+line+') — 이 화면을 캡처해서 관리자에게 보내주세요';}
+  }catch(e){}
+};
+async function init(){
+  if(!CONFIG.SUPABASE_URL.startsWith('https://')){
+    document.querySelector('.gate-box').innerHTML='<div class="emblem">⚠️</div><h1>설정 필요</h1><div class="sub">index.html 상단의 CONFIG에 Supabase URL과 anon key를 붙여넣은 뒤 다시 열어주세요.<br>(설치가이드.md 참고)</div>';
+    return;
+  }
+  sb=window.supabase.createClient(CONFIG.SUPABASE_URL,CONFIG.SUPABASE_ANON_KEY,{
+    auth:{storage:window.sessionStorage,persistSession:true,autoRefreshToken:true}
+  });
+  const {data:{session}}=await sb.auth.getSession();
+  if(session) await enterApp();
+  else setTimeout(()=>$('gatePw').focus(),100);
+}
+async function loadBase(){
+  const [s,a,f,fs]=await Promise.all([
+    sb.from('servers').select('*').order('name'),
+    sb.from('alliances').select('*').order('name'),
+    sb.from('factions').select('*').order('name'),
+    sb.from('faction_servers').select('*')
+  ]);
+  if(s.error||a.error||f.error||fs.error){ toast('데이터 로딩 실패: '+(s.error||a.error||f.error||fs.error).message); return; }
+  servers=s.data; alliances=a.data; factions=f.data; factionServers=fs.data;
+  fillPickers(); fillEntrySelectors(); fillHistFilter(); renderManage();
+}
+function factionServerIds(fid){ return factionServers.filter(x=>x.faction_id===fid).map(x=>x.server_id); }
+function factionLabel(f){
+  const names=factionServerIds(f.id).map(id=>{const s=servers.find(x=>x.id===id);return s?s.name:'?';});
+  return f.name+(names.length?` (${names.join('·')})`:' (서버 없음)');
+}
+function switchView(v){
+  if(!canView(v)){toast('이 탭을 볼 권한이 없습니다');return;}
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===v));
+  document.querySelectorAll('.view').forEach(s=>s.classList.toggle('active',s.id==='view-'+v));
+  if(v==='history') loadHistory();
+  if(v==='manage') renderManage();
+  if(v==='subs') loadSubs();
+  if(v==='rank') loadRank();
+}
+
+/* ---------- 데이터 로딩 (공용) ---------- */
+async function fetchLatest(memberIds){
+  const recs=new Map();
+  for(const part of chunk(memberIds,150)){
+    const r=await sb.from('latest_power').select('*').in('member_id',part);
+    if(r.error) throw r.error;
+    r.data.forEach(x=>recs.set(x.member_id,x));
+  }
+  return recs;
+}
+function basisPow(rec,n){
+  if(!rec) return 0;
+  let s=0; const f=['squad1','squad2','squad3','squad4'];
+  for(let i=0;i<n;i++) s+=(+rec[f[i]]||0);
+  return s;
+}
+
+/* ---------- 비교 ---------- */
+function setMode(m){ mode=m; document.querySelectorAll('#modeSeg button').forEach(b=>b.classList.toggle('active',b.dataset.m===m)); fillPickers(); $('compareResult').innerHTML='<div class="empty">양쪽을 선택하면 비교 결과가 나옵니다</div>'; }
+function setBasis(n){ basis=n; document.querySelectorAll('#basisSeg button').forEach(b=>b.classList.toggle('active',+b.dataset.b===n)); rerenderCompare(); }
+function fillPickers(){
+  let opts='<option value="">선택...</option>';
+  if(mode==='server') opts+=servers.map(s=>`<option value="${s.id}">${esc(s.name)} 서버</option>`).join('');
+  else if(mode==='alliance') opts+=alliances.map(a=>{const sv=servers.find(s=>s.id===a.server_id);return `<option value="${a.id}">[${esc(sv?sv.name:'?')}] ${esc(a.name)}</option>`;}).join('');
+  else opts+=factions.map(f=>`<option value="${f.id}">${esc(factionLabel(f))}</option>`).join('');
+  $('pickA').innerHTML=opts; $('pickB').innerHTML=opts;
+  if(mode==='server'){ const s213=servers.find(s=>s.name==='213'); if(s213) $('pickA').value=s213.id; }
+  if(mode==='faction'&&!factions.length){ $('compareResult').innerHTML='<div class="empty">아직 파벌이 없습니다. 🗂 관리 탭에서 파벌을 만들고 서버를 넣어주세요.</div>'; }
+}
+async function fetchSide(id){
+  let allianceIds;
+  if(mode==='server') allianceIds=alliances.filter(a=>a.server_id==id).map(a=>a.id);
+  else if(mode==='alliance') allianceIds=[+id];
+  else { const sids=factionServerIds(+id); allianceIds=alliances.filter(a=>sids.includes(a.server_id)).map(a=>a.id); }
+  if(!allianceIds.length) return {members:[],recs:new Map()};
+  const m=await sb.from('members').select('*').in('alliance_id',allianceIds).eq('is_active',true);
+  if(m.error) throw m.error;
+  const ids=m.data.map(x=>x.id);
+  const recs=await fetchLatest(ids);
+  // 전력 추이용: 전체 기록 (1편대만)
+  const hist=[];
+  for(const part of chunk(ids,150)){
+    const r=await sb.from('power_records').select('member_id,squad1,recorded_at').in('member_id',part);
+    if(!r.error) hist.push(...r.data);
+  }
+  hist.sort((a,b)=>a.recorded_at<b.recorded_at?-1:1);
+  return {members:m.data,recs,hist};
+}
+function computeTrend(side){
+  if(!side.hist||!side.hist.length) return [];
+  const latest=new Map(); const pts=[]; let curDay=null;
+  const push=()=>{ let s=0; latest.forEach(v=>s+=v); pts.push({d:curDay,v:s}); };
+  for(const r of side.hist){
+    const day=r.recorded_at.slice(0,10);
+    if(curDay!==null&&day!==curDay) push();
+    latest.set(r.member_id,+r.squad1||0); curDay=day;
+  }
+  if(curDay!==null) push();
+  if(pts.length>36){
+    const step=Math.ceil(pts.length/36);
+    const s=pts.filter((_,i)=>i%step===0);
+    if(s[s.length-1].d!==pts[pts.length-1].d) s.push(pts[pts.length-1]);
+    return s;
+  }
+  return pts;
+}
+function trendSVG(pa,pb,nameA,nameB){
+  if(pa.length<2&&pb.length<2)
+    return '<div class="empty" style="padding:26px 0">전투력 기록이 2회 이상 쌓이면 추세 그래프가 그려집니다.<br>다음 조사 때부터 상승 곡선을 볼 수 있어요 📈</div>';
+  const all=[...pa,...pb];
+  const days=[...new Set(all.map(p=>p.d))].sort();
+  const X0=52,X1=590,Y0=18,Y1=196;
+  const x=d=>days.length>1?X0+(days.indexOf(d)/(days.length-1))*(X1-X0):(X0+X1)/2;
+  const maxV=Math.max(...all.map(p=>p.v))*1.1||1;
+  const y=v=>Y1-(v/maxV)*(Y1-Y0);
+  const grid=[0.25,0.5,0.75,1].map(f=>{
+    const gy=Y1-f*(Y1-Y0);
+    return `<line x1="${X0}" y1="${gy}" x2="${X1}" y2="${gy}" stroke="#232B3A" stroke-width="1"/>
+            <text x="${X0-7}" y="${gy+4}" fill="#5B6478" font-size="10.5" text-anchor="end">${fmtG(maxV*f)}</text>`;
+  }).join('');
+  const fmtDay=d=>{const p=d.split('-');return (+p[1])+'.'+(+p[2]);};
+  const xlab=[days[0],days[Math.floor((days.length-1)/2)],days[days.length-1]]
+    .filter((d,i,a)=>a.indexOf(d)===i)
+    .map(d=>`<text x="${x(d)}" y="214" fill="#5B6478" font-size="10.5" text-anchor="middle">${fmtDay(d)}</text>`).join('');
+  const line=(pts,color)=>{
+    if(!pts.length) return '';
+    const pl=pts.map(p=>x(p.d).toFixed(1)+','+y(p.v).toFixed(1)).join(' ');
+    const last=pts[pts.length-1];
+    return `<polyline fill="none" points="${pl}" style="stroke:${color}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`
+      +pts.map(p=>`<circle cx="${x(p.d).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="4" style="fill:${color}"/>`).join('')
+      +`<text x="${Math.min(x(last.d)+9,610)}" y="${y(last.v)+4}" style="fill:${color}" font-size="12" font-weight="800">${fmtG(last.v)}</text>`;
+  };
+  return `<svg viewBox="0 0 660 222" style="width:100%;display:block">
+    ${grid}${xlab}
+    ${line(pa,'#4E9BFF')}${line(pb,'#FF6357')}
+  </svg>
+  <div class="bar-names" style="margin-top:2px"><span>🔵 ${esc(nameA)}</span><span>🔴 ${esc(nameB)}</span></div>`;
+}
+function sideName(id){
+  if(mode==='server'){const s=servers.find(x=>x.id==id);return s?s.name+' 서버':'?';}
+  if(mode==='alliance'){const a=alliances.find(x=>x.id==id); const sv=a&&servers.find(s=>s.id===a.server_id); return a?`[${sv?sv.name:'?'}] ${a.name}`:'?';}
+  const f=factions.find(x=>x.id==id); return f?factionLabel(f):'?';
+}
+function calcStats(side){
+  let rows=side.members.map(m=>{
+    const rec=side.recs.get(m.id);
+    const p=basisPow(rec,basis);
+    const recAt=rec&&rec.recorded_at?new Date(rec.recorded_at).getTime():Infinity;
+    return {m,p,recAt,kills:rec?(+rec.kills||0):0,troop:m.troop_type};
+  });
+  let withPow=rows.filter(r=>r.p>0)
+    .sort((a,b)=>(b.p-a.p)||(a.recAt-b.recAt)||a.m.nickname.localeCompare(b.m.nickname,'ko'));
+  let scoped=rows;
+  if(topN>0){ withPow=withPow.slice(0,topN); scoped=withPow; }
+  return {
+    count:topN>0?withPow.length:rows.length,
+    sum:withPow.reduce((a,r)=>a+r.p,0),
+    avg:withPow.length?withPow.reduce((a,r)=>a+r.p,0)/withPow.length:0,
+    max:withPow.length?withPow[0].p:0,
+    killSum:scoped.reduce((a,r)=>a+r.kills,0),
+    bands:BANDS.map(([lb,lo,hi])=>[lb,withPow.filter(r=>r.p>=lo&&r.p<hi).length]),
+    troops:['슈터','파이터','라이더'].map(t=>[t,scoped.filter(r=>r.troop===t).length]),
+    ranked:withPow
+  };
+}
+let lastRaw=null;
+async function runCompare(){
+  const a=$('pickA').value, b=$('pickB').value;
+  if(!a||!b) return;
+  if(a===b){ $('compareResult').innerHTML='<div class="empty">서로 다른 대상을 선택하세요</div>'; return; }
+  $('compareResult').innerHTML='<div class="empty">계산 중...</div>';
+  cmpShowAll=false;
+  try{
+    const [sa,sc]=await Promise.all([fetchSide(a),fetchSide(b)]);
+    lastRaw={sa,sc,nameA:sideName(a),nameB:sideName(b)};
+    rerenderCompare();
+  }catch(e){ toast('오류: '+e.message); }
+}
+function rerenderCompare(){
+  if(!lastRaw) return;
+  renderCompare(lastRaw.nameA,calcStats(lastRaw.sa),lastRaw.nameB,calcStats(lastRaw.sc));
+}
+function setTopN(n){ topN=n; document.querySelectorAll('#topSeg button').forEach(b=>b.classList.toggle('active',+b.dataset.t===n)); cmpShowAll=false; rerenderCompare(); }
+function toggleCmpAll(){ cmpShowAll=!cmpShowAll; rerenderCompare(); }
+
+function renderCompare(nameA,A,nameB,B){
+  const bl=BASIS_LABEL[basis-1];
+  const scope=topN>0?`상위 ${topN}명`:'전체';
+  const pa=A.sum, pb=B.sum, tot=pa+pb||1;
+  const wa=Math.max(8,Math.min(92,pa/tot*100));
+  const aLead=pa>=pb;
+  const gap=Math.abs(pa-pb);
+  const ratio=pb>0?(pa/pb*100).toFixed(1):'∞';
+
+  const kpi=(icon,label,a,b,f)=>{
+    const eq=a===b;
+    const d=eq?'<span class="delta eq">동률</span>'
+      :a>b?'<span class="delta up">▲ 우세</span>'
+      :'<span class="delta down">▼ 열세</span>';
+    return `<div class="kpi"><div class="kt">${icon} ${label}</div>
+      <div class="kv"><span class="kva">${f(a)}</span><span class="kvs">vs</span><span class="kvb">${f(b)}</span></div>${d}</div>`;
+  };
+
+  const bfly=(pairs)=>{
+    const mx=Math.max(1,...pairs.flatMap(p=>[p.a,p.b]));
+    return pairs.map(p=>`
+      <div class="bfly">
+        <div class="bl"><span class="cnt">${p.a}명</span><div class="bar a" style="width:${(p.a/mx*100).toFixed(1)}%"></div></div>
+        <div class="lb">${p.label}</div>
+        <div class="br"><div class="bar b" style="width:${(p.b/mx*100).toFixed(1)}%"></div><span class="cnt">${p.b}명</span></div>
+      </div>`).join('');
+  };
+  const bandPairs=A.bands.map(([lb,ca],i)=>({label:lb,a:ca,b:B.bands[i][1]})).filter(p=>p.a>0||p.b>0);
+  const TROOP_EMOJI={'슈터':'🎯','파이터':'🥊','라이더':'🏇'};
+  const troopPairs=A.troops.map(([t,ca],i)=>({label:(TROOP_EMOJI[t]||'')+' '+t,a:ca,b:B.troops[i][1]}));
+  const med=s=>{const l=s.ranked;if(!l.length)return 0;const m=Math.floor(l.length/2);return l.length%2?l[m].p:(l[m-1].p+l[m].p)/2;};
+  const top10=(s)=>{const t=s.ranked.slice(0,10);return t.reduce((a,r)=>a+r.p,0);};
+  const share=(s)=>s.sum>0?top10(s)/s.sum*100:0;
+  const t10avg=(s)=>{const t=s.ranked.slice(0,10);return t.length?top10(s)/t.length:0;};
+  const mk=(a,b)=>a===b?'<span class="win-eq">=</span>':a>b?'<span class="win-a">🔵 우위</span>':'<span class="win-b">🔴 우위</span>';
+  const deepRows=[
+    ['📐 중앙값',fmtG(med(A)),fmtG(med(B)),mk(med(A),med(B))],
+    ['🎯 상위 10명 비중',share(A).toFixed(1)+'%',share(B).toFixed(1)+'%','<span class="win-eq" title="높을수록 소수 정예 의존">집중도</span>'],
+    ['🚀 상위 10명 평균',fmtG(t10avg(A)),fmtG(t10avg(B)),mk(t10avg(A),t10avg(B))]
+  ].map(r=>`<tr><td style="text-align:left">${r[0]}</td><td class="va">${r[1]}</td><td class="vb">${r[2]}</td><td>${r[3]}</td></tr>`).join('');
+  const trendHTML=trendSVG(computeTrend(lastRaw.sa),computeTrend(lastRaw.sc),nameA,nameB);
+
+  const limit=topN>0?topN:(cmpShowAll?Infinity:20);
+  const medal=r=>r===1?'🥇':r===2?'🥈':r===3?'🥉':r;
+  const topL=(s,cls)=>{
+    let out='',prevP=null,rank=0;
+    s.ranked.slice(0,limit===Infinity?undefined:limit).forEach((r,i)=>{
+      if(r.p!==prevP){rank=i+1;prevP=r.p;}
+      out+=`<tr class="${rank<=3?'t'+rank:''}"><td class="rk">${medal(rank)}</td><td>${esc(r.m.nickname)}</td><td class="pw ${cls}">${fmtG(r.p)}</td></tr>`;
+    });
+    return out||'<tr><td class="empty" colspan="3">데이터 없음</td></tr>';
+  };
+  const maxN=Math.max(A.ranked.length,B.ranked.length);
+  const toggleBtn=(topN===0&&maxN>20)?`<button class="btn sm" style="margin-left:auto" onclick="toggleCmpAll()">${cmpShowAll?'상위 20명만 보기':`전체 ${maxN}명 보기`}</button>`:'';
+
+  $('compareResult').innerHTML=`
+  <div class="verdict">
+    <div class="who" style="color:${aLead?'var(--ours)':'var(--enemy)'}">🏆 ${esc(aLead?nameA:nameB)} 우세</div>
+    <div class="chips">
+      <span class="chip2 ${aLead?'good':'warn'}">전력 차이 +${fmtG(gap)}</span>
+      <span class="chip2">전력 비율 ${ratio}%</span>
+      <span class="chip2 dim">${bl} · ${scope}</span>
+    </div>
+    <div class="powerbar"><div class="pa" style="width:${wa}%">${fmtG(pa)}</div><div class="pb" style="width:${100-wa}%">${fmtG(pb)}</div></div>
+    <div class="bar-names"><span>🔵 ${esc(nameA)}</span><span>🔴 ${esc(nameB)}</span></div>
+  </div>
+  <div class="kpis">
+    ${topN>0?kpi('📐',bl+' 중앙값',med(A),med(B),fmtG):kpi('👥','인원',A.count,B.count,v=>v+'명')}
+    ${kpi('⚡',bl+' 총합',A.sum,B.sum,fmtG)}
+    ${kpi('📊',bl+' 평균',A.avg,B.avg,fmtG)}
+    ${kpi('🚀',bl+' 최고',A.max,B.max,fmtG)}
+    ${kpi('💥','킬수 총합',A.killSum,B.killSum,fmtG)}
+  </div>
+  <div class="panel" style="margin-bottom:16px"><h2>📈 전력 추이 <span class="hint" style="font-weight:400">(1편대 총합 · 기록 시점 기준)</span></h2>${trendHTML}</div>
+  <div class="grid2" style="margin-top:0">
+    <div class="panel"><h2>📊 구간별 인원 <span class="hint" style="font-weight:400">(${bl} · ${scope})</span></h2>
+      ${bfly(bandPairs)||'<div class="empty">데이터 없음</div>'}
+      <h2 style="margin-top:24px">⚔️ 병종 분포</h2>
+      ${bfly(troopPairs)}
+      <h2 style="margin-top:24px">🔎 심층 지표</h2>
+      <table class="stat-table"><tr><th style="text-align:left">지표</th><th>🔵</th><th>🔴</th><th></th></tr>${deepRows}</table>
+      <p class="hint" style="margin-top:8px;line-height:1.7">· <b>중앙값</b> = 중간 등수 인원의 전투력. 허리 체급 지표.<br>· <b>상위 10명 비중</b> = 전체 전력 중 상위 10명의 비율. 높음 = 소수 정예 의존형 · 낮음 = 고른 전력형.<br>· <b>상위 10명 평균</b> = 최정예 10명의 평균 전투력.</p>
+    </div>
+    <div class="panel"><h2 style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">🏅 랭킹 <span class="hint" style="font-weight:400">(${bl} · ${scope})</span>${toggleBtn}</h2>
+      <div class="grid2" style="margin-top:0;align-items:start">
+        <table class="top-list"><tr><th colspan="3" style="text-align:left;color:var(--ours);font-size:.78rem;padding:4px 8px">🔵 ${esc(nameA)}</th></tr>${topL(A,'win-a')}</table>
+        <table class="top-list"><tr><th colspan="3" style="text-align:left;color:var(--enemy);font-size:.78rem;padding:4px 8px">🔴 ${esc(nameB)}</th></tr>${topL(B,'win-b')}</table>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---------- 순위 ---------- */
+function setRankTop(n){ rankTopN=n; document.querySelectorAll('#rankTopSeg button').forEach(b=>b.classList.toggle('active',+b.dataset.t===n)); renderRank(); }
+function setRankMode(m){
+  rankMode=m;
+  document.querySelectorAll('#rankSeg button').forEach(b=>b.classList.toggle('active',b.dataset.r===m));
+  // 유저 순위는 인원이 많아 범위 버튼을 크게 (50~200), 그룹 순위는 10~50
+  const opts=m==='user'?[[0,'전체'],[50,'Top 50'],[100,'Top 100'],[150,'Top 150'],[200,'Top 200']]
+                       :[[0,'전체'],[10,'Top 10'],[20,'Top 20'],[30,'Top 30'],[40,'Top 40'],[50,'Top 50']];
+  if(!opts.some(([v])=>v===rankTopN)) rankTopN=0;
+  $('rankTopSeg').innerHTML=opts.map(([v,l])=>`<button class="${v===rankTopN?'active':''}" data-t="${v}" onclick="setRankTop(${v})">${l}</button>`).join('');
+  renderRank();
+}
+async function loadRank(force){
+  if(rankCache&&!force){ renderRank(); return; }
+  $('rankBox').innerHTML='<div class="empty">전체 데이터 집계 중...</div>';
+  try{
+    const m=await sb.from('members').select('id,alliance_id,nickname,troop_type,shelter').eq('is_active',true);
+    if(m.error) throw m.error;
+    const recs=await fetchLatest(m.data.map(x=>x.id));
+    rankCache={members:m.data,recs};
+    renderRank();
+  }catch(e){ $('rankBox').innerHTML='<div class="empty">오류: '+esc(e.message)+'</div>'; }
+}
+function updateRankStamp(recs){
+  let maxT=0;
+  recs.forEach(r=>{ if(r&&r.recorded_at){ const t=new Date(r.recorded_at).getTime(); if(t>maxT) maxT=t; } });
+  $('rankUpdated').textContent=maxT?('📅 데이터 기준: '+fmtTime(maxT)+' (마지막 전투력 입력)'):'';
+}
+function renderUserRank(members,recs){
+  updateRankStamp(recs);
+  const rows=members.map(m=>{
+    const al=alliances.find(a=>a.id===m.alliance_id);
+    const sv=al&&servers.find(s=>s.id===al.server_id);
+    const rec=recs.get(m.id);
+    const s1=rec?(+rec.squad1||0):0;
+    const recAt=rec&&rec.recorded_at?new Date(rec.recorded_at).getTime():Infinity;
+    return {m,al,sv,s1,recAt,sum4:basisPow(rec,4),mine:sv&&sv.name==='213'};
+  }).filter(r=>r.s1>0)
+    .sort((a,b)=>(b.s1-a.s1)||(a.recAt-b.recAt)||a.m.nickname.localeCompare(b.m.nickname,'ko'));
+  const limit=rankTopN>0?rankTopN:200;
+  const shown=rows.slice(0,limit);
+  $('rankScopeHint').textContent=rankTopN>0?`전체 서버 유저 상위 ${rankTopN}명 · 총 ${rows.length}명 집계`:`전체 서버 유저 상위 200명 · 총 ${rows.length}명 집계`;
+  let prev=null,rank=0;
+  shown.forEach((r,i)=>{ if(r.s1!==prev){rank=i+1;prev=r.s1;} r.rank=rank; });
+  const medal=r=>r===1?'🥇':r===2?'🥈':r===3?'🥉':r;
+  $('rankBox').innerHTML=`<table class="rank-table">
+    <tr><th>순위</th><th>닉네임</th><th>소속</th><th>병종</th><th>산업</th><th>1편대</th><th>합산</th></tr>
+    ${shown.map(r=>`<tr class="${r.mine?'mine':''} ${r.rank<=3?'t'+r.rank:''}">
+      <td>${medal(r.rank)}</td>
+      <td><b>${esc(r.m.nickname)}</b></td>
+      <td><span class="sub2">${esc(r.sv?r.sv.name:'?')} · ${esc(r.al?r.al.name:'?')}</span></td>
+      <td>${esc(r.m.troop_type||'-')}</td>
+      <td>${esc(r.m.shelter||'-')}</td>
+      <td><b>${fmtG(r.s1)}</b></td>
+      <td>${fmtG(r.sum4)}</td></tr>`).join('')}
+  </table>`;
+}
+function renderRank(){
+  if(!rankCache) return;
+  const {members,recs}=rankCache;
+  if(rankMode==='user'){ renderUserRank(members,recs); return; }
+  updateRankStamp(recs);
+  if(rankMode==='faction'&&!factions.length){ $('rankBox').innerHTML='<div class="empty">아직 파벌이 없습니다. 🗂 관리 탭에서 만들어주세요.</div>'; return; }
+  const groups=new Map();
+  const s213=servers.find(s=>s.name==='213');
+  const ensure=(key,name,sub,mine)=>{ if(!groups.has(key)) groups.set(key,{name,sub,mine,total:0,list:[]}); return groups.get(key); };
+  const add=(g,rec)=>{ g.total++; const s1=rec?(+rec.squad1||0):0; if(s1>0) g.list.push({s1,sum4:basisPow(rec,4)}); };
+  for(const m of members){
+    const al=alliances.find(a=>a.id===m.alliance_id); if(!al) continue;
+    const sv=servers.find(s=>s.id===al.server_id);
+    const rec=recs.get(m.id);
+    if(rankMode==='server'){
+      add(ensure('s'+al.server_id, sv?sv.name+' 서버':'?', '', sv&&sv.name==='213'), rec);
+    }else if(rankMode==='alliance'){
+      add(ensure('a'+al.id, al.name, sv?sv.name+' 서버':'', sv&&sv.name==='213'&&al.name==='NXT'), rec);
+    }else{
+      for(const f of factions){
+        const sids=factionServerIds(f.id);
+        if(sids.includes(al.server_id)){
+          add(ensure('f'+f.id, f.name, sids.map(id=>{const x=servers.find(s=>s.id===id);return x?x.name:'?';}).join('·'), s213&&sids.includes(s213.id)), rec);
+        }
+      }
+    }
+  }
+  if(rankMode==='faction') for(const f of factions) ensure('f'+f.id, f.name, factionServerIds(f.id).map(id=>{const x=servers.find(s=>s.id===id);return x?x.name:'?';}).join('·')||'서버 없음', false);
+  const list=[...groups.values()].map(g=>{
+    g.list.sort((a,b)=>b.s1-a.s1);
+    const take=rankTopN>0?g.list.slice(0,rankTopN):g.list;
+    g.cnt=rankTopN>0?take.length:g.total;
+    g.s1=take.reduce((a,r)=>a+r.s1,0);
+    g.avg=take.length?g.s1/take.length:0;
+    g.tot4=take.reduce((a,r)=>a+r.sum4,0);
+    return g;
+  }).sort((a,b)=>(b.s1-a.s1)||a.name.localeCompare(b.name,'ko'));
+  if(!list.length){ $('rankBox').innerHTML='<div class="empty">데이터가 없습니다</div>'; return; }
+  $('rankScopeHint').textContent=rankTopN>0?`각 그룹 상위 ${rankTopN}명 합계 기준`:'전체 인원 · 1편대 총합 기준';
+  let prevS1=null,rank=0;
+  list.forEach((g,i)=>{ if(g.s1!==prevS1){rank=i+1;prevS1=g.s1;} g.rank=rank; });
+  const medal=r=>r===1?'🥇':r===2?'🥈':r===3?'🥉':r;
+  $('rankBox').innerHTML=`<table class="rank-table">
+    <tr><th>순위</th><th>${rankMode==='server'?'서버':rankMode==='alliance'?'연맹':'파벌'}</th><th>인원</th><th>1편대 총합</th><th>1편대 평균</th><th>합산 총합</th></tr>
+    ${list.map(g=>`<tr class="${g.mine?'mine':''} ${g.rank<=3?'t'+g.rank:''}">
+      <td>${medal(g.rank)}</td>
+      <td>${esc(g.name)}${g.sub?` <span class="sub2">${esc(g.sub)}</span>`:''}</td>
+      <td>${g.cnt}명</td>
+      <td><b>${fmtG(g.s1)}</b></td>
+      <td>${fmtG(g.avg)}</td>
+      <td>${fmtG(g.tot4)}</td></tr>`).join('')}
+  </table>`;
+}
+
+/* ---------- 입력 ---------- */
+function fillEntrySelectors(){
+  $('entryServer').innerHTML='<option value="">서버 선택</option>'+servers.map(s=>`<option value="${s.id}">${esc(s.name)} 서버</option>`).join('');
+  $('entryAlliance').innerHTML='<option value="">연맹 선택</option>';
+}
+function onEntryServerChange(){
+  const sid=$('entryServer').value;
+  $('entryAlliance').innerHTML='<option value="">연맹 선택</option>'+alliances.filter(a=>a.server_id==sid).map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('');
+}
+async function loadEntryTable(){
+  const aid=$('entryAlliance').value;
+  if(!aid){ $('entryTableBox').innerHTML='<div class="empty">서버와 연맹을 선택하세요</div>'; $('entryCards').innerHTML=''; $('saveBar').style.display='none'; return; }
+  $('entryTableBox').innerHTML='<div class="empty">불러오는 중...</div>';
+  const m=await sb.from('members').select('*').eq('alliance_id',aid).eq('is_active',true).order('nickname');
+  if(m.error){toast(m.error.message);return;}
+  const recs=await fetchLatest(m.data.map(x=>x.id));
+  m.data.sort((x,y)=>((+((recs.get(y.id)||{}).squad1))||0)-((+((recs.get(x.id)||{}).squad1))||0));
+  entryRows=[];
+  const tb=document.createElement('table'); tb.className='entry-table';
+  tb.innerHTML=`<tr><th>#</th><th>닉네임</th><th>병종</th><th>산업</th><th>1편대</th><th>2편대</th><th>3편대</th><th>4편대</th><th class="colblack">블머</th><th>킬수</th><th>합산</th><th>마지막 수정</th><th></th></tr>`;
+  m.data.forEach((mem,i)=>tb.appendChild(buildRow(mem,recs.get(mem.id),i+1)));
+  const svSel=servers.find(s=>s.id==+$('entryServer').value);
+  entryIsOurs=!!(svSel&&(svSel.name==='213'||svSel.note==='우리 서버'));
+  tb.classList.toggle('noblack',!entryIsOurs);
+  $('entryTableBox').innerHTML=''; $('entryTableBox').appendChild(tb);
+  renderEntryCards();
+  $('saveBar').style.display='flex'; updateDirty();
+}
+function buildRow(mem,rec,idx){
+  rec=rec||{};
+  const tr=document.createElement('tr');
+  const fp=x=>x==null?'':fmtG(+x);
+  tr.innerHTML=`<td style="color:var(--dim)">${idx||'＋'}</td>
+    <td><input class="nick" value="${mem?esc(mem.nickname):''}" placeholder="닉네임" data-f="nickname"></td>
+    <td><select data-f="troop_type"><option value=""></option>${['슈터','파이터','라이더'].map(t=>`<option ${mem&&mem.troop_type===t?'selected':''}>${t}</option>`).join('')}</select></td>
+    <td><input class="ind" value="${mem&&mem.shelter?esc(mem.shelter):''}" placeholder="0" data-f="shelter"></td>
+    <td><input class="pwr" inputmode="decimal" value="${fp(rec.squad1)}" placeholder="예: 6.22G" data-f="squad1"></td>
+    <td><input class="pwr" inputmode="decimal" value="${fp(rec.squad2)}" data-f="squad2"></td>
+    <td><input class="pwr" inputmode="decimal" value="${fp(rec.squad3)}" data-f="squad3"></td>
+    <td><input class="pwr" inputmode="decimal" value="${fp(rec.squad4)}" data-f="squad4"></td>
+    <td class="colblack"><input class="pwr" inputmode="decimal" value="${fp(rec.black)}" data-f="black"></td>
+    <td><input class="pwr" inputmode="decimal" value="${fp(rec.kills)}" data-f="kills"></td>
+    <td class="sum-cell"></td>
+    <td class="meta">${rec.recorded_at?fmtTime(rec.recorded_at)+' · '+esc(rec.editor):'기록 없음'}</td>
+    <td><button class="btn sm danger" title="목록에서 제외" onclick="removeMember(this)">✕</button></td>`;
+  const n=x=>x==null?null:+x;
+  const row={memberId:mem?mem.id:null, el:tr,
+    origMeta:{nickname:mem?mem.nickname:'', troop_type:mem?mem.troop_type||'':'', shelter:mem?mem.shelter||'':''},
+    origPow:{squad1:n(rec.squad1), squad2:n(rec.squad2), squad3:n(rec.squad3), squad4:n(rec.squad4), black:n(rec.black), kills:n(rec.kills)}
+  };
+  tr._row=row; entryRows.push(row);
+  tr.querySelectorAll('input,select').forEach(inp=>{
+    inp.addEventListener('input',()=>{markDirty(row);updSum(tr);});
+    if(inp.classList.contains('pwr')) inp.addEventListener('blur',()=>{
+      const v=parsePower(inp.value);
+      if(v!=null&&!isNaN(v)&&v>0) inp.value=fmtG(v);
+    });
+  });
+  updSum(tr);
+  return tr;
+}
+function updSum(tr){
+  const g=f=>{const el=tr.querySelector(`[data-f=${f}]`);const v=parsePower(el?el.value:'');return (v&&!isNaN(v))?v:0;};
+  tr.querySelector('.sum-cell').textContent=fmtG(g('squad1')+g('squad2')+g('squad3')+g('squad4'))||'-';
+}
+function rowMeta(r,f){ const el=r.el.querySelector(`[data-f=${f}]`); return el?el.value.trim():''; }
+function rowPow(r,f){ const el=r.el.querySelector(`[data-f=${f}]`); return parsePower(el?el.value:''); }
+function isDirty(r){
+  if(!r.memberId) return true;
+  for(const f in r.origMeta){ if(rowMeta(r,f)!==r.origMeta[f]) return true; }
+  for(const f in r.origPow){
+    const v=rowPow(r,f);
+    if(isNaN(v)) return true;
+    if((v==null?null:v)!==(r.origPow[f]==null?null:+r.origPow[f])) return true;
+  }
+  return false;
+}
+function markDirty(r){ r.el.classList.toggle('dirty',isDirty(r)); updateDirty(); }
+function updateDirty(){ const n=entryRows.filter(isDirty).length; $('dirtyCount').textContent=n?`변경된 항목 ${n}개`:''; }
+function addMemberRow(){
+  if(!$('entryAlliance').value){toast('연맹을 먼저 선택하세요');return;}
+  let tb=$('entryTableBox').querySelector('table');
+  if(!tb){loadEntryTable();return;}
+  const tr=buildRow(null,null,null); tr.classList.add('dirty');
+  tb.appendChild(tr); updateDirty();
+  if(window.matchMedia('(max-width:640px)').matches){
+    // 모바일: 새 인원도 모달로 입력
+    const r=tr._row; memModalRow=r;
+    $('memTitle').textContent='＋ 인원 추가';
+    ['mNick','mShelter','mS1','mS2','mS3','mS4','mBlack','mKills'].forEach(id=>$(id).value='');
+    $('mTroop').value='';
+    $('mBlackWrap').style.display=entryIsOurs?'':'none';
+    $('memOverlay').classList.add('show');
+  } else {
+    tr.querySelector('.nick').focus();
+  }
+}
+async function removeMember(btn){
+  const tr=btn.closest('tr'), row=tr._row;
+  if(!row.memberId){ tr.remove(); entryRows=entryRows.filter(r=>r!==row); updateDirty(); return; }
+  if(!confirm('이 인원을 목록에서 제외할까요? (기록은 남습니다)')) return;
+  const r=await sb.from('members').update({is_active:false}).eq('id',row.memberId);
+  if(r.error){toast(r.error.message);return;}
+  tr.remove(); entryRows=entryRows.filter(x=>x!==row); rankCache=null; toast('제외했습니다');
+}
+async function saveRow(r){
+  const editor=getEditor(); if(!editor){askEditor();return false;}
+  const aid=+$('entryAlliance').value;
+  const nick=rowMeta(r,'nickname'); if(!nick){toast('닉네임이 비어있습니다');return false;}
+  // 전투력 값 검증
+  for(const f of ['squad1','squad2','squad3','squad4','black','kills']){
+    if(isNaN(rowPow(r,f))){toast(`${nick}: 전투력 값을 확인해주세요 (예: 6.22G 또는 6220)`);return false;}
+  }
+  const meta={nickname:nick,troop_type:rowMeta(r,'troop_type')||null,shelter:rowMeta(r,'shelter')||null};
+  let mid=r.memberId, isNew=!mid;
+  if(!mid){
+    const ins=await sb.from('members').insert({...meta,alliance_id:aid}).select().single();
+    if(ins.error){toast(ins.error.message);return false;}
+    mid=ins.data.id; r.memberId=mid;
+  }else{
+    const metaChanged=Object.keys(r.origMeta).some(f=>rowMeta(r,f)!==r.origMeta[f]);
+    if(metaChanged){ const u=await sb.from('members').update(meta).eq('id',mid); if(u.error){toast(u.error.message);return false;} }
+  }
+  const powChanged=Object.keys(r.origPow).some(f=>{
+    const v=rowPow(r,f); return (v==null?null:v)!==(r.origPow[f]==null?null:+r.origPow[f]);
+  });
+  if(powChanged||isNew){
+    const rec={member_id:mid,editor};
+    for(const f of ['squad1','squad2','squad3','squad4','black','kills']) rec[f]=rowPow(r,f);
+    const ins=await sb.from('power_records').insert(rec);
+    if(ins.error){toast(ins.error.message);return false;}
+  }
+  for(const f in r.origMeta) r.origMeta[f]=rowMeta(r,f);
+  for(const f in r.origPow){ const v=rowPow(r,f); r.origPow[f]=v; 
+    const el=r.el.querySelector(`[data-f=${f}]`); if(el&&v!=null) el.value=fmtG(v); }
+  r.el.classList.remove('dirty');
+  r.el.querySelector('.meta').textContent=fmtTime(new Date())+' · '+editor;
+  return true;
+}
+async function saveEntries(){
+  const dirty=entryRows.filter(isDirty);
+  if(!dirty.length){toast('변경된 내용이 없습니다');return;}
+  let saved=0;
+  for(const r of dirty){ if(await saveRow(r)) saved++; }
+  rankCache=null; resortEntryTable(); renderEntryCards();
+  updateDirty(); toast(`✅ ${saved}개 항목 저장 완료`);
+}
+function resortEntryTable(){
+  const tb=$('entryTableBox').querySelector('table'); if(!tb) return;
+  entryRows.sort((a,b)=>{
+    const av=rowPow(a,'squad1'), bv=rowPow(b,'squad1');
+    return ((isNaN(bv)?0:bv)||0)-((isNaN(av)?0:av)||0);
+  });
+  entryRows.forEach((r,i)=>{
+    tb.appendChild(r.el);
+    r.el.querySelector('td').textContent=r.memberId?(i+1):'＋';
+  });
+}
+
+/* ---------- 모바일 입력 카드 ---------- */
+let memModalRow=null;
+function rowVal(r,f){ return r.el.querySelector(`[data-f=${f}]`).value.trim(); }
+function renderEntryCards(){
+  const box=$('entryCards'); if(!box) return;
+  const rows=entryRows.filter(r=>r.memberId);
+  box.innerHTML=rows.map((r,i)=>{
+    const s1=+rowVal(r,'squad1')||0;
+    const sub=[rowVal(r,'troop_type'),rowVal(r,'shelter')?'산업'+rowVal(r,'shelter'):''].filter(Boolean).join(' · ');
+    const meta=r.el.querySelector('.meta').textContent;
+    return `<div class="mcard" onclick="openMemModal(${i})">
+      <div class="t"><b>${esc(rowVal(r,'nickname'))}</b><span class="pw">${s1?fmtG(s1):'-'}</span></div>
+      <div class="s"><span>${esc(sub)||'&nbsp;'}</span><span class="meta">${esc(meta)}</span></div>
+    </div>`;
+  }).join('')||'';
+  box._rows=rows;
+}
+function openMemModal(i){
+  const r=$('entryCards')._rows[i]; if(!r) return;
+  memModalRow=r;
+  $('memTitle').textContent=rowVal(r,'nickname')||'인원 수정';
+  $('mNick').value=rowVal(r,'nickname'); $('mTroop').value=rowVal(r,'troop_type'); $('mShelter').value=rowVal(r,'shelter');
+  $('mS1').value=rowVal(r,'squad1'); $('mS2').value=rowVal(r,'squad2'); $('mS3').value=rowVal(r,'squad3'); $('mS4').value=rowVal(r,'squad4');
+  $('mBlack').value=rowVal(r,'black'); $('mKills').value=rowVal(r,'kills');
+  $('mBlackWrap').style.display=entryIsOurs?'':'none';
+  $('memOverlay').classList.add('show');
+}
+function closeMemModal(){ $('memOverlay').classList.remove('show'); memModalRow=null; }
+async function memModalSave(){
+  const r=memModalRow; if(!r) return;
+  const set=(f,v)=>{ const el=r.el.querySelector(`[data-f=${f}]`); el.value=v; };
+  set('nickname',$('mNick').value.trim()); set('troop_type',$('mTroop').value); set('shelter',$('mShelter').value.trim());
+  set('squad1',$('mS1').value); set('squad2',$('mS2').value); set('squad3',$('mS3').value); set('squad4',$('mS4').value);
+  set('black',$('mBlack').value); set('kills',$('mKills').value);
+  markDirty(r); updSum(r.el);
+  if(!isDirty(r)){ closeMemModal(); toast('변경된 내용이 없습니다'); return; }
+  const ok=await saveRow(r);
+  if(ok){ rankCache=null; resortEntryTable(); renderEntryCards(); updateDirty(); closeMemModal(); toast('✅ 저장했습니다'); }
+}
+async function memModalRemove(){
+  const r=memModalRow; if(!r||!r.memberId) return;
+  if(!confirm('이 인원을 목록에서 제외할까요? (기록은 남습니다)')) return;
+  const res=await sb.from('members').update({is_active:false}).eq('id',r.memberId);
+  if(res.error){toast(res.error.message);return;}
+  r.el.remove(); entryRows=entryRows.filter(x=>x!==r);
+  rankCache=null; renderEntryCards(); updateDirty(); closeMemModal(); toast('제외했습니다');
+}
+
+/* ---------- 제출 확인 ---------- */
+async function refreshSubBadge(){
+  const r=await sb.from('submissions').select('id',{count:'exact',head:true}).eq('status','pending');
+  if(!r.error){ const n=r.count||0; $('subBadge').style.display=n?'inline-block':'none'; $('subBadge').textContent=n; }
+}
+async function loadSubs(){
+  $('subList').innerHTML='<div class="empty">불러오는 중...</div>';
+  const r=await sb.from('submissions').select('*').order('submitted_at',{ascending:false}).limit(100);
+  if(r.error){$('subList').innerHTML='<div class="empty">오류: '+esc(r.error.message)+'</div>';return;}
+  refreshSubBadge();
+  if(!r.data.length){$('subList').innerHTML='<div class="empty">아직 제출된 내용이 없습니다.<br>연맹원들에게 제출 페이지(…/submit.html) 링크를 공유하세요.</div>';return;}
+  const pend=r.data.filter(x=>x.status==='pending'), done=r.data.filter(x=>x.status!=='pending');
+  const card=(s,isPend)=>{
+    const vals=[['1편대',s.squad1],['2편대',s.squad2],['3편대',s.squad3],['4편대',s.squad4],['킬수',s.kills]]
+      .filter(([,v])=>v!=null).map(([l,v])=>`${l} <b>${fmtG(+v)}</b>`).join(' · ');
+    const extra=[s.troop_type,s.shelter?'산업'+esc(s.shelter):null].filter(Boolean).join(' · ');
+    return `<div class="sub-card ${isPend?'':'done'}">
+      <div class="top"><b>${esc(s.nickname)}</b><span class="where">${esc(s.server_name)} · ${esc(s.alliance_name)}${extra?' · '+extra:''}</span>
+        ${isPend?'':`<span class="st-tag ${s.status}">${s.status==='applied'?'반영됨':'거절됨'}${s.processed_by?' · '+esc(s.processed_by):''}</span>`}
+        <span class="when">${fmtTime(s.submitted_at)}</span></div>
+      <div class="vals">${vals||'값 없음'}</div>
+      ${isPend?`<div class="acts">
+        <button class="btn sm ok" onclick="applySub(${s.id})">✓ 반영</button>
+        <button class="btn sm danger" onclick="rejectSub(${s.id})">✕ 거절</button>
+      </div>`:''}
+    </div>`;
+  };
+  $('subList').innerHTML=
+    (pend.length?`<h2 style="margin:4px 0 10px">대기 중 ${pend.length}건</h2>`+pend.map(s=>card(s,true)).join(''):'<div class="empty" style="padding:16px 0">대기 중인 제출이 없습니다</div>')
+    +(done.length?`<h2 style="margin:20px 0 10px">처리됨</h2>`+done.map(s=>card(s,false)).join(''):'');
+}
+async function applySub(id){
+  const editor=getEditor(); if(!editor){askEditor();return;}
+  const {data:s,error}=await sb.from('submissions').select('*').eq('id',id).single();
+  if(error){toast(error.message);return;}
+  let sv=servers.find(x=>x.name===s.server_name)||servers.find(x=>x.note==='우리 서버');
+  if(!sv){toast('대상 서버를 찾을 수 없습니다. 관리 탭에서 확인해주세요.');return;}
+  let al=alliances.find(a=>a.server_id===sv.id&&a.name.toLowerCase()===s.alliance_name.toLowerCase());
+  if(!al){
+    const ins=await sb.from('alliances').insert({server_id:sv.id,name:s.alliance_name}).select().single();
+    if(ins.error){toast('연맹 생성 실패: '+ins.error.message);return;}
+    al=ins.data; await loadBase();
+    toast(`'${s.alliance_name}' 연맹을 ${sv.name} 서버에 새로 만들었습니다`);
+  }
+  let {data:found,error:e2}=await sb.from('members').select('*').eq('alliance_id',al.id).ilike('nickname',s.nickname).limit(1);
+  if(e2){toast(e2.message);return;}
+  let mid;
+  const meta={troop_type:s.troop_type||undefined,shelter:s.shelter||undefined,is_active:true};
+  Object.keys(meta).forEach(k=>meta[k]===undefined&&delete meta[k]);
+  if(found&&found.length){
+    mid=found[0].id;
+    if(Object.keys(meta).length){ const u=await sb.from('members').update(meta).eq('id',mid); if(u.error){toast(u.error.message);return;} }
+  }else{
+    const ins=await sb.from('members').insert({alliance_id:al.id,nickname:s.nickname,troop_type:s.troop_type,shelter:s.shelter}).select().single();
+    if(ins.error){toast(ins.error.message);return;}
+    mid=ins.data.id;
+  }
+  const rec=await sb.from('power_records').insert({member_id:mid,squad1:s.squad1,squad2:s.squad2,squad3:s.squad3,squad4:s.squad4,kills:s.kills,editor:s.nickname+'(셀프제출)'});
+  if(rec.error){toast(rec.error.message);return;}
+  await sb.from('submissions').update({status:'applied',processed_by:editor,processed_at:new Date().toISOString()}).eq('id',id);
+  rankCache=null; lastRaw=null;
+  toast(`✅ ${s.nickname} 제출을 반영했습니다`); loadSubs();
+}
+async function rejectSub(id){
+  const editor=getEditor(); if(!editor){askEditor();return;}
+  if(!confirm('이 제출을 거절할까요?'))return;
+  const r=await sb.from('submissions').update({status:'rejected',processed_by:editor,processed_at:new Date().toISOString()}).eq('id',id);
+  if(r.error){toast(r.error.message);return;}
+  toast('거절했습니다'); loadSubs();
+}
+
+/* ---------- 탭 권한 관리 (관리자) ---------- */
+async function openPerms(){
+  const pin=prompt('🔐 관리자 PIN을 입력하세요:');
+  if(pin===null) return;
+  const {data,error}=await sb.rpc('admin_list_editors',{p_pin:pin.trim()});
+  if(error){
+    toast(/wrong_pin/.test(error.message)?'❌ 관리자 PIN이 올바르지 않습니다':'오류: '+error.message);
+    return;
+  }
+  adminPin=pin.trim();
+  renderPerms(data||[]);
+}
+function renderPerms(list){
+  const box=$('permPanel');
+  if(!list.length){box.innerHTML='<div class="hint">아직 등록된 운영진 닉네임이 없습니다. (각자 처음 접속해서 닉네임+PIN을 등록하면 여기 나타납니다)</div>';return;}
+  box.innerHTML=list.map(e=>{
+    const allowed=(e.perms==='*')?new Set(TABS.map(([k])=>k)):new Set((e.perms||'').split(',').map(s=>s.trim()).filter(Boolean));
+    const boxes=TABS.map(([k,label])=>{
+      const on=allowed.has(k);
+      return `<label style="display:inline-flex;align-items:center;gap:4px;font-size:.82rem;color:var(--muted);margin:2px 8px 2px 0;cursor:pointer">
+        <input type="checkbox" data-tab="${k}" ${on?'checked':''} style="width:auto;accent-color:var(--ours)">${label}</label>`;
+    }).join('');
+    return `<div class="srv-card" data-editor="${esc(e.name)}" style="background:var(--panel)">
+      <div class="head"><b>${esc(e.name)}</b><span class="cnt">${fmtTime(e.created_at)} 등록${(e.perms==null||e.perms==='')?' · <span style="color:var(--gold)">권한 대기 중</span>':''}</span>
+        <span style="flex:1"></span>
+        <button class="btn sm primary" onclick="savePerms(this)">저장</button></div>
+      <div style="margin-top:8px">${boxes}</div>
+    </div>`;
+  }).join('');
+}
+async function savePerms(btn){
+  const card=btn.closest('.srv-card');
+  const name=card.dataset.editor;
+  const checked=[...card.querySelectorAll('input[type=checkbox]')].filter(c=>c.checked).map(c=>c.dataset.tab);
+  if(!checked.length&&!confirm(`'${name}'의 모든 탭을 차단합니다. 이 사람은 권한 대기 화면만 보게 됩니다. 계속할까요?`))return;
+  const perms=checked.length===TABS.length?'*':checked.join(',');
+  const {data,error}=await sb.rpc('admin_set_perms',{p_pin:adminPin,p_name:name,p_perms:perms});
+  if(error){toast(error.message);return;}
+  if(data!==true){toast('저장 실패: 관리자 PIN을 다시 확인하세요');return;}
+  toast(`✅ ${name}의 탭 권한을 저장했습니다 (본인이 '권한 다시 확인'을 누르면 적용)`);
+}
+
+function renderFactions(){
+  const box=$('factionList');
+  if(!factions.length){ box.innerHTML='<div class="hint" style="padding:6px 2px">아직 파벌이 없습니다. 시즌6 정보가 나오면 만들어주세요.</div>'; return; }
+  box.innerHTML=factions.map(f=>{
+    const sids=factionServerIds(f.id);
+    const inChips=sids.map(id=>{
+      const s=servers.find(x=>x.id===id);
+      return `<span class="chip">${esc(s?s.name:'?')} 서버<button title="파벌에서 빼기" onclick="removeFactionServer(${f.id},${id})">✕</button></span>`;
+    }).join('');
+    const avail=servers.filter(s=>!sids.includes(s.id));
+    const addSel=avail.length?`<span class="chip" style="padding:4px 5px">
+      <select id="fsAdd-${f.id}" style="border:none;background:none;padding:2px 4px;font-size:.83rem">
+        <option value="">서버 선택...</option>
+        ${avail.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('')}
+      </select><button style="color:var(--green)" onclick="addFactionServer(${f.id})">＋</button></span>`:'';
+    return `<div class="srv-card" style="background:var(--panel)">
+      <div class="head"><b>⚜️ ${esc(f.name)}</b><span class="cnt">서버 ${sids.length}개</span>
+        <span style="flex:1"></span>
+        <button class="btn sm" onclick="renameFaction(${f.id})">이름 변경</button>
+        <button class="btn sm danger" onclick="deleteFaction(${f.id})">삭제</button></div>
+      <div class="alli-chips">${inChips}${addSel}</div>
+    </div>`;
+  }).join('');
+}
+async function addFaction(){
+  const name=$('newFactionName').value.trim(); if(!name){toast('파벌 이름을 입력하세요');return;}
+  const r=await sb.from('factions').insert({name}).select();
+  if(r.error){toast(r.error.message.includes('duplicate')?'이미 있는 파벌 이름입니다':r.error.message);return;}
+  $('newFactionName').value=''; rankCache=null; await loadBase(); toast(`⚜️ '${name}' 파벌을 만들었습니다. 서버를 넣어주세요.`);
+}
+async function renameFaction(id){
+  const f=factions.find(x=>x.id===id);
+  const name=prompt('새 파벌 이름:',f.name); if(!name||name===f.name)return;
+  const r=await sb.from('factions').update({name:name.trim()}).eq('id',id);
+  if(r.error){toast(r.error.message);return;} rankCache=null; lastRaw=null; await loadBase(); toast('이름을 변경했습니다');
+}
+async function deleteFaction(id){
+  const f=factions.find(x=>x.id===id);
+  if(!confirm(`'${f.name}' 파벌을 삭제할까요? (서버·인원 데이터는 그대로 남고, 묶음만 해제됩니다)`))return;
+  const r=await sb.from('factions').delete().eq('id',id);
+  if(r.error){toast(r.error.message);return;} rankCache=null; await loadBase(); toast('삭제했습니다');
+}
+async function addFactionServer(fid){
+  const sel=$('fsAdd-'+fid); if(!sel)return;
+  if(!sel.value){toast('넣을 서버를 먼저 선택하세요');return;}
+  const r=await sb.from('faction_servers').insert({faction_id:fid,server_id:+sel.value});
+  if(r.error){toast(r.error.message.includes('duplicate')?'이미 이 파벌에 있는 서버입니다':r.error.message);return;}
+  rankCache=null; await loadBase(); toast('서버를 파벌에 넣었습니다');
+}
+async function removeFactionServer(fid,sid){
+  const r=await sb.from('faction_servers').delete().eq('faction_id',fid).eq('server_id',sid);
+  if(r.error){toast(r.error.message);return;}
+  rankCache=null; await loadBase(); toast('파벌에서 뺐습니다');
+}
+/* ---------- 관리 ---------- */
+function renderManage(){
+  renderFactions();
+  const box=$('serverList');
+  if(!servers.length){box.innerHTML='<div class="empty">아직 서버가 없습니다</div>';return;}
+  box.innerHTML=servers.map(s=>{
+    const as=alliances.filter(a=>a.server_id===s.id);
+    return `<div class="srv-card">
+      <div class="head"><b>${esc(s.name)} 서버</b><span class="cnt">연맹 ${as.length}개</span>
+        <span style="flex:1"></span>
+        <button class="btn sm" onclick="renameServer(${s.id})">이름 변경</button>
+        <button class="btn sm danger" onclick="deleteServer(${s.id})">삭제</button></div>
+      <div class="alli-chips">
+        ${as.map(a=>`<span class="chip"><a style="cursor:pointer" title="이름·소속 서버 변경" onclick="openAlliModal(${a.id})">${esc(a.name)} ✎</a><button title="연맹 삭제" onclick="deleteAlliance(${a.id})">✕</button></span>`).join('')}
+        <span class="chip" style="padding:5px 6px"><input id="newAlli-${s.id}" placeholder="새 연맹" style="border:none;background:none;width:76px;padding:2px 6px" onkeydown="if(event.key==='Enter')addAlliance(${s.id})"><button style="color:var(--green)" onclick="addAlliance(${s.id})">＋</button></span>
+      </div></div>`;
+  }).join('');
+}
+async function addServer(){
+  const name=$('newServerName').value.trim(); if(!name){toast('서버 번호를 입력하세요');return;}
+  const r=await sb.from('servers').insert({name}).select();
+  if(r.error){toast(r.error.message.includes('duplicate')?'이미 있는 서버입니다':r.error.message);return;}
+  $('newServerName').value=''; rankCache=null; await loadBase(); toast(`${name} 서버를 추가했습니다`);
+}
+async function renameServer(id){
+  const s=servers.find(x=>x.id===id);
+  const name=prompt('새 서버 이름:',s.name); if(!name||name===s.name)return;
+  const r=await sb.from('servers').update({name:name.trim()}).eq('id',id);
+  if(r.error){toast(r.error.message);return;} rankCache=null; lastRaw=null; await loadBase(); toast('이름을 변경했습니다');
+}
+async function deleteServer(id){
+  const s=servers.find(x=>x.id===id);
+  if(!confirm(`'${s.name} 서버'와 소속 연맹·인원·기록이 모두 삭제됩니다. 계속할까요?`))return;
+  if(!confirm('정말 삭제합니까? 되돌릴 수 없습니다.'))return;
+  const r=await sb.from('servers').delete().eq('id',id);
+  if(r.error){toast(r.error.message);return;} rankCache=null; await loadBase(); toast('삭제했습니다');
+}
+let alliModalId=null;
+function openAlliModal(id){
+  const a=alliances.find(x=>x.id===id); if(!a) return;
+  alliModalId=id;
+  $('aName').value=a.name;
+  $('aServer').innerHTML=servers.map(s=>`<option value="${s.id}" ${s.id===a.server_id?'selected':''}>${esc(s.name)} 서버</option>`).join('');
+  $('alliOverlay').classList.add('show');
+}
+async function saveAlliModal(){
+  const a=alliances.find(x=>x.id===alliModalId); if(!a) return;
+  const name=$('aName').value.trim(), sid=+$('aServer').value;
+  if(!name){toast('연맹 이름을 입력하세요');return;}
+  const r=await sb.from('alliances').update({name,server_id:sid}).eq('id',alliModalId);
+  if(r.error){toast(r.error.message.includes('duplicate')?'그 서버에 같은 이름의 연맹이 이미 있습니다':r.error.message);return;}
+  $('alliOverlay').classList.remove('show');
+  rankCache=null; lastRaw=null; await loadBase(); toast('✅ 연맹 정보를 수정했습니다');
+}
+function alliModalDelete(){
+  $('alliOverlay').classList.remove('show');
+  deleteAlliance(alliModalId);
+}
+async function addAlliance(sid){
+  const inp=$('newAlli-'+sid), name=inp.value.trim(); if(!name)return;
+  const r=await sb.from('alliances').insert({server_id:sid,name}).select();
+  if(r.error){toast(r.error.message.includes('duplicate')?'이미 있는 연맹입니다':r.error.message);return;}
+  rankCache=null; await loadBase(); toast(`${name} 연맹을 추가했습니다`);
+}
+async function deleteAlliance(id){
+  const a=alliances.find(x=>x.id===id);
+  if(!confirm(`'${a.name}' 연맹과 소속 인원·기록이 모두 삭제됩니다. 계속할까요?`))return;
+  const r=await sb.from('alliances').delete().eq('id',id);
+  if(r.error){toast(r.error.message);return;} rankCache=null; await loadBase(); toast('삭제했습니다');
+}
+async function importExcel(file){
+  $('xlsxFile').value='';
+  if(!file) return;
+  const editor=getEditor(); if(!editor){askEditor();return;}
+  const sid=+$('entryServer').value;
+  if(!sid){toast('먼저 어느 서버에 넣을지 선택하세요');return;}
+  const sv=servers.find(s=>s.id===sid);
+  toast('엑셀 읽는 중...');
+  if(!window.XLSX){
+    await new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';s.onload=res;s.onerror=rej;document.head.appendChild(s);}).catch(()=>null);
+    if(!window.XLSX){toast('엑셀 라이브러리 로딩 실패 (인터넷 확인)');return;}
+  }
+  let rows;
+  try{
+    const buf=await file.arrayBuffer();
+    const wb=XLSX.read(buf,{type:'array'});
+    rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:''});
+  }catch(e){toast('파일을 읽을 수 없습니다: '+e.message);return;}
+  // 헤더 행 찾기 (닉네임 포함)
+  let hi=rows.findIndex(r=>r.some(c=>String(c).includes('닉네임')));
+  if(hi<0){toast('헤더에 "닉네임" 열이 있어야 합니다');return;}
+  const head=rows[hi].map(c=>String(c));
+  const find=key=>head.findIndex(c=>c.includes(key));
+  const col={
+    alli:find('연맹'), nick:find('닉네임'), troop:find('병종'), shel:find('산업'),
+    s1:find('1편대'), s2:find('2편대'), s3:find('3편대'), s4:find('4편대'),
+    black:find('블머'), kills:find('킬')
+  };
+  const isG={};
+  for(const k of ['s1','s2','s3','s4','black','kills']) isG[k]=col[k]>=0&&head[col[k]].includes('(G)');
+  const pv=(row,k)=>{
+    if(col[k]<0) return null;
+    let c=row[col[k]];
+    if(c===''||c==null) return null;
+    if(typeof c==='number') return isG[k]?c*1000:(c<100?c*1000:c);
+    const v=parsePower(c); return (v==null||isNaN(v))?null:v;
+  };
+  const plan=[];
+  for(let i=hi+1;i<rows.length;i++){
+    const r=rows[i];
+    const nick=String(r[col.nick]||'').trim();
+    if(!nick) continue;
+    plan.push({
+      nick,
+      alli:col.alli>=0?String(r[col.alli]||'').trim():'',
+      troop:col.troop>=0?String(r[col.troop]||'').trim():'',
+      shel:col.shel>=0?String(r[col.shel]||'').trim().replace(/^산업\s*/,''):'',
+      s1:pv(r,'s1'),s2:pv(r,'s2'),s3:pv(r,'s3'),s4:pv(r,'s4'),black:pv(r,'black'),kills:pv(r,'kills')
+    });
+  }
+  if(!plan.length){toast('입력할 데이터가 없습니다');return;}
+  const defAid=+$('entryAlliance').value;
+  if(col.alli<0&&!defAid){toast('파일에 연맹 열이 없으면, 위에서 연맹을 선택해두세요');return;}
+  if(!confirm(`📤 ${plan.length}명의 데이터를 ${sv.name} 서버에 입력합니다.\n` +
+    (col.alli>=0?'연맹은 파일의 연맹 열 기준 (없는 연맹은 자동 생성)':'연맹: 현재 선택된 연맹') +
+    '\n기존 닉네임은 새 기록 추가, 새 닉네임은 인원 생성됩니다.\n진행할까요?')) return;
+  toast('입력 중... (0/'+plan.length+')');
+  let svAllis=alliances.filter(a=>a.server_id===sid);
+  const memCache=new Map();
+  const recBatch=[]; let done=0, newAlli=0, newMem=0, fail=0;
+  for(const p of plan){
+    try{
+      let aid=defAid;
+      if(col.alli>=0&&p.alli){
+        let al=svAllis.find(a=>a.name.toLowerCase()===p.alli.toLowerCase());
+        if(!al){
+          const ins=await sb.from('alliances').insert({server_id:sid,name:p.alli.toUpperCase()}).select().single();
+          if(ins.error) throw ins.error;
+          al=ins.data; svAllis.push(al); newAlli++;
+        }
+        aid=al.id;
+      }
+      if(!aid) throw new Error('연맹 미지정');
+      const ck=aid+'|'+p.nick.toLowerCase();
+      let mid=memCache.get(ck);
+      if(!mid){
+        const f=await sb.from('members').select('id').eq('alliance_id',aid).ilike('nickname',p.nick).limit(1);
+        if(f.error) throw f.error;
+        if(f.data.length){
+          mid=f.data[0].id;
+          const meta={is_active:true};
+          if(p.troop) meta.troop_type=p.troop;
+          if(p.shel) meta.shelter=p.shel;
+          await sb.from('members').update(meta).eq('id',mid);
+        }else{
+          const ins=await sb.from('members').insert({alliance_id:aid,nickname:p.nick,troop_type:p.troop||null,shelter:p.shel||null}).select().single();
+          if(ins.error) throw ins.error;
+          mid=ins.data.id; newMem++;
+        }
+        memCache.set(ck,mid);
+      }
+      recBatch.push({member_id:mid,squad1:p.s1,squad2:p.s2,squad3:p.s3,squad4:p.s4,black:p.black,kills:p.kills,editor:editor+'(엑셀)'});
+      done++;
+      if(done%25===0) toast(`입력 중... (${done}/${plan.length})`);
+    }catch(e){ fail++; console.error(p.nick,e); }
+  }
+  for(const part of chunk(recBatch,100)){
+    const r=await sb.from('power_records').insert(part);
+    if(r.error){toast('기록 저장 오류: '+r.error.message);return;}
+  }
+  rankCache=null; lastRaw=null;
+  await loadBase();
+  loadEntryTable();
+  toast(`✅ 엑셀 입력 완료: ${done}명 (새 연맹 ${newAlli}, 새 인원 ${newMem}${fail?', 실패 '+fail:''})`);
+}
+async function exportExcel(){
+  const pin=prompt('📊 엑셀 내보내기는 관리자 승인이 필요합니다.\n관리자 PIN을 입력하세요 (모르면 부앙에게 요청):');
+  if(pin===null) return;
+  const ok=await sb.rpc('verify_export_pin',{p_pin:pin.trim(),p_editor:getEditor()||'?',p_device:getDeviceInfo()});
+  if(ok.error){toast('오류: '+ok.error.message);return;}
+  if(ok.data!==true){toast('❌ 승인 PIN이 올바르지 않습니다');return;}
+  toast('엑셀 파일 생성 중...');
+  try{
+    if(!window.XLSX){
+      await new Promise((res,rej)=>{
+        const s=document.createElement('script');
+        s.src='https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js';
+        s.onload=res; s.onerror=()=>rej(new Error('엑셀 라이브러리 로딩 실패'));
+        document.head.appendChild(s);
+      });
+    }
+    const m=await sb.from('members').select('*').eq('is_active',true);
+    if(m.error) throw m.error;
+    const recs=await fetchLatest(m.data.map(x=>x.id));
+    const G=v=>v==null?null:+(v/1000).toFixed(3);
+    const wb=XLSX.utils.book_new();
+    // 요약 시트
+    const summary=[];
+    for(const sv of servers){
+      const als=alliances.filter(a=>a.server_id===sv.id);
+      for(const al of als){
+        const mem=m.data.filter(x=>x.alliance_id===al.id);
+        let s1=0,tot=0,withPow=0;
+        for(const mm of mem){const r=recs.get(mm.id);const p=r?(+r.squad1||0):0;if(p>0){s1+=p;withPow++;}tot+=basisPow(r,4);}
+        summary.push({'서버':sv.name,'연맹':al.name,'인원':mem.length,'1편대 총합(G)':G(s1),'1편대 평균(G)':withPow?G(s1/withPow):null,'합산 총합(G)':G(tot)});
+      }
+    }
+    summary.sort((a,b)=>(b['1편대 총합(G)']||0)-(a['1편대 총합(G)']||0));
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(summary), '📊 요약');
+    // 서버별 시트
+    const safe=n=>('S_'+n).replace(/[\\\/\?\*\[\]:]/g,'_').slice(0,28);
+    for(const sv of servers){
+      const als=alliances.filter(a=>a.server_id===sv.id);
+      const rows=[];
+      for(const al of als){
+        const mem=m.data.filter(x=>x.alliance_id===al.id)
+          .sort((a,b)=>((recs.get(b.id)||{}).squad1||0)-((recs.get(a.id)||{}).squad1||0));
+        for(const mm of mem){
+          const r=recs.get(mm.id)||{};
+          rows.push({
+            '연맹':al.name,'닉네임':mm.nickname,'병종':mm.troop_type||'','산업':mm.shelter||'',
+            '1편대(G)':G(r.squad1),'2편대(G)':G(r.squad2),'3편대(G)':G(r.squad3),'4편대(G)':G(r.squad4),
+            '합산(G)':G(basisPow(r,4)||null),'블머(G)':G(r.black),'킬수(G)':G(r.kills),
+            '마지막 수정':r.recorded_at?fmtTime(r.recorded_at):'','입력자':r.editor||''
+          });
+        }
+      }
+      if(rows.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), safe(sv.name));
+    }
+    const d=new Date();
+    XLSX.writeFile(wb, `213통합시트_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.xlsx`);
+    toast('✅ 엑셀 파일을 다운로드했습니다');
+  }catch(e){ toast('내보내기 실패: '+e.message); }
+}
+async function downloadBackup(){
+  toast('백업 생성 중...');
+  try{
+    const out={exported_at:new Date().toISOString()};
+    for(const t of ['servers','alliances','members','power_records','submissions']){
+      let all=[], from=0;
+      while(true){
+        const r=await sb.from(t).select('*').range(from,from+999);
+        if(r.error) throw r.error;
+        all=all.concat(r.data);
+        if(r.data.length<1000) break;
+        from+=1000;
+      }
+      out[t]=all;
+    }
+    const blob=new Blob([JSON.stringify(out,null,1)],{type:'application/json'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    const d=new Date();
+    a.download=`213시트_백업_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.json`;
+    a.click();
+    toast('✅ 백업 파일을 다운로드했습니다');
+  }catch(e){ toast('백업 실패: '+e.message); }
+}
+
+/* ---------- 이력 ---------- */
+function fillHistFilter(){
+  $('histServer').innerHTML='<option value="">전체 서버</option>'+servers.map(s=>`<option value="${s.id}">${esc(s.name)} 서버</option>`).join('');
+}
+async function loadHistory(){
+  $('histList').innerHTML='<div class="empty">불러오는 중...</div>';
+  let q=sb.from('power_records').select('*, members!inner(nickname, alliances!inner(name, server_id, servers!inner(name)))').order('recorded_at',{ascending:false}).limit(120);
+  const sid=$('histServer').value;
+  if(sid) q=q.eq('members.alliances.server_id',+sid);
+  const r=await q;
+  if(r.error){$('histList').innerHTML='<div class="empty">오류: '+esc(r.error.message)+'</div>';return;}
+  if(!r.data.length){$('histList').innerHTML='<div class="empty">기록이 없습니다</div>';return;}
+  $('histList').innerHTML=r.data.map(rec=>{
+    const mm=rec.members, al=mm.alliances, sv=al.servers;
+    const vals=[['1편대',rec.squad1],['2편대',rec.squad2],['3편대',rec.squad3],['4편대',rec.squad4],['블머',rec.black],['킬',rec.kills]]
+      .filter(([,v])=>v!=null).map(([l,v])=>`${l} ${fmtG(+v)}`).join(' · ');
+    return `<div class="hist-item">
+      <span class="when">${fmtTime(rec.recorded_at)}</span>
+      <span class="who">${esc(rec.editor)}</span>
+      <span class="what">[${esc(sv.name)}·${esc(al.name)}] <b>${esc(mm.nickname)}</b></span>
+      <span class="vals">${vals||'값 없음'}</span></div>`;
+  }).join('');
+}
+
+init();
+</script>
+</body>
+</html>

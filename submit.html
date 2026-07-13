@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>전투력 제출</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+<script>
+/* ============================================================
+   ★★★ 여기만 수정하면 됩니다 ★★★
+   index.html에 넣은 것과 같은 URL/키를 붙여넣으세요.
+   ============================================================ */
+const CONFIG = {
+  SUPABASE_URL: "https://lrvjbtesukremdyxwvtd.supabase.co",
+  SUPABASE_ANON_KEY: "sb_publishable_PONTt2Zs-JrF2Z9wxC_znA_-JojDjw_"
+};
+</script>
+
+<style>
+:root{
+  --bg:#0E1117; --panel:#161B24; --panel2:#1C222E; --line:#28303F;
+  --text:#E9EDF5; --muted:#8A94A8; --dim:#5B6478;
+  --ours:#4E9BFF; --gold:#F2C14E; --green:#3DDC97; --red:#FF6B6B;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:15px}
+body{background:radial-gradient(800px 420px at 20% -8%, rgba(78,155,255,.10), transparent 60%),radial-gradient(600px 340px at 85% -6%, rgba(242,193,78,.07), transparent 55%),var(--bg);color:var(--text);font-family:"Pretendard Variable",Pretendard,-apple-system,"Hiragino Sans","Microsoft YaHei",sans-serif;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:20px 16px 48px}
+button{font-family:inherit;cursor:pointer}
+input,select{font-family:inherit;background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:9px;padding:11px 12px;font-size:1rem;outline:none;width:100%}
+input:focus,select:focus{border-color:var(--ours);box-shadow:0 0 0 3px rgba(78,155,255,.18)}
+option{background:#1C222E;color:#E9EDF5}
+::placeholder{color:var(--dim)}
+.box{width:100%;max-width:440px;background:linear-gradient(180deg,rgba(242,193,78,.045),transparent 26%),var(--panel);border:1px solid #2E3648;border-radius:20px;padding:26px 24px 30px;box-shadow:0 10px 30px rgba(0,0,0,.45),0 0 0 1px rgba(242,193,78,.07);position:relative;overflow:hidden}
+.box::before{content:'';position:absolute;top:0;left:12%;right:12%;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.7}
+.langbar{display:flex;justify-content:center;gap:4px;margin-bottom:18px;background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:3px;width:fit-content;margin-left:auto;margin-right:auto}
+.langbar button{background:none;border:none;color:var(--muted);font-size:.8rem;font-weight:700;padding:6px 12px;border-radius:999px}
+.langbar button.active{background:var(--panel);color:var(--text)}
+h1{font-size:1.3rem;font-weight:900;letter-spacing:-.02em;text-align:center}
+.sub{color:var(--muted);font-size:.86rem;margin:8px 0 20px;line-height:1.55;text-align:center}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:.78rem;font-weight:700;color:var(--muted);margin-bottom:5px}
+.field label b{color:var(--gold)}
+.field label span.opt{color:var(--dim);font-weight:400}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.preview{font-size:.76rem;color:var(--green);min-height:16px;margin-top:4px;font-variant-numeric:tabular-nums}
+.preview.bad{color:var(--red)}
+.btn{width:100%;background:linear-gradient(180deg,#6CB2FF,#3E8EF0);border:1px solid #3E8EF0;color:#06101F;border-radius:11px;padding:13px;font-size:1.02rem;font-weight:800;margin-top:8px;box-shadow:0 4px 14px rgba(78,155,255,.28)}
+.btn.ghost{background:var(--panel2);border-color:var(--line);color:var(--text)}
+.msg{font-size:.84rem;color:var(--red);min-height:20px;margin-top:9px;text-align:center;line-height:1.4}
+.credit{margin-top:22px;color:var(--dim);font-size:.75rem;text-align:center}
+.credit b{color:var(--muted)}
+.done-icon{font-size:3rem;text-align:center;margin:10px 0}
+#doneView{display:none}
+.guide-sec{margin:0 0 18px}
+.guide-sec h3{font-size:.85rem;color:var(--muted);font-weight:700;margin-bottom:8px}
+.guide-sec img{display:block;margin:0 auto 10px;border-radius:10px;border:1px solid var(--line);max-width:100%;cursor:zoom-in}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="langbar" id="langbar">
+    <button data-l="ko" onclick="setLang('ko')">한국어</button>
+    <button data-l="en" onclick="setLang('en')">English</button>
+    <button data-l="ja" onclick="setLang('ja')">日本語</button>
+    <button data-l="zh" onclick="setLang('zh')">中文</button>
+  </div>
+
+  <!-- 제출 폼 -->
+  <div id="formView">
+    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTQwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZCIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGOUU3QTAiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIwLjQ1IiBzdG9wLWNvbG9yPSIjRUZDOTVFIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0I4ODYyQiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZDIiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkNFRkMwIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0Q5QTkzRSIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPCEtLSDsmZXqtIAgLS0+CiAgPHBhdGggZD0iTTI3IDQ2IEwyOSAyNCBMNDQgMzQgTDYwIDE1IEw3NiAzNCBMOTEgMjQgTDkzIDQ2IFoiIGZpbGw9InVybCgjZ29sZCkiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIxLjIiLz4KICA8Y2lyY2xlIGN4PSIyOSIgY3k9IjIxIiByPSIzLjQiIGZpbGw9InVybCgjZ29sZDIpIiBzdHJva2U9IiM4QTY0MjAiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iMTIiIHI9IjMuOCIgZmlsbD0idXJsKCNnb2xkMikiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPGNpcmNsZSBjeD0iOTEiIGN5PSIyMSIgcj0iMy40IiBmaWxsPSJ1cmwoI2dvbGQyKSIgc3Ryb2tlPSIjOEE2NDIwIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8cmVjdCB4PSIyNyIgeT0iNDgiIHdpZHRoPSI2NiIgaGVpZ2h0PSI2LjUiIHJ4PSIyLjUiIGZpbGw9InVybCgjZ29sZDIpIiBzdHJva2U9IiM4QTY0MjAiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iNTEuMiIgcj0iMiIgZmlsbD0iIzhBNjQyMCIvPgogIDxjaXJjbGUgY3g9IjQyIiBjeT0iNTEuMiIgcj0iMS41IiBmaWxsPSIjOEE2NDIwIi8+CiAgPGNpcmNsZSBjeD0iNzgiIGN5PSI1MS4yIiByPSIxLjUiIGZpbGw9IiM4QTY0MjAiLz4KICA8IS0tIDIxMyAtLT4KICA8dGV4dCB4PSI2MCIgeT0iOTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCAnVGltZXMgTmV3IFJvbWFuJywgc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9InVybCgjZ29sZCkiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIwLjYiPjIxMzwvdGV4dD4KICA8IS0tIFNFUlZFUiAtLT4KICA8dGV4dCB4PSI2MyIgeT0iMTEzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTIuNSIgbGV0dGVyLXNwYWNpbmc9IjUuNSIgZmlsbD0iI0Q5QjQ1QyI+U0VSVkVSPC90ZXh0PgogIDwhLS0g7ZWY64uoIOyepeyLnSAtLT4KICA8cGF0aCBkPSJNMzggMTIyIEw2MCAxMzEgTDgyIDEyMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ1cmwoI2dvbGQpIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iMTMxIiByPSIyLjIiIGZpbGw9IiNFRkM5NUUiLz4KPC9zdmc+Cg==" alt="213 SERVER" style="height:80px;display:block;margin:0 auto 12px;filter:drop-shadow(0 6px 18px rgba(242,193,78,.35))">
+    <h1 id="tTitle"></h1>
+    <div class="sub" id="tSub"></div>
+
+    <div class="guide-sec" id="guideSec" style="display:none">
+      <h3 id="tGuide"></h3>
+      <div id="guideImgs"></div>
+    </div>
+
+    <div class="field"><label><span id="tAlliance"></span> <b>*</b></label>
+      <input id="fAlliance" maxlength="20"></div>
+    <div class="field"><label><span id="tNick"></span> <b>*</b></label>
+      <input id="fNick" maxlength="40"></div>
+    <div class="row2">
+      <div class="field"><label id="tTroop"></label>
+        <select id="fTroop"></select></div>
+      <div class="field"><label id="tShelter"></label>
+        <input id="fShelter" inputmode="numeric" maxlength="4"></div>
+    </div>
+    <div class="field"><label><span id="tS1"></span> <b>*</b></label>
+      <input id="fS1" inputmode="decimal">
+      <div class="preview" id="pS1"></div></div>
+    <div class="row2">
+      <div class="field"><label><span id="tS2"></span> <span class="opt" id="tOpt2"></span></label><input id="fS2" inputmode="decimal"><div class="preview" id="pS2"></div></div>
+      <div class="field"><label><span id="tS3"></span> <span class="opt" id="tOpt3"></span></label><input id="fS3" inputmode="decimal"><div class="preview" id="pS3"></div></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label><span id="tS4"></span> <span class="opt" id="tOpt4"></span></label><input id="fS4" inputmode="decimal"><div class="preview" id="pS4"></div></div>
+      <div class="field"><label><span id="tKills"></span> <span class="opt" id="tOpt5"></span></label><input id="fKills" inputmode="decimal"><div class="preview" id="pS5"></div></div>
+    </div>
+    <button class="btn" id="submitBtn" onclick="doSubmit()"></button>
+    <div class="msg" id="formMsg"></div>
+    <div class="credit">Powered by <b>213 NXT · 부앙(Bu-ang)</b></div>
+  </div>
+
+  <!-- 완료 -->
+  <div id="doneView">
+    <div class="done-icon">✅</div>
+    <h1 id="tDone"></h1>
+    <div class="sub" id="doneSummary"></div>
+    <button class="btn ghost" id="againBtn" onclick="showForm()"></button>
+    <div class="credit">Powered by <b>213 NXT · 부앙(Bu-ang)</b></div>
+  </div>
+</div>
+
+<script>
+let sb=null, lang='ko';
+const $=id=>document.getElementById(id);
+
+const I18N={
+ko:{
+  title:'전투력 제출',
+  sub:'현재 전투력을 입력해 주세요.<br>운영진 확인 후 시트에 반영됩니다.',
+  guide:'📸 입력 예시',
+  alliance:'연맹', alliancePh:'예: NXT, AST',
+  nick:'게임 닉네임', nickPh:'게임 내 닉네임을 정확히 입력',
+  troop:'주병종', troops:['슈터','파이터','라이더'],
+  shelter:'산업 레벨', shelterPh:'예: 4, 7, 10',
+  s1:'1편대 전투력', s1Ph:'예: 6.22G',
+  s2:'2편대', s2Ph:'예: 4.5G', s3:'3편대', s3Ph:'예: 2.1G', s4:'4편대', s4Ph:'예: 1.5G',
+  kills:'킬수', killsPh:'예: 850M', opt:'(선택)',
+  submit:'전투력 제출', submitting:'제출 중...',
+  preview:v=>'→ '+v+' 로 기록됩니다',
+  badNum:'⚠ 숫자를 확인해 주세요 (예: 6.22G 또는 6220)',
+  errAlliance:'연맹을 입력해 주세요.', errNick:'닉네임을 입력해 주세요.',
+  errS1:'1편대 전투력을 확인해 주세요. (예: 6.22G 또는 6220)', errS:'편대 전투력 값을 확인해 주세요.',
+  done:'✅ 제출이 완료되었습니다', doneTail:'운영진 확인 후 반영됩니다.<br>수고하셨습니다 ⚔️',
+  again:'다시 제출하기', errLong:'입력이 너무 깁니다.', squadWord:['1편대','2편대','3편대','4편대'],
+  confirmQ:'이 내용으로 제출할까요?'
+},
+en:{
+  title:'Submit Combat Power',
+  sub:'Enter your current combat power.<br>It will be added to the sheet after staff review.',
+  guide:'📸 Example',
+  alliance:'Alliance', alliancePh:'e.g. NXT, AST',
+  nick:'In-game Nickname', nickPh:'Enter your exact in-game nickname',
+  troop:'Main Troop', troops:['Shooter','Fighter','Rider'],
+  shelter:'Industry Level', shelterPh:'e.g. 4, 7, 10',
+  s1:'Squad 1 Power', s1Ph:'e.g. 6.22G',
+  s2:'Squad 2', s2Ph:'e.g. 4.5G', s3:'Squad 3', s3Ph:'e.g. 2.1G', s4:'Squad 4', s4Ph:'e.g. 1.5G',
+  kills:'Kills', killsPh:'e.g. 850M', opt:'(optional)',
+  submit:'Submit Power', submitting:'Submitting...',
+  preview:v=>'→ Will be recorded as '+v,
+  badNum:'⚠ Please check the number (e.g. 6.22G or 6220)',
+  errAlliance:'Please enter your alliance.', errNick:'Please enter your nickname.',
+  errS1:'Please check your Squad 1 power. (e.g. 6.22G or 6220)', errS:'Please check the squad power values.',
+  done:'✅ Submission Complete', doneTail:'Staff will review and add it to the sheet.<br>Thank you, Commander! ⚔️',
+  again:'Submit Again', errLong:'Input is too long.', squadWord:['Squad 1','Squad 2','Squad 3','Squad 4'],
+  confirmQ:'Submit with the following?'
+},
+ja:{
+  title:'戦闘力の提出',
+  sub:'現在の戦闘力を入力してください。<br>運営の確認後、シートに反映されます。',
+  guide:'📸 入力例',
+  alliance:'同盟', alliancePh:'例: NXT, AST',
+  nick:'ゲーム内ニックネーム', nickPh:'ゲーム内ニックネームを正確に入力',
+  troop:'メイン兵種', troops:['シューター','ファイター','ライダー'],
+  shelter:'産業レベル', shelterPh:'例: 4, 7, 10',
+  s1:'第1部隊 戦闘力', s1Ph:'例: 6.22G',
+  s2:'第2部隊', s2Ph:'例: 4.5G', s3:'第3部隊', s3Ph:'例: 2.1G', s4:'第4部隊', s4Ph:'例: 1.5G',
+  kills:'キル数', killsPh:'例: 850M', opt:'（任意）',
+  submit:'戦闘力を提出', submitting:'提出中...',
+  preview:v=>'→ '+v+' として記録されます',
+  badNum:'⚠ 数値をご確認ください（例: 6.22G または 6220）',
+  errAlliance:'同盟を入力してください。', errNick:'ニックネームを入力してください。',
+  errS1:'第1部隊の戦闘力をご確認ください。（例: 6.22G または 6220）', errS:'部隊の戦闘力をご確認ください。',
+  done:'✅ 提出が完了しました', doneTail:'運営の確認後、反映されます。<br>お疲れさまでした ⚔️',
+  again:'もう一度提出する', errLong:'入力が長すぎます。', squadWord:['第1部隊','第2部隊','第3部隊','第4部隊'],
+  confirmQ:'この内容で提出しますか？'
+},
+zh:{
+  title:'战力提交',
+  sub:'请输入当前战力。<br>管理员确认后将录入表格。',
+  guide:'📸 填写示例',
+  alliance:'联盟', alliancePh:'例：NXT, AST',
+  nick:'游戏昵称', nickPh:'请准确输入游戏内昵称',
+  troop:'主兵种', troops:['射手','战士','骑手'],
+  shelter:'产业等级', shelterPh:'例：4, 7, 10',
+  s1:'第1编队 战力', s1Ph:'例：6.22G',
+  s2:'第2编队', s2Ph:'例：4.5G', s3:'第3编队', s3Ph:'例：2.1G', s4:'第4编队', s4Ph:'例：1.5G',
+  kills:'击杀数', killsPh:'例：850M', opt:'（选填）',
+  submit:'提交战力', submitting:'提交中...',
+  preview:v=>'→ 将记录为 '+v,
+  badNum:'⚠ 请检查数值（例：6.22G 或 6220）',
+  errAlliance:'请输入联盟。', errNick:'请输入昵称。',
+  errS1:'请检查第1编队战力。（例：6.22G 或 6220）', errS:'请检查编队战力数值。',
+  done:'✅ 提交完成', doneTail:'管理员确认后将录入。<br>辛苦了 ⚔️',
+  again:'再次提交', errLong:'输入内容过长。', squadWord:['第1编队','第2编队','第3编队','第4编队'],
+  confirmQ:'确认提交以下内容？'
+}};
+// 시트에는 항상 한국어 병종으로 저장 (화면 표기만 번역)
+const TROOP_CANON=['슈터','파이터','라이더'];
+
+function setLang(l){
+  lang=l; localStorage.setItem('sub_lang',l);
+  document.querySelectorAll('#langbar button').forEach(b=>b.classList.toggle('active',b.dataset.l===l));
+  const t=I18N[l];
+  document.title=t.title;
+  $('tTitle').textContent=t.title;
+  $('tSub').innerHTML=t.sub;
+  $('tGuide').textContent=t.guide;
+  $('tAlliance').textContent=t.alliance; $('fAlliance').placeholder=t.alliancePh;
+  $('tNick').textContent=t.nick; $('fNick').placeholder=t.nickPh;
+  $('tTroop').textContent=t.troop;
+  const cur=$('fTroop').value;
+  $('fTroop').innerHTML='<option value=""></option>'+TROOP_CANON.map((c,i)=>`<option value="${c}">${t.troops[i]}</option>`).join('');
+  $('fTroop').value=cur;
+  $('tShelter').textContent=t.shelter; $('fShelter').placeholder=t.shelterPh;
+  $('tS1').textContent=t.s1; $('fS1').placeholder=t.s1Ph;
+  $('tS2').textContent=t.s2; $('fS2').placeholder=t.s2Ph;
+  $('tS3').textContent=t.s3; $('fS3').placeholder=t.s3Ph;
+  $('tS4').textContent=t.s4; $('fS4').placeholder=t.s4Ph;
+  $('tKills').textContent=t.kills; $('fKills').placeholder=t.killsPh;
+  ['tOpt2','tOpt3','tOpt4','tOpt5'].forEach(id=>$(id).textContent=t.opt);
+  $('submitBtn').textContent=t.submit;
+  $('tDone').textContent=t.done;
+  $('againBtn').textContent=t.again;
+  ['fS1','fS2','fS3','fS4','fKills'].forEach((id,i)=>refreshPreview(id,'pS'+(i+1)));
+}
+
+/* 전투력 해석: "6.22g"→6220M, "6220"→6220M, "6.22"→6220M, "850m"→850M */
+function parsePower(t){
+  if(t==null) return null;
+  t=String(t).trim().toLowerCase().replace(/,/g,'').replace(/\s/g,'').replace(/억/g,'');
+  if(t==='') return null;
+  const m=t.match(/^([0-9]*\.?[0-9]+)(g|m)?$/);
+  if(!m) return NaN;
+  let v=parseFloat(m[1]);
+  if(m[2]==='g') v*=1000;
+  else if(m[2]==='m'){}
+  else if(v<100) v*=1000;
+  return v;
+}
+function fmtG(m){ if(m==null||isNaN(m)) return ''; if(Math.abs(m)>=1000) return (m/1000).toFixed(2).replace(/\.?0+$/,'')+'G'; return (+m.toFixed(1))+'M'; }
+function refreshPreview(inp,prev){
+  const raw=$(inp).value.trim(), el=$(prev), t=I18N[lang];
+  if(!raw){el.textContent='';el.classList.remove('bad');return;}
+  const v=parsePower(raw);
+  if(v==null||isNaN(v)||v<=0){el.textContent=t.badNum;el.classList.add('bad');}
+  else{el.textContent=t.preview(fmtG(v));el.classList.remove('bad');}
+}
+['fS1','fS2','fS3','fS4','fKills'].forEach((id,i)=>$(id).addEventListener('input',()=>refreshPreview(id,'pS'+(i+1))));
+
+function showForm(){ $('formView').style.display='block'; $('doneView').style.display='none'; $('formMsg').textContent=''; }
+
+async function doSubmit(){
+  const t=I18N[lang];
+  const alliance=$('fAlliance').value.trim();
+  const nick=$('fNick').value.trim();
+  if(!alliance){$('formMsg').style.color='var(--red)';$('formMsg').textContent=t.errAlliance;return;}
+  if(!nick){$('formMsg').style.color='var(--red)';$('formMsg').textContent=t.errNick;return;}
+  const s1=parsePower($('fS1').value);
+  if(s1==null||isNaN(s1)||s1<=0){$('formMsg').style.color='var(--red)';$('formMsg').textContent=t.errS1;return;}
+  const opt=id=>{const v=parsePower($(id).value); return (v==null||isNaN(v)||v<=0)?null:v;};
+  const s2=opt('fS2'), s3=opt('fS3'), s4=opt('fS4'), kills=opt('fKills');
+  for(const [id,v] of [['fS2',s2],['fS3',s3],['fS4',s4],['fKills',kills]]){
+    if($(id).value.trim()&&v===null){$('formMsg').style.color='var(--red)';$('formMsg').textContent=t.errS;return;}
+  }
+  const cparts=[[0,s1],[1,s2],[2,s3],[3,s4]].filter(([,v])=>v).map(([i,v])=>t.squadWord[i]+': '+fmtG(v)).concat(kills?[t.kills+': '+fmtG(kills)]:[]).join('\n');
+  if(!confirm(t.confirmQ+'\n\n'+t.alliance+': '+alliance.toUpperCase()+'\n'+t.nick+': '+nick+'\n'+cparts)) return;
+  $('submitBtn').disabled=true;
+  $('formMsg').style.color='var(--muted)'; $('formMsg').textContent=t.submitting;
+  const {data,error}=await sb.rpc('submit_power',{
+    p_server:'213', p_alliance:alliance, p_nickname:nick,
+    p_troop:$('fTroop').value, p_shelter:$('fShelter').value.trim(),
+    p_s1:s1, p_s2:s2, p_s3:s3, p_s4:s4, p_kills:kills
+  });
+  $('submitBtn').disabled=false;
+  if(error){$('formMsg').style.color='var(--red)';$('formMsg').textContent='Error: '+error.message;return;}
+  if(data!=='ok'){
+    const msgs={no_nickname:t.errNick,no_alliance:t.errAlliance,too_long:t.errLong,bad_power:t.errS1};
+    $('formMsg').style.color='var(--red)';$('formMsg').textContent=msgs[data]||('Error: '+data);return;
+  }
+  ['fAlliance','fNick','fTroop','fShelter'].forEach(id=>localStorage.setItem('sub_'+id,$(id).value));
+  const parts=[[0,s1],[1,s2],[2,s3],[3,s4]].filter(([,v])=>v).map(([i,v])=>t.squadWord[i]+' '+fmtG(v)).concat(kills?[t.kills+' '+fmtG(kills)]:[]).join(' · ');
+  $('doneSummary').innerHTML=`<b>${alliance.toUpperCase()} · ${nick}</b><br>${parts}<br><br>${t.doneTail}`;
+  ['fS1','fS2','fS3','fS4','fKills'].forEach(id=>{$(id).value='';});
+  ['pS1','pS2','pS3','pS4','pS5'].forEach(id=>{$(id).textContent='';});
+  $('formView').style.display='none'; $('doneView').style.display='block';
+}
+
+async function loadGuideImgs(){
+  try{
+    const {data}=await sb.rpc('get_submit_guide');
+    const g=JSON.parse(data||'{}');
+    if(g.images&&g.images.length){
+      const w=(g.width||90)+'%';
+      $('guideImgs').innerHTML=g.images.map(u=>`<img src="${u}" style="width:${w}" onclick="window.open('${u}','_blank')">`).join('');
+      $('guideSec').style.display='block';
+    }
+  }catch(e){}
+}
+
+window.onerror=function(msg,src,line){
+  try{
+    var el=document.getElementById('gateMsg')||document.getElementById('formMsg');
+    if(el){el.style.color='#FF6B6B';el.textContent='오류: '+msg+' (줄 '+line+') — 이 화면을 캡처해서 관리자에게 보내주세요';}
+  }catch(e){}
+};
+function init(){
+  const saved=localStorage.getItem('sub_lang');
+  const nav=(navigator.language||'ko').slice(0,2);
+  setLang(saved||({'en':'en','ja':'ja','zh':'zh'}[nav]||'ko'));
+  if(!CONFIG.SUPABASE_URL.startsWith('https://')){
+    document.querySelector('.box').innerHTML='<h1>⚠️ 설정 필요</h1><div class="sub">submit.html 상단의 CONFIG에 Supabase URL과 anon key를 붙여넣어주세요.</div>';
+    return;
+  }
+  if(!window.supabase){
+    var el=document.getElementById('gateMsg')||document.getElementById('formMsg');
+    if(el){el.style.color='#FF6B6B';el.textContent='필수 스크립트 로딩 실패 — 인터넷 연결을 확인하고 새로고침해주세요.';}
+    return;
+  }
+  sb=window.supabase.createClient(CONFIG.SUPABASE_URL,CONFIG.SUPABASE_ANON_KEY);
+  ['fAlliance','fNick','fTroop','fShelter'].forEach(id=>{const v=localStorage.getItem('sub_'+id);if(v)$(id).value=v;});
+  loadGuideImgs();
+}
+init();
+</script>
+</body>
+</html>
