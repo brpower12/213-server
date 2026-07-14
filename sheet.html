@@ -106,7 +106,7 @@ h2{font-size:1rem;font-weight:700;margin-bottom:12px}
 
 /* ---------- 세그먼트 토글 ---------- */
 .segwrap{display:flex;flex-direction:column;gap:4px}
-.seglb{font-size:.68rem;font-weight:800;letter-spacing:.09em;color:var(--dim);text-transform:uppercase;padding-left:3px}
+.seglb{font-size:.76rem;font-weight:800;letter-spacing:.07em;color:var(--muted);padding-left:3px}
 .seg{display:inline-flex;background:rgba(11,14,20,.6);border:1px solid var(--line);border-radius:11px;padding:3px;flex-wrap:wrap}
 .seg button{background:none;border:none;color:var(--muted);padding:7px 13px;border-radius:8px;font-weight:700;font-size:.86rem;white-space:nowrap;transition:color .12s}
 .seg button:hover{color:var(--text)}
@@ -175,10 +175,11 @@ h2{font-size:1rem;font-weight:700;margin-bottom:12px}
 .top-list .pw{text-align:right;font-weight:700;white-space:nowrap}
 
 /* ---------- 순위 ---------- */
-.rank-table{width:100%;max-width:860px;border-collapse:collapse;font-variant-numeric:tabular-nums}
-.rank-table th:first-child,.rank-table td:first-child{width:52px}
-.rank-table td:nth-child(n+3),.rank-table th:nth-child(n+3){text-align:right}
-.rank-table td:nth-child(2){max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rank-table{width:100%;max-width:900px;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:.96rem}
+.rank-table th:first-child,.rank-table td:first-child{width:50px;text-align:center}
+.rank-table .num{text-align:right}
+.rank-table .ctr{text-align:center}
+.rank-table td:nth-child(2){max-width:175px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rank-table th,.rank-table td{padding:10px 10px;border-bottom:1px solid var(--line);font-size:.92rem;text-align:right;white-space:nowrap}
 .rank-table th{color:var(--muted);font-size:.73rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
 .rank-table tr:hover td{background:rgba(255,255,255,.02)}
@@ -364,7 +365,7 @@ footer b{color:var(--muted)}
       <button data-b="3" onclick="setBasis(3)">1~3편대</button>
       <button data-b="4" onclick="setBasis(4)">1~4편대</button>
     </div></div>
-    <div class="segwrap"><span class="seglb">분석 범위 (상위 몇 명끼리 비교)</span>
+    <div class="segwrap"><span class="seglb">분석 범위</span>
     <div class="seg" id="topSeg" title="양쪽에서 상위 몇 명까지 분석할지">
       <button class="active" data-t="0" onclick="setTopN(0)">전체</button>
       <button data-t="10" onclick="setTopN(10)">Top 10</button>
@@ -392,7 +393,7 @@ footer b{color:var(--muted)}
       <button data-r="faction" onclick="setRankMode('faction')">⚜️ 파벌</button>
       <button data-r="user" onclick="setRankMode('user')">👤 유저</button>
     </div></div>
-    <div class="segwrap"><span class="seglb">집계 범위 (그룹별 상위 몇 명 합계)</span>
+    <div class="segwrap"><span class="seglb">집계 범위</span>
     <div class="seg" id="rankTopSeg" title="각 그룹에서 상위 몇 명 합계로 순위를 매길지">
       <button class="active" data-t="0" onclick="setRankTop(0)">전체</button>
       <button data-t="10" onclick="setRankTop(10)">Top 10</button>
@@ -421,7 +422,7 @@ footer b{color:var(--muted)}
       <button class="btn" onclick="$('xlsxFile').click()">📤 엑셀 일괄 입력</button>
       <input type="file" id="xlsxFile" accept=".xlsx,.xls,.csv" style="display:none" onchange="importExcel(this.files[0])">
     </div>
-    <p class="hint" style="margin-top:9px">전투력은 <b>6.22G / 6220</b> 어느 쪽으로 적어도 인식 · 산업은 레벨 숫자만 · 수정 후 아래 <b>저장</b>. 엑셀 일괄 입력: 헤더에 닉네임·1편대 등이 있는 파일을 올리면 서버 전체를 한 번에 입력합니다.</p>
+    <p class="hint" style="margin-top:9px">전투력 <b>6.22G</b> 또는 <b>6220</b> · 킬수는 <b>27,066,265</b>처럼 그대로 · 수정 후 <b>저장</b> (전투력순 자동 정렬)</p>
   </div>
   <div class="table-wrap"><div id="entryTableBox"><div class="empty">서버와 연맹을 선택하세요</div></div><div id="entryCards"></div></div>
   <div class="savebar" id="saveBar" style="display:none">
@@ -519,7 +520,7 @@ footer b{color:var(--muted)}
       <div class="mfield"><label>3편대</label><input id="mS3" inputmode="decimal" placeholder=""></div>
       <div class="mfield"><label>4편대</label><input id="mS4" inputmode="decimal" placeholder=""></div>
       <div class="mfield" id="mBlackWrap"><label>블머</label><input id="mBlack" inputmode="decimal"></div>
-      <div class="mfield"><label>킬수</label><input id="mKills" inputmode="decimal"></div>
+      <div class="mfield"><label>킬수</label><input id="mKills" inputmode="numeric" placeholder="27,066,265"></div>
     </div>
     <button class="btn primary" style="width:100%" onclick="memModalSave()">💾 저장</button>
     <div style="display:flex;gap:8px;margin-top:8px">
@@ -564,6 +565,20 @@ function parsePower(t){
   else if(m[2]==='m'){}
   else if(v<100) v*=1000;
   return v;
+}
+/* 킬수: 27,066,265 같은 원본 숫자 (쉼표 허용) */
+function parseKills(t){
+  if(t==null) return null;
+  t=String(t).trim().replace(/,/g,'').replace(/\s/g,'');
+  if(t==='') return null;
+  if(!/^[0-9]+$/.test(t)) return NaN;
+  return +t;
+}
+function fmtKills(n){
+  if(n==null||isNaN(n)||n<=0) return '';
+  if(n>=1e8) return (n/1e8).toFixed(2).replace(/\.?0+$/,'')+'억';
+  if(n>=1e4) return (n/1e4).toFixed(1).replace(/\.?0+$/,'')+'만';
+  return n.toLocaleString();
 }
 function fmtG(m){ if(m==null||isNaN(m)) return '-'; if(Math.abs(m)>=1000) return (m/1000).toFixed(2).replace(/\.?0+$/,'')+'G'; return (+m.toFixed(1))+'M'; }
 function fmtTime(t){ const d=new Date(t); return `${d.getFullYear()%100}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; }
@@ -947,7 +962,7 @@ function renderCompare(nameA,A,nameB,B){
     ${kpi('⚡',bl+' 총합',A.sum,B.sum,fmtG)}
     ${kpi('📊',bl+' 평균',A.avg,B.avg,fmtG)}
     ${kpi('🚀',bl+' 최고',A.max,B.max,fmtG)}
-    ${kpi('💥','킬수 총합',A.killSum,B.killSum,fmtG)}
+    ${kpi('💥','킬수 총합',A.killSum,B.killSum,fmtKills)}
   </div>
   <div class="panel" style="margin-bottom:16px"><h2>📈 전력 추이 <span class="hint" style="font-weight:400">(1편대 총합 · 기록 시점 기준)</span></h2>${trendHTML}</div>
   <div class="grid2" style="margin-top:0">
@@ -1013,16 +1028,18 @@ function renderUserRank(members,recs){
   let prev=null,rank=0;
   shown.forEach((r,i)=>{ if(r.s1!==prev){rank=i+1;prev=r.s1;} r.rank=rank; });
   const medal=r=>r===1?'🥇':r===2?'🥈':r===3?'🥉':r;
+  const fd=t=>{ if(!t||t===Infinity) return '-'; const d=new Date(t); return String(d.getFullYear()).slice(2)+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0'); };
   $('rankBox').innerHTML=`<table class="rank-table">
-    <tr><th>순위</th><th>닉네임</th><th>소속</th><th>병종</th><th>산업</th><th>1편대</th><th>합산</th></tr>
+    <tr><th>순위</th><th>닉네임</th><th>소속</th><th class="ctr">병종</th><th class="ctr">산업</th><th class="num">1편대</th><th class="num">합산</th><th class="ctr">기록일</th></tr>
     ${shown.map(r=>`<tr class="${r.mine?'mine':''} ${r.rank<=3?'t'+r.rank:''}">
       <td>${medal(r.rank)}</td>
       <td><b>${esc(r.m.nickname)}</b></td>
       <td><span class="sub2">${esc(r.sv?r.sv.name:'?')} · ${esc(r.al?r.al.name:'?')}</span></td>
-      <td>${esc(r.m.troop_type||'-')}</td>
-      <td>${esc(r.m.shelter||'-')}</td>
-      <td><b>${fmtG(r.s1)}</b></td>
-      <td>${fmtG(r.sum4)}</td></tr>`).join('')}
+      <td class="ctr">${esc(r.m.troop_type||'-')}</td>
+      <td class="ctr">${esc(r.m.shelter||'-')}</td>
+      <td class="num"><b>${fmtG(r.s1)}</b></td>
+      <td class="num">${fmtG(r.sum4)}</td>
+      <td class="ctr"><span class="sub2">${fd(r.recAt)}</span></td></tr>`).join('')}
   </table>`;
 }
 function renderRank(){
@@ -1068,14 +1085,14 @@ function renderRank(){
   list.forEach((g,i)=>{ if(g.s1!==prevS1){rank=i+1;prevS1=g.s1;} g.rank=rank; });
   const medal=r=>r===1?'🥇':r===2?'🥈':r===3?'🥉':r;
   $('rankBox').innerHTML=`<table class="rank-table">
-    <tr><th>순위</th><th>${rankMode==='server'?'서버':rankMode==='alliance'?'연맹':'파벌'}</th><th>인원</th><th>1편대 총합</th><th>1편대 평균</th><th>합산 총합</th></tr>
+    <tr><th>순위</th><th>${rankMode==='server'?'서버':rankMode==='alliance'?'연맹':'파벌'}</th><th class="num">인원</th><th class="num">1편대 총합</th><th class="num">1편대 평균</th><th class="num">합산 총합</th></tr>
     ${list.map(g=>`<tr class="${g.mine?'mine':''} ${g.rank<=3?'t'+g.rank:''}">
       <td>${medal(g.rank)}</td>
       <td>${esc(g.name)}${g.sub?` <span class="sub2">${esc(g.sub)}</span>`:''}</td>
-      <td>${g.cnt}명</td>
-      <td><b>${fmtG(g.s1)}</b></td>
-      <td>${fmtG(g.avg)}</td>
-      <td>${fmtG(g.tot4)}</td></tr>`).join('')}
+      <td class="num">${g.cnt}명</td>
+      <td class="num"><b>${fmtG(g.s1)}</b></td>
+      <td class="num">${fmtG(g.avg)}</td>
+      <td class="num">${fmtG(g.tot4)}</td></tr>`).join('')}
   </table>`;
 }
 
@@ -1120,7 +1137,7 @@ function buildRow(mem,rec,idx){
     <td><input class="pwr" inputmode="decimal" value="${fp(rec.squad3)}" data-f="squad3"></td>
     <td><input class="pwr" inputmode="decimal" value="${fp(rec.squad4)}" data-f="squad4"></td>
     <td class="colblack"><input class="pwr" inputmode="decimal" value="${fp(rec.black)}" data-f="black"></td>
-    <td><input class="pwr" inputmode="decimal" value="${fp(rec.kills)}" data-f="kills"></td>
+    <td><input class="pwr" inputmode="numeric" value="${rec.kills!=null?(+rec.kills).toLocaleString():''}" placeholder="27,066,265" style="width:110px" data-f="kills"></td>
     <td class="sum-cell"></td>
     <td class="meta">${rec.recorded_at?fmtTime(rec.recorded_at)+' · '+esc(rec.editor):'기록 없음'}</td>
     <td><button class="btn sm danger" title="목록에서 제외" onclick="removeMember(this)">✕</button></td>`;
@@ -1133,8 +1150,13 @@ function buildRow(mem,rec,idx){
   tr.querySelectorAll('input,select').forEach(inp=>{
     inp.addEventListener('input',()=>{markDirty(row);updSum(tr);});
     if(inp.classList.contains('pwr')) inp.addEventListener('blur',()=>{
-      const v=parsePower(inp.value);
-      if(v!=null&&!isNaN(v)&&v>0) inp.value=fmtG(v);
+      if(inp.dataset.f==='kills'){
+        const v=parseKills(inp.value);
+        if(v!=null&&!isNaN(v)&&v>0) inp.value=v.toLocaleString();
+      }else{
+        const v=parsePower(inp.value);
+        if(v!=null&&!isNaN(v)&&v>0) inp.value=fmtG(v);
+      }
     });
   });
   updSum(tr);
@@ -1145,7 +1167,7 @@ function updSum(tr){
   tr.querySelector('.sum-cell').textContent=fmtG(g('squad1')+g('squad2')+g('squad3')+g('squad4'))||'-';
 }
 function rowMeta(r,f){ const el=r.el.querySelector(`[data-f=${f}]`); return el?el.value.trim():''; }
-function rowPow(r,f){ const el=r.el.querySelector(`[data-f=${f}]`); return parsePower(el?el.value:''); }
+function rowPow(r,f){ const el=r.el.querySelector(`[data-f=${f}]`); const v=el?el.value:''; return f==='kills'?parseKills(v):parsePower(v); }
 function isDirty(r){
   if(!r.memberId) return true;
   for(const f in r.origMeta){ if(rowMeta(r,f)!==r.origMeta[f]) return true; }
@@ -1189,9 +1211,10 @@ async function saveRow(r){
   const aid=+$('entryAlliance').value;
   const nick=rowMeta(r,'nickname'); if(!nick){toast('닉네임이 비어있습니다');return false;}
   // 전투력 값 검증
-  for(const f of ['squad1','squad2','squad3','squad4','black','kills']){
+  for(const f of ['squad1','squad2','squad3','squad4','black']){
     if(isNaN(rowPow(r,f))){toast(`${nick}: 전투력 값을 확인해주세요 (예: 6.22G 또는 6220)`);return false;}
   }
+  if(isNaN(rowPow(r,'kills'))){toast(`${nick}: 킬수는 숫자만 입력해주세요 (예: 27,066,265)`);return false;}
   const meta={nickname:nick,troop_type:rowMeta(r,'troop_type')||null,shelter:rowMeta(r,'shelter')||null};
   let mid=r.memberId, isNew=!mid;
   if(!mid){
@@ -1213,7 +1236,7 @@ async function saveRow(r){
   }
   for(const f in r.origMeta) r.origMeta[f]=rowMeta(r,f);
   for(const f in r.origPow){ const v=rowPow(r,f); r.origPow[f]=v; 
-    const el=r.el.querySelector(`[data-f=${f}]`); if(el&&v!=null) el.value=fmtG(v); }
+    const el=r.el.querySelector(`[data-f=${f}]`); if(el&&v!=null) el.value=(f==='kills'?v.toLocaleString():fmtG(v)); }
   r.el.classList.remove('dirty');
   r.el.querySelector('.meta').textContent=fmtTime(new Date())+' · '+editor;
   return true;
@@ -1299,8 +1322,8 @@ async function loadSubs(){
   if(!r.data.length){$('subList').innerHTML='<div class="empty">아직 제출된 내용이 없습니다.<br>연맹원들에게 제출 페이지(…/submit.html) 링크를 공유하세요.</div>';return;}
   const pend=r.data.filter(x=>x.status==='pending'), done=r.data.filter(x=>x.status!=='pending');
   const card=(s,isPend)=>{
-    const vals=[['1편대',s.squad1],['2편대',s.squad2],['3편대',s.squad3],['4편대',s.squad4],['킬수',s.kills]]
-      .filter(([,v])=>v!=null).map(([l,v])=>`${l} <b>${fmtG(+v)}</b>`).join(' · ');
+    const vals=[['1편대',s.squad1],['2편대',s.squad2],['3편대',s.squad3],['4편대',s.squad4]]
+      .filter(([,v])=>v!=null).map(([l,v])=>`${l} <b>${fmtG(+v)}</b>`).concat(s.kills!=null?[`킬수 <b>${fmtKills(+s.kills)}</b>`]:[]).join(' · ');
     const extra=[s.troop_type,s.shelter?'산업'+esc(s.shelter):null].filter(Boolean).join(' · ');
     return `<div class="sub-card ${isPend?'':'done'}">
       <div class="top"><b>${esc(s.nickname)}</b><span class="where">${esc(s.server_name)} · ${esc(s.alliance_name)}${extra?' · '+extra:''}</span>
@@ -1557,6 +1580,7 @@ async function importExcel(file){
     if(col[k]<0) return null;
     let c=row[col[k]];
     if(c===''||c==null) return null;
+    if(k==='kills'){ const v=parseKills(c); return (v==null||isNaN(v))?null:v; }
     if(typeof c==='number') return isG[k]?c*1000:(c<100?c*1000:c);
     const v=parsePower(c); return (v==null||isNaN(v))?null:v;
   };
@@ -1675,7 +1699,7 @@ async function exportExcel(){
           rows.push({
             '연맹':al.name,'닉네임':mm.nickname,'병종':mm.troop_type||'','산업':mm.shelter||'',
             '1편대(G)':G(r.squad1),'2편대(G)':G(r.squad2),'3편대(G)':G(r.squad3),'4편대(G)':G(r.squad4),
-            '합산(G)':G(basisPow(r,4)||null),'블머(G)':G(r.black),'킬수(G)':G(r.kills),
+            '합산(G)':G(basisPow(r,4)||null),'블머(G)':G(r.black),'킬수':r.kills!=null?+r.kills:null,
             '마지막 수정':r.recorded_at?fmtTime(r.recorded_at):'','입력자':r.editor||''
           });
         }
@@ -1726,7 +1750,8 @@ async function loadHistory(){
   if(!r.data.length){$('histList').innerHTML='<div class="empty">기록이 없습니다</div>';return;}
   $('histList').innerHTML=r.data.map(rec=>{
     const mm=rec.members, al=mm.alliances, sv=al.servers;
-    const vals=[['1편대',rec.squad1],['2편대',rec.squad2],['3편대',rec.squad3],['4편대',rec.squad4],['블머',rec.black],['킬',rec.kills]]
+    const vals=[['1편대',rec.squad1],['2편대',rec.squad2],['3편대',rec.squad3],['4편대',rec.squad4],['블머',rec.black]]
+    .filter(([,v])=>v!=null).map(([l,v])=>`${l} <b>${fmtG(+v)}</b>`).concat(rec.kills!=null?[`킬 <b>${fmtKills(+rec.kills)}</b>`]:[])
       .filter(([,v])=>v!=null).map(([l,v])=>`${l} ${fmtG(+v)}`).join(' · ');
     return `<div class="hist-item">
       <span class="when">${fmtTime(rec.recorded_at)}</span>
