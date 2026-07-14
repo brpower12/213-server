@@ -148,7 +148,7 @@ ko:{
   shelter:'산업 레벨', shelterPh:'예: 4, 7, 10',
   s1:'1편대 전투력', s1Ph:'예: 6.22G',
   s2:'2편대', s2Ph:'예: 4.5G', s3:'3편대', s3Ph:'예: 2.1G', s4:'4편대', s4Ph:'예: 1.5G',
-  live:'● LIVE · 전투력 등록 접수 중', sec1:'기본 정보', sec2:'전투력', kills:'킬수', killsPh:'예: 27,066,265', errS234:'2~4편대 전투력을 모두 입력해 주세요.', errKills:'킬수를 입력해 주세요. (예: 27,066,265)',
+  live:'● LIVE · 전투력 등록 접수 중', sec1:'기본 정보', sec2:'전투력', opt:'(선택)', kills:'킬수', killsPh:'예: 27,066,265', errS234:'2편대와 3편대 전투력을 입력해 주세요.', errKills:'킬수를 입력해 주세요. (예: 27,066,265)',
   submit:'전투력 제출', submitting:'제출 중...',
   preview:v=>'→ '+v+' 로 기록됩니다',
   badNum:'⚠ 숫자를 확인해 주세요 (예: 6.22G 또는 6220)',
@@ -168,7 +168,7 @@ en:{
   shelter:'Industry Level', shelterPh:'e.g. 4, 7, 10',
   s1:'Squad 1 Combat Power', s1Ph:'e.g. 6.22G',
   s2:'Squad 2 Combat Power', s2Ph:'e.g. 4.5G', s3:'Squad 3 Combat Power', s3Ph:'e.g. 2.1G', s4:'Squad 4 Combat Power', s4Ph:'e.g. 1.5G',
-  live:'● LIVE · Registration Open', sec1:'Basic Info', sec2:'Combat Power', kills:'Kills', killsPh:'e.g. 27,066,265', errS234:'Please enter Squad 2–4 power.', errKills:'Please enter your kill count. (e.g. 27,066,265)',
+  live:'● LIVE · Registration Open', sec1:'Basic Info', sec2:'Combat Power', opt:'(optional)', kills:'Kills', killsPh:'e.g. 27,066,265', errS234:'Please enter Squad 2 and Squad 3 power.', errKills:'Please enter your kill count. (e.g. 27,066,265)',
   submit:'Submit Combat Power', submitting:'Submitting...',
   preview:v=>'→ Will be recorded as '+v,
   badNum:'⚠ Please check the number (e.g. 6.22G or 6220)',
@@ -188,7 +188,7 @@ ja:{
   shelter:'産業Lv', shelterPh:'例: 4, 7, 10',
   s1:'第1部隊戦力', s1Ph:'例: 6.22G',
   s2:'第2部隊戦力', s2Ph:'例: 4.5G', s3:'第3部隊戦力', s3Ph:'例: 2.1G', s4:'第4部隊戦力', s4Ph:'例: 1.5G',
-  live:'● LIVE · 登録受付中', sec1:'基本情報', sec2:'戦闘力', kills:'キル数', killsPh:'例: 27,066,265', errS234:'第2〜第4部隊もすべて入力してください。', errKills:'キル数を入力してください。（例: 27,066,265）',
+  live:'● LIVE · 登録受付中', sec1:'基本情報', sec2:'戦闘力', opt:'（任意）', kills:'キル数', killsPh:'例: 27,066,265', errS234:'第2・第3部隊も入力してください。', errKills:'キル数を入力してください。（例: 27,066,265）',
   submit:'戦闘力を登録', submitting:'登録中...',
   preview:v=>'→ '+v+' として記録されます',
   badNum:'⚠ 数値をご確認ください（例: 6.22G または 6220）',
@@ -208,7 +208,7 @@ zh:{
   shelter:'产业Lv', shelterPh:'例：4, 7, 10',
   s1:'第1编队战力', s1Ph:'例：6.22G',
   s2:'第2编队战力', s2Ph:'例：4.5G', s3:'第3编队战力', s3Ph:'例：2.1G', s4:'第4编队战力', s4Ph:'例：1.5G',
-  live:'● LIVE · 登记开放中', sec1:'基本信息', sec2:'战力', kills:'击杀数', killsPh:'例：27,066,265', errS234:'请填写第2~4编队战力。', errKills:'请输入击杀数。（例：27,066,265）',
+  live:'● LIVE · 登记开放中', sec1:'基本信息', sec2:'战力', opt:'（选填）', kills:'击杀数', killsPh:'例：27,066,265', errS234:'请填写第2、第3编队战力。', errKills:'请输入击杀数。（例：27,066,265）',
   submit:'登记战力', submitting:'登记中...',
   preview:v=>'→ 将记录为 '+v,
   badNum:'⚠ 请检查数值（例：6.22G 或 6220）',
@@ -244,7 +244,8 @@ function setLang(l){
   $('tS3').textContent=t.s3; $('fS3').placeholder=t.s3Ph;
   $('tS4').textContent=t.s4; $('fS4').placeholder=t.s4Ph;
   $('tKills').textContent=t.kills; $('fKills').placeholder=t.killsPh;
-  ['tOpt2','tOpt3','tOpt4','tOpt5'].forEach(id=>{$(id).innerHTML='<b style="color:var(--gold)">*</b>';});
+  ['tOpt2','tOpt3','tOpt5'].forEach(id=>{$(id).innerHTML='<b style="color:var(--gold)">*</b>';});
+  $('tOpt4').textContent=t.opt;
   $('submitBtn').textContent=t.submit;
   $('tDone').textContent=t.done;
   $('againBtn').textContent=t.again;
@@ -298,8 +299,13 @@ async function doSubmit(){
   const s1=parsePower($('fS1').value);
   if(s1==null||isNaN(s1)||s1<=0){$('formMsg').style.color='var(--red)';$('formMsg').textContent=t.errS1;return;}
   const req=id=>{const v=parsePower($(id).value); return (v==null||isNaN(v)||v<=0)?null:v;};
-  const s2=req('fS2'), s3=req('fS3'), s4=req('fS4');
-  if(s2===null||s3===null||s4===null){$('formMsg').style.color='var(--red)';$('formMsg').textContent=t.errS234;return;}
+  const s2=req('fS2'), s3=req('fS3');
+  if(s2===null||s3===null){$('formMsg').style.color='var(--red)';$('formMsg').textContent=t.errS234;return;}
+  let s4=null;
+  if($('fS4').value.trim()!==''){
+    s4=req('fS4');
+    if(s4===null){$('formMsg').style.color='var(--red)';$('formMsg').textContent=t.badNum;return;}
+  }
   const kills=parseKills($('fKills').value);
   if(kills==null||isNaN(kills)||kills<=0){$('formMsg').style.color='var(--red)';$('formMsg').textContent=t.errKills;return;}
   const cparts=[[0,s1],[1,s2],[2,s3],[3,s4]].filter(([,v])=>v).map(([i,v])=>t.squadWord[i]+': '+fmtG(v)).concat([t.kills+': '+kills.toLocaleString()]).join('\n');
