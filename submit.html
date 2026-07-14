@@ -41,7 +41,11 @@ option{background:#1C222E;color:#E9EDF5}
 .langbar button{background:none;border:none;color:var(--muted);font-size:.82rem;font-weight:700;padding:7px 13px;border-radius:999px;transition:color .12s}
 .langbar button:hover{color:var(--text)}
 .langbar button.active{background:var(--panel);color:var(--text)}
-h1{font-size:1.5rem;font-weight:900;letter-spacing:-.03em;text-align:center}
+h1{font-size:1.5rem;font-weight:900;letter-spacing:-.03em;text-align:center;background:linear-gradient(180deg,#FFF 30%,#BFD4F5);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 0 28px rgba(84,163,255,.25)}
+.live-pill{display:block;width:fit-content;margin:0 auto 12px;padding:6px 14px;border-radius:999px;font-size:.76rem;font-weight:800;letter-spacing:.04em;color:var(--green);background:rgba(61,220,151,.08);border:1px solid rgba(61,220,151,.4);box-shadow:0 0 16px rgba(61,220,151,.15)}
+.sechd{display:flex;align-items:center;gap:10px;margin:4px 0 14px;color:var(--ours);font-size:.78rem;font-weight:800;letter-spacing:.08em}
+.sechd::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(84,163,255,.35),transparent)}
+input:hover,select:hover{border-color:#39445C}
 .sub{color:var(--muted);font-size:.88rem;margin:9px 0 22px;line-height:1.6;text-align:center}
 .field{margin-bottom:15px}
 .field label{display:block;font-size:.8rem;font-weight:800;color:var(--muted);margin-bottom:6px;letter-spacing:.01em}
@@ -82,6 +86,7 @@ h1{font-size:1.5rem;font-weight:900;letter-spacing:-.03em;text-align:center}
   <!-- 제출 폼 -->
   <div id="formView">
     <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTQwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZCIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGOUU3QTAiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIwLjQ1IiBzdG9wLWNvbG9yPSIjRUZDOTVFIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0I4ODYyQiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZDIiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkNFRkMwIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0Q5QTkzRSIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPCEtLSDsmZXqtIAgLS0+CiAgPHBhdGggZD0iTTI3IDQ2IEwyOSAyNCBMNDQgMzQgTDYwIDE1IEw3NiAzNCBMOTEgMjQgTDkzIDQ2IFoiIGZpbGw9InVybCgjZ29sZCkiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIxLjIiLz4KICA8Y2lyY2xlIGN4PSIyOSIgY3k9IjIxIiByPSIzLjQiIGZpbGw9InVybCgjZ29sZDIpIiBzdHJva2U9IiM4QTY0MjAiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iMTIiIHI9IjMuOCIgZmlsbD0idXJsKCNnb2xkMikiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPGNpcmNsZSBjeD0iOTEiIGN5PSIyMSIgcj0iMy40IiBmaWxsPSJ1cmwoI2dvbGQyKSIgc3Ryb2tlPSIjOEE2NDIwIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8cmVjdCB4PSIyNyIgeT0iNDgiIHdpZHRoPSI2NiIgaGVpZ2h0PSI2LjUiIHJ4PSIyLjUiIGZpbGw9InVybCgjZ29sZDIpIiBzdHJva2U9IiM4QTY0MjAiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iNTEuMiIgcj0iMiIgZmlsbD0iIzhBNjQyMCIvPgogIDxjaXJjbGUgY3g9IjQyIiBjeT0iNTEuMiIgcj0iMS41IiBmaWxsPSIjOEE2NDIwIi8+CiAgPGNpcmNsZSBjeD0iNzgiIGN5PSI1MS4yIiByPSIxLjUiIGZpbGw9IiM4QTY0MjAiLz4KICA8IS0tIDIxMyAtLT4KICA8dGV4dCB4PSI2MCIgeT0iOTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCAnVGltZXMgTmV3IFJvbWFuJywgc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9InVybCgjZ29sZCkiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIwLjYiPjIxMzwvdGV4dD4KICA8IS0tIFNFUlZFUiAtLT4KICA8dGV4dCB4PSI2MyIgeT0iMTEzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTIuNSIgbGV0dGVyLXNwYWNpbmc9IjUuNSIgZmlsbD0iI0Q5QjQ1QyI+U0VSVkVSPC90ZXh0PgogIDwhLS0g7ZWY64uoIOyepeyLnSAtLT4KICA8cGF0aCBkPSJNMzggMTIyIEw2MCAxMzEgTDgyIDEyMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ1cmwoI2dvbGQpIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iMTMxIiByPSIyLjIiIGZpbGw9IiNFRkM5NUUiLz4KPC9zdmc+Cg==" alt="213 SERVER" style="height:80px;display:block;margin:0 auto 12px;filter:drop-shadow(0 6px 18px rgba(242,193,78,.35))">
+    <div class="live-pill" id="tLive"></div>
     <h1 id="tTitle"></h1>
     <div class="sub" id="tSub"></div>
 
@@ -90,6 +95,7 @@ h1{font-size:1.5rem;font-weight:900;letter-spacing:-.03em;text-align:center}
       <div id="guideImgs"></div>
     </div>
 
+    <div class="sechd"><span id="tSec1"></span></div>
     <div class="field"><label><span id="tAlliance"></span> <b>*</b></label>
       <input id="fAlliance" maxlength="20"></div>
     <div class="field"><label><span id="tNick"></span> <b>*</b></label>
@@ -100,7 +106,7 @@ h1{font-size:1.5rem;font-weight:900;letter-spacing:-.03em;text-align:center}
       <div class="field"><label id="tShelter"></label>
         <input id="fShelter" inputmode="numeric" maxlength="4"></div>
     </div>
-    <div class="divider"></div>
+    <div class="sechd" style="margin-top:22px"><span id="tSec2"></span></div>
     <div class="field"><label><span id="tS1"></span> <b>*</b></label>
       <input id="fS1" inputmode="decimal">
       <div class="preview" id="pS1"></div></div>
@@ -142,7 +148,7 @@ ko:{
   shelter:'산업 레벨', shelterPh:'예: 4, 7, 10',
   s1:'1편대 전투력', s1Ph:'예: 6.22G',
   s2:'2편대', s2Ph:'예: 4.5G', s3:'3편대', s3Ph:'예: 2.1G', s4:'4편대', s4Ph:'예: 1.5G',
-  kills:'킬수', killsPh:'예: 27,066,265', errS234:'2~4편대 전투력을 모두 입력해 주세요.', errKills:'킬수를 입력해 주세요. (예: 27,066,265)',
+  live:'● LIVE · 전투력 등록 접수 중', sec1:'기본 정보', sec2:'전투력', kills:'킬수', killsPh:'예: 27,066,265', errS234:'2~4편대 전투력을 모두 입력해 주세요.', errKills:'킬수를 입력해 주세요. (예: 27,066,265)',
   submit:'전투력 제출', submitting:'제출 중...',
   preview:v=>'→ '+v+' 로 기록됩니다',
   badNum:'⚠ 숫자를 확인해 주세요 (예: 6.22G 또는 6220)',
@@ -162,7 +168,7 @@ en:{
   shelter:'Industry Level', shelterPh:'e.g. 4, 7, 10',
   s1:'Squad 1 Combat Power', s1Ph:'e.g. 6.22G',
   s2:'Squad 2 Combat Power', s2Ph:'e.g. 4.5G', s3:'Squad 3 Combat Power', s3Ph:'e.g. 2.1G', s4:'Squad 4 Combat Power', s4Ph:'e.g. 1.5G',
-  kills:'Kills', killsPh:'e.g. 27,066,265', errS234:'Please enter Squad 2–4 power.', errKills:'Please enter your kill count. (e.g. 27,066,265)',
+  live:'● LIVE · Registration Open', sec1:'Basic Info', sec2:'Combat Power', kills:'Kills', killsPh:'e.g. 27,066,265', errS234:'Please enter Squad 2–4 power.', errKills:'Please enter your kill count. (e.g. 27,066,265)',
   submit:'Submit Combat Power', submitting:'Submitting...',
   preview:v=>'→ Will be recorded as '+v,
   badNum:'⚠ Please check the number (e.g. 6.22G or 6220)',
@@ -182,7 +188,7 @@ ja:{
   shelter:'産業Lv', shelterPh:'例: 4, 7, 10',
   s1:'第1部隊戦力', s1Ph:'例: 6.22G',
   s2:'第2部隊戦力', s2Ph:'例: 4.5G', s3:'第3部隊戦力', s3Ph:'例: 2.1G', s4:'第4部隊戦力', s4Ph:'例: 1.5G',
-  kills:'キル数', killsPh:'例: 27,066,265', errS234:'第2〜第4部隊もすべて入力してください。', errKills:'キル数を入力してください。（例: 27,066,265）',
+  live:'● LIVE · 登録受付中', sec1:'基本情報', sec2:'戦闘力', kills:'キル数', killsPh:'例: 27,066,265', errS234:'第2〜第4部隊もすべて入力してください。', errKills:'キル数を入力してください。（例: 27,066,265）',
   submit:'戦闘力を登録', submitting:'登録中...',
   preview:v=>'→ '+v+' として記録されます',
   badNum:'⚠ 数値をご確認ください（例: 6.22G または 6220）',
@@ -202,7 +208,7 @@ zh:{
   shelter:'产业Lv', shelterPh:'例：4, 7, 10',
   s1:'第1编队战力', s1Ph:'例：6.22G',
   s2:'第2编队战力', s2Ph:'例：4.5G', s3:'第3编队战力', s3Ph:'例：2.1G', s4:'第4编队战力', s4Ph:'例：1.5G',
-  kills:'击杀数', killsPh:'例：27,066,265', errS234:'请填写第2~4编队战力。', errKills:'请输入击杀数。（例：27,066,265）',
+  live:'● LIVE · 登记开放中', sec1:'基本信息', sec2:'战力', kills:'击杀数', killsPh:'例：27,066,265', errS234:'请填写第2~4编队战力。', errKills:'请输入击杀数。（例：27,066,265）',
   submit:'登记战力', submitting:'登记中...',
   preview:v=>'→ 将记录为 '+v,
   badNum:'⚠ 请检查数值（例：6.22G 或 6220）',
@@ -220,6 +226,9 @@ function setLang(l){
   document.querySelectorAll('#langbar button').forEach(b=>b.classList.toggle('active',b.dataset.l===l));
   const t=I18N[l];
   document.title='213 SERVER | '+t.title;
+  $('tLive').textContent=t.live;
+  $('tSec1').textContent='01 · '+t.sec1;
+  $('tSec2').textContent='02 · '+t.sec2;
   $('tTitle').textContent=t.title;
   $('tSub').innerHTML=t.sub;
   $('tGuide').textContent=t.guide;
