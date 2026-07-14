@@ -180,7 +180,7 @@ h2{font-size:1rem;font-weight:700;margin-bottom:12px}
 .top-list .pw{text-align:right;font-weight:700;white-space:nowrap}
 
 /* ---------- 순위 ---------- */
-.rank-table{width:100%;max-width:900px;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:.96rem}
+.rank-table{width:100%;max-width:940px;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:.96rem}
 .rank-table th:first-child,.rank-table td:first-child{width:50px;text-align:center}
 .rank-table .num{text-align:right}
 .rank-table .ctr{text-align:center}
@@ -459,7 +459,7 @@ footer b{color:var(--muted)}
       <button class="btn sm" onclick="exportExcel()">📊 엑셀 내보내기</button>
       <button class="btn sm" onclick="downloadBackup()">📦 백업</button>
     </div>
-    <p class="hint" style="margin-top:8px">각 서버 카드 안에서 <b>새 연맹</b>을 바로 추가하고, 연맹 이름(✎)을 누르면 이름·소속 서버를 수정할 수 있어요. 백업(JSON)은 가끔 받아서 보관해두세요.</p>
+    <p class="hint" style="margin-top:8px">각 서버 카드 안에서 <b>새 연맹</b>을 바로 추가하고, 연맹 이름(✎)을 누르면 이름·소속 서버를 수정할 수 있습니다.</p>
     <div id="serverList" style="margin-top:12px"></div>
   </div>
   <div class="panel" style="margin-bottom:14px">
@@ -470,6 +470,14 @@ footer b{color:var(--muted)}
     </div>
     <p class="hint" style="margin-top:8px">파벌을 만든 뒤 아래에서 서버를 넣으세요 (개수 제한 없음). 시즌마다 서버만 넣었다 빼면 됩니다.</p>
     <div id="factionList" style="margin-top:12px"></div>
+  </div>
+  <div class="panel" style="margin-bottom:14px">
+    <h2>📤 엑셀 반출 승인 <span class="hint" style="font-weight:400">(관리자 PIN 필요)</span></h2>
+    <div class="row">
+      <button class="btn" onclick="openExportReqs()">요청 확인</button>
+      <span class="hint">운영진이 보낸 반출 요청을 승인/거절합니다. 승인 후 15분 안에 본인이 다시 내보내기를 누르면 다운로드됩니다.</span>
+    </div>
+    <div id="exportReqPanel" style="margin-top:12px"></div>
   </div>
   <div class="panel" style="margin-bottom:14px">
     <h2>🔐 탭 권한 관리 <span class="hint" style="font-weight:400">(관리자 PIN 필요)</span></h2>
@@ -493,6 +501,18 @@ footer b{color:var(--muted)}
 </section>
 </main>
 <footer>213서버 통합 시트 · Powered by <b>213 NXT · 부앙(Bu-ang)</b></footer>
+</div>
+
+<!-- 반출 범위 선택 -->
+<div class="overlay" id="expOverlay">
+  <div class="modal">
+    <h3>📊 엑셀 내보내기</h3>
+    <p class="hint" style="margin-bottom:12px">어디까지 내보낼지 선택하세요.</p>
+    <div class="mfield"><label>서버</label><select id="expServer" onchange="fillExpAlliance()"></select></div>
+    <div class="mfield"><label>연맹</label><select id="expAlliance"><option value="0">전체 연맹</option></select></div>
+    <button class="btn primary" style="width:100%" onclick="runExport()">내보내기</button>
+    <button class="btn" style="width:100%;margin-top:8px" onclick="document.getElementById('expOverlay').classList.remove('show')">취소</button>
+  </div>
 </div>
 
 <!-- 연맹 수정 -->
@@ -1025,7 +1045,7 @@ function renderUserRank(members,recs){
     const rec=recs.get(m.id);
     const s1=rec?(+rec.squad1||0):0;
     const recAt=rec&&rec.recorded_at?new Date(rec.recorded_at).getTime():Infinity;
-    return {m,al,sv,s1,recAt,sum4:basisPow(rec,4),mine:sv&&sv.name==='213'};
+    return {m,al,sv,s1,recAt,sum4:basisPow(rec,4),kills:rec?(+rec.kills||0):0,mine:sv&&sv.name==='213'};
   }).filter(r=>r.s1>0)
     .sort((a,b)=>(b.s1-a.s1)||(a.recAt-b.recAt)||a.m.nickname.localeCompare(b.m.nickname,'ko'));
   const limit=rankTopN>0?rankTopN:200;
@@ -1036,7 +1056,7 @@ function renderUserRank(members,recs){
   const medal=r=>r===1?'🥇':r===2?'🥈':r===3?'🥉':r;
   const fd=t=>{ if(!t||t===Infinity) return '-'; const d=new Date(t); return String(d.getFullYear()).slice(2)+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0'); };
   $('rankBox').innerHTML=`<table class="rank-table">
-    <tr><th>순위</th><th>닉네임</th><th>소속</th><th class="ctr">병종</th><th class="ctr">산업</th><th class="num">1편대</th><th class="num">합산</th><th class="ctr">기록일</th></tr>
+    <tr><th>순위</th><th>닉네임</th><th>소속</th><th class="ctr">병종</th><th class="ctr">산업</th><th class="num">1편대</th><th class="num">합산</th><th class="num">킬수</th><th class="ctr">기록일</th></tr>
     ${shown.map(r=>`<tr class="${r.mine?'mine':''} ${r.rank<=3?'t'+r.rank:''}">
       <td>${medal(r.rank)}</td>
       <td><b>${esc(r.m.nickname)}</b></td>
@@ -1045,6 +1065,7 @@ function renderUserRank(members,recs){
       <td class="ctr">${esc(r.m.shelter||'-')}</td>
       <td class="num"><b>${fmtG(r.s1)}</b></td>
       <td class="num">${fmtG(r.sum4)}</td>
+      <td class="num">${r.kills?fmtKills(r.kills):'-'}</td>
       <td class="ctr"><span class="sub2">${fd(r.recAt)}</span></td></tr>`).join('')}
   </table>`;
 }
@@ -1387,6 +1408,38 @@ async function rejectSub(id){
   toast('거절했습니다'); loadSubs();
 }
 
+/* ---------- 엑셀 반출 승인 (관리자) ---------- */
+async function openExportReqs(){
+  let pin=adminPin;
+  if(!pin){ pin=prompt('🔐 관리자 PIN을 입력하세요:'); if(pin===null) return; pin=pin.trim(); }
+  const {data,error}=await sb.rpc('admin_list_export_requests',{p_pin:pin});
+  if(error){
+    adminPin=null;
+    toast(/wrong_pin/.test(error.message)?'❌ 관리자 PIN이 올바르지 않습니다':'오류: '+error.message);
+    return;
+  }
+  adminPin=pin;
+  renderExportReqs(data||[]);
+}
+function renderExportReqs(list){
+  const box=$('exportReqPanel');
+  if(!list.length){box.innerHTML='<div class="hint" style="padding:6px 2px">요청이 없습니다.</div>';return;}
+  const stLb={pending:'⏳ 대기',approved:'✅ 승인됨',rejected:'✕ 거절됨',used:'📥 다운로드 완료'};
+  box.innerHTML=list.map(r=>`<div class="srv-card" style="background:var(--panel)">
+    <div class="head"><b>${esc(r.editor)}</b><span class="cnt">${fmtTime(r.requested_at)} 요청 · ${stLb[r.status]||r.status}</span>
+      <span style="flex:1"></span>
+      ${r.status==='pending'?`<button class="btn sm primary" onclick="processExport(${r.id},true)">✓ 승인</button>
+      <button class="btn sm danger" onclick="processExport(${r.id},false)">✕ 거절</button>`:''}
+    </div></div>`).join('');
+}
+async function processExport(id,approve){
+  const {data,error}=await sb.rpc('admin_process_export',{p_pin:adminPin,p_id:id,p_approve:approve});
+  if(error){toast(error.message);return;}
+  if(data!==true){toast('처리 실패: PIN을 다시 확인하세요');adminPin=null;return;}
+  toast(approve?'✅ 승인했습니다 — 본인이 15분 내 다시 내보내기를 누르면 됩니다':'거절했습니다');
+  openExportReqs();
+}
+
 /* ---------- 탭 권한 관리 (관리자) ---------- */
 async function openPerms(){
   const pin=prompt('🔐 관리자 PIN을 입력하세요:');
@@ -1659,12 +1712,39 @@ async function importExcel(file){
   loadEntryTable();
   toast(`✅ 엑셀 입력 완료: ${done}명 (새 연맹 ${newAlli}, 새 인원 ${newMem}${fail?', 실패 '+fail:''})`);
 }
-async function exportExcel(){
-  const pin=prompt('📊 엑셀 내보내기는 관리자 승인이 필요합니다.\n관리자 PIN을 입력하세요 (모르면 부앙에게 요청):');
-  if(pin===null) return;
-  const ok=await sb.rpc('verify_export_pin',{p_pin:pin.trim(),p_editor:getEditor()||'?',p_device:getDeviceInfo()});
-  if(ok.error){toast('오류: '+ok.error.message);return;}
-  if(ok.data!==true){toast('❌ 승인 PIN이 올바르지 않습니다');return;}
+function exportExcel(){
+  $('expServer').innerHTML='<option value="0">전체 서버</option>'+servers.map(s=>`<option value="${s.id}">${esc(s.name)} 서버</option>`).join('');
+  fillExpAlliance();
+  $('expOverlay').classList.add('show');
+}
+function fillExpAlliance(){
+  const sid=+$('expServer').value;
+  const als=sid?alliances.filter(a=>a.server_id===sid):[];
+  $('expAlliance').innerHTML='<option value="0">전체 연맹</option>'+als.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('');
+}
+async function runExport(){
+  const expSid=+$('expServer').value||0, expAid=+$('expAlliance').value||0;
+  $('expOverlay').classList.remove('show');
+  const editor=getEditor(); if(!editor){askEditor();return;}
+  // 1) 승인이 이미 떨어졌는지 먼저 확인
+  const chk=await sb.rpc('check_export_approval',{p_editor:editor,p_device:getDeviceId()});
+  if(chk.error){toast('오류: '+chk.error.message);return;}
+  if(chk.data==='pending'){toast('⏳ 승인 대기 중입니다. 관리자(부앙) 승인 후 다시 눌러주세요.');return;}
+  if(chk.data==='rejected'){toast('❌ 반출 요청이 거절되었습니다.');return;}
+  if(chk.data!=='ok'){
+    // 2) 승인 전: 관리자 PIN 알면 즉시, 모르면 승인 요청
+    const pin=prompt('📊 엑셀 내보내기는 관리자 승인이 필요합니다.\n\n· 관리자 PIN을 알면 입력 후 확인\n· 모르면 빈 칸으로 확인 → 부앙에게 승인 요청이 전송됩니다');
+    if(pin===null) return;
+    if(pin.trim()===''){
+      const rq=await sb.rpc('request_export',{p_editor:editor,p_device:getDeviceId()});
+      if(rq.error){toast('오류: '+rq.error.message);return;}
+      toast(rq.data==='already_pending'?'⏳ 이미 요청되어 승인 대기 중입니다.':'📨 승인 요청을 보냈습니다! 부앙이 승인하면 이 버튼을 다시 눌러주세요.');
+      return;
+    }
+    const ok=await sb.rpc('verify_export_pin',{p_pin:pin.trim(),p_editor:editor,p_device:getDeviceInfo()});
+    if(ok.error){toast('오류: '+ok.error.message);return;}
+    if(ok.data!==true){toast('❌ 관리자 PIN이 올바르지 않습니다');return;}
+  }
   toast('엑셀 파일 생성 중...');
   try{
     if(!window.XLSX){
@@ -1680,10 +1760,11 @@ async function exportExcel(){
     const recs=await fetchLatest(m.data.map(x=>x.id));
     const G=v=>v==null?null:+(v/1000).toFixed(3);
     const wb=XLSX.utils.book_new();
+    const svList=expSid?servers.filter(s=>s.id===expSid):servers;
     // 요약 시트
     const summary=[];
-    for(const sv of servers){
-      const als=alliances.filter(a=>a.server_id===sv.id);
+    for(const sv of svList){
+      const als=alliances.filter(a=>a.server_id===sv.id&&(!expAid||a.id===expAid));
       for(const al of als){
         const mem=m.data.filter(x=>x.alliance_id===al.id);
         let s1=0,tot=0,withPow=0;
@@ -1695,8 +1776,8 @@ async function exportExcel(){
     XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(summary), '📊 요약');
     // 서버별 시트
     const safe=n=>('S_'+n).replace(/[\\\/\?\*\[\]:]/g,'_').slice(0,28);
-    for(const sv of servers){
-      const als=alliances.filter(a=>a.server_id===sv.id);
+    for(const sv of svList){
+      const als=alliances.filter(a=>a.server_id===sv.id&&(!expAid||a.id===expAid));
       const rows=[];
       for(const al of als){
         const mem=m.data.filter(x=>x.alliance_id===al.id)
@@ -1714,7 +1795,9 @@ async function exportExcel(){
       if(rows.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), safe(sv.name));
     }
     const d=new Date();
-    XLSX.writeFile(wb, `213통합시트_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.xlsx`);
+    const svSel=servers.find(s=>s.id===expSid), alSel=alliances.find(a=>a.id===expAid);
+    const label=expSid?(svSel.name+'서버'+(alSel?'_'+alSel.name:'')):'213통합시트';
+    XLSX.writeFile(wb, `${label}_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.xlsx`);
     toast('✅ 엑셀 파일을 다운로드했습니다');
   }catch(e){ toast('내보내기 실패: '+e.message); }
 }
