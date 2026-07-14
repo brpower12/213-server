@@ -28,34 +28,43 @@ const CONFIG = {
 html{font-size:15px}
 body{background:radial-gradient(800px 420px at 20% -8%, rgba(78,155,255,.10), transparent 60%),radial-gradient(600px 340px at 85% -6%, rgba(242,193,78,.07), transparent 55%),var(--bg);color:var(--text);font-family:"Pretendard Variable",Pretendard,-apple-system,"Hiragino Sans","Microsoft YaHei",sans-serif;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:20px 16px 48px}
 button{font-family:inherit;cursor:pointer}
-input,select{font-family:inherit;background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:9px;padding:11px 12px;font-size:1rem;outline:none;width:100%}
+input,select{font-family:inherit;background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:11px;padding:13px 14px;font-size:1.02rem;outline:none;width:100%;transition:border-color .12s,box-shadow .12s}
 input:focus,select:focus{border-color:var(--ours);box-shadow:0 0 0 3px rgba(78,155,255,.18)}
 option{background:#1C222E;color:#E9EDF5}
 ::placeholder{color:var(--dim)}
-.box{width:100%;max-width:440px;background:linear-gradient(180deg,rgba(242,193,78,.045),transparent 26%),var(--panel);border:1px solid #2E3648;border-radius:20px;padding:26px 24px 30px;box-shadow:0 10px 30px rgba(0,0,0,.45),0 0 0 1px rgba(242,193,78,.07);position:relative;overflow:hidden}
+.box{width:100%;max-width:460px;background:linear-gradient(180deg,rgba(242,193,78,.045),transparent 26%),var(--panel);border:1px solid #2E3648;border-radius:22px;padding:30px 26px 32px;box-shadow:0 14px 40px rgba(0,0,0,.5),0 0 0 1px rgba(242,193,78,.07);position:relative;overflow:hidden}
 .box::before{content:'';position:absolute;top:0;left:12%;right:12%;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.7}
 .langbar{display:flex;justify-content:center;gap:4px;margin-bottom:18px;background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:3px;width:fit-content;margin-left:auto;margin-right:auto}
-.langbar button{background:none;border:none;color:var(--muted);font-size:.8rem;font-weight:700;padding:6px 12px;border-radius:999px}
+.langbar button{background:none;border:none;color:var(--muted);font-size:.82rem;font-weight:700;padding:7px 13px;border-radius:999px;transition:color .12s}
+.langbar button:hover{color:var(--text)}
 .langbar button.active{background:var(--panel);color:var(--text)}
-h1{font-size:1.3rem;font-weight:900;letter-spacing:-.02em;text-align:center}
-.sub{color:var(--muted);font-size:.86rem;margin:8px 0 20px;line-height:1.55;text-align:center}
-.field{margin-bottom:13px}
-.field label{display:block;font-size:.78rem;font-weight:700;color:var(--muted);margin-bottom:5px}
+h1{font-size:1.5rem;font-weight:900;letter-spacing:-.03em;text-align:center}
+.sub{color:var(--muted);font-size:.88rem;margin:9px 0 22px;line-height:1.6;text-align:center}
+.field{margin-bottom:15px}
+.field label{display:block;font-size:.8rem;font-weight:800;color:var(--muted);margin-bottom:6px;letter-spacing:.01em}
 .field label b{color:var(--gold)}
 .field label span.opt{color:var(--dim);font-weight:400}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.preview{font-size:.76rem;color:var(--green);min-height:16px;margin-top:4px;font-variant-numeric:tabular-nums}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.preview{font-size:.8rem;color:var(--green);min-height:17px;margin-top:5px;font-weight:600;font-variant-numeric:tabular-nums}
 .preview.bad{color:var(--red)}
-.btn{width:100%;background:linear-gradient(180deg,#6CB2FF,#3E8EF0);border:1px solid #3E8EF0;color:#06101F;border-radius:11px;padding:13px;font-size:1.02rem;font-weight:800;margin-top:8px;box-shadow:0 4px 14px rgba(78,155,255,.28)}
+.btn{width:100%;background:linear-gradient(180deg,#6CB2FF,#3E8EF0);border:1px solid #3E8EF0;color:#06101F;border-radius:13px;padding:16px;font-size:1.1rem;font-weight:800;margin-top:12px;box-shadow:0 5px 18px rgba(78,155,255,.32);transition:transform .12s,box-shadow .12s}
+.btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(78,155,255,.42)}
+.btn:active{transform:translateY(0)}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--line) 20%,var(--line) 80%,transparent);margin:20px 0 17px}
 .btn.ghost{background:var(--panel2);border-color:var(--line);color:var(--text)}
 .msg{font-size:.84rem;color:var(--red);min-height:20px;margin-top:9px;text-align:center;line-height:1.4}
 .credit{margin-top:22px;color:var(--dim);font-size:.75rem;text-align:center}
 .credit b{color:var(--muted)}
-.done-icon{font-size:3rem;text-align:center;margin:10px 0}
+.done-icon{font-size:3.6rem;text-align:center;margin:14px 0 10px}
 #doneView{display:none}
 .guide-sec{margin:0 0 18px}
 .guide-sec h3{font-size:.85rem;color:var(--muted);font-weight:700;margin-bottom:8px}
 .guide-sec img{display:block;margin:0 auto 10px;border-radius:10px;border:1px solid var(--line);max-width:100%;cursor:zoom-in}
+@media(max-width:640px){
+  input,select{font-size:16px}
+  .box{padding:24px 18px 28px;border-radius:18px}
+  h1{font-size:1.35rem}
+}
 </style>
 </head>
 <body>
@@ -88,6 +97,7 @@ h1{font-size:1.3rem;font-weight:900;letter-spacing:-.02em;text-align:center}
       <div class="field"><label id="tShelter"></label>
         <input id="fShelter" inputmode="numeric" maxlength="4"></div>
     </div>
+    <div class="divider"></div>
     <div class="field"><label><span id="tS1"></span> <b>*</b></label>
       <input id="fS1" inputmode="decimal">
       <div class="preview" id="pS1"></div></div>
@@ -140,17 +150,17 @@ ko:{
   confirmQ:'이 내용으로 제출할까요?'
 },
 en:{
-  title:'Submit Combat Power',
-  sub:'Enter your current combat power.<br>It will be added to the sheet after staff review.',
+  title:'Combat Power Registration',
+  sub:'Enter your current Combat Power.<br>It will be added to the spreadsheet after staff approval.',
   guide:'📸 Example',
   alliance:'Alliance', alliancePh:'e.g. NXT, AST',
   nick:'In-game Nickname', nickPh:'Enter your exact in-game nickname',
-  troop:'Main Troop', troops:['Shooter','Fighter','Rider'],
+  troop:'Main Troop Type', troops:['Shooter','Fighter','Rider'],
   shelter:'Industry Level', shelterPh:'e.g. 4, 7, 10',
-  s1:'Squad 1 Power', s1Ph:'e.g. 6.22G',
-  s2:'Squad 2', s2Ph:'e.g. 4.5G', s3:'Squad 3', s3Ph:'e.g. 2.1G', s4:'Squad 4', s4Ph:'e.g. 1.5G',
+  s1:'Squad 1 Combat Power', s1Ph:'e.g. 6.22G',
+  s2:'Squad 2 Combat Power', s2Ph:'e.g. 4.5G', s3:'Squad 3 Combat Power', s3Ph:'e.g. 2.1G', s4:'Squad 4 Combat Power', s4Ph:'e.g. 1.5G',
   kills:'Kills', killsPh:'e.g. 27,066,265', errS234:'Please enter Squad 2–4 power.', errKills:'Please enter your kill count. (e.g. 27,066,265)',
-  submit:'Submit Power', submitting:'Submitting...',
+  submit:'Submit Combat Power', submitting:'Submitting...',
   preview:v=>'→ Will be recorded as '+v,
   badNum:'⚠ Please check the number (e.g. 6.22G or 6220)',
   errAlliance:'Please enter your alliance.', errNick:'Please enter your nickname.',
@@ -160,17 +170,17 @@ en:{
   confirmQ:'Submit with the following?'
 },
 ja:{
-  title:'戦闘力の提出',
-  sub:'現在の戦闘力を入力してください。<br>運営の確認後、シートに反映されます。',
+  title:'戦闘力登録',
+  sub:'現在の戦闘力をご入力ください。<br>運営が確認後、シートへ反映されます。',
   guide:'📸 入力例',
   alliance:'同盟', alliancePh:'例: NXT, AST',
   nick:'ゲーム内ニックネーム', nickPh:'ゲーム内ニックネームを正確に入力',
   troop:'メイン兵種', troops:['シューター','ファイター','ライダー'],
-  shelter:'産業レベル', shelterPh:'例: 4, 7, 10',
-  s1:'第1部隊 戦闘力', s1Ph:'例: 6.22G',
-  s2:'第2部隊', s2Ph:'例: 4.5G', s3:'第3部隊', s3Ph:'例: 2.1G', s4:'第4部隊', s4Ph:'例: 1.5G',
+  shelter:'産業Lv', shelterPh:'例: 4, 7, 10',
+  s1:'第1部隊戦力', s1Ph:'例: 6.22G',
+  s2:'第2部隊戦力', s2Ph:'例: 4.5G', s3:'第3部隊戦力', s3Ph:'例: 2.1G', s4:'第4部隊戦力', s4Ph:'例: 1.5G',
   kills:'キル数', killsPh:'例: 27,066,265', errS234:'第2〜第4部隊もすべて入力してください。', errKills:'キル数を入力してください。（例: 27,066,265）',
-  submit:'戦闘力を提出', submitting:'提出中...',
+  submit:'戦闘力を登録', submitting:'登録中...',
   preview:v=>'→ '+v+' として記録されます',
   badNum:'⚠ 数値をご確認ください（例: 6.22G または 6220）',
   errAlliance:'同盟を入力してください。', errNick:'ニックネームを入力してください。',
@@ -180,17 +190,17 @@ ja:{
   confirmQ:'この内容で提出しますか？'
 },
 zh:{
-  title:'战力提交',
-  sub:'请输入当前战力。<br>管理员确认后将录入表格。',
+  title:'战力登记',
+  sub:'请输入您当前的战力。<br>管理员审核后将录入统计表。',
   guide:'📸 填写示例',
   alliance:'联盟', alliancePh:'例：NXT, AST',
   nick:'游戏昵称', nickPh:'请准确输入游戏内昵称',
   troop:'主兵种', troops:['射手','战士','骑手'],
-  shelter:'产业等级', shelterPh:'例：4, 7, 10',
-  s1:'第1编队 战力', s1Ph:'例：6.22G',
-  s2:'第2编队', s2Ph:'例：4.5G', s3:'第3编队', s3Ph:'例：2.1G', s4:'第4编队', s4Ph:'例：1.5G',
+  shelter:'产业Lv', shelterPh:'例：4, 7, 10',
+  s1:'第1编队战力', s1Ph:'例：6.22G',
+  s2:'第2编队战力', s2Ph:'例：4.5G', s3:'第3编队战力', s3Ph:'例：2.1G', s4:'第4编队战力', s4Ph:'例：1.5G',
   kills:'击杀数', killsPh:'例：27,066,265', errS234:'请填写第2~4编队战力。', errKills:'请输入击杀数。（例：27,066,265）',
-  submit:'提交战力', submitting:'提交中...',
+  submit:'登记战力', submitting:'登记中...',
   preview:v=>'→ 将记录为 '+v,
   badNum:'⚠ 请检查数值（例：6.22G 或 6220）',
   errAlliance:'请输入联盟。', errNick:'请输入昵称。',
