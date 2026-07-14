@@ -73,6 +73,10 @@ main{max-width:1180px;margin:0 auto;padding:20px}
 .view.active{display:block}
 .panel{background:linear-gradient(180deg,rgba(255,255,255,.022),transparent 34%),var(--panel);border:1px solid var(--line);border-radius:15px;padding:17px 18px;box-shadow:0 1px 0 rgba(255,255,255,.03) inset}
 .panel h2::before{content:'';display:inline-block;width:4px;height:13px;background:linear-gradient(180deg,var(--gold2),#B8862B);border-radius:3px;margin-right:9px;vertical-align:-1px}
+.panel h2.acc-blue::before{background:linear-gradient(180deg,#7CC0FF,#2E6FD0)}
+.panel h2.acc-purple::before{background:linear-gradient(180deg,#C4B5FD,#7C5CE0)}
+.panel h2.acc-red::before{background:linear-gradient(180deg,#FF9B93,#C93A30)}
+.panel h2{font-size:1.03rem}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 h2{font-size:1rem;font-weight:700;margin-bottom:12px}
 .hint{color:var(--muted);font-size:.84rem;line-height:1.5}
@@ -433,6 +437,7 @@ footer b{color:var(--muted)}
   <div class="table-wrap"><div id="entryTableBox"><div class="empty">서버와 연맹을 선택하세요</div></div><div id="entryCards"></div></div>
   <div class="savebar" id="saveBar" style="display:none">
     <span class="hint" id="dirtyCount"></span>
+    <button class="btn" onclick="addMemberRow()">＋ 인원 추가</button>
     <button class="btn primary" onclick="saveEntries()">💾 변경사항 저장</button>
   </div>
 </section>
@@ -459,31 +464,31 @@ footer b{color:var(--muted)}
       <button class="btn sm" onclick="exportExcel()">📊 엑셀 내보내기</button>
       <button class="btn sm" onclick="downloadBackup()">📦 백업</button>
     </div>
-    <p class="hint" style="margin-top:8px">각 서버 카드 안에서 <b>새 연맹</b>을 바로 추가하고, 연맹 이름(✎)을 누르면 이름·소속 서버를 수정할 수 있습니다.</p>
+    <p class="hint" style="margin-top:8px">연맹 이름(✎) 클릭 → 이름·소속 서버 수정 (연맹 통째 이민도 여기서).</p>
     <div id="serverList" style="margin-top:12px"></div>
   </div>
   <div class="panel" style="margin-bottom:14px">
-    <h2>⚜️ 파벌 관리 <span class="hint" style="font-weight:400">(시즌: 여러 서버 = 한 편)</span></h2>
+    <h2 class="acc-purple">⚜️ 파벌 관리 <span class="hint" style="font-weight:400">(시즌: 여러 서버 = 한 편)</span></h2>
     <div class="row">
       <input id="newFactionName" placeholder="파벌 이름 (예: 우리파벌)" style="width:190px" onkeydown="if(event.key==='Enter')addFaction()">
       <button class="btn primary" onclick="addFaction()">＋ 파벌 만들기</button>
     </div>
-    <p class="hint" style="margin-top:8px">파벌을 만든 뒤 아래에서 서버를 넣으세요 (개수 제한 없음). 시즌마다 서버만 넣었다 빼면 됩니다.</p>
+    <p class="hint" style="margin-top:8px">시즌 구성에 맞춰 서버를 넣고 빼면 됩니다.</p>
     <div id="factionList" style="margin-top:12px"></div>
   </div>
   <div class="panel" style="margin-bottom:14px">
-    <h2>📤 엑셀 반출 승인 <span class="hint" style="font-weight:400">(관리자 PIN 필요)</span></h2>
+    <h2 class="acc-blue">📤 엑셀 반출 승인 <span class="hint" style="font-weight:400">(관리자 PIN 필요)</span></h2>
     <div class="row">
       <button class="btn" onclick="openExportReqs()">요청 확인</button>
-      <span class="hint">운영진이 보낸 반출 요청을 승인/거절합니다. 승인 후 15분 안에 본인이 다시 내보내기를 누르면 다운로드됩니다.</span>
+      <span class="hint">승인하면 15분간 유효 — 요청자가 다시 내보내기를 누르면 다운로드됩니다.</span>
     </div>
     <div id="exportReqPanel" style="margin-top:12px"></div>
   </div>
   <div class="panel" style="margin-bottom:14px">
-    <h2>🔐 탭 권한 관리 <span class="hint" style="font-weight:400">(관리자 PIN 필요)</span></h2>
+    <h2 class="acc-red">🔐 탭 권한 관리 <span class="hint" style="font-weight:400">(관리자 PIN 필요)</span></h2>
     <div class="row">
       <button class="btn" onclick="openPerms()">권한 관리 열기</button>
-      <span class="hint">운영진마다 볼 수 있는 탭을 정합니다. 체크 해제된 탭은 그 사람 화면에서 사라집니다.</span>
+      <span class="hint">운영진별 접근 탭 설정 — 해제한 탭은 그 사람에게 보이지 않습니다.</span>
     </div>
     <div id="permPanel" style="margin-top:12px"></div>
   </div>
@@ -501,6 +506,18 @@ footer b{color:var(--muted)}
 </section>
 </main>
 <footer>213서버 통합 시트 · Powered by <b>213 NXT · 부앙(Bu-ang)</b></footer>
+</div>
+
+<!-- 인원 이동 (이민) -->
+<div class="overlay" id="mvOverlay">
+  <div class="modal">
+    <h3 id="mvTitle">인원 이동</h3>
+    <p class="hint" style="margin-bottom:12px">이민 등으로 소속이 바뀐 인원을 옮깁니다. 기록은 그대로 따라갑니다.</p>
+    <div class="mfield"><label>이동할 서버</label><select id="mvServer" onchange="fillMvAlliance()"></select></div>
+    <div class="mfield"><label>이동할 연맹</label><select id="mvAlliance"></select></div>
+    <button class="btn primary" style="width:100%" onclick="saveMove()">이동</button>
+    <button class="btn" style="width:100%;margin-top:8px" onclick="document.getElementById('mvOverlay').classList.remove('show')">취소</button>
+  </div>
 </div>
 
 <!-- 반출 범위 선택 -->
@@ -551,6 +568,7 @@ footer b{color:var(--muted)}
     <button class="btn primary" style="width:100%" onclick="memModalSave()">💾 저장</button>
     <div style="display:flex;gap:8px;margin-top:8px">
       <button class="btn" style="flex:1" onclick="closeMemModal()">취소</button>
+      <button class="btn" style="flex:1" onclick="memModalMove()">⇄ 이동</button>
       <button class="btn danger" style="flex:1" onclick="memModalRemove()">목록에서 제외</button>
     </div>
   </div>
@@ -1065,7 +1083,7 @@ function renderUserRank(members,recs){
       <td class="ctr">${esc(r.m.shelter||'-')}</td>
       <td class="num"><b>${fmtG(r.s1)}</b></td>
       <td class="num">${fmtG(r.sum4)}</td>
-      <td class="num">${r.kills?fmtKills(r.kills):'-'}</td>
+      <td class="num">${r.kills?r.kills.toLocaleString():'-'}</td>
       <td class="ctr"><span class="sub2">${fd(r.recAt)}</span></td></tr>`).join('')}
   </table>`;
 }
@@ -1167,7 +1185,7 @@ function buildRow(mem,rec,idx){
     <td><input class="pwr" inputmode="numeric" value="${rec.kills!=null?(+rec.kills).toLocaleString():''}" style="width:110px" data-f="kills"></td>
     <td class="sum-cell"></td>
     <td class="meta">${rec.recorded_at?fmtTime(rec.recorded_at)+' · '+esc(rec.editor):'기록 없음'}</td>
-    <td><button class="btn sm danger" title="목록에서 제외" onclick="removeMember(this)">✕</button></td>`;
+    <td style="white-space:nowrap"><button class="btn sm" title="다른 서버·연맹으로 이동" onclick="openMove(this)">⇄</button> <button class="btn sm danger" title="목록에서 제외" onclick="removeMember(this)">✕</button></td>`;
   const n=x=>x==null?null:+x;
   const row={memberId:mem?mem.id:null, el:tr,
     origMeta:{nickname:mem?mem.nickname:'', troop_type:mem?mem.troop_type||'':'', shelter:mem?mem.shelter||'':''},
@@ -1212,7 +1230,12 @@ function addMemberRow(){
   let tb=$('entryTableBox').querySelector('table');
   if(!tb){loadEntryTable();return;}
   const tr=buildRow(null,null,null); tr.classList.add('dirty');
-  tb.appendChild(tr); updateDirty();
+  // 헤더 바로 아래(맨 위)에 삽입 → 스크롤·포커스까지
+  if(tb.rows.length>1) tb.rows[0].parentNode.insertBefore(tr, tb.rows[1]);
+  else tb.appendChild(tr);
+  updateDirty();
+  tr.scrollIntoView({behavior:'smooth',block:'center'});
+  const nk=tr.querySelector('.nick'); if(nk) setTimeout(()=>nk.focus(),150);
   if(window.matchMedia('(max-width:640px)').matches){
     // 모바일: 새 인원도 모달로 입력
     const r=tr._row; memModalRow=r;
@@ -1275,6 +1298,35 @@ async function saveEntries(){
   for(const r of dirty){ if(await saveRow(r)) saved++; }
   rankCache=null; resortEntryTable(); renderEntryCards();
   updateDirty(); toast(`✅ ${saved}개 항목 저장 완료`);
+}
+let mvRow=null;
+function openMove(btn){
+  const r=btn.closest('tr')._row;
+  if(!r.memberId){toast('아직 저장 안 된 인원입니다. 먼저 저장하세요.');return;}
+  mvRow=r;
+  $('mvTitle').textContent='⇄ '+(rowMeta(r,'nickname')||'인원')+' 이동';
+  $('mvServer').innerHTML=servers.map(s=>`<option value="${s.id}">${esc(s.name)} 서버</option>`).join('');
+  fillMvAlliance();
+  $('mvOverlay').classList.add('show');
+}
+function memModalMove(){ const r=memModalRow; closeMemModal(); if(r){ openMove({closest:()=>r.el}); } }
+function fillMvAlliance(){
+  const sid=+$('mvServer').value;
+  $('mvAlliance').innerHTML=alliances.filter(a=>a.server_id===sid).map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('')||'<option value="">연맹 없음</option>';
+}
+async function saveMove(){
+  if(!mvRow) return;
+  const aid=+$('mvAlliance').value;
+  if(!aid){toast('이동할 연맹이 없습니다. 관리 탭에서 먼저 만들어주세요.');return;}
+  if(aid===+$('entryAlliance').value){toast('지금과 같은 연맹입니다.');return;}
+  const u=await sb.from('members').update({alliance_id:aid}).eq('id',mvRow.memberId);
+  if(u.error){toast(u.error.message);return;}
+  const nick=rowMeta(mvRow,'nickname');
+  const al=alliances.find(a=>a.id===aid), sv=al&&servers.find(s=>s.id===al.server_id);
+  mvRow.el.remove(); entryRows=entryRows.filter(x=>x!==mvRow); mvRow=null;
+  $('mvOverlay').classList.remove('show');
+  rankCache=null; lastRaw=null; resortEntryTable(); renderEntryCards(); updateDirty();
+  toast(`✅ ${nick} → ${sv?sv.name+' 서버':''} ${al?al.name:''} 이동 완료`);
 }
 function resortEntryTable(){
   const tb=$('entryTableBox').querySelector('table'); if(!tb) return;
