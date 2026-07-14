@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>213서버 통합 시트</title>
+<title>213 SERVER | 통합 시트</title>
+<meta property="og:title" content="213 SERVER | 통합 시트">
+<meta property="og:description" content="213 서버 운영진 전용 전력 관리 시트">
+<meta property="og:type" content="website">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
@@ -238,6 +241,7 @@ h2{font-size:1rem;font-weight:700;margin-bottom:12px}
 .hist-item .who{color:var(--gold);font-weight:600}
 .hist-item .what b{color:var(--text)}
 .hist-item .vals{color:var(--muted);font-variant-numeric:tabular-nums}
+.vchip{white-space:nowrap;margin-right:11px;display:inline-block}
 
 /* ---------- 모바일 입력 카드 ---------- */
 #serverList{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:10px}
@@ -520,7 +524,7 @@ footer b{color:var(--muted)}
       <div class="mfield"><label>3편대</label><input id="mS3" inputmode="decimal" placeholder=""></div>
       <div class="mfield"><label>4편대</label><input id="mS4" inputmode="decimal" placeholder=""></div>
       <div class="mfield" id="mBlackWrap"><label>블머</label><input id="mBlack" inputmode="decimal"></div>
-      <div class="mfield"><label>킬수</label><input id="mKills" inputmode="numeric" placeholder="27,066,265"></div>
+      <div class="mfield"><label>킬수</label><input id="mKills" inputmode="numeric"></div>
     </div>
     <button class="btn primary" style="width:100%" onclick="memModalSave()">💾 저장</button>
     <div style="display:flex;gap:8px;margin-top:8px">
@@ -1137,7 +1141,7 @@ function buildRow(mem,rec,idx){
     <td><input class="pwr" inputmode="decimal" value="${fp(rec.squad3)}" data-f="squad3"></td>
     <td><input class="pwr" inputmode="decimal" value="${fp(rec.squad4)}" data-f="squad4"></td>
     <td class="colblack"><input class="pwr" inputmode="decimal" value="${fp(rec.black)}" data-f="black"></td>
-    <td><input class="pwr" inputmode="numeric" value="${rec.kills!=null?(+rec.kills).toLocaleString():''}" placeholder="27,066,265" style="width:110px" data-f="kills"></td>
+    <td><input class="pwr" inputmode="numeric" value="${rec.kills!=null?(+rec.kills).toLocaleString():''}" style="width:110px" data-f="kills"></td>
     <td class="sum-cell"></td>
     <td class="meta">${rec.recorded_at?fmtTime(rec.recorded_at)+' · '+esc(rec.editor):'기록 없음'}</td>
     <td><button class="btn sm danger" title="목록에서 제외" onclick="removeMember(this)">✕</button></td>`;
@@ -1204,7 +1208,7 @@ async function removeMember(btn){
   if(!confirm('이 인원을 목록에서 제외할까요? (기록은 남습니다)')) return;
   const r=await sb.from('members').update({is_active:false}).eq('id',row.memberId);
   if(r.error){toast(r.error.message);return;}
-  tr.remove(); entryRows=entryRows.filter(x=>x!==row); rankCache=null; toast('제외했습니다');
+  tr.remove(); entryRows=entryRows.filter(x=>x!==row); rankCache=null; resortEntryTable(); renderEntryCards(); toast('제외했습니다');
 }
 async function saveRow(r){
   const editor=getEditor(); if(!editor){askEditor();return false;}
@@ -1306,7 +1310,7 @@ async function memModalRemove(){
   const res=await sb.from('members').update({is_active:false}).eq('id',r.memberId);
   if(res.error){toast(res.error.message);return;}
   r.el.remove(); entryRows=entryRows.filter(x=>x!==r);
-  rankCache=null; renderEntryCards(); updateDirty(); closeMemModal(); toast('제외했습니다');
+  rankCache=null; resortEntryTable(); renderEntryCards(); updateDirty(); closeMemModal(); toast('제외했습니다');
 }
 
 /* ---------- 제출 확인 ---------- */
@@ -1323,7 +1327,8 @@ async function loadSubs(){
   const pend=r.data.filter(x=>x.status==='pending'), done=r.data.filter(x=>x.status!=='pending');
   const card=(s,isPend)=>{
     const vals=[['1편대',s.squad1],['2편대',s.squad2],['3편대',s.squad3],['4편대',s.squad4]]
-      .filter(([,v])=>v!=null).map(([l,v])=>`${l} <b>${fmtG(+v)}</b>`).concat(s.kills!=null?[`킬수 <b>${fmtKills(+s.kills)}</b>`]:[]).join(' · ');
+      .filter(([,v])=>v!=null).map(([l,v])=>`<span class="vchip">${l} <b>${fmtG(+v)}</b></span>`)
+      .concat(s.kills!=null?[`<span class="vchip">킬수 <b>${fmtKills(+s.kills)}</b></span>`]:[]).join('');
     const extra=[s.troop_type,s.shelter?'산업'+esc(s.shelter):null].filter(Boolean).join(' · ');
     return `<div class="sub-card ${isPend?'':'done'}">
       <div class="top"><b>${esc(s.nickname)}</b><span class="where">${esc(s.server_name)} · ${esc(s.alliance_name)}${extra?' · '+extra:''}</span>
@@ -1751,8 +1756,8 @@ async function loadHistory(){
   $('histList').innerHTML=r.data.map(rec=>{
     const mm=rec.members, al=mm.alliances, sv=al.servers;
     const vals=[['1편대',rec.squad1],['2편대',rec.squad2],['3편대',rec.squad3],['4편대',rec.squad4],['블머',rec.black]]
-    .filter(([,v])=>v!=null).map(([l,v])=>`${l} <b>${fmtG(+v)}</b>`).concat(rec.kills!=null?[`킬 <b>${fmtKills(+rec.kills)}</b>`]:[])
-      .filter(([,v])=>v!=null).map(([l,v])=>`${l} ${fmtG(+v)}`).join(' · ');
+      .filter(([,v])=>v!=null).map(([l,v])=>`<span class="vchip">${l} <b>${fmtG(+v)}</b></span>`)
+      .concat(rec.kills!=null?[`<span class="vchip">킬 <b>${fmtKills(+rec.kills)}</b></span>`]:[]).join('');
     return `<div class="hist-item">
       <span class="when">${fmtTime(rec.recorded_at)}</span>
       <span class="who">${esc(rec.editor)}</span>
