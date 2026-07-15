@@ -114,7 +114,7 @@ h2{font-size:1rem;font-weight:700;margin-bottom:12px}
 
 /* ---------- 세그먼트 토글 ---------- */
 .segwrap{display:flex;flex-direction:column;gap:4px}
-.seglb{font-size:.76rem;font-weight:800;letter-spacing:.07em;color:var(--muted);padding-left:3px}
+.seglb{font-size:.84rem;font-weight:800;letter-spacing:.07em;color:var(--muted);padding-left:3px}
 .seg{display:inline-flex;background:rgba(11,14,20,.6);border:1px solid var(--line);border-radius:11px;padding:3px;flex-wrap:wrap}
 .seg button{background:none;border:none;color:var(--muted);padding:7px 13px;border-radius:8px;font-weight:700;font-size:.86rem;white-space:nowrap;transition:color .12s}
 .seg button:hover{color:var(--text)}
@@ -128,6 +128,11 @@ h2{font-size:1rem;font-weight:700;margin-bottom:12px}
 .vs-side label{font-size:.76rem;font-weight:800;letter-spacing:.06em}
 .vs-side.a label{color:var(--ours)} .vs-side.b label{color:var(--enemy)}
 .vs-side input{width:100%;font-size:1rem;font-weight:700;padding:12px 13px}
+.combo-wrap{position:relative;display:inline-block}
+.vs-side .combo-wrap{width:100%}
+.combo-dd{position:absolute;top:calc(100% + 5px);left:0;min-width:100%;max-height:290px;overflow-y:auto;background:#1A2130;border:1px solid #33405A;border-radius:11px;z-index:90;display:none;box-shadow:0 14px 34px rgba(0,0,0,.55);padding:5px}
+.combo-it{padding:9px 13px;font-size:.92rem;border-radius:7px;cursor:pointer;white-space:nowrap;color:var(--text)}
+.combo-it:hover{background:rgba(84,163,255,.14)}
 .vs-side.a input:focus{border-color:var(--ours);box-shadow:0 0 0 3px rgba(84,163,255,.18)}
 .vs-side.b input:focus{border-color:var(--enemy);box-shadow:0 0 0 3px rgba(255,99,87,.16)}
 .vs-mid{width:46px;height:46px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:14px;font-weight:900;font-size:.92rem;color:var(--gold);background:linear-gradient(135deg,#232D44,#141A28);border:1px solid #33405A;box-shadow:0 0 18px rgba(242,193,78,.14)}
@@ -365,7 +370,7 @@ footer b{color:var(--muted)}
 <main>
 <!-- ============ 비교 ============ -->
 <section class="view active" id="view-compare">
-  <div class="toolbar">
+  <div class="toolbar" style="justify-content:center">
     <div class="segwrap"><span class="seglb">비교 모드</span>
     <div class="seg" id="modeSeg">
       <button class="active" data-m="server" onclick="setMode('server')">서버 vs 서버</button>
@@ -393,9 +398,9 @@ footer b{color:var(--muted)}
     </div>
   </div>
   <div class="vs-picker">
-    <div class="vs-side a"><label>OUR SIDE</label><input id="pickA" list="dlA" placeholder="이름 입력 (예: 213)" autocomplete="off" onchange="runCompare()" onkeydown="if(event.key==='Enter')runCompare()"><datalist id="dlA"></datalist></div>
+    <div class="vs-side a"><label>OUR SIDE</label><input id="pickA" placeholder="서버 입력 (예: 213)" autocomplete="off" onchange="runCompare()" onkeydown="if(event.key==='Enter')runCompare()"></div>
     <div class="vs-mid">VS</div>
-    <div class="vs-side b"><label>OPPONENT</label><input id="pickB" list="dlB" placeholder="이름 입력 (예: 242)" autocomplete="off" onchange="runCompare()" onkeydown="if(event.key==='Enter')runCompare()"><datalist id="dlB"></datalist></div>
+    <div class="vs-side b"><label>OPPONENT</label><input id="pickB" placeholder="서버 입력 (예: 213)" autocomplete="off" onchange="runCompare()" onkeydown="if(event.key==='Enter')runCompare()"></div>
   </div>
   <div id="compareResult"><div class="empty" style="padding:46px 12px"><div style="font-size:2.4rem;margin-bottom:10px;opacity:.55">🆚</div>양쪽을 선택하면 비교 결과가 나옵니다<br><span style="font-size:.8rem;color:var(--dim)">일부만 입력해도 자동으로 찾아줍니다 (예: 213)</span></div></div>
 </section>
@@ -432,8 +437,8 @@ footer b{color:var(--muted)}
 <section class="view" id="view-entry">
   <div class="panel">
     <div class="row">
-      <select id="entryServer" onchange="onEntryServerChange()"></select>
-      <select id="entryAlliance" onchange="loadEntryTable()"></select>
+      <input id="entryServer" placeholder="서버 (예: 213)" autocomplete="off" style="width:150px" onchange="onEntryServerChange()">
+      <input id="entryAlliance" placeholder="연맹 (예: NXT)" autocomplete="off" style="width:150px" onchange="loadEntryTable()">
       <button class="btn" onclick="loadEntryTable()">불러오기</button>
       <button class="btn" onclick="addMemberRow()">＋ 인원 추가</button>
       <button class="btn" onclick="$('xlsxFile').click()">📤 엑셀 일괄 입력</button>
@@ -444,7 +449,6 @@ footer b{color:var(--muted)}
   <div class="table-wrap"><div id="entryTableBox"><div class="empty">서버와 연맹을 선택하세요</div></div><div id="entryCards"></div></div>
   <div class="savebar" id="saveBar" style="display:none">
     <span class="hint" id="dirtyCount"></span>
-    <button class="btn" onclick="addMemberRow()">＋ 인원 추가</button>
     <button class="btn primary" onclick="saveEntries()">💾 변경사항 저장</button>
   </div>
 </section>
@@ -771,6 +775,11 @@ function restoreCompare(){
 }
 
 /* ---------- 초기화 ---------- */
+makeCombo('pickA',function(){return [...pickMap.keys()];},runCompare);
+makeCombo('pickB',function(){return [...pickMap.keys()];},runCompare);
+makeCombo('entryServer',function(){return [...entSrvMap.keys()];},onEntryServerChange);
+makeCombo('entryAlliance',function(){return [...entAliMap.keys()];},loadEntryTable);
+
 window.onerror=function(msg,src,line){
   try{
     var el=document.getElementById('gateMsg')||document.getElementById('formMsg');
@@ -836,7 +845,48 @@ function basisPow(rec,n){
 /* ---------- 비교 ---------- */
 function setMode(m){ mode=m; document.querySelectorAll('#modeSeg button').forEach(b=>b.classList.toggle('active',b.dataset.m===m)); fillPickers(); $('compareResult').innerHTML='<div class="empty" style="padding:46px 12px"><div style="font-size:2.4rem;margin-bottom:10px;opacity:.55">🆚</div>양쪽을 선택하면 비교 결과가 나옵니다<br><span style="font-size:.8rem;color:var(--dim)">일부만 입력해도 자동으로 찾아줍니다 (예: 213)</span></div>'; }
 function setBasis(n){ basis=n; document.querySelectorAll('#basisSeg button').forEach(b=>b.classList.toggle('active',+b.dataset.b===n)); rerenderCompare(); }
-let pickMap=new Map();
+let pickMap=new Map(), entSrvMap=new Map(), entAliMap=new Map();
+function resolveFromMap(el,map){
+  const raw=el.value.trim();
+  if(!raw) return null;
+  if(map.has(raw)) return map.get(raw);
+  const q=raw.toLowerCase();
+  const hits=[...map.keys()].filter(k=>k.toLowerCase().indexOf(q)>=0);
+  if(hits.length===1){ el.value=hits[0]; return map.get(hits[0]); }
+  const starts=hits.filter(k=>k.toLowerCase().indexOf(q)===0);
+  if(starts.length===1){ el.value=starts[0]; return map.get(starts[0]); }
+  return null;
+}
+/* 커스텀 자동완성 드롭다운: 입력칸 바로 아래, 최대 높이 후 스크롤 */
+function makeCombo(inputId,getItems,onPick){
+  const el=$(inputId); if(!el) return;
+  const wrap=document.createElement('span'); wrap.className='combo-wrap';
+  if(el.style.width){ wrap.style.width=el.style.width; el.style.width='100%'; }
+  el.parentNode.insertBefore(wrap,el); wrap.appendChild(el);
+  const dd=document.createElement('div'); dd.className='combo-dd'; wrap.appendChild(dd);
+  function render(){
+    const q=el.value.trim().toLowerCase();
+    const all=getItems();
+    const list=q?all.filter(k=>k.toLowerCase().indexOf(q)>=0):all;
+    if(!list.length){dd.style.display='none';return;}
+    dd.innerHTML=list.slice(0,150).map(k=>`<div class="combo-it">${esc(k)}</div>`).join('');
+    dd.style.display='block';
+    dd.querySelectorAll('.combo-it').forEach(it=>{
+      it.addEventListener('mousedown',e=>{
+        e.preventDefault();
+        el.value=it.textContent;
+        dd.style.display='none';
+        if(onPick) onPick();
+      });
+    });
+  }
+  el.addEventListener('focus',render);
+  el.addEventListener('input',render);
+  el.addEventListener('blur',()=>setTimeout(()=>{dd.style.display='none';},150));
+  el.addEventListener('keydown',e=>{ if(e.key==='Escape') dd.style.display='none'; });
+}
+function entrySid(){ return resolveFromMap($('entryServer'),entSrvMap); }
+function entryAid(){ return resolveFromMap($('entryAlliance'),entAliMap); }
 function fillPickers(){
   pickMap=new Map();
   let items=[];
@@ -844,24 +894,13 @@ function fillPickers(){
   else if(mode==='alliance') items=alliances.map(a=>{const sv=servers.find(s=>s.id===a.server_id);return [a.name+' · '+(sv?sv.name:'?')+'서버',a.id];});
   else items=factions.map(f=>[factionLabel(f),f.id]);
   items.forEach(it=>pickMap.set(it[0],it[1]));
-  const opts=items.map(it=>`<option value="${esc(it[0])}">`).join('');
-  $('dlA').innerHTML=opts; $('dlB').innerHTML=opts;
   $('pickA').value=''; $('pickB').value='';
+  const ph=mode==='server'?'서버 입력 (예: 213)':mode==='alliance'?'연맹 입력 (예: NXT)':'파벌 입력';
+  $('pickA').placeholder=ph; $('pickB').placeholder=ph;
   if(mode==='server'){ const k=[...pickMap.keys()].find(x=>x.indexOf('213 ')===0); if(k) $('pickA').value=k; }
   if(mode==='faction'&&!factions.length){ $('compareResult').innerHTML='<div class="empty">아직 파벌이 없습니다. 🗂 관리 탭에서 파벌을 만들고 서버를 넣어주세요.</div>'; }
 }
-/* 입력값 → 대상 찾기 (일부만 쳐도 하나로 좁혀지면 자동 완성) */
-function resolvePick(id){
-  const el=$(id); const raw=el.value.trim();
-  if(!raw) return null;
-  if(pickMap.has(raw)) return pickMap.get(raw);
-  const q=raw.toLowerCase();
-  const hits=[...pickMap.keys()].filter(k=>k.toLowerCase().indexOf(q)>=0);
-  if(hits.length===1){ el.value=hits[0]; return pickMap.get(hits[0]); }
-  const starts=hits.filter(k=>k.toLowerCase().indexOf(q)===0);
-  if(starts.length===1){ el.value=starts[0]; return pickMap.get(starts[0]); }
-  return null;
-}
+function resolvePick(id){ return resolveFromMap($(id),pickMap); }
 async function fetchSide(id){
   let allianceIds;
   if(mode==='server') allianceIds=alliances.filter(a=>a.server_id==id).map(a=>a.id);
@@ -1187,15 +1226,16 @@ function renderRank(){
 
 /* ---------- 입력 ---------- */
 function fillEntrySelectors(){
-  $('entryServer').innerHTML='<option value="">서버 선택</option>'+servers.map(s=>`<option value="${s.id}">${esc(s.name)} 서버</option>`).join('');
-  $('entryAlliance').innerHTML='<option value="">연맹 선택</option>';
+  entSrvMap=new Map(servers.map(s=>[s.name+' 서버',s.id]));
+  $('entryServer').value=''; $('entryAlliance').value=''; entAliMap=new Map();
 }
 function onEntryServerChange(){
-  const sid=$('entryServer').value;
-  $('entryAlliance').innerHTML='<option value="">연맹 선택</option>'+alliances.filter(a=>a.server_id==sid).map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('');
+  const sid=entrySid();
+  entAliMap=new Map(alliances.filter(a=>a.server_id===sid).map(a=>[a.name,a.id]));
+  $('entryAlliance').value='';
 }
 async function loadEntryTable(){
-  const aid=$('entryAlliance').value;
+  const aid=entryAid();
   if(!aid){ $('entryTableBox').innerHTML='<div class="empty">서버와 연맹을 선택하세요</div>'; $('entryCards').innerHTML=''; $('saveBar').style.display='none'; return; }
   $('entryTableBox').innerHTML='<div class="empty">불러오는 중...</div>';
   const m=await sb.from('members').select('*').eq('alliance_id',aid).eq('is_active',true).order('nickname');
@@ -1206,7 +1246,7 @@ async function loadEntryTable(){
   const tb=document.createElement('table'); tb.className='entry-table';
   tb.innerHTML=`<tr><th>#</th><th>닉네임</th><th>병종</th><th>산업</th><th>1편대</th><th>2편대</th><th>3편대</th><th>4편대</th><th class="colblack">블머</th><th>킬수</th><th>합산</th><th>마지막 수정</th><th></th></tr>`;
   m.data.forEach((mem,i)=>tb.appendChild(buildRow(mem,recs.get(mem.id),i+1)));
-  const svSel=servers.find(s=>s.id==+$('entryServer').value);
+  const svSel=servers.find(s=>s.id===entrySid());
   entryIsOurs=!!(svSel&&(svSel.name==='213'||svSel.note==='우리 서버'));
   tb.classList.toggle('noblack',!entryIsOurs);
   $('entryTableBox').innerHTML=''; $('entryTableBox').appendChild(tb);
@@ -1270,7 +1310,7 @@ function isDirty(r){
 function markDirty(r){ r.el.classList.toggle('dirty',isDirty(r)); updateDirty(); }
 function updateDirty(){ const n=entryRows.filter(isDirty).length; $('dirtyCount').textContent=n?`변경된 항목 ${n}개`:''; }
 function addMemberRow(){
-  if(!$('entryAlliance').value){toast('연맹을 먼저 선택하세요');return;}
+  if(!entryAid()){toast('연맹을 먼저 선택하세요');return;}
   let tb=$('entryTableBox').querySelector('table');
   if(!tb){loadEntryTable();return;}
   const tr=buildRow(null,null,null); tr.classList.add('dirty');
@@ -1304,7 +1344,7 @@ async function removeMember(btn){
 }
 async function saveRow(r){
   const editor=getEditor(); if(!editor){askEditor();return false;}
-  const aid=+$('entryAlliance').value;
+  const aid=entryAid();
   const nick=rowMeta(r,'nickname'); if(!nick){toast('닉네임이 비어있습니다');return false;}
   // 전투력 값 검증
   for(const f of ['squad1','squad2','squad3','squad4','black']){
@@ -1364,7 +1404,7 @@ async function saveMove(){
   if(!mvRow) return;
   const aid=+$('mvAlliance').value;
   if(!aid){toast('이동할 연맹이 없습니다. 관리 탭에서 먼저 만들어주세요.');return;}
-  if(aid===+$('entryAlliance').value){toast('지금과 같은 연맹입니다.');return;}
+  if(aid===entryAid()){toast('지금과 같은 연맹입니다.');return;}
   const u=await sb.from('members').update({alliance_id:aid}).eq('id',mvRow.memberId);
   if(u.error){toast(u.error.message);return;}
   const nick=rowMeta(mvRow,'nickname');
@@ -1719,7 +1759,7 @@ async function importExcel(file){
   $('xlsxFile').value='';
   if(!file) return;
   const editor=getEditor(); if(!editor){askEditor();return;}
-  const sid=+$('entryServer').value;
+  const sid=entrySid();
   if(!sid){toast('먼저 어느 서버에 넣을지 선택하세요');return;}
   const sv=servers.find(s=>s.id===sid);
   toast('엑셀 읽는 중...');
@@ -1767,7 +1807,7 @@ async function importExcel(file){
     });
   }
   if(!plan.length){toast('입력할 데이터가 없습니다');return;}
-  const defAid=+$('entryAlliance').value;
+  const defAid=entryAid();
   if(col.alli<0&&!defAid){toast('파일에 연맹 열이 없으면, 위에서 연맹을 선택해두세요');return;}
   if(!confirm(`📤 ${plan.length}명의 데이터를 ${sv.name} 서버에 입력합니다.\n` +
     (col.alli>=0?'연맹은 파일의 연맹 열 기준 (없는 연맹은 자동 생성)':'연맹: 현재 선택된 연맹') +
