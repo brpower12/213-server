@@ -323,6 +323,13 @@ footer b{color:var(--muted)}
   .toolbar{gap:7px}
   .seg button{padding:6px 10px;font-size:.8rem}
 }
+
+/* ===== 입력표 최종 규칙 (우선순위 최상) ===== */
+.entry-table{border-collapse:separate;border-spacing:0}
+.entry-table th{position:sticky;top:0;z-index:50;background:#161D2B;text-align:center}
+.entry-table td{text-align:center;position:relative;z-index:1}
+.entry-table td.meta{text-align:center}
+.no4 .col4{display:none}
 </style>
 </head>
 <body>
@@ -575,7 +582,7 @@ footer b{color:var(--muted)}
       <div class="mfield"><label>1편대</label><input id="mS1" inputmode="decimal" placeholder="예: 6.22G"></div>
       <div class="mfield"><label>2편대</label><input id="mS2" inputmode="decimal" placeholder="예: 4.5G"></div>
       <div class="mfield"><label>3편대</label><input id="mS3" inputmode="decimal" placeholder=""></div>
-      <div class="mfield"><label>4편대</label><input id="mS4" inputmode="decimal" placeholder=""></div>
+      <div class="mfield" id="mS4Wrap"><label>4편대</label><input id="mS4" inputmode="decimal" placeholder=""></div>
       <div class="mfield" id="mBlackWrap"><label>블머</label><input id="mBlack" inputmode="decimal"></div>
       <div class="mfield"><label>킬수</label><input id="mKills" inputmode="numeric"></div>
     </div>
@@ -1247,11 +1254,12 @@ async function loadEntryTable(){
   m.data.sort((x,y)=>((+((recs.get(y.id)||{}).squad1))||0)-((+((recs.get(x.id)||{}).squad1))||0));
   entryRows=[];
   const tb=document.createElement('table'); tb.className='entry-table';
-  tb.innerHTML=`<tr><th>#</th><th>닉네임</th><th>병종</th><th>산업</th><th>1편대</th><th>2편대</th><th>3편대</th><th>4편대</th><th class="colblack">블머</th><th>킬수</th><th>합산</th><th>마지막 수정</th><th></th></tr>`;
+  tb.innerHTML=`<tr><th>#</th><th>닉네임</th><th>병종</th><th>산업</th><th>1편대</th><th>2편대</th><th>3편대</th><th class="col4">4편대</th><th class="colblack">블머</th><th>킬수</th><th>합산</th><th>마지막 수정</th><th></th></tr>`;
   m.data.forEach((mem,i)=>tb.appendChild(buildRow(mem,recs.get(mem.id),i+1)));
   const svSel=servers.find(s=>s.id===entrySid());
   entryIsOurs=!!(svSel&&(svSel.name==='213'||svSel.note==='우리 서버'));
   tb.classList.toggle('noblack',!entryIsOurs);
+  tb.classList.toggle('no4',!entryIsOurs);
   $('entryTableBox').innerHTML=''; $('entryTableBox').appendChild(tb);
   renderEntryCards();
   updateDirty();
@@ -1267,7 +1275,7 @@ function buildRow(mem,rec,idx){
     <td><input class="pwr" inputmode="decimal" value="${fp(rec.squad1)}" placeholder="예: 6.22G" data-f="squad1"></td>
     <td><input class="pwr" inputmode="decimal" value="${fp(rec.squad2)}" data-f="squad2"></td>
     <td><input class="pwr" inputmode="decimal" value="${fp(rec.squad3)}" data-f="squad3"></td>
-    <td><input class="pwr" inputmode="decimal" value="${fp(rec.squad4)}" data-f="squad4"></td>
+    <td class="col4"><input class="pwr" inputmode="decimal" value="${fp(rec.squad4)}" data-f="squad4"></td>
     <td class="colblack"><input class="pwr" inputmode="decimal" value="${fp(rec.black)}" data-f="black"></td>
     <td><input class="pwr" inputmode="numeric" value="${rec.kills!=null?(+rec.kills).toLocaleString():''}" style="width:100px" data-f="kills"></td>
     <td class="sum-cell"></td>
@@ -1343,6 +1351,7 @@ function addMemberRow(){
     ['mNick','mShelter','mS1','mS2','mS3','mS4','mBlack','mKills'].forEach(id=>$(id).value='');
     $('mTroop').value='';
     $('mBlackWrap').style.display=entryIsOurs?'':'none';
+  $('mS4Wrap').style.display=entryIsOurs?'':'none';
     $('memOverlay').classList.add('show');
   } else {
     tr.querySelector('.nick').focus();
@@ -1465,6 +1474,7 @@ function openMemModal(i){
   $('mS1').value=rowVal(r,'squad1'); $('mS2').value=rowVal(r,'squad2'); $('mS3').value=rowVal(r,'squad3'); $('mS4').value=rowVal(r,'squad4');
   $('mBlack').value=rowVal(r,'black'); $('mKills').value=rowVal(r,'kills');
   $('mBlackWrap').style.display=entryIsOurs?'':'none';
+  $('mS4Wrap').style.display=entryIsOurs?'':'none';
   $('memOverlay').classList.add('show');
 }
 function closeMemModal(){ $('memOverlay').classList.remove('show'); memModalRow=null; }
