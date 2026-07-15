@@ -388,12 +388,14 @@ footer b{color:var(--muted)}
       <button data-t="40" onclick="setTopN(40)">Top 40</button>
       <button data-t="50" onclick="setTopN(50)">Top 50</button>
     </div></div>
+    <div class="segwrap"><span class="seglb">&nbsp;</span>
+      <button class="btn sm" style="padding:8px 14px" title="선택을 비우고 처음부터" onclick="resetCompare()">↺ 초기화</button>
+    </div>
   </div>
   <div class="vs-picker">
     <div class="vs-side a"><label>OUR SIDE</label><input id="pickA" list="dlA" placeholder="이름 입력 (예: 213)" autocomplete="off" onchange="runCompare()" onkeydown="if(event.key==='Enter')runCompare()"><datalist id="dlA"></datalist></div>
     <div class="vs-mid">VS</div>
     <div class="vs-side b"><label>OPPONENT</label><input id="pickB" list="dlB" placeholder="이름 입력 (예: 242)" autocomplete="off" onchange="runCompare()" onkeydown="if(event.key==='Enter')runCompare()"><datalist id="dlB"></datalist></div>
-    <button class="btn sm" style="margin-top:22px;flex:none" title="선택을 비우고 처음부터" onclick="resetCompare()">↺ 초기화</button>
   </div>
   <div id="compareResult"><div class="empty" style="padding:46px 12px"><div style="font-size:2.4rem;margin-bottom:10px;opacity:.55">🆚</div>양쪽을 선택하면 비교 결과가 나옵니다<br><span style="font-size:.8rem;color:var(--dim)">일부만 입력해도 자동으로 찾아줍니다 (예: 213)</span></div></div>
 </section>
