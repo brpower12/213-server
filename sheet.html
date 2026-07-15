@@ -387,32 +387,32 @@ footer b{color:var(--muted)}
 #view-compare .seglb{font-size:.76rem;letter-spacing:.02em;margin-bottom:3px}
 #view-compare .seg button{min-height:36px}
 
-.vs-picker.v2-picker{
+.vs-picker.compare-picker{
   grid-template-columns:minmax(0,1fr) 92px minmax(0,1fr);
   gap:18px;
   align-items:end;
   margin-top:2px;
 }
-.v2-side-label{
+.compare-side-label{
   display:flex;align-items:center;justify-content:space-between;gap:10px;
   margin-bottom:8px;
 }
-.v2-side-label .main{
+.compare-side-label .main{
   display:flex;align-items:center;gap:7px;
   font-size:.74rem;font-weight:900;letter-spacing:.08em;
 }
-.v2-side-label .side-tag{
+.compare-side-label .side-tag{
   font-size:.65rem;font-weight:900;letter-spacing:.08em;
   color:var(--dim);border:1px solid var(--line);
   border-radius:999px;padding:3px 8px;
 }
-.vs-side.a .v2-side-label .main{color:var(--ours)}
-.vs-side.b .v2-side-label .main{color:var(--enemy)}
-.v2-dot{width:8px;height:8px;border-radius:50%;box-shadow:0 0 12px currentColor}
-.vs-side.a .v2-dot{background:var(--ours)}
-.vs-side.b .v2-dot{background:var(--enemy)}
+.vs-side.a .compare-side-label .main{color:var(--ours)}
+.vs-side.b .compare-side-label .main{color:var(--enemy)}
+.compare-dot{width:8px;height:8px;border-radius:50%;box-shadow:0 0 12px currentColor}
+.vs-side.a .compare-dot{background:var(--ours)}
+.vs-side.b .compare-dot{background:var(--enemy)}
 
-.v2-compare-card{
+.compare-select-card{
   min-height:78px!important;
   border-radius:14px!important;
   padding:0!important;
@@ -421,7 +421,7 @@ footer b{color:var(--muted)}
   align-items:center;
   overflow:visible!important;
 }
-.v2-card-emblem{
+.compare-card-emblem{
   width:38px;height:46px;margin-left:12px;
   display:flex;align-items:center;justify-content:center;
   border-radius:11px 11px 14px 14px;
@@ -431,52 +431,52 @@ footer b{color:var(--muted)}
   box-shadow:inset 0 0 18px rgba(255,255,255,.025);
   user-select:none;pointer-events:none;
 }
-.v2-card-emblem svg{width:23px;height:27px;display:block}
+.compare-card-emblem svg{width:23px;height:27px;display:block}
 
-.vs-side.a .v2-card-emblem{color:var(--ours);background:rgba(84,163,255,.08)}
-.vs-side.b .v2-card-emblem{color:var(--enemy);background:rgba(255,99,87,.07)}
-.v2-card-body{min-width:0;padding:10px 6px 9px 2px}
-.v2-card-body .combo-wrap{display:block!important;width:100%!important}
-.v2-card-body input{
+.vs-side.a .compare-card-emblem{color:var(--ours);background:rgba(84,163,255,.08)}
+.vs-side.b .compare-card-emblem{color:var(--enemy);background:rgba(255,99,87,.07)}
+.compare-card-body{min-width:0;padding:10px 6px 9px 2px}
+.compare-card-body .combo-wrap{display:block!important;width:100%!important}
+.compare-card-body input{
   width:100%!important;height:32px!important;
   padding:0!important;border:0!important;border-radius:0!important;
   background:transparent!important;box-shadow:none!important;
   font-size:1.06rem!important;font-weight:900!important;
   color:var(--text)!important;text-align:left!important;
 }
-.v2-card-body input:focus{box-shadow:none!important}
-.v2-card-sub{
+.compare-card-body input:focus{box-shadow:none!important}
+.compare-card-sub{
   display:block;margin-top:3px;
   color:var(--muted);font-size:.76rem;line-height:1.25;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
-.v2-card-action{
+.compare-card-action{
   width:24px;height:24px;border-radius:50%;margin-right:8px;
   display:flex;align-items:center;justify-content:center;
   color:var(--dim);font-size:.85rem;border:1px solid transparent;
   pointer-events:none;
 }
-.v2-compare-card:hover .v2-card-action{
+.compare-select-card:hover .compare-card-action{
   color:var(--text);border-color:var(--line);background:rgba(255,255,255,.025)
 }
-.v2-card-body .combo-dd{
+.compare-card-body .combo-dd{
   top:calc(100% + 16px)!important;
   left:-56px!important;
   right:-40px!important;
   width:auto!important;
   min-width:calc(100% + 96px)!important;
 }
-.v2-vs{
+.compare-vs{
   position:relative;width:84px;height:78px;
   display:flex;align-items:center;justify-content:center;
   align-self:end;
 }
-.v2-vs::before,.v2-vs::after{
+.compare-vs::before,.compare-vs::after{
   content:'';position:absolute;top:50%;width:58px;height:1px;opacity:.72;
 }
-.v2-vs::before{right:52%;background:linear-gradient(90deg,transparent,var(--ours))}
-.v2-vs::after{left:52%;background:linear-gradient(90deg,var(--enemy),transparent)}
-.v2-vs-badge{
+.compare-vs::before{right:52%;background:linear-gradient(90deg,transparent,var(--ours))}
+.compare-vs::after{left:52%;background:linear-gradient(90deg,var(--enemy),transparent)}
+.compare-vs-badge{
   position:relative;z-index:2;width:62px;height:62px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
   color:var(--gold2);font-size:1.22rem;font-weight:950;font-style:italic;
@@ -489,24 +489,24 @@ footer b{color:var(--muted)}
     -18px 0 34px rgba(84,163,255,.08),
     18px 0 34px rgba(255,99,87,.08);
 }
-.compare-empty.v2-empty{
+.compare-empty.compare-empty-state{
   padding:22px 20px;
   border-color:rgba(105,122,153,.23);
   background:
     linear-gradient(90deg,rgba(84,163,255,.025),transparent 35%,rgba(255,99,87,.02)),
     rgba(255,255,255,.008);
 }
-.compare-empty.v2-empty .ce-icon{
+.compare-empty.compare-empty-state .ce-icon{
   width:34px;height:34px;margin:0 auto 8px;border-radius:10px;
   display:flex;align-items:center;justify-content:center;
   color:var(--gold);font-size:1rem;border:1px solid rgba(242,193,78,.25);
   background:rgba(242,193,78,.055);
 }
 @media(max-width:820px){
-  .vs-picker.v2-picker{grid-template-columns:1fr;gap:12px}
-  .v2-vs{display:none}
-  .v2-compare-card{min-height:72px!important}
-  .v2-card-body .combo-dd{left:-56px!important;right:-40px!important}
+  .vs-picker.compare-picker{grid-template-columns:1fr;gap:12px}
+  .compare-vs{display:none}
+  .compare-select-card{min-height:72px!important}
+  .compare-card-body .combo-dd{left:-56px!important;right:-40px!important}
 }
 
 
@@ -537,6 +537,94 @@ footer b{color:var(--muted)}
 }
 #view-entry .entry-table th{
   z-index:2!important;
+}
+
+
+
+/* ===== 운영 탭 사용성 개선 ===== */
+/* 순위 */
+#view-rank .toolbar{background:linear-gradient(180deg,rgba(255,255,255,.022),transparent),var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin-bottom:12px}
+.rank-search-row{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.055)}
+.rank-search-row input{width:min(360px,100%);padding-left:36px;background-image:linear-gradient(transparent,transparent);position:relative}
+.rank-search-wrap{position:relative;width:min(360px,100%)}
+.rank-search-wrap::before{content:'⌕';position:absolute;left:12px;top:50%;transform:translateY(-52%);z-index:2;color:var(--dim);font-size:1rem;pointer-events:none}
+.rank-search-wrap input{width:100%}
+.rank-result-count{font-size:.78rem;color:var(--muted);white-space:nowrap}
+.rank-meta-strip{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;margin:0 0 12px}
+.rank-meta-pill{border:1px solid var(--line);background:rgba(20,25,38,.78);border-radius:999px;padding:5px 11px;font-size:.78rem;color:var(--muted)}
+#rankBox{max-height:calc(100vh - 285px);overflow:auto;position:relative;padding:0}
+#rankBox .rank-table{max-width:none}
+.rank-table thead th{position:sticky;top:0;z-index:8;background:#171E2C;box-shadow:0 1px 0 var(--line),0 8px 16px rgba(0,0,0,.18)}
+.rank-table tr.rank-data-row[hidden]{display:none}
+.rank-origin-badge{display:inline-block;margin-left:6px;padding:2px 6px;border-radius:999px;font-size:.62rem;font-weight:800;color:var(--ours);background:rgba(84,163,255,.1);border:1px solid rgba(84,163,255,.25);vertical-align:1px}
+
+/* 입력 */
+.entry-control-panel{overflow:visible}
+.entry-toolbar-main{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.entry-select-group,.entry-action-group{display:flex;align-items:flex-end;gap:9px;flex-wrap:wrap}
+.entry-field-mini{display:flex;flex-direction:column;gap:5px}
+.entry-field-mini>span{font-size:.72rem;font-weight:800;color:var(--muted)}
+.entry-action-group{margin-left:auto}
+.entry-empty-state{padding:52px 18px;text-align:center;color:var(--dim)}
+.entry-empty-state .empty-icon{width:42px;height:42px;margin:0 auto 10px;border-radius:12px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);background:var(--panel);font-size:1.15rem}
+.entry-table tr.dirty td{background:#1C1B12;box-shadow:inset 0 1px rgba(242,193,78,.13),inset 0 -1px rgba(242,193,78,.13)}
+.entry-table tr.dirty td:first-child{box-shadow:inset 3px 0 var(--gold),inset 0 1px rgba(242,193,78,.13),inset 0 -1px rgba(242,193,78,.13)}
+.entry-row-actions{display:flex;gap:7px;align-items:center;justify-content:flex-end;min-width:92px}
+.entry-row-actions .danger{margin-left:3px}
+#entrySaveBar{z-index:35;margin-top:0;padding:16px 3px 7px;background:linear-gradient(transparent,rgba(11,14,20,.92) 28%,var(--bg) 58%)}
+#entrySaveBar .save-status{color:var(--muted);font-size:.82rem;font-weight:700}
+#entrySaveBar.has-dirty .save-status{color:var(--gold)}
+#entrySaveBtn:disabled{opacity:.45;cursor:default;transform:none;box-shadow:none}
+
+/* 제출 */
+.sub-filterbar{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.sub-filterbar .seg{margin-right:auto}
+.sub-filter-count{display:inline-flex;min-width:19px;height:18px;align-items:center;justify-content:center;border-radius:999px;padding:0 5px;margin-left:4px;font-size:.68rem;background:rgba(255,255,255,.07);color:var(--muted)}
+.sub-filterbar button.active .sub-filter-count{background:rgba(84,163,255,.17);color:var(--ours)}
+.sub-card{transition:border-color .14s,background .14s}
+.sub-card.pending{border-left:3px solid rgba(84,163,255,.72)}
+.sub-card.done{opacity:.82;background:rgba(27,34,49,.68)}
+.sub-card .acts .btn{min-height:34px;padding:7px 13px}
+.st-tag.stale{background:rgba(242,193,78,.12);color:var(--gold);border:1px solid rgba(242,193,78,.25)}
+.sub-list-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:6px 0 11px}
+.sub-list-head h2{margin:0}
+
+/* 관리 */
+.manage-nav{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px;padding:10px}
+.manage-nav button{flex:1;min-width:140px}
+.manage-nav button.active{border-color:rgba(84,163,255,.5);color:var(--ours);background:rgba(84,163,255,.09);box-shadow:inset 0 0 0 1px rgba(84,163,255,.08)}
+.manage-section{display:none}
+.manage-section.active{display:block}
+.manage-danger-action{margin-left:6px!important;border-color:rgba(255,107,107,.24)!important;background:rgba(255,107,107,.045)!important}
+.manage-status{display:inline-block;border-radius:999px;padding:2px 8px;font-size:.7rem;font-weight:800}
+.manage-status.wait{color:var(--gold);background:rgba(242,193,78,.1)}
+
+/* 이력 */
+.history-controls{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.history-search{min-width:240px;flex:1}
+.history-count{margin-left:auto;color:var(--muted);font-size:.8rem;font-weight:700;white-space:nowrap}
+.history-date{display:flex;align-items:center;gap:10px;margin:18px 0 2px;color:var(--text);font-size:.84rem;font-weight:900}
+.history-date:first-child{margin-top:0}
+.history-date::after{content:'';height:1px;flex:1;background:linear-gradient(90deg,var(--line),transparent)}
+.hist-item{padding:12px 6px}
+.hist-item .when{min-width:48px;color:var(--muted);font-weight:700}
+.hist-item .who{display:inline-flex;align-items:center;padding:2px 8px;border-radius:999px;color:var(--gold);background:rgba(242,193,78,.08);border:1px solid rgba(242,193,78,.16);font-size:.74rem}
+
+@media(max-width:820px){
+  #rankBox{max-height:none}
+  .entry-action-group{margin-left:0}
+  .manage-nav button{min-width:calc(50% - 5px)}
+}
+@media(max-width:640px){
+  .entry-toolbar-main{align-items:stretch}
+  .entry-select-group,.entry-action-group{width:100%}
+  .entry-field-mini{flex:1;min-width:130px}
+  .entry-field-mini input{width:100%!important}
+  .entry-action-group .btn{flex:1}
+  #entrySaveBar{padding-left:2px;padding-right:2px}
+  .history-search{min-width:100%;order:3}
+  .history-count{margin-left:0}
+  .manage-nav button{min-width:100%}
 }
 
 </style>
@@ -615,44 +703,44 @@ footer b{color:var(--muted)}
       <button class="btn sm" style="padding:8px 14px" title="선택을 비우고 처음부터" onclick="resetCompare()">↺ 초기화</button>
     </div>
   </div>
-  <div class="vs-picker v2-picker">
+  <div class="vs-picker compare-picker">
     <div class="vs-side a">
-      <div class="v2-side-label">
-        <span class="main"><span class="v2-dot"></span><span id="compareLabelA">서버 A</span></span>
+      <div class="compare-side-label">
+        <span class="main"><span class="compare-dot"></span><span id="compareLabelA">서버 A</span></span>
         
       </div>
-      <div class="vs-card v2-compare-card">
-        <div class="v2-card-emblem"><svg viewBox="0 0 24 28" aria-hidden="true">
+      <div class="vs-card compare-select-card">
+        <div class="compare-card-emblem"><svg viewBox="0 0 24 28" aria-hidden="true">
 <path d="M12 1.5 21 5v7.2c0 6.2-3.8 10.8-9 14.3-5.2-3.5-9-8.1-9-14.3V5l9-3.5Z" fill="none" stroke="currentColor" stroke-width="1.8"/>
 <path d="M12 6v14M7.3 10.2 12 6l4.7 4.2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg></div>
-        <div class="v2-card-body">
+        <div class="compare-card-body">
           <input id="pickA" placeholder="서버 입력 (예: 213)" autocomplete="off" spellcheck="false">
-          <span class="v2-card-sub" id="compareMetaA">서버 번호를 입력하거나 목록에서 선택</span>
+          <span class="compare-card-sub" id="compareMetaA">서버 번호를 입력하거나 목록에서 선택</span>
         </div>
-        <div class="v2-card-action">⌄</div>
+        <div class="compare-card-action">⌄</div>
       </div>
     </div>
-    <div class="v2-vs" aria-hidden="true"><div class="v2-vs-badge">VS</div></div>
+    <div class="compare-vs" aria-hidden="true"><div class="compare-vs-badge">VS</div></div>
     <div class="vs-side b">
-      <div class="v2-side-label">
-        <span class="main"><span class="v2-dot"></span><span id="compareLabelB">서버 B</span></span>
+      <div class="compare-side-label">
+        <span class="main"><span class="compare-dot"></span><span id="compareLabelB">서버 B</span></span>
         
       </div>
-      <div class="vs-card v2-compare-card">
-        <div class="v2-card-emblem"><svg viewBox="0 0 24 28" aria-hidden="true">
+      <div class="vs-card compare-select-card">
+        <div class="compare-card-emblem"><svg viewBox="0 0 24 28" aria-hidden="true">
 <path d="M12 1.5 21 5v7.2c0 6.2-3.8 10.8-9 14.3-5.2-3.5-9-8.1-9-14.3V5l9-3.5Z" fill="none" stroke="currentColor" stroke-width="1.8"/>
 <path d="M12 6v14M7.3 10.2 12 6l4.7 4.2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg></div>
-        <div class="v2-card-body">
+        <div class="compare-card-body">
           <input id="pickB" placeholder="서버 입력 (예: 213)" autocomplete="off" spellcheck="false">
-          <span class="v2-card-sub" id="compareMetaB">서버 번호를 입력하거나 목록에서 선택</span>
+          <span class="compare-card-sub" id="compareMetaB">서버 번호를 입력하거나 목록에서 선택</span>
         </div>
-        <div class="v2-card-action">⌄</div>
+        <div class="compare-card-action">⌄</div>
       </div>
     </div>
   </div>
-  <div id="compareResult"><div class="compare-empty v2-empty">
+  <div id="compareResult"><div class="compare-empty compare-empty-state">
   <div class="ce-icon">◇</div>
   <div class="ce-title">두 비교 대상을 선택하세요</div>
   <div class="ce-sub">비교할 대상을 직접 입력하거나 목록에서 선택할 수 있습니다.</div>
@@ -681,39 +769,53 @@ footer b{color:var(--muted)}
     <div class="segwrap"><span class="seglb">&nbsp;</span>
       <button class="btn sm" style="padding:8px 14px" onclick="loadRank(true)">↻ 새로고침</button>
     </div>
+    <div class="rank-search-row" style="flex-basis:100%">
+      <div class="rank-search-wrap"><input id="rankSearch" placeholder="닉네임·서버·연맹·파벌 검색" autocomplete="off" oninput="filterRankRows()"></div>
+      <span class="rank-result-count" id="rankSearchCount">검색어 없이 전체 표시</span>
+    </div>
   </div>
-  <div style="display:flex;flex-direction:column;gap:2px;align-items:center;margin-bottom:12px">
-    <span class="hint" id="rankScopeHint">1편대 총합 기준</span>
-    <span class="hint" id="rankUpdated" style="color:var(--gold)"></span>
+  <div class="rank-meta-strip">
+    <span class="rank-meta-pill" id="rankScopeHint">1편대 총합 기준</span>
+    <span class="rank-meta-pill" id="rankUpdated"></span>
   </div>
   <div class="panel table-scroll" id="rankBox"><div class="empty">불러오는 중...</div></div>
 </section>
 
 <!-- ============ 입력 ============ -->
 <section class="view" id="view-entry">
-  <div class="panel">
-    <div class="row">
-      <input id="entryServer" placeholder="서버 (예: 213)" autocomplete="off" style="width:150px" onchange="onEntryServerChange()">
-      <input id="entryAlliance" placeholder="연맹 (예: NXT)" autocomplete="off" style="width:150px" onchange="loadEntryTable()">
-      <button class="btn" onclick="loadEntryTable()">불러오기</button>
-      <button class="btn" onclick="addMemberRow()">＋ 인원 추가</button>
-      <button class="btn" onclick="$('xlsxFile').click()">📤 엑셀 일괄 입력</button>
-      <input type="file" id="xlsxFile" accept=".xlsx,.xls,.csv" style="display:none" onchange="importExcel(this.files[0])">
-      <button class="btn primary" onclick="saveEntries()">💾 변경사항 저장</button>
-      <span class="hint" id="dirtyCount"></span>
+  <div class="panel entry-control-panel">
+    <div class="entry-toolbar-main">
+      <div class="entry-select-group">
+        <label class="entry-field-mini"><span>서버</span><input id="entryServer" placeholder="예: 213" autocomplete="off" style="width:150px"></label>
+        <label class="entry-field-mini"><span>연맹</span><input id="entryAlliance" placeholder="예: NXT" autocomplete="off" style="width:150px"></label>
+        <button class="btn" onclick="loadEntryTable()">불러오기</button>
+      </div>
+      <div class="entry-action-group">
+        <button class="btn" onclick="addMemberRow()">＋ 인원 추가</button>
+        <button class="btn" onclick="$('xlsxFile').click()">📤 엑셀 일괄 입력</button>
+        <input type="file" id="xlsxFile" accept=".xlsx,.xls,.csv" style="display:none" onchange="importExcel(this.files[0])">
+      </div>
     </div>
-    <p class="hint" style="margin-top:9px">전투력 <b>6.22G</b> 또는 <b>6220</b> · 킬수 <b>27,066,265</b> 형식 · 저장 시 전투력순 자동 정렬</p>
+    <p class="hint" style="margin-top:11px">전투력 <b>6.22G</b> 또는 <b>6220</b> · 킬수 <b>27,066,265</b> 형식 · 저장 시 전투력순 자동 정렬</p>
   </div>
-  <div class="table-wrap"><div id="entryTableBox"><div class="empty">서버와 연맹을 선택하세요</div></div><div id="entryCards"></div></div>
-
+  <div class="table-wrap"><div id="entryTableBox"><div class="entry-empty-state"><div class="empty-icon">✎</div>서버와 연맹을 선택하세요</div></div><div id="entryCards"></div></div>
+  <div class="savebar" id="entrySaveBar">
+    <span class="save-status" id="dirtyCount">변경된 항목 없음</span>
+    <button class="btn primary" id="entrySaveBtn" onclick="saveEntries()" disabled>💾 변경사항 저장</button>
+  </div>
 </section>
 
 <!-- ============ 제출 확인 ============ -->
 <section class="view" id="view-subs">
   <div class="panel" style="margin-bottom:14px">
-    <div class="row">
-      <button class="btn sm" onclick="loadSubs()">새로고침</button>
-      <span class="hint">연맹원 셀프 제출 목록 · <b>✓ 반영</b> 시 해당 인원 기록에 자동 입력</span>
+    <div class="sub-filterbar">
+      <div class="seg" id="subFilterSeg">
+        <button class="active" data-sub="pending" onclick="setSubFilter('pending')">대기 중 <span class="sub-filter-count" id="subPendingCount">0</span></button>
+        <button data-sub="done" onclick="setSubFilter('done')">처리 완료 <span class="sub-filter-count" id="subDoneCount">0</span></button>
+        <button data-sub="all" onclick="setSubFilter('all')">전체 <span class="sub-filter-count" id="subAllCount">0</span></button>
+      </div>
+      <button class="btn sm" onclick="loadSubs()">↻ 새로고침</button>
+      <span class="hint">✓ 반영 시 해당 인원 기록에 자동 입력</span>
     </div>
   </div>
   <div id="subList"><div class="empty">불러오는 중...</div></div>
@@ -721,51 +823,67 @@ footer b{color:var(--muted)}
 
 <!-- ============ 관리 ============ -->
 <section class="view" id="view-manage">
-  <div class="panel" style="margin-bottom:14px">
-    <h2>🗂 서버 & 연맹</h2>
-    <div class="row">
-      <input id="newServerName" placeholder="서버 번호 (예: 213)" style="width:150px" onkeydown="if(event.key==='Enter')addServer()">
-      <button class="btn primary" onclick="addServer()">＋ 서버 추가</button>
-      <span style="flex:1"></span>
-      <button class="btn sm" onclick="exportExcel()">📊 엑셀 내보내기</button>
-      <button class="btn sm" onclick="downloadBackup()">📦 백업</button>
-    </div>
-    <p class="hint" style="margin-top:8px">연맹 이름 ✎ 클릭 시 이름·소속 서버 수정 · 연맹 전체 이민 포함</p>
-    <div id="serverList" style="margin-top:12px"></div>
+  <div class="panel manage-nav">
+    <button class="btn active" data-manage="servers" onclick="setManageSection('servers')">🗂 서버·연맹</button>
+    <button class="btn" data-manage="factions" onclick="setManageSection('factions')">⚜️ 파벌</button>
+    <button class="btn" data-manage="exports" onclick="setManageSection('exports')">📤 반출 승인</button>
+    <button class="btn" data-manage="permissions" onclick="setManageSection('permissions')">🔐 운영진 권한</button>
   </div>
-  <div class="panel" style="margin-bottom:14px">
-    <h2 class="acc-purple">⚜️ 파벌 관리 <span class="hint" style="font-weight:400">(시즌: 여러 서버 = 한 편)</span></h2>
-    <div class="row">
-      <input id="newFactionName" placeholder="파벌 이름 (예: 우리파벌)" style="width:190px" onkeydown="if(event.key==='Enter')addFaction()">
-      <button class="btn primary" onclick="addFaction()">＋ 파벌 만들기</button>
+  <div class="manage-section active" data-manage-section="servers">
+    <div class="panel" style="margin-bottom:14px">
+      <h2>🗂 서버 & 연맹</h2>
+      <div class="row">
+        <input id="newServerName" placeholder="서버 번호 (예: 213)" style="width:150px" onkeydown="if(event.key==='Enter')addServer()">
+        <button class="btn primary" onclick="addServer()">＋ 서버 추가</button>
+        <span style="flex:1"></span>
+        <button class="btn sm" onclick="exportExcel()">📊 엑셀 내보내기</button>
+        <button class="btn sm" onclick="downloadBackup()">📦 백업</button>
+      </div>
+      <p class="hint" style="margin-top:8px">연맹 이름 ✎ 클릭 시 이름·소속 서버 수정 · 삭제 기능은 되돌릴 수 없으므로 확인 후 사용</p>
+      <div id="serverList" style="margin-top:12px"></div>
     </div>
-    <p class="hint" style="margin-top:8px">시즌 구성에 맞춰 서버 추가·제거</p>
-    <div id="factionList" style="margin-top:12px"></div>
   </div>
-  <div class="panel" style="margin-bottom:14px">
-    <h2 class="acc-blue">📤 엑셀 반출 승인 <span class="hint" style="font-weight:400">(관리자 PIN 필요)</span></h2>
-    <div class="row">
-      <button class="btn" onclick="openExportReqs()">요청 확인</button>
-      <span class="hint">승인 후 15분 내 재클릭 시 다운로드</span>
+  <div class="manage-section" data-manage-section="factions">
+    <div class="panel" style="margin-bottom:14px">
+      <h2 class="acc-purple">⚜️ 파벌 관리 <span class="hint" style="font-weight:400">(시즌: 여러 서버 = 한 편)</span></h2>
+      <div class="row">
+        <input id="newFactionName" placeholder="파벌 이름 (예: 우리파벌)" style="width:190px" onkeydown="if(event.key==='Enter')addFaction()">
+        <button class="btn primary" onclick="addFaction()">＋ 파벌 만들기</button>
+      </div>
+      <p class="hint" style="margin-top:8px">시즌 구성에 맞춰 서버 추가·제거</p>
+      <div id="factionList" style="margin-top:12px"></div>
     </div>
-    <div id="exportReqPanel" style="margin-top:12px"></div>
   </div>
-  <div class="panel" style="margin-bottom:14px">
-    <h2 class="acc-red">🔐 탭 권한 관리 <span class="hint" style="font-weight:400">(관리자 PIN 필요)</span></h2>
-    <div class="row">
-      <button class="btn" onclick="openPerms()">권한 관리 열기</button>
-      <span class="hint">해제한 탭은 해당 운영진에게 비표시</span>
+  <div class="manage-section" data-manage-section="exports">
+    <div class="panel" style="margin-bottom:14px">
+      <h2 class="acc-blue">📤 엑셀 반출 승인 <span class="hint" style="font-weight:400">(관리자 PIN 필요)</span></h2>
+      <div class="row">
+        <button class="btn" onclick="openExportReqs()">요청 확인</button>
+        <span class="hint">승인 후 15분 내 재클릭 시 다운로드</span>
+      </div>
+      <div id="exportReqPanel" style="margin-top:12px"></div>
     </div>
-    <div id="permPanel" style="margin-top:12px"></div>
+  </div>
+  <div class="manage-section" data-manage-section="permissions">
+    <div class="panel" style="margin-bottom:14px">
+      <h2 class="acc-red">🔐 탭 권한 관리 <span class="hint" style="font-weight:400">(관리자 PIN 필요)</span></h2>
+      <div class="row">
+        <button class="btn" onclick="openPerms()">권한 관리 열기</button>
+        <span class="hint">해제한 탭은 해당 운영진에게 비표시</span>
+      </div>
+      <div id="permPanel" style="margin-top:12px"></div>
+    </div>
   </div>
 </section>
 
 <!-- ============ 이력 ============ -->
 <section class="view" id="view-history">
   <div class="panel" style="margin-bottom:14px">
-    <div class="row">
+    <div class="history-controls">
       <select id="histServer" onchange="loadHistory()"></select>
-      <button class="btn" onclick="loadHistory()">새로고침</button>
+      <input class="history-search" id="histSearch" placeholder="닉네임·연맹·입력자 검색" autocomplete="off" oninput="renderHistory()">
+      <span class="history-count" id="histCount">최근 기록 최대 120건</span>
+      <button class="btn" onclick="loadHistory()">↻ 새로고침</button>
     </div>
   </div>
   <div class="panel" id="histList"><div class="empty">불러오는 중...</div></div>
@@ -857,6 +975,7 @@ footer b{color:var(--muted)}
 <script>
 let sb=null, servers=[], alliances=[], factions=[], factionServers=[], mode='server', basis=1, topN=0, rankMode='server', rankTopN=0, entryIsOurs=true;
 let entryRows=[], rankCache=null, lastCmp=null, cmpShowAll=false, editorPerms=null, adminPin=null;
+let subFilter='pending', subCache=[], historyCache=[], manageSection='servers';
 const TABS=[['compare','📊 전력 비교'],['rank','🏆 순위'],['entry','✏️ 입력'],['subs','📥 제출'],['manage','🗂 관리'],['history','🕘 이력']];
 const $=id=>document.getElementById(id);
 const BASIS_LABEL=['1편대','1~2편대','1~3편대','1~4편대'];
@@ -1014,7 +1133,7 @@ async function enterApp(){
 function resetCompare(){
   $('pickA').value=''; $('pickB').value='';
   lastRaw=null; cmpShowAll=false;
-  $('compareResult').innerHTML='<div class="compare-empty v2-empty"><div class="ce-icon">◇</div><div class="ce-title">두 비교 대상을 선택하세요</div><div class="ce-sub">비교할 대상을 직접 입력하거나 목록에서 선택할 수 있습니다.</div></div>';
+  $('compareResult').innerHTML='<div class="compare-empty compare-empty-state"><div class="ce-icon">◇</div><div class="ce-title">두 비교 대상을 선택하세요</div><div class="ce-sub">비교할 대상을 직접 입력하거나 목록에서 선택할 수 있습니다.</div></div>';
   try{ localStorage.removeItem('cmp_state'); }catch(e){}
   updateCompareCardMeta();
 }
@@ -1077,7 +1196,7 @@ function switchView(v){
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===v));
   document.querySelectorAll('.view').forEach(s=>s.classList.toggle('active',s.id==='view-'+v));
   if(v==='history') loadHistory();
-  if(v==='manage') renderManage();
+  if(v==='manage'){ renderManage(); setManageSection(manageSection); }
   if(v==='subs') loadSubs();
   if(v==='rank') loadRank();
 }
@@ -1148,7 +1267,7 @@ function updateCompareCardMeta(){
   if(mb) mb.textContent=compareMetaText('pickB');
 }
 
-function setMode(m){ mode=m; document.querySelectorAll('#modeSeg button').forEach(b=>b.classList.toggle('active',b.dataset.m===m)); updateCompareLabels(); fillPickers(); $('compareResult').innerHTML='<div class="compare-empty v2-empty"><div class="ce-icon">◇</div><div class="ce-title">두 비교 대상을 선택하세요</div><div class="ce-sub">비교할 대상을 직접 입력하거나 목록에서 선택할 수 있습니다.</div></div>'; }
+function setMode(m){ mode=m; document.querySelectorAll('#modeSeg button').forEach(b=>b.classList.toggle('active',b.dataset.m===m)); updateCompareLabels(); fillPickers(); $('compareResult').innerHTML='<div class="compare-empty compare-empty-state"><div class="ce-icon">◇</div><div class="ce-title">두 비교 대상을 선택하세요</div><div class="ce-sub">비교할 대상을 직접 입력하거나 목록에서 선택할 수 있습니다.</div></div>'; }
 function setBasis(n){ basis=n; document.querySelectorAll('#basisSeg button').forEach(b=>b.classList.toggle('active',+b.dataset.b===n)); rerenderCompare(); }
 let pickMap=new Map(), entSrvMap=new Map(), entAliMap=new Map();
 function resolveFromMap(el,map){
@@ -1541,6 +1660,14 @@ function renderCompare(nameA,A,nameB,B){
 
 /* ---------- 순위 ---------- */
 function setRankTop(n){ rankTopN=n; document.querySelectorAll('#rankTopSeg button').forEach(b=>b.classList.toggle('active',+b.dataset.t===n)); renderRank(); }
+function filterRankRows(){
+  const q=(($('rankSearch')||{}).value||'').trim().toLowerCase();
+  const rows=[...document.querySelectorAll('#rankBox .rank-data-row')];
+  let shown=0;
+  rows.forEach(tr=>{ const ok=!q||(tr.dataset.search||'').includes(q); tr.hidden=!ok; if(ok) shown++; });
+  const count=$('rankSearchCount');
+  if(count) count.textContent=q?`검색 결과 ${shown} / ${rows.length}건`:`전체 ${rows.length}건 표시`;
+}
 function setRankMode(m){
   rankMode=m;
   document.querySelectorAll('#rankSeg button').forEach(b=>b.classList.toggle('active',b.dataset.r===m));
@@ -1586,18 +1713,19 @@ function renderUserRank(members,recs){
   const medal=r=>r===1?'🥇':r===2?'🥈':r===3?'🥉':r;
   const fd=t=>{ if(!t||t===Infinity) return '-'; const d=new Date(t); return String(d.getFullYear()).slice(2)+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0'); };
   $('rankBox').innerHTML=`<table class="rank-table">
-    <tr><th>순위</th><th>닉네임</th><th>소속</th><th class="ctr">병종</th><th class="ctr">산업</th><th class="num">1편대</th><th class="num">합산</th><th class="num">킬수</th><th class="ctr">기록일</th></tr>
-    ${shown.map(r=>`<tr class="${r.mine?'mine':''} ${r.rank<=3?'t'+r.rank:''}">
+    <thead><tr><th>순위</th><th>닉네임</th><th>소속</th><th class="ctr">병종</th><th class="ctr">산업</th><th class="num">1편대</th><th class="num">합산</th><th class="num">킬수</th><th class="ctr">기록일</th></tr></thead>
+    <tbody>${shown.map(r=>`<tr class="rank-data-row ${r.mine?'mine':''} ${r.rank<=3?'t'+r.rank:''}" data-search="${esc([r.m.nickname,r.sv?r.sv.name:'',r.al?r.al.name:'',r.m.troop_type||''].join(' ').toLowerCase())}">
       <td>${medal(r.rank)}</td>
-      <td><b>${esc(r.m.nickname)}</b></td>
+      <td><b>${esc(r.m.nickname)}</b>${r.mine?'<span class="rank-origin-badge">213</span>':''}</td>
       <td><span class="sub2">${esc(r.sv?r.sv.name:'?')} · ${esc(r.al?r.al.name:'?')}</span></td>
       <td class="ctr">${esc(r.m.troop_type||'-')}</td>
       <td class="ctr">${esc(r.m.shelter||'-')}</td>
       <td class="num"><b>${fmtG(r.s1)}</b></td>
       <td class="num">${fmtG(r.sum4)}</td>
       <td class="num">${r.kills?r.kills.toLocaleString():'-'}</td>
-      <td class="ctr"><span class="sub2">${fd(r.recAt)}</span></td></tr>`).join('')}
+      <td class="ctr"><span class="sub2">${fd(r.recAt)}</span></td></tr>`).join('')}</tbody>
   </table>`;
+  filterRankRows();
 }
 function renderRank(){
   if(!rankCache) return;
@@ -1636,21 +1764,22 @@ function renderRank(){
     g.tot4=take.reduce((a,r)=>a+r.sum4,0);
     return g;
   }).sort((a,b)=>(b.s1-a.s1)||a.name.localeCompare(b.name,'ko'));
-  if(!list.length){ $('rankBox').innerHTML='<div class="empty">데이터가 없습니다</div>'; return; }
+  if(!list.length){ $('rankBox').innerHTML='<div class="empty">데이터가 없습니다</div>'; if($('rankSearchCount')) $('rankSearchCount').textContent='0건'; return; }
   $('rankScopeHint').textContent=rankTopN>0?`각 그룹 상위 ${rankTopN}명 합계 기준`:'전체 인원 · 1편대 총합 기준';
   let prevS1=null,rank=0;
   list.forEach((g,i)=>{ if(g.s1!==prevS1){rank=i+1;prevS1=g.s1;} g.rank=rank; });
   const medal=r=>r===1?'🥇':r===2?'🥈':r===3?'🥉':r;
   $('rankBox').innerHTML=`<table class="rank-table">
-    <tr><th>순위</th><th>${rankMode==='server'?'서버':rankMode==='alliance'?'연맹':'파벌'}</th><th class="num">인원</th><th class="num">1편대 총합</th><th class="num">1편대 평균</th><th class="num">합산 총합</th></tr>
-    ${list.map(g=>`<tr class="${g.mine?'mine':''} ${g.rank<=3?'t'+g.rank:''}">
+    <thead><tr><th>순위</th><th>${rankMode==='server'?'서버':rankMode==='alliance'?'연맹':'파벌'}</th><th class="num">인원</th><th class="num">1편대 총합</th><th class="num">1편대 평균</th><th class="num">합산 총합</th></tr></thead>
+    <tbody>${list.map(g=>`<tr class="rank-data-row ${g.mine?'mine':''} ${g.rank<=3?'t'+g.rank:''}" data-search="${esc([g.name,g.sub].join(' ').toLowerCase())}">
       <td>${medal(g.rank)}</td>
-      <td>${esc(g.name)}${g.sub?` <span class="sub2">${esc(g.sub)}</span>`:''}</td>
+      <td>${esc(g.name)}${g.mine?'<span class="rank-origin-badge">213</span>':''}${g.sub?` <span class="sub2">${esc(g.sub)}</span>`:''}</td>
       <td class="num">${g.cnt}명</td>
       <td class="num"><b>${fmtG(g.s1)}</b></td>
       <td class="num">${fmtG(g.avg)}</td>
-      <td class="num">${fmtG(g.tot4)}</td></tr>`).join('')}
+      <td class="num">${fmtG(g.tot4)}</td></tr>`).join('')}</tbody>
   </table>`;
+  filterRankRows();
 }
 
 /* ---------- 입력 ---------- */
@@ -1658,14 +1787,21 @@ function fillEntrySelectors(){
   entSrvMap=new Map(servers.map(s=>[s.name+' 서버',s.id]));
   $('entryServer').value=''; $('entryAlliance').value=''; entAliMap=new Map();
 }
+function showEntryEmpty(message='서버와 연맹을 선택하세요'){
+  entryRows=[];
+  $('entryTableBox').innerHTML=`<div class="entry-empty-state"><div class="empty-icon">✎</div>${esc(message)}</div>`;
+  $('entryCards').innerHTML='';
+  updateDirty();
+}
 function onEntryServerChange(){
   const sid=entrySid();
   entAliMap=new Map(alliances.filter(a=>a.server_id===sid).map(a=>[a.name,a.id]));
   $('entryAlliance').value='';
+  showEntryEmpty(sid?'연맹을 선택하세요':'서버와 연맹을 선택하세요');
 }
 async function loadEntryTable(){
   const aid=entryAid();
-  if(!aid){ $('entryTableBox').innerHTML='<div class="empty">서버와 연맹을 선택하세요</div>'; $('entryCards').innerHTML=''; return; }
+  if(!aid){ showEntryEmpty(); return; }
   $('entryTableBox').innerHTML='<div class="empty">불러오는 중...</div>';
   const m=await sb.from('members').select('*').eq('alliance_id',aid).eq('is_active',true).order('nickname');
   if(m.error){toast(m.error.message);return;}
@@ -1699,7 +1835,7 @@ function buildRow(mem,rec,idx){
     <td><input class="pwr" inputmode="numeric" value="${rec.kills!=null?(+rec.kills).toLocaleString():''}" style="width:100px" data-f="kills"></td>
     <td class="sum-cell"></td>
     <td class="meta">${rec.recorded_at?fmtTime(rec.recorded_at)+' · '+esc(rec.editor):'기록 없음'}</td>
-    <td style="white-space:nowrap"><button class="btn sm" title="다른 서버·연맹으로 이동" onclick="openMove(this)">⇄</button> <button class="btn sm danger" title="목록에서 제외" onclick="removeMember(this)">✕</button></td>`;
+    <td><div class="entry-row-actions"><button class="btn sm" title="다른 서버·연맹으로 이동" onclick="openMove(this)">⇄</button><button class="btn sm danger" title="목록에서 제외" onclick="removeMember(this)">✕</button></div></td>`;
   const n=x=>x==null?null:+x;
   const row={memberId:mem?mem.id:null, el:tr,
     origMeta:{nickname:mem?mem.nickname:'', troop_type:mem?mem.troop_type||'':'', shelter:mem?mem.shelter||'':''},
@@ -1749,7 +1885,13 @@ function isDirty(r){
   return false;
 }
 function markDirty(r){ r.el.classList.toggle('dirty',isDirty(r)); updateDirty(); }
-function updateDirty(){ const n=entryRows.filter(isDirty).length; $('dirtyCount').textContent=n?`변경된 항목 ${n}개`:''; }
+function updateDirty(){
+  const n=entryRows.filter(isDirty).length;
+  const status=$('dirtyCount'), bar=$('entrySaveBar'), btn=$('entrySaveBtn');
+  if(status) status.textContent=n?`저장 대기 ${n}개`:'변경된 항목 없음';
+  if(bar) bar.classList.toggle('has-dirty',n>0);
+  if(btn) btn.disabled=n===0;
+}
 function addMemberRow(){
   if(!entryAid()){toast('연맹을 먼저 선택하세요');return;}
   let tb=$('entryTableBox').querySelector('table');
@@ -1922,32 +2064,51 @@ async function refreshSubBadge(){
   const r=await sb.from('submissions').select('id',{count:'exact',head:true}).eq('status','pending');
   if(!r.error){ const n=r.count||0; $('subBadge').style.display=n?'inline-block':'none'; $('subBadge').textContent=n; }
 }
-async function loadSubs(){
-  $('subList').innerHTML='<div class="empty">불러오는 중...</div>';
-  const r=await sb.from('submissions').select('*').order('submitted_at',{ascending:false}).limit(100);
-  if(r.error){$('subList').innerHTML='<div class="empty">오류: '+esc(r.error.message)+'</div>';return;}
-  refreshSubBadge();
-  if(!r.data.length){$('subList').innerHTML='<div class="empty">아직 제출된 내용이 없습니다.<br>연맹원들에게 제출 페이지(…/submit.html) 링크를 공유하세요.</div>';return;}
-  const pend=r.data.filter(x=>x.status==='pending'), done=r.data.filter(x=>x.status!=='pending');
-  const card=(s,isPend)=>{
+function setSubFilter(f){
+  subFilter=f;
+  document.querySelectorAll('#subFilterSeg button').forEach(b=>b.classList.toggle('active',b.dataset.sub===f));
+  renderSubs();
+}
+function renderSubs(){
+  const all=subCache||[];
+  const pend=all.filter(x=>x.status==='pending');
+  const done=all.filter(x=>x.status!=='pending');
+  if($('subPendingCount')) $('subPendingCount').textContent=pend.length;
+  if($('subDoneCount')) $('subDoneCount').textContent=done.length;
+  if($('subAllCount')) $('subAllCount').textContent=all.length;
+  if(!all.length){
+    $('subList').innerHTML='<div class="empty">아직 제출된 내용이 없습니다.<br>연맹원들에게 제출 페이지(…/submit.html) 링크를 공유하세요.</div>';
+    return;
+  }
+  const shown=subFilter==='pending'?pend:subFilter==='done'?done:all;
+  const card=(s)=>{
+    const isPend=s.status==='pending';
     const vals=[['1편대',s.squad1],['2편대',s.squad2],['3편대',s.squad3],['4편대',s.squad4]]
       .filter(([,v])=>v!=null).map(([l,v])=>`<span class="vchip">${l} <b>${fmtG(+v)}</b></span>`)
       .concat(s.kills!=null?[`<span class="vchip">킬수 <b>${fmtKills(+s.kills)}</b></span>`]:[]).join('');
     const extra=[s.troop_type,s.shelter?'산업'+esc(s.shelter):null].filter(Boolean).join(' · ');
-    return `<div class="sub-card ${isPend?'':'done'}">
+    const stale=isPend&&(Date.now()-new Date(s.submitted_at).getTime()>86400000);
+    return `<div class="sub-card ${isPend?'pending':'done'}">
       <div class="top"><b>${esc(s.nickname)}</b><span class="where">${esc(s.server_name)} · ${esc(s.alliance_name)}${extra?' · '+extra:''}</span>
+        ${stale?'<span class="st-tag stale">24시간 경과</span>':''}
         ${isPend?'':`<span class="st-tag ${s.status}">${s.status==='applied'?'반영됨':'거절됨'}${s.processed_by?' · '+esc(s.processed_by):''}</span>`}
         <span class="when">${fmtTime(s.submitted_at)}</span></div>
       <div class="vals">${vals||'값 없음'}</div>
-      ${isPend?`<div class="acts">
-        <button class="btn sm ok" onclick="applySub(${s.id})">✓ 반영</button>
-        <button class="btn sm danger" onclick="rejectSub(${s.id})">✕ 거절</button>
-      </div>`:''}
+      ${isPend?`<div class="acts"><button class="btn sm ok" onclick="applySub(${s.id})">✓ 반영</button><button class="btn sm danger" onclick="rejectSub(${s.id})">✕ 거절</button></div>`:''}
     </div>`;
   };
-  $('subList').innerHTML=
-    (pend.length?`<h2 style="margin:4px 0 10px">대기 중 ${pend.length}건</h2>`+pend.map(s=>card(s,true)).join(''):'<div class="empty" style="padding:16px 0">대기 중인 제출이 없습니다</div>')
-    +(done.length?`<h2 style="margin:20px 0 10px">처리됨</h2>`+done.map(s=>card(s,false)).join(''):'');
+  const title=subFilter==='pending'?'대기 중':subFilter==='done'?'처리 완료':'전체 제출';
+  $('subList').innerHTML=shown.length
+    ?`<div class="sub-list-head"><h2>${title}</h2><span class="hint">${shown.length}건</span></div>${shown.map(card).join('')}`
+    :`<div class="empty">${title} 항목이 없습니다</div>`;
+}
+async function loadSubs(){
+  $('subList').innerHTML='<div class="empty">불러오는 중...</div>';
+  const r=await sb.from('submissions').select('*').order('submitted_at',{ascending:false}).limit(100);
+  if(r.error){$('subList').innerHTML='<div class="empty">오류: '+esc(r.error.message)+'</div>';return;}
+  subCache=r.data||[];
+  refreshSubBadge();
+  renderSubs();
 }
 async function applySub(id){
   const editor=getEditor(); if(!editor){askEditor();return;}
@@ -2044,10 +2205,10 @@ function renderPerms(list){
         <input type="checkbox" data-tab="${k}" ${on?'checked':''} style="width:auto;accent-color:var(--ours)">${label}</label>`;
     }).join('');
     return `<div class="srv-card" data-editor="${esc(e.name)}" style="background:var(--panel)">
-      <div class="head"><b>${esc(e.name)}</b><span class="cnt">${fmtTime(e.created_at)} 등록${(e.perms==null||e.perms==='')?' · <span style="color:var(--gold)">권한 대기 중</span>':''}</span>
+      <div class="head"><b>${esc(e.name)}</b><span class="cnt">${fmtTime(e.created_at)} 등록${(e.perms==null||e.perms==='')?' · <span class="manage-status wait">권한 대기 중</span>':''}</span>
         <span style="flex:1"></span>
         <button class="btn sm primary" onclick="savePerms(this)">저장</button>
-        <button class="btn sm danger" title="이 운영진 등록을 삭제" onclick="deleteEditor(this)">🗑</button></div>
+        <button class="btn sm danger manage-danger-action" title="이 운영진 등록을 삭제" onclick="deleteEditor(this)">🗑</button></div>
       <div style="margin-top:8px">${boxes}</div>
     </div>`;
   }).join('');
@@ -2093,7 +2254,7 @@ function renderFactions(){
       <div class="head"><b>⚜️ ${esc(f.name)}</b><span class="cnt">서버 ${sids.length}개</span>
         <span style="flex:1"></span>
         <button class="btn sm" onclick="renameFaction(${f.id})">이름 변경</button>
-        <button class="btn sm danger" onclick="deleteFaction(${f.id})">삭제</button></div>
+        <button class="btn sm danger manage-danger-action" onclick="deleteFaction(${f.id})">삭제</button></div>
       <div class="alli-chips">${inChips}${addSel}</div>
     </div>`;
   }).join('');
@@ -2129,8 +2290,14 @@ async function removeFactionServer(fid,sid){
   rankCache=null; await loadBase(); toast('파벌에서 뺐습니다');
 }
 /* ---------- 관리 ---------- */
+function setManageSection(name){
+  manageSection=name;
+  document.querySelectorAll('.manage-nav button').forEach(b=>b.classList.toggle('active',b.dataset.manage===name));
+  document.querySelectorAll('.manage-section').forEach(s=>s.classList.toggle('active',s.dataset.manageSection===name));
+}
 function renderManage(){
   renderFactions();
+  setManageSection(manageSection);
   const box=$('serverList');
   if(!servers.length){box.innerHTML='<div class="empty">아직 서버가 없습니다</div>';return;}
   box.innerHTML=servers.map(s=>{
@@ -2139,7 +2306,7 @@ function renderManage(){
       <div class="head"><b>${esc(s.name)} 서버</b><span class="cnt">연맹 ${as.length}개</span>
         <span style="flex:1"></span>
         <button class="btn sm" onclick="renameServer(${s.id})">이름 변경</button>
-        <button class="btn sm danger" onclick="deleteServer(${s.id})">삭제</button></div>
+        <button class="btn sm danger manage-danger-action" onclick="deleteServer(${s.id})">삭제</button></div>
       <div class="alli-chips">
         ${as.map(a=>`<span class="chip"><a style="cursor:pointer" title="이름·소속 서버 변경" onclick="openAlliModal(${a.id})">${esc(a.name)} ✎</a><button title="연맹 삭제" onclick="deleteAlliance(${a.id})">✕</button></span>`).join('')}
         <span class="chip" style="padding:5px 6px"><input id="newAlli-${s.id}" placeholder="새 연맹" style="border:none;background:none;width:76px;padding:2px 6px" onkeydown="if(event.key==='Enter')addAlliance(${s.id})"><button style="color:var(--green)" onclick="addAlliance(${s.id})">＋</button></span>
@@ -2422,6 +2589,39 @@ async function downloadBackup(){
 function fillHistFilter(){
   $('histServer').innerHTML='<option value="">전체 서버</option>'+servers.map(s=>`<option value="${s.id}">${esc(s.name)} 서버</option>`).join('');
 }
+function historyDayKey(t){
+  const d=new Date(t);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function historyDayLabel(t){
+  const d=new Date(t), days=['일','월','화','수','목','금','토'];
+  return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} (${days[d.getDay()]})`;
+}
+function historyClock(t){ const d=new Date(t); return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; }
+function renderHistory(){
+  const q=(($('histSearch')||{}).value||'').trim().toLowerCase();
+  const rows=historyCache.filter(rec=>{
+    const mm=rec.members||{}, al=mm.alliances||{}, sv=al.servers||{};
+    return !q||[mm.nickname,al.name,sv.name,rec.editor].join(' ').toLowerCase().includes(q);
+  }).sort((a,b)=>new Date(b.recorded_at)-new Date(a.recorded_at));
+  if($('histCount')) $('histCount').textContent=q?`검색 결과 ${rows.length} / ${historyCache.length}건`:`최근 ${historyCache.length}건 (최대 120건)`;
+  if(!rows.length){ $('histList').innerHTML='<div class="empty">조건에 맞는 기록이 없습니다</div>'; return; }
+  let lastDay='';
+  $('histList').innerHTML=rows.map(rec=>{
+    const mm=rec.members, al=mm.alliances, sv=al.servers;
+    const day=historyDayKey(rec.recorded_at);
+    const head=day!==lastDay?`<div class="history-date">${historyDayLabel(rec.recorded_at)}</div>`:'';
+    lastDay=day;
+    const vals=[['1편대',rec.squad1],['2편대',rec.squad2],['3편대',rec.squad3],['4편대',rec.squad4],['블머',rec.black]]
+      .filter(([,v])=>v!=null).map(([l,v])=>`<span class="vchip">${l} <b>${fmtG(+v)}</b></span>`)
+      .concat(rec.kills!=null?[`<span class="vchip">킬 <b>${fmtKills(+rec.kills)}</b></span>`]:[]).join('');
+    return `${head}<div class="hist-item">
+      <span class="when">${historyClock(rec.recorded_at)}</span>
+      <span class="who">${esc(rec.editor)}</span>
+      <span class="what">[${esc(sv.name)}·${esc(al.name)}] <b>${esc(mm.nickname)}</b></span>
+      <span class="vals">${vals||'값 없음'}</span></div>`;
+  }).join('');
+}
 async function loadHistory(){
   $('histList').innerHTML='<div class="empty">불러오는 중...</div>';
   let q=sb.from('power_records').select('*, members!inner(nickname, alliances!inner(name, server_id, servers!inner(name)))').order('recorded_at',{ascending:false}).limit(120);
@@ -2429,18 +2629,8 @@ async function loadHistory(){
   if(sid) q=q.eq('members.alliances.server_id',+sid);
   const r=await q;
   if(r.error){$('histList').innerHTML='<div class="empty">오류: '+esc(r.error.message)+'</div>';return;}
-  if(!r.data.length){$('histList').innerHTML='<div class="empty">기록이 없습니다</div>';return;}
-  $('histList').innerHTML=r.data.map(rec=>{
-    const mm=rec.members, al=mm.alliances, sv=al.servers;
-    const vals=[['1편대',rec.squad1],['2편대',rec.squad2],['3편대',rec.squad3],['4편대',rec.squad4],['블머',rec.black]]
-      .filter(([,v])=>v!=null).map(([l,v])=>`<span class="vchip">${l} <b>${fmtG(+v)}</b></span>`)
-      .concat(rec.kills!=null?[`<span class="vchip">킬 <b>${fmtKills(+rec.kills)}</b></span>`]:[]).join('');
-    return `<div class="hist-item">
-      <span class="when">${fmtTime(rec.recorded_at)}</span>
-      <span class="who">${esc(rec.editor)}</span>
-      <span class="what">[${esc(sv.name)}·${esc(al.name)}] <b>${esc(mm.nickname)}</b></span>
-      <span class="vals">${vals||'값 없음'}</span></div>`;
-  }).join('');
+  historyCache=r.data||[];
+  renderHistory();
 }
 
 init();
