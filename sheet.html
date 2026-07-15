@@ -153,6 +153,7 @@ h2{font-size:1rem;font-weight:700;margin-bottom:12px}
 .kpi::before{content:'';position:absolute;top:0;left:14px;right:14px;height:2px;background:linear-gradient(90deg,transparent,rgba(84,163,255,.55),transparent);border-radius:2px}
 .kpi .kt{color:var(--muted);font-size:.78rem;font-weight:700;margin-bottom:9px}
 .kpi .kv{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+.kpi .kpi-icon{font-size:1.4rem;margin-bottom:4px;line-height:1}
 .kpi .kva{color:var(--ours);font-weight:900;font-size:1.42rem;letter-spacing:-.02em}
 .kpi .kvb{color:var(--enemy);font-weight:700;font-size:1.02rem}
 .kpi .kvs{color:var(--dim);font-size:.7rem}
@@ -220,11 +221,10 @@ h2{font-size:1rem;font-weight:700;margin-bottom:12px}
 .entry-table .meta{font-size:.72rem;color:var(--dim);white-space:nowrap}
 .entry-table tr.dirty td{background:#1A1A12}
 .entry-table tr.dirty .meta{color:var(--gold)}
-.entry-table th:nth-child(2),.entry-table td:nth-child(2){position:sticky;left:0;z-index:2}
+.entry-table th:nth-child(2){width:122px}
 .sum-cell{text-align:right;color:var(--muted);white-space:nowrap}
 .table-wrap{overflow:auto;-webkit-overflow-scrolling:touch;margin-top:14px;max-height:calc(100vh - 240px)}
-.entry-table{border-collapse:separate;border-spacing:0}
-.entry-table th{position:sticky;top:0;background:#161D2B;z-index:40;box-shadow:0 1px 0 var(--line)}
+
 .savebar{position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 30%);padding:14px 0 6px;display:flex;justify-content:flex-end;gap:10px;align-items:center;flex-wrap:wrap}
 
 /* ---------- 제출 ---------- */
@@ -325,9 +325,10 @@ footer b{color:var(--muted)}
 }
 
 /* ===== 입력표 최종 규칙 (우선순위 최상) ===== */
-.entry-table{border-collapse:separate;border-spacing:0}
-.entry-table th{position:sticky;top:0;z-index:50;background:#161D2B;text-align:center}
-.entry-table td{text-align:center;position:relative;z-index:1}
+.entry-table{border-collapse:separate!important;border-spacing:0!important}
+.entry-table th{position:sticky!important;top:0!important;z-index:60!important;background:#161D2B!important;text-align:center}
+.entry-table td{text-align:center;z-index:1}
+.entry-table input,.entry-table select{position:relative;z-index:2}
 .entry-table td.meta{text-align:center}
 .no4 .col4{display:none}
 </style>
@@ -1042,7 +1043,7 @@ function renderCompare(nameA,A,nameB,B){
     const d=eq?'<span class="delta eq">동률</span>'
       :a>b?'<span class="delta up">▲ 우세</span>'
       :'<span class="delta down">▼ 열세</span>';
-    return `<div class="kpi"><div class="kt">${icon} ${label}</div>
+    return `<div class="kpi"><div class="kpi-icon">${icon}</div><div class="kt">${label}</div>
       <div class="kv"><span class="kva">${f(a)}</span><span class="kvs">vs</span><span class="kvb">${f(b)}</span></div>${d}</div>`;
   };
 
@@ -1095,11 +1096,11 @@ function renderCompare(nameA,A,nameB,B){
     <div class="bar-names"><span>🔵 ${esc(nameA)}</span><span>🔴 ${esc(nameB)}</span></div>
   </div>
   <div class="kpis">
-    ${topN>0?kpi('📐',bl+' 중앙값',med(A),med(B),fmtG):kpi('👥','인원',A.count,B.count,v=>v+'명')}
-    ${kpi('⚡',bl+' 총합',A.sum,B.sum,fmtG)}
-    ${kpi('📊',bl+' 평균',A.avg,B.avg,fmtG)}
-    ${kpi('🚀',bl+' 최고',A.max,B.max,fmtG)}
-    ${kpi('💥','킬수 총합',A.killSum,B.killSum,fmtKills)}
+    ${topN>0?kpi('📐','중앙값',med(A),med(B),fmtG):kpi('⚔️','인원',A.count,B.count,v=>v+'명')}
+    ${kpi('💥','전력 총합',A.sum,B.sum,fmtG)}
+    ${kpi('📊','전력 평균',A.avg,B.avg,fmtG)}
+    ${kpi('🏆','최고 전력',A.max,B.max,fmtG)}
+    ${kpi('⚡','킬수 총합',A.killSum,B.killSum,fmtKills)}
   </div>
   <div class="panel" style="margin-bottom:16px"><h2>📈 전력 추이 <span class="hint" style="font-weight:400">(1편대 총합 · 기록 시점 기준)</span></h2>${trendHTML}</div>
   <div class="grid2" style="margin-top:0">
