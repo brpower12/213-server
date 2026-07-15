@@ -129,24 +129,25 @@ h2{font-size:1rem;font-weight:700;margin-bottom:12px}
 .vs-label{font-size:.7rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px;display:flex;align-items:center;gap:5px}
 .vs-side.a .vs-label{color:var(--ours)}
 .vs-side.b .vs-label{color:var(--enemy)}
-.vs-card{background:linear-gradient(135deg,rgba(255,255,255,.03),transparent),var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;position:relative;overflow:hidden}
+.vs-card{background:linear-gradient(135deg,rgba(255,255,255,.03),transparent),var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px;position:relative;overflow:visible}
 .vs-side.a .vs-card{border-color:rgba(84,163,255,.35)}
 .vs-side.b .vs-card{border-color:rgba(255,99,87,.3)}
 .vs-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
 .vs-side.a .vs-card::before{background:linear-gradient(90deg,transparent,var(--ours),transparent)}
 .vs-side.b .vs-card::before{background:linear-gradient(90deg,transparent,var(--enemy),transparent)}
-.vs-card input{width:100%;background:transparent;border:none;outline:none;font-size:1.1rem;font-weight:800;color:var(--text);padding:0;font-family:inherit}
-.vs-card input::placeholder{color:var(--dim);font-weight:500;font-size:.95rem}
-.vs-side.a .vs-card input:focus{color:var(--ours)}
-.vs-side.b .vs-card input:focus{color:var(--enemy)}
+/* vs-card 안의 기존 input은 기존 스타일 유지 */
+.vs-side.a .vs-card input:focus{border-color:rgba(84,163,255,.6)!important}
+.vs-side.b .vs-card input:focus{border-color:rgba(255,99,87,.5)!important}
 .combo-wrap{position:relative;display:inline-block}
 .vs-side .combo-wrap{width:100%}
+.vs-card .combo-wrap{width:100%}
+.vs-card .combo-wrap input{font-size:1rem;font-weight:700;padding:8px 12px}
 .combo-dd{position:absolute;top:calc(100% + 5px);left:0;min-width:100%;max-height:290px;overflow-y:auto;background:#161C29;border:1px solid #3A4763;border-radius:11px;z-index:300;display:none;box-shadow:0 16px 40px rgba(0,0,0,.7);padding:5px}
 .combo-wrap{z-index:120}
 .combo-it{padding:9px 13px;font-size:.92rem;border-radius:7px;cursor:pointer;white-space:nowrap;color:var(--text)}
 .combo-it:hover{background:rgba(84,163,255,.14)}
-.vs-side.a input:focus{border-color:var(--ours);box-shadow:0 0 0 3px rgba(84,163,255,.18)}
-.vs-side.b input:focus{border-color:var(--enemy);box-shadow:0 0 0 3px rgba(255,99,87,.16)}
+.sc-a input:focus{border-color:var(--ours)!important;box-shadow:0 0 0 3px rgba(84,163,255,.18)!important}
+.sc-b input:focus{border-color:var(--enemy)!important;box-shadow:0 0 0 3px rgba(255,99,87,.16)!important}
 .vs-mid-wrap{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:4px}
 .vs-sword{width:60px;height:60px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.55rem;background:radial-gradient(circle,#1A2340,#0E1420);border:2px solid rgba(242,193,78,.65);box-shadow:0 0 28px rgba(242,193,78,.28),0 0 8px rgba(242,193,78,.12)}
 
@@ -432,7 +433,11 @@ footer b{color:var(--muted)}
       <div class="vs-card"><input id="pickB" placeholder="서버 입력 (예: 213)" autocomplete="off" onchange="runCompare()" onkeydown="if(event.key==='Enter')runCompare()"></div>
     </div>
   </div>
-  <div id="compareResult"><div class="empty" style="padding:50px 12px"><div style="font-size:2.7rem;margin-bottom:12px;filter:drop-shadow(0 0 16px rgba(242,193,78,.4))">⚔️</div>양쪽을 선택하면 비교 결과가 나옵니다</div></div>
+  <div id="compareResult"><div style="margin:16px 0;padding:28px 20px;border-radius:16px;text-align:center;border:1px dashed rgba(255,255,255,.1);background:transparent">
+  <div style="font-size:2rem;margin-bottom:10px;opacity:.6">🔒</div>
+  <div style="font-size:.96rem;font-weight:700;color:var(--text);margin-bottom:6px">비교할 서버 또는 연맹을 선택하세요</div>
+  <div style="font-size:.82rem;color:var(--dim)">서버 번호를 입력하거나 목록에서 선택할 수 있습니다</div>
+</div></div>
 </section>
 
 <!-- ============ 순위 ============ -->
@@ -790,7 +795,7 @@ async function enterApp(){
 function resetCompare(){
   $('pickA').value=''; $('pickB').value='';
   lastRaw=null; cmpShowAll=false;
-  $('compareResult').innerHTML='<div class="empty" style="padding:50px 12px"><div style="font-size:2.7rem;margin-bottom:12px;filter:drop-shadow(0 0 16px rgba(242,193,78,.4))">⚔️</div>양쪽을 선택하면 비교 결과가 나옵니다</div>';
+  $('compareResult').innerHTML='<div style="margin:16px 0;padding:28px 20px;border-radius:16px;text-align:center;border:1px dashed rgba(255,255,255,.1)"><div style="font-size:2rem;margin-bottom:10px;opacity:.6">🔒</div><div style="font-size:.96rem;font-weight:700;color:var(--text);margin-bottom:6px">비교할 서버 또는 연맹을 선택하세요</div><div style="font-size:.82rem;color:var(--dim)">서버 번호를 입력하거나 목록에서 선택할 수 있습니다</div></div>';
   try{ localStorage.removeItem('cmp_state'); }catch(e){}
 }
 function restoreCompare(){
@@ -874,7 +879,7 @@ function basisPow(rec,n){
 }
 
 /* ---------- 비교 ---------- */
-function setMode(m){ mode=m; document.querySelectorAll('#modeSeg button').forEach(b=>b.classList.toggle('active',b.dataset.m===m)); fillPickers(); $('compareResult').innerHTML='<div class="empty" style="padding:50px 12px"><div style="font-size:2.7rem;margin-bottom:12px;filter:drop-shadow(0 0 16px rgba(242,193,78,.4))">⚔️</div>양쪽을 선택하면 비교 결과가 나옵니다</div>'; }
+function setMode(m){ mode=m; document.querySelectorAll('#modeSeg button').forEach(b=>b.classList.toggle('active',b.dataset.m===m)); fillPickers(); $('compareResult').innerHTML='<div style="margin:16px 0;padding:28px 20px;border-radius:16px;text-align:center;border:1px dashed rgba(255,255,255,.1)"><div style="font-size:2rem;margin-bottom:10px;opacity:.6">🔒</div><div style="font-size:.96rem;font-weight:700;color:var(--text);margin-bottom:6px">비교할 서버 또는 연맹을 선택하세요</div><div style="font-size:.82rem;color:var(--dim)">서버 번호를 입력하거나 목록에서 선택할 수 있습니다</div></div>'; }
 function setBasis(n){ basis=n; document.querySelectorAll('#basisSeg button').forEach(b=>b.classList.toggle('active',+b.dataset.b===n)); rerenderCompare(); }
 let pickMap=new Map(), entSrvMap=new Map(), entAliMap=new Map();
 function resolveFromMap(el,map){
