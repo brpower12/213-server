@@ -127,8 +127,10 @@ h2{font-size:1rem;font-weight:700;margin-bottom:12px}
 .vs-side{display:flex;flex-direction:column;gap:6px;min-width:0}
 .vs-side label{font-size:.76rem;font-weight:800;letter-spacing:.06em}
 .vs-side.a label{color:var(--ours)} .vs-side.b label{color:var(--enemy)}
-.vs-side select{width:100%;font-size:.98rem;padding:11px 12px}
-.vs-mid{font-weight:900;font-size:1.2rem;color:var(--dim);padding-top:16px}
+.vs-side input{width:100%;font-size:1rem;font-weight:700;padding:12px 13px}
+.vs-side.a input:focus{border-color:var(--ours);box-shadow:0 0 0 3px rgba(84,163,255,.18)}
+.vs-side.b input:focus{border-color:var(--enemy);box-shadow:0 0 0 3px rgba(255,99,87,.16)}
+.vs-mid{width:46px;height:46px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:14px;font-weight:900;font-size:.92rem;color:var(--gold);background:linear-gradient(135deg,#232D44,#141A28);border:1px solid #33405A;box-shadow:0 0 18px rgba(242,193,78,.14)}
 
 .verdict{margin:16px 0;padding:28px 22px;border-radius:18px;text-align:center;border:1px solid #2C3548;background:
   radial-gradient(500px 160px at 50% 0%, rgba(84,163,255,.10), transparent 70%),
@@ -205,8 +207,8 @@ h2{font-size:1rem;font-weight:700;margin-bottom:12px}
 .entry-table th{color:var(--muted);font-size:.76rem;font-weight:600;padding:8px 6px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap;background:var(--bg)}
 .entry-table td{padding:5px;border-bottom:1px solid var(--line);background:var(--bg)}
 .entry-table input,.entry-table select{padding:6px 8px;font-size:.86rem}
-.entry-table input.nick{width:140px}
-.entry-table input.pwr{width:96px;text-align:right}
+.entry-table input.nick{width:122px}
+.entry-table input.pwr{width:78px;text-align:right}
 .entry-table select{width:84px}
 .entry-table input.ind{width:58px;text-align:center}
 .entry-table .meta{font-size:.72rem;color:var(--dim);white-space:nowrap}
@@ -214,7 +216,8 @@ h2{font-size:1rem;font-weight:700;margin-bottom:12px}
 .entry-table tr.dirty .meta{color:var(--gold)}
 .entry-table th:nth-child(2),.entry-table td:nth-child(2){position:sticky;left:0;z-index:2}
 .sum-cell{text-align:right;color:var(--muted);white-space:nowrap}
-.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:14px}
+.table-wrap{overflow:auto;-webkit-overflow-scrolling:touch;margin-top:14px;max-height:calc(100vh - 240px)}
+.entry-table th{position:sticky;top:0;background:#161D2B;z-index:6;box-shadow:0 1px 0 var(--line)}
 .savebar{position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 30%);padding:14px 0 6px;display:flex;justify-content:flex-end;gap:10px;align-items:center;flex-wrap:wrap}
 
 /* ---------- 제출 ---------- */
@@ -288,6 +291,7 @@ footer b{color:var(--muted)}
   .grid2{grid-template-columns:1fr}
   .vs-picker{grid-template-columns:1fr;gap:8px}
   .vs-mid{display:none}
+  .vs-side input{font-size:16px}
 }
 @media(max-width:640px){
   html{font-size:13.5px}
@@ -386,11 +390,12 @@ footer b{color:var(--muted)}
     </div></div>
   </div>
   <div class="vs-picker">
-    <div class="vs-side a"><label>OUR SIDE</label><select id="pickA" onchange="runCompare()"></select></div>
+    <div class="vs-side a"><label>OUR SIDE</label><input id="pickA" list="dlA" placeholder="이름 입력 (예: 213)" autocomplete="off" onchange="runCompare()" onkeydown="if(event.key==='Enter')runCompare()"><datalist id="dlA"></datalist></div>
     <div class="vs-mid">VS</div>
-    <div class="vs-side b"><label>OPPONENT</label><select id="pickB" onchange="runCompare()"></select></div>
+    <div class="vs-side b"><label>OPPONENT</label><input id="pickB" list="dlB" placeholder="이름 입력 (예: 242)" autocomplete="off" onchange="runCompare()" onkeydown="if(event.key==='Enter')runCompare()"><datalist id="dlB"></datalist></div>
+    <button class="btn sm" style="margin-top:22px;flex:none" title="선택을 비우고 처음부터" onclick="resetCompare()">↺ 초기화</button>
   </div>
-  <div id="compareResult"><div class="empty">양쪽을 선택하면 비교 결과가 나옵니다</div></div>
+  <div id="compareResult"><div class="empty" style="padding:46px 12px"><div style="font-size:2.4rem;margin-bottom:10px;opacity:.55">🆚</div>양쪽을 선택하면 비교 결과가 나옵니다<br><span style="font-size:.8rem;color:var(--dim)">일부만 입력해도 자동으로 찾아줍니다 (예: 213)</span></div></div>
 </section>
 
 <!-- ============ 순위 ============ -->
@@ -743,6 +748,24 @@ async function enterApp(){
   await loadBase();
   await loadPerms();
   refreshSubBadge();
+  restoreCompare();
+}
+function resetCompare(){
+  $('pickA').value=''; $('pickB').value='';
+  lastRaw=null; cmpShowAll=false;
+  $('compareResult').innerHTML='<div class="empty" style="padding:46px 12px"><div style="font-size:2.4rem;margin-bottom:10px;opacity:.55">🆚</div>양쪽을 선택하면 비교 결과가 나옵니다<br><span style="font-size:.8rem;color:var(--dim)">일부만 입력해도 자동으로 찾아줍니다 (예: 213)</span></div>';
+  try{ localStorage.removeItem('cmp_state'); }catch(e){}
+}
+function restoreCompare(){
+  let st=null;
+  try{ st=JSON.parse(localStorage.getItem('cmp_state')||'null'); }catch(e){}
+  if(!st) return;
+  if(st.mode&&st.mode!==mode) setMode(st.mode);
+  if(st.basis) setBasis(st.basis);
+  if(typeof st.topN==='number') setTopN(st.topN);
+  if(st.a) $('pickA').value=st.a;
+  if(st.b) $('pickB').value=st.b;
+  if(st.a&&st.b) runCompare();
 }
 
 /* ---------- 초기화 ---------- */
@@ -750,6 +773,7 @@ window.onerror=function(msg,src,line){
   try{
     var el=document.getElementById('gateMsg')||document.getElementById('formMsg');
     if(el){el.style.color='#FF6B6B';el.textContent='오류: '+msg+' (줄 '+line+') — 이 화면을 캡처해서 관리자에게 보내주세요';}
+    try{ if(typeof toast==='function') toast('⚠️ 오류: '+msg); }catch(_e){}
   }catch(e){}
 };
 async function init(){
@@ -808,16 +832,33 @@ function basisPow(rec,n){
 }
 
 /* ---------- 비교 ---------- */
-function setMode(m){ mode=m; document.querySelectorAll('#modeSeg button').forEach(b=>b.classList.toggle('active',b.dataset.m===m)); fillPickers(); $('compareResult').innerHTML='<div class="empty">양쪽을 선택하면 비교 결과가 나옵니다</div>'; }
+function setMode(m){ mode=m; document.querySelectorAll('#modeSeg button').forEach(b=>b.classList.toggle('active',b.dataset.m===m)); fillPickers(); $('compareResult').innerHTML='<div class="empty" style="padding:46px 12px"><div style="font-size:2.4rem;margin-bottom:10px;opacity:.55">🆚</div>양쪽을 선택하면 비교 결과가 나옵니다<br><span style="font-size:.8rem;color:var(--dim)">일부만 입력해도 자동으로 찾아줍니다 (예: 213)</span></div>'; }
 function setBasis(n){ basis=n; document.querySelectorAll('#basisSeg button').forEach(b=>b.classList.toggle('active',+b.dataset.b===n)); rerenderCompare(); }
+let pickMap=new Map();
 function fillPickers(){
-  let opts='<option value="">선택...</option>';
-  if(mode==='server') opts+=servers.map(s=>`<option value="${s.id}">${esc(s.name)} 서버</option>`).join('');
-  else if(mode==='alliance') opts+=alliances.map(a=>{const sv=servers.find(s=>s.id===a.server_id);return `<option value="${a.id}">[${esc(sv?sv.name:'?')}] ${esc(a.name)}</option>`;}).join('');
-  else opts+=factions.map(f=>`<option value="${f.id}">${esc(factionLabel(f))}</option>`).join('');
-  $('pickA').innerHTML=opts; $('pickB').innerHTML=opts;
-  if(mode==='server'){ const s213=servers.find(s=>s.name==='213'); if(s213) $('pickA').value=s213.id; }
+  pickMap=new Map();
+  let items=[];
+  if(mode==='server') items=servers.map(s=>[s.name+' 서버',s.id]);
+  else if(mode==='alliance') items=alliances.map(a=>{const sv=servers.find(s=>s.id===a.server_id);return [a.name+' · '+(sv?sv.name:'?')+'서버',a.id];});
+  else items=factions.map(f=>[factionLabel(f),f.id]);
+  items.forEach(it=>pickMap.set(it[0],it[1]));
+  const opts=items.map(it=>`<option value="${esc(it[0])}">`).join('');
+  $('dlA').innerHTML=opts; $('dlB').innerHTML=opts;
+  $('pickA').value=''; $('pickB').value='';
+  if(mode==='server'){ const k=[...pickMap.keys()].find(x=>x.indexOf('213 ')===0); if(k) $('pickA').value=k; }
   if(mode==='faction'&&!factions.length){ $('compareResult').innerHTML='<div class="empty">아직 파벌이 없습니다. 🗂 관리 탭에서 파벌을 만들고 서버를 넣어주세요.</div>'; }
+}
+/* 입력값 → 대상 찾기 (일부만 쳐도 하나로 좁혀지면 자동 완성) */
+function resolvePick(id){
+  const el=$(id); const raw=el.value.trim();
+  if(!raw) return null;
+  if(pickMap.has(raw)) return pickMap.get(raw);
+  const q=raw.toLowerCase();
+  const hits=[...pickMap.keys()].filter(k=>k.toLowerCase().indexOf(q)>=0);
+  if(hits.length===1){ el.value=hits[0]; return pickMap.get(hits[0]); }
+  const starts=hits.filter(k=>k.toLowerCase().indexOf(q)===0);
+  if(starts.length===1){ el.value=starts[0]; return pickMap.get(starts[0]); }
+  return null;
 }
 async function fetchSide(id){
   let allianceIds;
@@ -917,7 +958,7 @@ function calcStats(side){
 }
 let lastRaw=null;
 async function runCompare(){
-  const a=$('pickA').value, b=$('pickB').value;
+  const a=resolvePick('pickA'), b=resolvePick('pickB');
   if(!a||!b) return;
   if(a===b){ $('compareResult').innerHTML='<div class="empty">서로 다른 대상을 선택하세요</div>'; return; }
   $('compareResult').innerHTML='<div class="empty">계산 중...</div>';
@@ -925,6 +966,7 @@ async function runCompare(){
   try{
     const [sa,sc]=await Promise.all([fetchSide(a),fetchSide(b)]);
     lastRaw={sa,sc,nameA:sideName(a),nameB:sideName(b)};
+    try{ localStorage.setItem('cmp_state', JSON.stringify({mode,basis,topN,a:$('pickA').value,b:$('pickB').value})); }catch(e){}
     rerenderCompare();
   }catch(e){ toast('오류: '+e.message); }
 }
@@ -1182,7 +1224,7 @@ function buildRow(mem,rec,idx){
     <td><input class="pwr" inputmode="decimal" value="${fp(rec.squad3)}" data-f="squad3"></td>
     <td><input class="pwr" inputmode="decimal" value="${fp(rec.squad4)}" data-f="squad4"></td>
     <td class="colblack"><input class="pwr" inputmode="decimal" value="${fp(rec.black)}" data-f="black"></td>
-    <td><input class="pwr" inputmode="numeric" value="${rec.kills!=null?(+rec.kills).toLocaleString():''}" style="width:110px" data-f="kills"></td>
+    <td><input class="pwr" inputmode="numeric" value="${rec.kills!=null?(+rec.kills).toLocaleString():''}" style="width:100px" data-f="kills"></td>
     <td class="sum-cell"></td>
     <td class="meta">${rec.recorded_at?fmtTime(rec.recorded_at)+' · '+esc(rec.editor):'기록 없음'}</td>
     <td style="white-space:nowrap"><button class="btn sm" title="다른 서버·연맹으로 이동" onclick="openMove(this)">⇄</button> <button class="btn sm danger" title="목록에서 제외" onclick="removeMember(this)">✕</button></td>`;
@@ -1231,7 +1273,9 @@ function addMemberRow(){
   if(!tb){loadEntryTable();return;}
   const tr=buildRow(null,null,null); tr.classList.add('dirty');
   // 헤더 바로 아래(맨 위)에 삽입 → 스크롤·포커스까지
-  if(tb.rows.length>1) tb.rows[0].parentNode.insertBefore(tr, tb.rows[1]);
+  const first=tb.querySelector('tr');
+  if(first&&first.nextElementSibling) first.parentNode.insertBefore(tr, first.nextElementSibling);
+  else if(first) first.parentNode.appendChild(tr);
   else tb.appendChild(tr);
   updateDirty();
   tr.scrollIntoView({behavior:'smooth',block:'center'});
@@ -1517,10 +1561,21 @@ function renderPerms(list){
     return `<div class="srv-card" data-editor="${esc(e.name)}" style="background:var(--panel)">
       <div class="head"><b>${esc(e.name)}</b><span class="cnt">${fmtTime(e.created_at)} 등록${(e.perms==null||e.perms==='')?' · <span style="color:var(--gold)">권한 대기 중</span>':''}</span>
         <span style="flex:1"></span>
-        <button class="btn sm primary" onclick="savePerms(this)">저장</button></div>
+        <button class="btn sm primary" onclick="savePerms(this)">저장</button>
+        <button class="btn sm danger" title="이 운영진 등록을 삭제" onclick="deleteEditor(this)">🗑</button></div>
       <div style="margin-top:8px">${boxes}</div>
     </div>`;
   }).join('');
+}
+async function deleteEditor(btn){
+  const card=btn.closest('.srv-card');
+  const name=card.dataset.editor;
+  if(!confirm(`'${name}' 운영진 등록을 삭제할까요?\n\n· 닉네임·PIN·기기 등록·탭 권한이 모두 삭제됩니다\n· 입력 이력 기록은 그대로 남습니다\n· 다시 쓰려면 처음부터 재등록해야 합니다`)) return;
+  const {data,error}=await sb.rpc('admin_delete_editor',{p_pin:adminPin,p_name:name});
+  if(error){toast(error.message);return;}
+  if(data!==true){toast('삭제 실패 — 관리자 PIN을 다시 확인하세요');adminPin=null;return;}
+  card.remove();
+  toast(`🗑 '${name}' 삭제 완료`);
 }
 async function savePerms(btn){
   const card=btn.closest('.srv-card');
