@@ -1567,6 +1567,92 @@ nav button.active::after{
   nav button{font-size:.87rem;padding-left:11px;padding-right:11px}
 }
 
+
+/* ============================================================
+   모바일 비교 필터 영역 이탈 방지
+   - 버튼을 가로 스크롤 대신 칸 수에 맞춘 그리드로 배치
+   - 초기화 버튼과 모든 필터를 카드 내부에 고정
+   ============================================================ */
+@media(max-width:640px){
+  #view-compare{
+    width:100%;
+    min-width:0;
+    overflow:hidden;
+  }
+  #view-compare .toolbar{
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    box-sizing:border-box;
+    overflow:hidden!important;
+    padding:11px 10px;
+    gap:9px;
+  }
+  #view-compare .toolbar .segwrap{
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    box-sizing:border-box;
+    overflow:hidden;
+  }
+  #view-compare .toolbar .segwrap:last-child{
+    width:100%;
+    padding:0;
+  }
+  #view-compare .seglb{
+    padding-left:2px;
+    margin-bottom:4px;
+  }
+  #view-compare .seg{
+    display:grid!important;
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    overflow:hidden!important;
+    box-sizing:border-box;
+  }
+  #view-compare #modeSeg{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+  #view-compare #basisSeg{
+    grid-template-columns:repeat(4,minmax(0,1fr));
+  }
+  #view-compare #topSeg{
+    grid-template-columns:repeat(6,minmax(0,1fr));
+  }
+  #view-compare .seg button{
+    width:100%;
+    min-width:0!important;
+    max-width:100%;
+    padding:7px 2px;
+    font-size:.70rem;
+    letter-spacing:-.035em;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:clip;
+    box-sizing:border-box;
+  }
+  #view-compare #modeSeg button{
+    font-size:.68rem;
+  }
+  #view-compare #topSeg button{
+    padding-left:1px;
+    padding-right:1px;
+    font-size:.65rem;
+  }
+  #view-compare .seg-icon{
+    display:none;
+  }
+  #view-compare .toolbar .btn[onclick="resetCompare()"]{
+    display:block;
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    margin:0;
+    box-sizing:border-box;
+  }
+}
+
 </style>
 </head>
 <body>
