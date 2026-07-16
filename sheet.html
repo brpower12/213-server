@@ -1670,7 +1670,7 @@ nav button.active::after{
     </div>
 
     <h1>213서버 통합 시트</h1>
-    <div class="sub">전력 비교와 운영 데이터를 관리하는<br>213 NXT 운영진 전용 대시보드입니다.</div>
+    <div class="sub">전력 비교와 운영 데이터를 한곳에서 관리하는<br>213서버 운영진 전용 대시보드입니다.</div>
 
     <div class="gate-field">
       <label for="gatePw">접속 비밀번호</label>
@@ -1741,7 +1741,7 @@ nav button.active::after{
     <div class="panel" style="text-align:center;padding:32px 24px">
       <div style="font-size:2.4rem;margin-bottom:10px">⏳</div>
       <h2 style="margin-bottom:8px;font-size:1.25rem">권한 대기 중</h2>
-      <p class="hint" style="margin-bottom:20px">닉네임 등록이 완료되었습니다.<br>관리자(부앙)가 권한을 승인하면 이용할 수 있습니다.<br>등록 후 관리자에게 말씀해 주세요.</p>
+      <p class="hint" style="margin-bottom:20px">입력자 등록이 완료되었습니다.<br>프로그램 관리자가 탭 권한을 부여하면 이용할 수 있습니다.<br>관리자에게 권한 승인을 요청해 주세요.</p>
       <button class="btn" style="width:100%" onclick="recheckPerms()">권한 다시 확인</button>
       <button class="btn" style="width:100%;margin-top:8px" onclick="unlockAsAdmin()">🔐 관리자 PIN으로 잠금 해제</button>
       <button class="btn danger" style="width:100%;margin-top:8px" onclick="doLogout()">잠금</button>
@@ -1903,7 +1903,7 @@ nav button.active::after{
         <button data-sub="all" onclick="setSubFilter('all')">전체 <span class="sub-filter-count" id="subAllCount">0</span></button>
       </div>
       <button class="btn sm" onclick="loadSubs()">↻ 새로고침</button>
-      <span class="hint">✓ 반영 시 해당 인원 기록에 자동 입력</span>
+      <span class="hint">✓ 반영하면 해당 인원의 최신 기록으로 저장됩니다.</span>
     </div>
   </div>
   <div id="subList"><div class="empty">불러오는 중...</div></div>
@@ -1913,7 +1913,7 @@ nav button.active::after{
 <section class="view" id="view-manage">
   <div class="section-head section-head-manage">
     <div class="section-head-icon">⚙</div>
-    <div><h2>시스템 관리</h2><p>서버·연맹·파벌과 운영진 권한을 관리합니다.</p></div>
+    <div><h2>시스템 관리</h2><p>서버·연맹·파벌, 반출 승인과 운영진 권한을 관리합니다.</p></div>
     <div class="section-role-chip" id="manageRoleChip">운영진</div>
   </div>
   <div class="panel manage-nav">
@@ -1924,7 +1924,7 @@ nav button.active::after{
   </div>
   <div class="manage-section active" data-manage-section="servers">
     <div class="panel" style="margin-bottom:14px">
-      <h2>🗂 서버 & 연맹</h2>
+      <h2>🗂 서버·연맹 관리</h2>
       <div class="row">
         <input id="newServerName" placeholder="서버 번호 (예: 213)" style="width:150px" onkeydown="if(event.key==='Enter')addServer()">
         <button class="btn primary" onclick="addServer()">＋ 서버 추가</button>
@@ -1932,18 +1932,18 @@ nav button.active::after{
         <button class="btn sm" onclick="exportExcel()">📊 엑셀 내보내기</button>
         <button class="btn sm" onclick="downloadBackup()">📦 백업</button>
       </div>
-      <p class="hint" style="margin-top:8px">연맹 이름 ✎ 클릭 시 이름·소속 서버 수정 · 삭제 기능은 되돌릴 수 없으므로 확인 후 사용</p>
+      <p class="hint" style="margin-top:8px">연맹 이름의 ✎ 버튼에서 이름과 소속 서버를 수정할 수 있습니다. 삭제한 데이터는 복구할 수 없습니다.</p>
       <div id="serverList" style="margin-top:12px"></div>
     </div>
   </div>
   <div class="manage-section" data-manage-section="factions">
     <div class="panel" style="margin-bottom:14px">
-      <h2 class="acc-purple">⚜️ 파벌 관리 <span class="hint" style="font-weight:400">(시즌: 여러 서버 = 한 편)</span></h2>
+      <h2 class="acc-purple">⚜️ 파벌 관리 <span class="hint" style="font-weight:400">(시즌별 서버 그룹)</span></h2>
       <div class="row">
         <input id="newFactionName" placeholder="파벌 이름 (예: 우리파벌)" style="width:190px" onkeydown="if(event.key==='Enter')addFaction()">
         <button class="btn primary" onclick="addFaction()">＋ 파벌 만들기</button>
       </div>
-      <p class="hint" style="margin-top:8px">시즌 구성에 맞춰 서버 추가·제거</p>
+      <p class="hint" style="margin-top:8px">파벌은 시즌에 따라 여러 서버를 한 편으로 묶어 비교할 때 사용합니다.</p>
       <div id="factionList" style="margin-top:12px"></div>
     </div>
   </div>
@@ -1952,7 +1952,7 @@ nav button.active::after{
       <h2 class="acc-blue">📤 엑셀 반출 승인 <span class="hint" style="font-weight:400">(관리자 PIN 필요)</span></h2>
       <div class="row">
         <button class="btn" onclick="openExportReqs()">요청 확인</button>
-        <span class="hint">승인 후 15분 내 재클릭 시 다운로드</span>
+        <span class="hint">승인 후 15분 이내에 다시 눌러 다운로드하세요.</span>
       </div>
       <div id="exportReqPanel" style="margin-top:12px"></div>
     </div>
@@ -1980,7 +1980,7 @@ nav button.active::after{
     <div class="history-controls">
       <select id="histServer" onchange="loadHistory()"></select>
       <input class="history-search" id="histSearch" placeholder="닉네임·연맹·입력자 검색" autocomplete="off" oninput="scheduleHistorySearch()">
-      <span class="history-count" id="histCount">최근 기록 최대 120건</span>
+      <span class="history-count" id="histCount">검색 전 최근 기록 120건 표시</span>
       <button class="btn" onclick="loadHistory()">↻ 새로고침</button>
     </div>
   </div>
@@ -1994,7 +1994,7 @@ nav button.active::after{
 <div class="overlay" id="mvOverlay">
   <div class="modal">
     <h3 id="mvTitle">인원 이동</h3>
-    <p class="hint" style="margin-bottom:12px">소속 변경 시 사용 · 기록은 그대로 유지</p>
+    <p class="hint" style="margin-bottom:12px">소속 서버나 연맹을 변경할 때 사용합니다. 기존 기록은 유지됩니다.</p>
     <div class="mfield"><label>이동할 서버</label><select id="mvServer" onchange="fillMvAlliance()"></select></div>
     <div class="mfield"><label>이동할 연맹</label><select id="mvAlliance"></select></div>
     <button class="btn primary" style="width:100%" onclick="saveMove()">이동</button>
@@ -2006,7 +2006,7 @@ nav button.active::after{
 <div class="overlay" id="expOverlay">
   <div class="modal">
     <h3>📊 엑셀 내보내기</h3>
-    <p class="hint" style="margin-bottom:12px">내보낼 범위 선택</p>
+    <p class="hint" style="margin-bottom:12px">엑셀로 내보낼 서버와 연맹을 선택하세요.</p>
     <div class="mfield"><label>서버</label><select id="expServer" onchange="fillExpAlliance()"></select></div>
     <div class="mfield"><label>연맹</label><select id="expAlliance"><option value="0">전체 연맹</option></select></div>
     <button class="btn primary" style="width:100%" onclick="runExport()">내보내기</button>
@@ -2018,7 +2018,7 @@ nav button.active::after{
 <div class="overlay" id="alliOverlay">
   <div class="modal">
     <h3>연맹 수정</h3>
-    <p class="hint" style="margin-bottom:12px">이민·시즌으로 연맹 이름이나 소속 서버가 바뀌면 여기서 수정하세요. 소속 인원과 기록은 그대로 따라갑니다.</p>
+    <p class="hint" style="margin-bottom:12px">연맹 이름이나 소속 서버가 변경된 경우 수정하세요. 소속 인원과 기존 기록은 그대로 유지됩니다.</p>
     <div class="mfield"><label>연맹 이름</label><input id="aName"></div>
     <div class="mfield"><label>소속 서버</label><select id="aServer"></select></div>
     <button class="btn primary" style="width:100%" onclick="saveAlliModal()">저장</button>
@@ -2033,7 +2033,7 @@ nav button.active::after{
 <div class="overlay" id="memOverlay">
   <div class="modal" style="max-height:88vh;overflow-y:auto">
     <h3 id="memTitle">인원 수정</h3>
-    <p class="hint" style="margin-bottom:12px">전투력: 6.22G, 6220 어느 쪽으로 적어도 됩니다</p>
+    <p class="hint" style="margin-bottom:12px">전투력은 6.22G 또는 6220 형식으로 입력할 수 있습니다.</p>
     <div class="mfield"><label>닉네임 *</label><input id="mNick"></div>
     <div class="mgrid">
       <div class="mfield"><label>병종</label><select id="mTroop"><option value=""></option><option>슈터</option><option>파이터</option><option>라이더</option></select></div>
@@ -2665,7 +2665,7 @@ function computeTrend(side){
 }
 function trendSVG(pa,pb,nameA,nameB){
   if(pa.length<2&&pb.length<2)
-    return '<div class="empty" style="padding:26px 0">전투력 기록이 2회 이상 쌓이면 추세 그래프가 그려집니다.<br>다음 조사 때부터 상승 곡선을 볼 수 있어요 📈</div>';
+    return '<div class="empty" style="padding:26px 0">전투력 기록이 2회 이상 쌓이면 추이 그래프가 표시됩니다.<br>다음 조사부터 변화 추이를 확인할 수 있습니다.</div>';
   const all=[...pa,...pb];
   const days=[...new Set(all.map(p=>p.d))].sort();
   // 전력 추이 영역을 다른 결과 카드와 균형이 맞도록 약 25% 축소
