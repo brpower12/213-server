@@ -1462,6 +1462,111 @@ footer b{color:var(--muted)}
   .permission-card .head{align-items:flex-start}
 }
 
+
+/* ============================================================
+   상단 헤더 가독성 최종 조정
+   - 프로그램명과 메뉴를 선명하게
+   - 운영진 전용 배지는 보조 요소로 낮춤
+   ============================================================ */
+header{
+  min-height:58px;
+  padding:8px 18px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.018),transparent),
+    #0d121c;
+}
+.header-brand-row{
+  gap:17px;
+}
+.header-brand-row .brand{
+  gap:10px;
+}
+.header-brand-row .brand > img{
+  height:42px!important;
+  filter:drop-shadow(0 5px 12px rgba(242,193,78,.18));
+}
+.brand-copy{
+  gap:3px;
+}
+.brand h1{
+  gap:5px;
+  font-size:1.28rem;
+  line-height:1.08;
+  font-weight:950;
+  letter-spacing:-.025em;
+}
+.brand-gold{
+  color:#ffd66e;
+  text-shadow:0 0 13px rgba(242,193,78,.20);
+}
+.brand-white{
+  color:#f7f9fd;
+  text-shadow:0 1px 0 rgba(255,255,255,.04);
+}
+.brand-copy > span{
+  color:#8f9bb0!important;
+  font-size:.73rem!important;
+  font-weight:600;
+}
+
+/* 운영진 전용: 눈에 띄는 주인공이 아니라 상태 표시로 조정 */
+.staff-badge,
+.staff-badge.admin{
+  min-height:29px;
+  padding:4px 10px;
+  color:#c8a957;
+  border-color:rgba(242,193,78,.24);
+  background:rgba(242,193,78,.035);
+  box-shadow:none;
+  font-size:.72rem;
+  font-weight:780;
+}
+.staff-lock{
+  width:14px;
+  height:14px;
+  color:#c8a957;
+}
+
+/* 메뉴 전체 대비 강화 */
+nav{
+  min-height:50px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.014),transparent),
+    #101620;
+  border-top:1px solid rgba(255,255,255,.025);
+}
+nav button{
+  color:#aeb9ca;
+  font-size:.94rem;
+  font-weight:780;
+  padding:12px 14px 13px;
+}
+nav button:hover{
+  color:#f4f7fc;
+  background:rgba(255,255,255,.025);
+}
+nav button.active{
+  color:#f7f9fd;
+  font-weight:900;
+  border-bottom-color:#f2c14e;
+  text-shadow:0 0 12px rgba(255,255,255,.06);
+}
+nav button.active::after{
+  left:9%;
+  right:9%;
+  height:2px;
+  opacity:1;
+}
+
+/* 모바일에서는 제목 크기만 과도하지 않게 유지 */
+@media(max-width:640px){
+  header{padding-left:12px;padding-right:12px}
+  .header-brand-row .brand > img{height:38px!important}
+  .brand h1{font-size:1.13rem}
+  .brand-copy > span{font-size:.67rem!important}
+  nav button{font-size:.87rem;padding-left:11px;padding-right:11px}
+}
+
 </style>
 </head>
 <body>
