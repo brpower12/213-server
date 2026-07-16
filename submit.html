@@ -3,6 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0E1117">
+<meta name="author" content="213 NXT · 부앙(Bu-ang)">
+<meta name="copyright" content="© 213 NXT · 부앙(Bu-ang)">
+
 <title>213 SERVER | 전투력 제출</title>
 <meta property="og:title" content="213 SERVER | 전투력 제출">
 <meta property="og:description" content="현재 전투력을 등록해 주세요. 운영진 확인 후 시트에 반영됩니다.">
@@ -71,10 +79,233 @@ input:hover,select:hover{border-color:#39445C}
   .box{padding:24px 18px 28px;border-radius:18px}
   h1{font-size:1.35rem}
 }
+
+/* 최종 보완 */
+.required-note{
+  margin:-10px 0 20px;
+  color:var(--dim);
+  font-size:.74rem;
+  text-align:center;
+}
+.required-note b{color:var(--gold)}
+.btn:disabled{
+  cursor:not-allowed;
+  opacity:.68;
+  transform:none;
+  box-shadow:none;
+}
+.msg:empty{margin-top:0;min-height:0}
+.langbar button{white-space:nowrap}
+@media(max-width:360px){
+  body{padding-left:10px;padding-right:10px}
+  .box{padding:22px 14px 26px}
+  .langbar{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    width:100%;
+    gap:2px;
+  }
+  .langbar button{
+    min-width:0;
+    padding:7px 3px;
+    font-size:.72rem;
+  }
+  .row2{grid-template-columns:1fr}
+}
+
+
+/* ============================================================
+   공식 제출 페이지 브랜딩 · 가독성 · 복제 억제 표시
+   ============================================================ */
+body{
+  position:relative;
+  background:
+    radial-gradient(820px 430px at 16% -8%,rgba(78,155,255,.12),transparent 60%),
+    radial-gradient(650px 360px at 88% -8%,rgba(242,193,78,.09),transparent 58%),
+    linear-gradient(180deg,#0d1118,#0b0f15 72%,#090d13);
+}
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:.12;
+  background-image:
+    linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.014) 1px,transparent 1px);
+  background-size:42px 42px;
+  mask-image:linear-gradient(to bottom,rgba(0,0,0,.65),transparent 86%);
+}
+.box{
+  isolation:isolate;
+  border-color:#344057;
+  background:
+    radial-gradient(420px 180px at 50% 0%,rgba(242,193,78,.065),transparent 72%),
+    linear-gradient(180deg,rgba(255,255,255,.018),transparent 32%),
+    var(--panel);
+  box-shadow:
+    0 20px 58px rgba(0,0,0,.55),
+    0 0 0 1px rgba(242,193,78,.055),
+    inset 0 1px 0 rgba(255,255,255,.025);
+}
+.owner-watermark{
+  position:absolute;
+  right:-18px;
+  bottom:106px;
+  z-index:-1;
+  color:rgba(255,255,255,.025);
+  font-size:1rem;
+  font-weight:900;
+  letter-spacing:.16em;
+  transform:rotate(-18deg);
+  user-select:none;
+  pointer-events:none;
+  white-space:nowrap;
+}
+.official-badge{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  width:max-content;
+  max-width:100%;
+  margin:0 auto 11px;
+  padding:5px 11px;
+  border:1px solid rgba(242,193,78,.28);
+  border-radius:999px;
+  color:#d9b75e;
+  background:rgba(242,193,78,.045);
+  font-size:.68rem;
+  letter-spacing:.045em;
+  white-space:nowrap;
+}
+.official-mark{
+  display:inline-block;
+  width:6px;
+  height:6px;
+  flex:0 0 6px;
+  border-radius:1px;
+  background:var(--gold);
+  box-shadow:0 0 8px rgba(242,193,78,.45);
+  transform:rotate(45deg);
+}
+.official-badge b{font-weight:900}
+.official-badge em{
+  color:#8793a8;
+  font-style:normal;
+  font-weight:750;
+}
+.langbar{
+  margin-bottom:16px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+}
+.langbar button{
+  min-height:32px;
+  transition:color .12s,background .12s,box-shadow .12s;
+}
+.langbar button.active{
+  color:#f7f9fc;
+  background:linear-gradient(180deg,#202838,#171d29);
+  box-shadow:0 3px 10px rgba(0,0,0,.22);
+}
+h1{
+  font-size:1.56rem;
+}
+.sub{
+  margin-bottom:14px;
+}
+.required-note{
+  margin:-2px 0 8px;
+}
+.privacy-note{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  min-height:27px;
+  margin:0 auto 22px;
+  padding:5px 10px;
+  width:max-content;
+  max-width:100%;
+  border:1px solid rgba(61,220,151,.16);
+  border-radius:999px;
+  color:#78a896;
+  background:rgba(61,220,151,.035);
+  font-size:.71rem;
+  text-align:center;
+}
+.privacy-note::before{
+  content:'●';
+  color:var(--green);
+  font-size:.5rem;
+  text-shadow:0 0 8px rgba(61,220,151,.45);
+}
+.sechd{
+  margin-top:8px;
+  font-size:.8rem;
+}
+.field{
+  position:relative;
+}
+.field:focus-within label{
+  color:#b8c7dc;
+}
+.field:focus-within label b{
+  text-shadow:0 0 8px rgba(242,193,78,.35);
+}
+input,select{
+  min-height:48px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.012),transparent),
+    var(--panel2);
+}
+input:focus,select:focus{
+  background:#1b2230;
+}
+.preview{
+  padding-left:2px;
+}
+.btn{
+  min-height:52px;
+  background:linear-gradient(180deg,#6db7ff,#3f8eea);
+  box-shadow:
+    0 8px 22px rgba(78,155,255,.30),
+    inset 0 1px 0 rgba(255,255,255,.28);
+}
+.btn:hover{
+  box-shadow:
+    0 11px 27px rgba(78,155,255,.38),
+    inset 0 1px 0 rgba(255,255,255,.30);
+}
+.credit{
+  padding-top:17px;
+  border-top:1px solid rgba(255,255,255,.055);
+  line-height:1.55;
+}
+.copyright-note{
+  display:block;
+  margin-top:4px;
+  color:#4d586c;
+  font-size:.68rem;
+}
+@media(max-width:360px){
+  .official-badge{font-size:.62rem;padding-left:8px;padding-right:8px}
+  h1{font-size:1.36rem}
+  .privacy-note{font-size:.66rem;padding-left:7px;padding-right:7px}
+}
+@media(max-width:300px){
+  body{padding-left:6px;padding-right:6px}
+  .box{padding-left:11px;padding-right:11px}
+  .official-badge em{display:none}
+  .langbar button{font-size:.66rem}
+}
+
 </style>
 </head>
 <body>
-<div class="box">
+<div class="box" data-owner="213-NXT-BUANG" data-project="213-server-power-submit">
+  <div class="owner-watermark" aria-hidden="true">213 NXT · BU-ANG</div>
+  <div class="official-badge"><span class="official-mark" aria-hidden="true"></span><b>213 SERVER</b><em>OFFICIAL FORM</em></div>
   <div class="langbar" id="langbar">
     <button data-l="ko" onclick="setLang('ko')">한국어</button>
     <button data-l="en" onclick="setLang('en')">English</button>
@@ -87,6 +318,8 @@ input:hover,select:hover{border-color:#39445C}
     <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTQwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZCIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGOUU3QTAiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIwLjQ1IiBzdG9wLWNvbG9yPSIjRUZDOTVFIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0I4ODYyQiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZDIiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkNFRkMwIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0Q5QTkzRSIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPCEtLSDsmZXqtIAgLS0+CiAgPHBhdGggZD0iTTI3IDQ2IEwyOSAyNCBMNDQgMzQgTDYwIDE1IEw3NiAzNCBMOTEgMjQgTDkzIDQ2IFoiIGZpbGw9InVybCgjZ29sZCkiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIxLjIiLz4KICA8Y2lyY2xlIGN4PSIyOSIgY3k9IjIxIiByPSIzLjQiIGZpbGw9InVybCgjZ29sZDIpIiBzdHJva2U9IiM4QTY0MjAiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iMTIiIHI9IjMuOCIgZmlsbD0idXJsKCNnb2xkMikiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPGNpcmNsZSBjeD0iOTEiIGN5PSIyMSIgcj0iMy40IiBmaWxsPSJ1cmwoI2dvbGQyKSIgc3Ryb2tlPSIjOEE2NDIwIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8cmVjdCB4PSIyNyIgeT0iNDgiIHdpZHRoPSI2NiIgaGVpZ2h0PSI2LjUiIHJ4PSIyLjUiIGZpbGw9InVybCgjZ29sZDIpIiBzdHJva2U9IiM4QTY0MjAiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iNTEuMiIgcj0iMiIgZmlsbD0iIzhBNjQyMCIvPgogIDxjaXJjbGUgY3g9IjQyIiBjeT0iNTEuMiIgcj0iMS41IiBmaWxsPSIjOEE2NDIwIi8+CiAgPGNpcmNsZSBjeD0iNzgiIGN5PSI1MS4yIiByPSIxLjUiIGZpbGw9IiM4QTY0MjAiLz4KICA8IS0tIDIxMyAtLT4KICA8dGV4dCB4PSI2MCIgeT0iOTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCAnVGltZXMgTmV3IFJvbWFuJywgc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9InVybCgjZ29sZCkiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIwLjYiPjIxMzwvdGV4dD4KICA8IS0tIFNFUlZFUiAtLT4KICA8dGV4dCB4PSI2MyIgeT0iMTEzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTIuNSIgbGV0dGVyLXNwYWNpbmc9IjUuNSIgZmlsbD0iI0Q5QjQ1QyI+U0VSVkVSPC90ZXh0PgogIDwhLS0g7ZWY64uoIOyepeyLnSAtLT4KICA8cGF0aCBkPSJNMzggMTIyIEw2MCAxMzEgTDgyIDEyMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ1cmwoI2dvbGQpIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iMTMxIiByPSIyLjIiIGZpbGw9IiNFRkM5NUUiLz4KPC9zdmc+Cg==" alt="213 SERVER" style="height:80px;display:block;margin:0 auto 12px;filter:drop-shadow(0 6px 18px rgba(242,193,78,.35))">
     <h1 id="tTitle"></h1>
     <div class="sub" id="tSub"></div>
+    <div class="required-note" id="tRequired"></div>
+    <div class="privacy-note" id="tPrivacy"></div>
 
     <div class="guide-sec" id="guideSec" style="display:none">
       <h3 id="tGuide"></h3>
@@ -95,50 +328,74 @@ input:hover,select:hover{border-color:#39445C}
 
     <div class="sechd"><span id="tSec1"></span></div>
     <div class="field"><label><span id="tAlliance"></span> <b>*</b></label>
-      <input id="fAlliance" maxlength="20"></div>
+      <input id="fAlliance" maxlength="20" autocomplete="organization" enterkeyhint="next"></div>
     <div class="field"><label><span id="tNick"></span> <b>*</b></label>
-      <input id="fNick" maxlength="40"></div>
+      <input id="fNick" maxlength="40" autocomplete="nickname" enterkeyhint="next"></div>
     <div class="row2">
       <div class="field"><label id="tTroop"></label>
         <select id="fTroop"></select></div>
       <div class="field"><label id="tShelter"></label>
-        <input id="fShelter" inputmode="numeric" maxlength="4"></div>
+        <input id="fShelter" inputmode="numeric" maxlength="4" enterkeyhint="next"></div>
     </div>
     <div class="sechd" style="margin-top:22px"><span id="tSec2"></span></div>
     <div class="field"><label><span id="tS1"></span> <b>*</b></label>
-      <input id="fS1" inputmode="decimal">
+      <input id="fS1" inputmode="decimal" maxlength="16" enterkeyhint="next">
       <div class="preview" id="pS1"></div></div>
     <div class="row2">
-      <div class="field"><label><span id="tS2"></span> <span class="opt" id="tOpt2"></span></label><input id="fS2" inputmode="decimal"><div class="preview" id="pS2"></div></div>
-      <div class="field"><label><span id="tS3"></span> <span class="opt" id="tOpt3"></span></label><input id="fS3" inputmode="decimal"><div class="preview" id="pS3"></div></div>
+      <div class="field"><label><span id="tS2"></span> <span class="opt" id="tOpt2"></span></label><input id="fS2" inputmode="decimal" maxlength="16" enterkeyhint="next"><div class="preview" id="pS2"></div></div>
+      <div class="field"><label><span id="tS3"></span> <span class="opt" id="tOpt3"></span></label><input id="fS3" inputmode="decimal" maxlength="16" enterkeyhint="next"><div class="preview" id="pS3"></div></div>
     </div>
     <div class="row2">
-      <div class="field"><label><span id="tS4"></span> <span class="opt" id="tOpt4"></span></label><input id="fS4" inputmode="decimal"><div class="preview" id="pS4"></div></div>
-      <div class="field"><label><span id="tKills"></span> <span class="opt" id="tOpt5"></span></label><input id="fKills" inputmode="numeric"><div class="preview" id="pS5"></div></div>
+      <div class="field"><label><span id="tS4"></span> <span class="opt" id="tOpt4"></span></label><input id="fS4" inputmode="decimal" maxlength="16" enterkeyhint="next"><div class="preview" id="pS4"></div></div>
+      <div class="field"><label><span id="tKills"></span> <span class="opt" id="tOpt5"></span></label><input id="fKills" inputmode="numeric" maxlength="20" enterkeyhint="done"><div class="preview" id="pS5"></div></div>
     </div>
-    <button class="btn" id="submitBtn" onclick="doSubmit()"></button>
-    <div class="msg" id="formMsg"></div>
-    <div class="credit">Powered by <b>213 NXT · 부앙(Bu-ang)</b></div>
+    <button class="btn" type="button" id="submitBtn" onclick="doSubmit()"></button>
+    <div class="msg" id="formMsg" role="status" aria-live="polite"></div>
+    <div class="credit">Powered by <b>213 NXT · 부앙(Bu-ang)</b><span class="copyright-note">© 2026 · UI·소스 무단 복제 금지</span></div>
   </div>
 
   <!-- 완료 -->
   <div id="doneView">
     <div class="done-icon">✅</div>
     <h1 id="tDone"></h1>
-    <div class="sub" id="doneSummary"></div>
-    <button class="btn ghost" id="againBtn" onclick="showForm()"></button>
-    <div class="credit">Powered by <b>213 NXT · 부앙(Bu-ang)</b></div>
+    <div class="sub" id="doneSummary" aria-live="polite"></div>
+    <button class="btn ghost" type="button" id="againBtn" onclick="showForm()"></button>
+    <div class="credit">Powered by <b>213 NXT · 부앙(Bu-ang)</b><span class="copyright-note">© 2026 · UI·소스 무단 복제 금지</span></div>
   </div>
 </div>
 
 <script>
-let sb=null, lang='ko';
+let sb=null, lang='ko', submitting=false;
+const BUILD_SIGNATURE='213-NXT-BUANG::POWER-SUBMIT::2026';
 const $=id=>document.getElementById(id);
+
+function normalizeNumericText(value){
+  return String(value??'')
+    .replace(/[０-９]/g,ch=>String.fromCharCode(ch.charCodeAt(0)-0xFEE0))
+    .replace(/[．。]/g,'.')
+    .replace(/，/g,',')
+    .replace(/[Ｇｇ]/g,'g')
+    .replace(/[Ｍｍ]/g,'m');
+}
+function escapeHtml(value){
+  return String(value??'').replace(/[&<>"']/g,ch=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  })[ch]);
+}
+function safeGuideUrl(value){
+  try{
+    const url=new URL(String(value));
+    return url.protocol==='https:' ? url.href : null;
+  }catch(e){
+    return null;
+  }
+}
+
 
 const I18N={
 ko:{
   title:'전투력 제출',
-  sub:'현재 전투력을 입력해 주세요.<br>운영진 확인 후 시트에 반영됩니다.',
+  sub:'현재 전투력을 입력해 주세요.<br>운영진 확인 후 통합 시트에 반영됩니다.',
   guide:'📸 입력 예시',
   alliance:'연맹', alliancePh:'예: NXT, AST',
   nick:'게임 닉네임', nickPh:'게임 내 닉네임을 정확히 입력',
@@ -154,11 +411,11 @@ ko:{
   errS1:'1편대 전투력을 확인해 주세요. (예: 6.22G 또는 6220)', errS:'편대 전투력 값을 확인해 주세요.',
   done:'✅ 제출이 완료되었습니다', doneTail:'운영진 확인 후 반영됩니다.<br>수고하셨습니다 ⚔️',
   again:'다시 제출하기', errLong:'입력이 너무 깁니다.', squadWord:['1편대','2편대','3편대','4편대'],
-  confirmQ:'이 내용으로 제출할까요?'
+  confirmQ:'아래 내용으로 제출할까요?', required:'<b>*</b> 표시는 필수 입력 항목입니다.', privacy:'제출 정보는 213서버 운영 목적으로만 사용됩니다.', networkErr:'제출 중 오류가 발생했습니다', scriptFail:'필수 스크립트를 불러오지 못했습니다. 인터넷 연결을 확인한 뒤 새로고침해 주세요.', runtimeErr:'화면 처리 중 오류가 발생했습니다.'
 },
 en:{
-  title:'Combat Power Registration',
-  sub:'Enter your current Combat Power.<br>It will be added to the spreadsheet after staff approval.',
+  title:'Combat Power Submission',
+  sub:'Enter your current combat power.<br>It will be added to the server sheet after staff review.',
   guide:'📸 Example',
   alliance:'Alliance', alliancePh:'e.g. NXT, AST',
   nick:'In-game Nickname', nickPh:'Enter your exact in-game nickname',
@@ -172,55 +429,56 @@ en:{
   badNum:'⚠ Please check the number (e.g. 6.22G or 6220)',
   errAlliance:'Please enter your alliance.', errNick:'Please enter your nickname.',
   errS1:'Please check your Squad 1 power. (e.g. 6.22G or 6220)', errS:'Please check the squad power values.',
-  done:'✅ Submission Complete', doneTail:'Staff will review and add it to the sheet.<br>Thank you, Commander! ⚔️',
+  done:'✅ Submission Complete', doneTail:'Staff will review and add it to the server sheet.<br>Thank you, Commander! ⚔️',
   again:'Submit Again', errLong:'Input is too long.', squadWord:['Squad 1','Squad 2','Squad 3','Squad 4'],
-  confirmQ:'Submit with the following?'
+  confirmQ:'Submit the information below?', required:'Fields marked with <b>*</b> are required.', privacy:'Submitted information is used only for 213 Server operations.', networkErr:'An error occurred while submitting', scriptFail:'A required script could not be loaded. Check your internet connection and refresh the page.', runtimeErr:'An error occurred while displaying the page.'
 },
 ja:{
-  title:'戦闘力登録',
-  sub:'現在の戦闘力をご入力ください。<br>運営が確認後、シートへ反映されます。',
+  title:'戦闘力の提出',
+  sub:'現在の戦闘力を入力してください。<br>運営側で確認後、統合シートに反映します。',
   guide:'📸 入力例',
   alliance:'同盟', alliancePh:'例: NXT, AST',
   nick:'ゲーム内ニックネーム', nickPh:'ゲーム内ニックネームを正確に入力',
-  troop:'メイン兵種', troops:['シューター','ファイター','ライダー'],
-  shelter:'産業Lv', shelterPh:'例: 4, 7, 10',
+  troop:'主力兵種', troops:['シューター','ファイター','ライダー'],
+  shelter:'産業レベル', shelterPh:'例: 4, 7, 10',
   s1:'第1部隊戦力', s1Ph:'例: 6.22G',
   s2:'第2部隊戦力', s2Ph:'例: 4.5G', s3:'第3部隊戦力', s3Ph:'例: 2.1G', s4:'第4部隊戦力', s4Ph:'例: 1.5G',
   sec1:'基本情報', sec2:'戦闘力', opt:'（任意）', kills:'キル数', killsPh:'例: 27,066,265', errS234:'第2・第3部隊も入力してください。', errKills:'キル数を入力してください。（例: 27,066,265）',
-  submit:'戦闘力を登録', submitting:'登録中...',
+  submit:'戦闘力を提出', submitting:'提出中...',
   preview:v=>'→ '+v+' として記録されます',
   badNum:'⚠ 数値をご確認ください（例: 6.22G または 6220）',
   errAlliance:'同盟を入力してください。', errNick:'ニックネームを入力してください。',
   errS1:'第1部隊の戦闘力をご確認ください。（例: 6.22G または 6220）', errS:'部隊の戦闘力をご確認ください。',
-  done:'✅ 提出が完了しました', doneTail:'運営の確認後、反映されます。<br>お疲れさまでした ⚔️',
-  again:'もう一度提出する', errLong:'入力が長すぎます。', squadWord:['第1部隊','第2部隊','第3部隊','第4部隊'],
-  confirmQ:'この内容で提出しますか？'
+  done:'✅ 提出が完了しました', doneTail:'運営側で確認後、統合シートに反映します。<br>お疲れさまでした ⚔️',
+  again:'もう一度提出する', errLong:'入力内容が長すぎます。', squadWord:['第1部隊','第2部隊','第3部隊','第4部隊'],
+  confirmQ:'以下の内容で提出しますか？', required:'<b>*</b> は必須入力項目です。', privacy:'提出情報は213サーバーの運営目的にのみ使用されます。', networkErr:'提出中にエラーが発生しました', scriptFail:'必要なスクリプトを読み込めませんでした。通信状態を確認して再読み込みしてください。', runtimeErr:'画面の処理中にエラーが発生しました。'
 },
 zh:{
-  title:'战力登记',
-  sub:'请输入您当前的战力。<br>管理员审核后将录入统计表。',
+  title:'战力提交',
+  sub:'请输入当前战力。<br>管理员审核后将录入服务器统计表。',
   guide:'📸 填写示例',
   alliance:'联盟', alliancePh:'例：NXT, AST',
   nick:'游戏昵称', nickPh:'请准确输入游戏内昵称',
   troop:'主兵种', troops:['射手','战士','骑手'],
-  shelter:'产业Lv', shelterPh:'例：4, 7, 10',
+  shelter:'产业等级', shelterPh:'例：4, 7, 10',
   s1:'第1编队战力', s1Ph:'例：6.22G',
   s2:'第2编队战力', s2Ph:'例：4.5G', s3:'第3编队战力', s3Ph:'例：2.1G', s4:'第4编队战力', s4Ph:'例：1.5G',
   sec1:'基本信息', sec2:'战力', opt:'（选填）', kills:'击杀数', killsPh:'例：27,066,265', errS234:'请填写第2、第3编队战力。', errKills:'请输入击杀数。（例：27,066,265）',
-  submit:'登记战力', submitting:'登记中...',
+  submit:'提交战力', submitting:'提交中...',
   preview:v=>'→ 将记录为 '+v,
   badNum:'⚠ 请检查数值（例：6.22G 或 6220）',
   errAlliance:'请输入联盟。', errNick:'请输入昵称。',
   errS1:'请检查第1编队战力。（例：6.22G 或 6220）', errS:'请检查编队战力数值。',
-  done:'✅ 提交完成', doneTail:'管理员确认后将录入。<br>辛苦了 ⚔️',
+  done:'✅ 提交成功', doneTail:'管理员审核后将录入服务器统计表。<br>辛苦了 ⚔️',
   again:'再次提交', errLong:'输入内容过长。', squadWord:['第1编队','第2编队','第3编队','第4编队'],
-  confirmQ:'确认提交以下内容？'
+  confirmQ:'确认提交以下内容吗？', required:'标有 <b>*</b> 的项目为必填项。', privacy:'提交的信息仅用于213服务器运营。', networkErr:'提交时发生错误', scriptFail:'无法加载必要脚本。请检查网络连接后刷新页面。', runtimeErr:'页面处理时发生错误。'
 }};
 // 시트에는 항상 한국어 병종으로 저장 (화면 표기만 번역)
 const TROOP_CANON=['슈터','파이터','라이더'];
 
 function setLang(l){
   lang=l; localStorage.setItem('sub_lang',l);
+  document.documentElement.lang=({ko:'ko',en:'en',ja:'ja',zh:'zh-CN'})[l]||'ko';
   document.querySelectorAll('#langbar button').forEach(b=>b.classList.toggle('active',b.dataset.l===l));
   const t=I18N[l];
   document.title='213 SERVER | '+t.title;
@@ -228,6 +486,8 @@ function setLang(l){
   $('tSec2').textContent='02 · '+t.sec2;
   $('tTitle').textContent=t.title;
   $('tSub').innerHTML=t.sub;
+  $('tRequired').innerHTML=t.required;
+  $('tPrivacy').textContent=t.privacy;
   $('tGuide').textContent=t.guide;
   $('tAlliance').textContent=t.alliance; $('fAlliance').placeholder=t.alliancePh;
   $('tNick').textContent=t.nick; $('fNick').placeholder=t.nickPh;
@@ -252,7 +512,7 @@ function setLang(l){
 /* 전투력 해석: "6.22g"→6220M, "6220"→6220M, "6.22"→6220M, "850m"→850M */
 function parsePower(t){
   if(t==null) return null;
-  t=String(t).trim().toLowerCase().replace(/,/g,'').replace(/\s/g,'').replace(/억/g,'');
+  t=normalizeNumericText(t).trim().toLowerCase().replace(/,/g,'').replace(/\s/g,'').replace(/억/g,'');
   if(t==='') return null;
   const m=t.match(/^([0-9]*\.?[0-9]+)(g|m)?$/);
   if(!m) return NaN;
@@ -264,7 +524,7 @@ function parsePower(t){
 }
 function parseKills(t){
   if(t==null) return null;
-  t=String(t).trim().replace(/,/g,'').replace(/\s/g,'');
+  t=normalizeNumericText(t).trim().replace(/,/g,'').replace(/\s/g,'');
   if(t==='') return null;
   if(!/^[0-9]+$/.test(t)) return NaN;
   return +t;
@@ -287,63 +547,174 @@ function refreshPreview(inp,prev){
 
 function showForm(){ $('formView').style.display='block'; $('doneView').style.display='none'; $('formMsg').textContent=''; }
 
+['fAlliance','fNick'].forEach(id=>{
+  $(id).addEventListener('input',()=>{
+    localStorage.setItem('sub_'+id,$(id).value);
+  });
+});
+['fTroop','fShelter'].forEach(id=>{
+  $(id).addEventListener('change',()=>{
+    localStorage.setItem('sub_'+id,$(id).value);
+  });
+});
+
+
 async function doSubmit(){
+  if(submitting) return;
+
   const t=I18N[lang];
   const alliance=$('fAlliance').value.trim();
   const nick=$('fNick').value.trim();
-  if(!alliance){$('formMsg').style.color='var(--red)';$('formMsg').textContent=t.errAlliance;return;}
-  if(!nick){$('formMsg').style.color='var(--red)';$('formMsg').textContent=t.errNick;return;}
+
+  const showError=message=>{
+    $('formMsg').style.color='var(--red)';
+    $('formMsg').textContent=message;
+  };
+
+  if(!alliance){showError(t.errAlliance);return;}
+  if(!nick){showError(t.errNick);return;}
+
   const s1=parsePower($('fS1').value);
-  if(s1==null||isNaN(s1)||s1<=0){$('formMsg').style.color='var(--red)';$('formMsg').textContent=t.errS1;return;}
-  const req=id=>{const v=parsePower($(id).value); return (v==null||isNaN(v)||v<=0)?null:v;};
-  const s2=req('fS2'), s3=req('fS3');
-  if(s2===null||s3===null){$('formMsg').style.color='var(--red)';$('formMsg').textContent=t.errS234;return;}
+  if(s1==null||isNaN(s1)||s1<=0){showError(t.errS1);return;}
+
+  const req=id=>{
+    const v=parsePower($(id).value);
+    return (v==null||isNaN(v)||v<=0)?null:v;
+  };
+
+  const s2=req('fS2');
+  const s3=req('fS3');
+  if(s2===null||s3===null){showError(t.errS234);return;}
+
   let s4=null;
   if($('fS4').value.trim()!==''){
     s4=req('fS4');
-    if(s4===null){$('formMsg').style.color='var(--red)';$('formMsg').textContent=t.badNum;return;}
+    if(s4===null){showError(t.badNum);return;}
   }
+
   const kills=parseKills($('fKills').value);
-  if(kills==null||isNaN(kills)||kills<=0){$('formMsg').style.color='var(--red)';$('formMsg').textContent=t.errKills;return;}
-  const cparts=[[0,s1],[1,s2],[2,s3],[3,s4]].filter(([,v])=>v).map(([i,v])=>t.squadWord[i]+': '+fmtG(v)).concat([t.kills+': '+kills.toLocaleString()]).join('\n');
-  if(!confirm(t.confirmQ+'\n\n'+t.alliance+': '+alliance.toUpperCase()+'\n'+t.nick+': '+nick+'\n'+cparts)) return;
-  $('submitBtn').disabled=true;
-  $('formMsg').style.color='var(--muted)'; $('formMsg').textContent=t.submitting;
-  const {data,error}=await sb.rpc('submit_power',{
-    p_server:'213', p_alliance:alliance, p_nickname:nick,
-    p_troop:$('fTroop').value, p_shelter:$('fShelter').value.trim(),
-    p_s1:s1, p_s2:s2, p_s3:s3, p_s4:s4, p_kills:kills
-  });
-  $('submitBtn').disabled=false;
-  if(error){$('formMsg').style.color='var(--red)';$('formMsg').textContent='Error: '+error.message;return;}
-  if(data!=='ok'){
-    const msgs={no_nickname:t.errNick,no_alliance:t.errAlliance,too_long:t.errLong,bad_power:t.errS1};
-    $('formMsg').style.color='var(--red)';$('formMsg').textContent=msgs[data]||('Error: '+data);return;
+  if(kills==null||isNaN(kills)||kills<=0){
+    showError(t.errKills);
+    return;
   }
-  ['fAlliance','fNick','fTroop','fShelter'].forEach(id=>localStorage.setItem('sub_'+id,$(id).value));
-  const parts=[[0,s1],[1,s2],[2,s3],[3,s4]].filter(([,v])=>v).map(([i,v])=>t.squadWord[i]+' '+fmtG(v)).concat([t.kills+' '+kills.toLocaleString()]).join(' · ');
-  $('doneSummary').innerHTML=`<b>${alliance.toUpperCase()} · ${nick}</b><br>${parts}<br><br>${t.doneTail}`;
-  ['fS1','fS2','fS3','fS4','fKills'].forEach(id=>{$(id).value='';});
-  ['pS1','pS2','pS3','pS4','pS5'].forEach(id=>{$(id).textContent='';});
-  $('formView').style.display='none'; $('doneView').style.display='block';
+
+  const troopValue=$('fTroop').value;
+  const troopText=$('fTroop').selectedOptions[0]?.textContent||'';
+  const shelter=$('fShelter').value.trim();
+
+  const confirmLines=[
+    t.alliance+': '+alliance.toUpperCase(),
+    t.nick+': '+nick
+  ];
+  if(troopValue) confirmLines.push(t.troop+': '+troopText);
+  if(shelter) confirmLines.push(t.shelter+': '+shelter);
+
+  [[0,s1],[1,s2],[2,s3],[3,s4]]
+    .filter(([,v])=>v)
+    .forEach(([i,v])=>confirmLines.push(t.squadWord[i]+': '+fmtG(v)));
+  confirmLines.push(t.kills+': '+kills.toLocaleString());
+
+  if(!confirm(t.confirmQ+'\n\n'+confirmLines.join('\n'))) return;
+
+  submitting=true;
+  $('submitBtn').disabled=true;
+  $('formMsg').style.color='var(--muted)';
+  $('formMsg').textContent=t.submitting;
+
+  try{
+    const {data,error}=await sb.rpc('submit_power',{
+      p_server:'213',
+      p_alliance:alliance,
+      p_nickname:nick,
+      p_troop:troopValue,
+      p_shelter:shelter,
+      p_s1:s1,
+      p_s2:s2,
+      p_s3:s3,
+      p_s4:s4,
+      p_kills:kills
+    });
+
+    if(error){
+      showError(t.networkErr+': '+error.message);
+      return;
+    }
+
+    if(data!=='ok'){
+      const msgs={
+        no_nickname:t.errNick,
+        no_alliance:t.errAlliance,
+        too_long:t.errLong,
+        bad_power:t.errS1
+      };
+      showError(msgs[data]||('Error: '+data));
+      return;
+    }
+
+    ['fAlliance','fNick','fTroop','fShelter'].forEach(
+      id=>localStorage.setItem('sub_'+id,$(id).value)
+    );
+
+    const summaryParts=[[0,s1],[1,s2],[2,s3],[3,s4]]
+      .filter(([,v])=>v)
+      .map(([i,v])=>t.squadWord[i]+' '+fmtG(v))
+      .concat([t.kills+' '+kills.toLocaleString()])
+      .join(' · ');
+
+    $('doneSummary').innerHTML=
+      `<b>${escapeHtml(alliance.toUpperCase())} · ${escapeHtml(nick)}</b><br>`+
+      `${escapeHtml(summaryParts)}<br><br>${t.doneTail}`;
+
+    ['fS1','fS2','fS3','fS4','fKills'].forEach(id=>{$(id).value='';});
+    ['pS1','pS2','pS3','pS4','pS5'].forEach(id=>{$(id).textContent='';});
+
+    $('formView').style.display='none';
+    $('doneView').style.display='block';
+    window.scrollTo({top:0,behavior:'smooth'});
+  }catch(error){
+    showError(t.networkErr+': '+(error?.message||String(error)));
+  }finally{
+    submitting=false;
+    $('submitBtn').disabled=false;
+  }
 }
 
 async function loadGuideImgs(){
   try{
     const {data}=await sb.rpc('get_submit_guide');
     const g=JSON.parse(data||'{}');
-    if(g.images&&g.images.length){
-      const w=(g.width||90)+'%';
-      $('guideImgs').innerHTML=g.images.map(u=>`<img src="${u}" style="width:${w}" onclick="window.open('${u}','_blank')">`).join('');
-      $('guideSec').style.display='block';
-    }
+    const urls=Array.isArray(g.images)
+      ? g.images.map(safeGuideUrl).filter(Boolean)
+      : [];
+
+    if(!urls.length) return;
+
+    const width=Math.min(100,Math.max(30,Number(g.width)||90))+'%';
+    const wrap=$('guideImgs');
+    wrap.replaceChildren();
+
+    urls.forEach(url=>{
+      const img=document.createElement('img');
+      img.src=url;
+      img.alt=I18N[lang].guide;
+      img.style.width=width;
+      img.loading='lazy';
+      img.addEventListener('click',()=>window.open(url,'_blank','noopener'));
+      wrap.appendChild(img);
+    });
+
+    $('guideSec').style.display='block';
   }catch(e){}
 }
 
 window.onerror=function(msg,src,line){
   try{
-    var el=document.getElementById('gateMsg')||document.getElementById('formMsg');
-    if(el){el.style.color='#FF6B6B';el.textContent='오류: '+msg+' (줄 '+line+') — 이 화면을 캡처해서 관리자에게 보내주세요';}
+    const el=$('formMsg');
+    if(el){
+      const t=I18N[lang]||I18N.ko;
+      el.style.color='var(--red)';
+      el.textContent=t.runtimeErr+' ('+line+')';
+    }
   }catch(e){}
 };
 function init(){
@@ -356,7 +727,7 @@ function init(){
   }
   if(!window.supabase){
     var el=document.getElementById('gateMsg')||document.getElementById('formMsg');
-    if(el){el.style.color='#FF6B6B';el.textContent='필수 스크립트 로딩 실패 — 인터넷 연결을 확인하고 새로고침해주세요.';}
+    if(el){el.style.color='#FF6B6B';el.textContent=(I18N[lang]||I18N.ko).scriptFail;}
     return;
   }
   sb=window.supabase.createClient(CONFIG.SUPABASE_URL,CONFIG.SUPABASE_ANON_KEY);
