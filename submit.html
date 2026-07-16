@@ -332,9 +332,9 @@ input:focus,select:focus{
     <div class="field"><label><span id="tNick"></span> <b>*</b></label>
       <input id="fNick" maxlength="40" autocomplete="nickname" enterkeyhint="next"></div>
     <div class="row2">
-      <div class="field"><label id="tTroop"></label>
+      <div class="field"><label><span id="tTroop"></span> <b>*</b></label>
         <select id="fTroop"></select></div>
-      <div class="field"><label id="tShelter"></label>
+      <div class="field"><label><span id="tShelter"></span> <b>*</b></label>
         <input id="fShelter" inputmode="numeric" maxlength="4" enterkeyhint="next"></div>
     </div>
     <div class="sechd" style="margin-top:22px"><span id="tSec2"></span></div>
@@ -407,7 +407,7 @@ ko:{
   submit:'전투력 제출', submitting:'제출 중...',
   preview:v=>'→ '+v+' 로 기록됩니다',
   badNum:'⚠ 숫자를 확인해 주세요 (예: 6.22G 또는 6220)',
-  errAlliance:'연맹을 입력해 주세요.', errNick:'닉네임을 입력해 주세요.',
+  errAlliance:'연맹을 입력해 주세요.', errNick:'닉네임을 입력해 주세요.', errTroop:'주병종을 선택해 주세요.', errShelter:'산업 레벨을 숫자로 입력해 주세요. (예: 4, 7, 10)',
   errS1:'1편대 전투력을 확인해 주세요. (예: 6.22G 또는 6220)', errS:'편대 전투력 값을 확인해 주세요.',
   done:'✅ 제출이 완료되었습니다', doneTail:'운영진 확인 후 반영됩니다.<br>수고하셨습니다 ⚔️',
   again:'다시 제출하기', errLong:'입력이 너무 깁니다.', squadWord:['1편대','2편대','3편대','4편대'],
@@ -427,7 +427,7 @@ en:{
   submit:'Submit Combat Power', submitting:'Submitting...',
   preview:v=>'→ Will be recorded as '+v,
   badNum:'⚠ Please check the number (e.g. 6.22G or 6220)',
-  errAlliance:'Please enter your alliance.', errNick:'Please enter your nickname.',
+  errAlliance:'Please enter your alliance.', errNick:'Please enter your nickname.', errTroop:'Please select your main troop type.', errShelter:'Please enter your industry level as a number. (e.g. 4, 7, 10)',
   errS1:'Please check your Squad 1 power. (e.g. 6.22G or 6220)', errS:'Please check the squad power values.',
   done:'✅ Submission Complete', doneTail:'Staff will review and add it to the server sheet.<br>Thank you, Commander! ⚔️',
   again:'Submit Again', errLong:'Input is too long.', squadWord:['Squad 1','Squad 2','Squad 3','Squad 4'],
@@ -447,7 +447,7 @@ ja:{
   submit:'戦闘力を提出', submitting:'提出中...',
   preview:v=>'→ '+v+' として記録されます',
   badNum:'⚠ 数値をご確認ください（例: 6.22G または 6220）',
-  errAlliance:'同盟を入力してください。', errNick:'ニックネームを入力してください。',
+  errAlliance:'同盟を入力してください。', errNick:'ニックネームを入力してください。', errTroop:'主力兵種を選択してください。', errShelter:'産業レベルを数字で入力してください。（例：4、7、10）',
   errS1:'第1部隊の戦闘力をご確認ください。（例: 6.22G または 6220）', errS:'部隊の戦闘力をご確認ください。',
   done:'✅ 提出が完了しました', doneTail:'運営側で確認後、統合シートに反映します。<br>お疲れさまでした ⚔️',
   again:'もう一度提出する', errLong:'入力内容が長すぎます。', squadWord:['第1部隊','第2部隊','第3部隊','第4部隊'],
@@ -467,7 +467,7 @@ zh:{
   submit:'提交战力', submitting:'提交中...',
   preview:v=>'→ 将记录为 '+v,
   badNum:'⚠ 请检查数值（例：6.22G 或 6220）',
-  errAlliance:'请输入联盟。', errNick:'请输入昵称。',
+  errAlliance:'请输入联盟。', errNick:'请输入昵称。', errTroop:'请选择主兵种。', errShelter:'请输入数字形式的产业等级。（例：4、7、10）',
   errS1:'请检查第1编队战力。（例：6.22G 或 6220）', errS:'请检查编队战力数值。',
   done:'✅ 提交成功', doneTail:'管理员审核后将录入服务器统计表。<br>辛苦了 ⚔️',
   again:'再次提交', errLong:'输入内容过长。', squadWord:['第1编队','第2编队','第3编队','第4编队'],
@@ -574,6 +574,18 @@ async function doSubmit(){
   if(!alliance){showError(t.errAlliance);return;}
   if(!nick){showError(t.errNick);return;}
 
+  const troopValue=$('fTroop').value;
+  if(!troopValue){showError(t.errTroop);return;}
+
+  const shelter=normalizeNumericText($('fShelter').value)
+    .trim()
+    .replace(/\s/g,'');
+  if(!/^[0-9]{1,4}$/.test(shelter)||Number(shelter)<=0){
+    showError(t.errShelter);
+    return;
+  }
+  $('fShelter').value=shelter;
+
   const s1=parsePower($('fS1').value);
   if(s1==null||isNaN(s1)||s1<=0){showError(t.errS1);return;}
 
@@ -598,16 +610,14 @@ async function doSubmit(){
     return;
   }
 
-  const troopValue=$('fTroop').value;
   const troopText=$('fTroop').selectedOptions[0]?.textContent||'';
-  const shelter=$('fShelter').value.trim();
 
   const confirmLines=[
     t.alliance+': '+alliance.toUpperCase(),
     t.nick+': '+nick
   ];
-  if(troopValue) confirmLines.push(t.troop+': '+troopText);
-  if(shelter) confirmLines.push(t.shelter+': '+shelter);
+  confirmLines.push(t.troop+': '+troopText);
+  confirmLines.push(t.shelter+': '+shelter);
 
   [[0,s1],[1,s2],[2,s3],[3,s4]]
     .filter(([,v])=>v)
@@ -644,6 +654,9 @@ async function doSubmit(){
       const msgs={
         no_nickname:t.errNick,
         no_alliance:t.errAlliance,
+        no_troop:t.errTroop,
+        no_shelter:t.errShelter,
+        bad_shelter:t.errShelter,
         too_long:t.errLong,
         bad_power:t.errS1
       };
