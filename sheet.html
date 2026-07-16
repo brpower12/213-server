@@ -2132,6 +2132,80 @@ nav button.active::after{
   .section-head p{font-size:.59rem}
 }
 
+
+/* ============================================================
+   모바일 직접 분석 인원 입력 표시 수정
+   - 적용 버튼의 width:100% 규칙이 입력칸을 찌그러뜨리는 문제 차단
+   - 숫자·커서가 어두운 모바일 브라우저에서도 확실히 보이도록 지정
+   ============================================================ */
+#view-compare .custom-top-box input{
+  color:var(--text)!important;
+  -webkit-text-fill-color:var(--text)!important;
+  caret-color:var(--ours);
+  opacity:1!important;
+}
+@media(max-width:640px){
+  #view-compare .custom-top-box.show{
+    display:grid!important;
+    grid-template-columns:minmax(82px,1fr) 72px;
+    align-items:stretch;
+    width:100%;
+    gap:6px;
+  }
+  #view-compare .custom-top-box input{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:38px!important;
+    min-height:38px!important;
+    margin:0!important;
+    padding:7px 9px!important;
+    border:1px solid rgba(84,163,255,.75)!important;
+    border-radius:8px!important;
+    background:#121a28!important;
+    color:#f4f7fd!important;
+    -webkit-text-fill-color:#f4f7fd!important;
+    font-size:.9rem!important;
+    font-weight:900!important;
+    line-height:22px!important;
+    text-align:center!important;
+    box-shadow:inset 0 1px 4px rgba(0,0,0,.28)!important;
+    appearance:textfield;
+    -moz-appearance:textfield;
+  }
+  #view-compare .custom-top-box input::-webkit-inner-spin-button,
+  #view-compare .custom-top-box input::-webkit-outer-spin-button{
+    -webkit-appearance:none;
+    margin:0;
+  }
+  #view-compare .custom-top-box .btn{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:72px!important;
+    min-width:72px!important;
+    max-width:72px!important;
+    height:38px!important;
+    min-height:38px!important;
+    margin:0!important;
+    padding:6px 8px!important;
+    align-self:stretch!important;
+  }
+}
+@media(max-width:300px){
+  #view-compare .custom-top-box.show{
+    grid-template-columns:minmax(68px,1fr) 62px;
+    gap:5px;
+  }
+  #view-compare .custom-top-box .btn{
+    width:62px!important;
+    min-width:62px!important;
+    max-width:62px!important;
+    font-size:.65rem!important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -2259,7 +2333,7 @@ nav button.active::after{
     <div class="custom-top-control">
       <button type="button" class="custom-top-toggle" id="customTopToggle" onclick="toggleCustomTopInput()">직접 입력</button>
       <div class="custom-top-box" id="customTopBox">
-        <input id="customTopInput" type="number" min="1" max="400" step="1" value="60" inputmode="numeric" placeholder="예: 60, 130, 400" onkeydown="if(event.key==='Enter')applyCustomTopN()">
+        <input id="customTopInput" type="number" min="1" max="400" step="1" value="60" inputmode="numeric" aria-label="분석 인원 직접 입력" placeholder="예: 60" onkeydown="if(event.key==='Enter')applyCustomTopN()">
         <button type="button" class="btn sm primary" onclick="applyCustomTopN()">적용</button>
       </div>
       <span class="custom-top-hint" id="customTopHint">1~400명 직접 입력</span>
@@ -2459,8 +2533,8 @@ nav button.active::after{
         <span class="hint" id="adminOwnerHint">현재 프로그램 관리자만 권한을 변경할 수 있습니다.</span>
       </div>
       <div class="device-admin-toolbar">
-        <button class="btn primary" onclick="openDeviceManager()">📱 신규 기기 승인 관리</button>
-        <label class="device-limit-control">운영진당 승인 기기
+        <button class="btn primary" onclick="openDeviceManager()">📱 브라우저·기기 승인 관리</button>
+        <label class="device-limit-control">운영진당 승인 수
           <select id="deviceLimitSelect">
             <option value="1">1대</option>
             <option value="2" selected>2대</option>
@@ -2470,7 +2544,7 @@ nav button.active::after{
           </select>
         </label>
         <button class="btn" onclick="saveDeviceLimit()">제한 저장</button>
-        <span class="hint" id="deviceManagerHint">기존 등록 기기는 자동 승인되며, 새 기기부터 관리자 승인이 필요합니다.</span>
+        <span class="hint" id="deviceManagerHint">Chrome·웨일·Edge·시크릿 모드는 각각 별도 브라우저로 등록됩니다.</span>
       </div>
       <div id="devicePanel" style="margin-top:12px"></div>
       <div id="permPanel" style="margin-top:12px"></div>
@@ -2573,7 +2647,7 @@ nav button.active::after{
     <input id="pinInput" inputmode="numeric" maxlength="4" placeholder="4자리 숫자 PIN" onkeydown="if(event.key==='Enter')saveEditor()">
     <div class="gate-msg" id="nameMsg" style="margin:-4px 0 10px;text-align:left"></div>
     <button class="btn primary" style="width:100%" onclick="saveEditor()">등록하기</button>
-    <p class="hint" style="margin-top:12px;font-size:.78rem;line-height:1.5">설정한 PIN은 본인 확인용입니다. 새 기기에서는 동일한 닉네임과 PIN으로 승인 요청을 보낼 수 있으며, 프로그램 관리자가 승인한 기기만 이용할 수 있습니다.<br>※ PIN을 공유하지 마세요. 기기 승인은 운영진당 최대 2대로 제한됩니다.</p>
+    <p class="hint" style="margin-top:12px;font-size:.78rem;line-height:1.5">설정한 PIN은 본인 확인용입니다. 새 브라우저나 기기에서는 동일한 닉네임과 PIN으로 승인 요청을 보낼 수 있으며, 프로그램 관리자가 승인한 접속 환경만 이용할 수 있습니다.<br>※ PIN을 공유하지 마세요. Chrome·웨일·Edge·시크릿 모드는 각각 별도 승인 대상으로 처리됩니다.</p>
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -2582,7 +2656,7 @@ nav button.active::after{
 let sb=null, servers=[], alliances=[], factions=[], factionServers=[], mode='server', basis=1, topN=0, rankMode='server', rankTopN=0, entryIsOurs=true;
 let entryRows=[], rankCache=null, lastCmp=null, cmpShowAll=false, editorPerms=null, adminPin=null;
 let editorRole='operator', programAdminName='관리자', roleSystemReady=false;
-let deviceStatus='unknown', deviceLimit=2, deviceGuardTimer=null;
+let deviceStatus='unknown', deviceLimit=Math.min(5,Math.max(1,Number(localStorage.getItem('deviceLimitHint'))||2)), deviceGuardTimer=null;
 let subFilter='pending', subCache=[], historyCache=[], manageSection='servers', historySearchTimer=null, historyRequestSeq=0;
 const TABS=[['compare','📊 전력 비교'],['rank','🏆 순위'],['entry','✏️ 입력'],['subs','📥 제출'],['manage','🛠️ 관리'],['history','🕘 이력']];
 const $=id=>document.getElementById(id);
@@ -2686,11 +2760,11 @@ async function saveEditor(){
   await loadPerms();
 
   if(data==='created_pending'){
-    toast(`'${name}' 등록 완료 · 신규 기기 승인을 요청했습니다`);
+    toast(`'${name}' 등록 완료 · 신규 브라우저·기기 승인을 요청했습니다`);
   }else if(data==='pending'){
-    toast('신규 기기 승인 요청을 보냈습니다');
+    toast('신규 브라우저·기기 승인 요청을 보냈습니다');
   }else if(data==='limit_pending'){
-    toast(`승인 기기 ${deviceLimit}대가 이미 등록되어 있습니다 · 관리자 확인이 필요합니다`);
+    toast(`승인 한도 ${deviceLimit}개가 이미 등록되어 있습니다 · 관리자 확인이 필요합니다`);
   }else{
     toast('승인된 기기에서 본인 확인이 완료되었습니다');
   }
@@ -2750,6 +2824,7 @@ async function loadPerms(){
       programAdminName=p.admin_name||'관리자';
       deviceStatus=p.device_status||'approved';
       deviceLimit=Number(p.device_limit)||2;
+      localStorage.setItem('deviceLimitHint',String(deviceLimit));
 
       const perms=deviceStatus==='approved'?(p.perms||''):'';
       if(perms==='*') editorPerms=new Set(TABS.map(([k])=>k));
@@ -2798,10 +2873,10 @@ function updateNoPermState(){
 
   if(deviceStatus==='pending'){
     icon.textContent='📱';
-    title.textContent='신규 기기 승인 대기 중';
+    title.textContent='신규 브라우저·기기 승인 대기 중';
     text.innerHTML=editorRole==='admin'
-      ?'현재 기기는 아직 승인되지 않았습니다.<br>프로그램 관리자 본인이라면 관리자 PIN으로 직접 승인할 수 있습니다.'
-      :`현재 기기는 아직 승인되지 않았습니다.<br>프로그램 관리자(${esc(programAdminName)})가 승인하면 이용할 수 있습니다.`;
+      ?'현재 브라우저 또는 기기는 아직 승인되지 않았습니다.<br>프로그램 관리자 본인이라면 관리자 PIN으로 직접 승인할 수 있습니다.'
+      :`현재 브라우저 또는 기기는 아직 승인되지 않았습니다.<br>프로그램 관리자(${esc(programAdminName)})가 승인하면 이용할 수 있습니다.`;
     if(editorRole==='admin') selfApproveBtn.style.display='block';
   }else if(deviceStatus==='rejected'){
     icon.textContent='✕';
@@ -2813,7 +2888,7 @@ function updateNoPermState(){
     if(editorRole==='admin') selfApproveBtn.style.display='block';
   }else if(deviceStatus==='revoked'){
     icon.textContent='🔒';
-    title.textContent='이 기기의 사용이 해제되었습니다';
+    title.textContent='이 브라우저·기기의 사용이 해제되었습니다';
     text.innerHTML=editorRole==='admin'
       ?'프로그램 관리자 본인이라면 관리자 PIN으로 이 기기를 다시 승인할 수 있습니다.'
       :'관리자가 이 기기의 접속 권한을 해제했습니다.<br>다시 이용하려면 관리자 확인 후 승인 요청을 보내주세요.';
@@ -2822,7 +2897,7 @@ function updateNoPermState(){
   }else if(deviceStatus==='unregistered'){
     icon.textContent='📲';
     title.textContent='이 기기 등록이 필요합니다';
-    text.innerHTML='운영진 닉네임과 개인 PIN을 입력해 신규 기기 승인 요청을 보내주세요.';
+    text.innerHTML='운영진 닉네임과 개인 PIN을 입력해 신규 브라우저·기기 승인 요청을 보내주세요.';
     registerBtn.style.display='block';
   }else{
     icon.textContent='⏳';
@@ -2836,6 +2911,18 @@ function isMissingRpc(error){
   const msg=(error&&error.message)||'';
   return /function .* does not exist|Could not find the function|PGRST202/i.test(msg);
 }
+
+function syncDeviceLimitUI(){
+  const select=$('deviceLimitSelect');
+  if(select&&Number.isFinite(deviceLimit)&&deviceLimit>=1&&deviceLimit<=5){
+    select.value=String(deviceLimit);
+  }
+  const hint=$('deviceManagerHint');
+  if(hint){
+    hint.textContent=`현재 승인 한도 ${deviceLimit}개 · Chrome·웨일·Edge·시크릿 모드는 각각 별도 승인 대상입니다.`;
+  }
+}
+
 function updateRoleUI(){
   const isAdmin=editorRole==='admin';
   document.body.classList.toggle('is-program-admin',isAdmin);
@@ -2857,6 +2944,7 @@ function updateRoleUI(){
     manageChip.classList.toggle('admin',isAdmin);
   }
   if(ownerHint) ownerHint.textContent=`현재 관리자: ${programAdminName||'미지정'} · 관리자 위임 시 역할과 관리 권한이 즉시 이전됩니다.`;
+  syncDeviceLimitUI();
 
   document.querySelectorAll('[data-admin-only]').forEach(el=>{
     el.style.display=isAdmin?'':'none';
@@ -4332,7 +4420,8 @@ async function openDeviceManager(){
     if(!lim.error) deviceLimit=Number(lim.data)||2;
   }
 
-  $('deviceLimitSelect').value=String(deviceLimit);
+  localStorage.setItem('deviceLimitHint',String(deviceLimit));
+  syncDeviceLimitUI();
   renderDeviceManager(list);
 }
 function renderDeviceManager(list){
@@ -4389,10 +4478,10 @@ function renderDeviceManager(list){
         <div class="device-main">
           <div class="device-title">
             <span>📱 ${esc(r.device_info||'기기 정보 없음')}</span>
-            ${current?'<span class="device-current">현재 기기</span>':''}
+            ${current?'<span class="device-current">현재 브라우저</span>':''}
           </div>
           <div class="device-meta">
-            기기 ID ${esc(shortId)}… · 요청 ${requested?fmtTime(requested):'-'}<br>
+            접속 ID ${esc(shortId)}… · 요청 ${requested?fmtTime(requested):'-'}<br>
             최근 접속 ${r.last_seen?fmtTime(r.last_seen):'-'}
             ${r.processed_by?` · 처리 ${esc(r.processed_by)}`:''}
           </div>
@@ -4449,17 +4538,17 @@ function approveDevice(id){
   processDeviceAction('admin_approve_device_v2',id,'✅ 기기를 승인했습니다');
 }
 function rejectDevice(id){
-  if(!confirm('이 신규 기기 승인 요청을 거절할까요?')) return;
+  if(!confirm('이 신규 브라우저·기기 승인 요청을 거절할까요?')) return;
   processDeviceAction('admin_reject_device_v2',id,'기기 승인 요청을 거절했습니다');
 }
 function revokeDevice(id){
-  if(!confirm('이 기기의 통합 시트 사용 권한을 해제할까요?\n\n해제 후에는 다시 관리자 승인을 받아야 합니다.')) return;
+  if(!confirm('이 브라우저·기기의 통합 시트 사용 권한을 해제할까요?\n\n해제 후에는 다시 관리자 승인을 받아야 합니다.')) return;
   processDeviceAction('admin_revoke_device_v2',id,'🔒 기기 사용 권한을 해제했습니다');
 }
 function deleteDeviceRecord(id){
   if(!confirm(
-    '이 기기 기록을 목록에서 완전히 삭제할까요?\n\n'+
-    '삭제 후 같은 기기에서 다시 접속하면 신규 승인 요청으로 다시 등록됩니다.'
+    '이 브라우저·기기 기록을 목록에서 완전히 삭제할까요?\n\n'+
+    '삭제 후 같은 브라우저 또는 기기에서 다시 접속하면 신규 승인 요청으로 다시 등록됩니다.'
   )) return;
 
   processDeviceAction(
@@ -4490,8 +4579,10 @@ async function saveDeviceLimit(){
   }
 
   deviceLimit=limit;
+  localStorage.setItem('deviceLimitHint',String(deviceLimit));
+  syncDeviceLimitUI();
   adminPin=pin;
-  toast(`운영진당 승인 기기 제한을 ${limit}대로 저장했습니다`);
+  toast(`운영진당 승인 수 제한을 ${limit}대로 저장했습니다`);
   await openDeviceManager();
 }
 
