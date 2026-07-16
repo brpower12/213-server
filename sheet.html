@@ -1809,6 +1809,135 @@ nav button.active::after{
   }
 }
 
+
+/* ============================================================
+   신규 기기 승인 · 기기 수 제한 · 강제 해제
+   ============================================================ */
+.device-admin-toolbar{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:12px;
+  padding-top:12px;
+  border-top:1px solid var(--line);
+}
+.device-limit-control{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:var(--muted);
+  font-size:.82rem;
+  font-weight:750;
+}
+.device-limit-control select{
+  width:82px;
+  min-width:82px;
+  padding:8px 10px;
+}
+.device-group{
+  margin-top:10px;
+  overflow:hidden;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:rgba(255,255,255,.012);
+}
+.device-group-head{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:11px 13px;
+  border-bottom:1px solid var(--line);
+  background:rgba(255,255,255,.018);
+}
+.device-group-head b{font-size:.92rem}
+.device-count{
+  color:var(--muted);
+  font-size:.75rem;
+}
+.device-row{
+  display:grid;
+  grid-template-columns:minmax(170px,1fr) minmax(150px,.8fr) auto;
+  gap:12px;
+  align-items:center;
+  padding:12px 13px;
+  border-top:1px solid rgba(255,255,255,.045);
+}
+.device-row:first-child{border-top:0}
+.device-main{
+  min-width:0;
+}
+.device-title{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  min-width:0;
+  font-weight:800;
+}
+.device-title span:first-child{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.device-meta{
+  margin-top:4px;
+  color:var(--muted);
+  font-size:.73rem;
+  line-height:1.45;
+}
+.device-status{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:64px;
+  padding:4px 8px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  font-size:.7rem;
+  font-weight:850;
+  white-space:nowrap;
+}
+.device-status.pending{color:#f2c14e;border-color:rgba(242,193,78,.32);background:rgba(242,193,78,.055)}
+.device-status.approved{color:#55d99a;border-color:rgba(61,220,151,.28);background:rgba(61,220,151,.05)}
+.device-status.rejected,
+.device-status.revoked{color:#ff7777;border-color:rgba(255,107,107,.28);background:rgba(255,107,107,.05)}
+.device-current{
+  color:#70b5ff;
+  font-size:.7rem;
+  font-weight:800;
+  white-space:nowrap;
+}
+.device-actions{
+  display:flex;
+  justify-content:flex-end;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.device-empty{
+  padding:18px;
+  color:var(--muted);
+  text-align:center;
+}
+@media(max-width:720px){
+  .device-admin-toolbar{
+    align-items:stretch;
+  }
+  .device-admin-toolbar > .btn{
+    flex:1 1 150px;
+  }
+  .device-limit-control{
+    flex:1 1 100%;
+    justify-content:space-between;
+  }
+  .device-row{
+    grid-template-columns:1fr;
+    gap:8px;
+  }
+  .device-actions{
+    justify-content:flex-start;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1895,11 +2024,12 @@ nav button.active::after{
 <div id="noPerm" style="display:none">
   <div style="max-width:420px;margin:60px auto;padding:0 20px">
     <div class="panel" style="text-align:center;padding:32px 24px">
-      <div style="font-size:2.4rem;margin-bottom:10px">⏳</div>
-      <h2 style="margin-bottom:8px;font-size:1.25rem">권한 대기 중</h2>
-      <p class="hint" style="margin-bottom:20px">입력자 등록이 완료되었습니다.<br>프로그램 관리자가 탭 권한을 부여하면 이용할 수 있습니다.<br>관리자에게 권한 승인을 요청해 주세요.</p>
-      <button class="btn" style="width:100%" onclick="recheckPerms()">권한 다시 확인</button>
-      <button class="btn" style="width:100%;margin-top:8px" onclick="unlockAsAdmin()">🔐 관리자 PIN으로 잠금 해제</button>
+      <div id="noPermIcon" style="font-size:2.4rem;margin-bottom:10px">⏳</div>
+      <h2 id="noPermTitle" style="margin-bottom:8px;font-size:1.25rem">권한 확인 중</h2>
+      <p class="hint" id="noPermText" style="margin-bottom:20px">등록 상태를 확인하고 있습니다.</p>
+      <button class="btn" id="noPermCheckBtn" style="width:100%" onclick="recheckPerms()">상태 다시 확인</button>
+      <button class="btn primary" id="noPermRegisterBtn" style="display:none;width:100%;margin-top:8px" onclick="askEditor()">이 기기 승인 다시 요청</button>
+      <button class="btn" id="noPermAdminUnlock" style="display:none;width:100%;margin-top:8px" onclick="unlockAsAdmin()">🔐 관리자 PIN으로 잠금 해제</button>
       <button class="btn danger" style="width:100%;margin-top:8px" onclick="doLogout()">잠금</button>
     </div>
   </div>
@@ -2121,6 +2251,21 @@ nav button.active::after{
         <button class="btn" onclick="changeAdminPin()">관리자 PIN 변경</button>
         <span class="hint" id="adminOwnerHint">현재 프로그램 관리자만 권한을 변경할 수 있습니다.</span>
       </div>
+      <div class="device-admin-toolbar">
+        <button class="btn primary" onclick="openDeviceManager()">📱 신규 기기 승인 관리</button>
+        <label class="device-limit-control">운영진당 승인 기기
+          <select id="deviceLimitSelect">
+            <option value="1">1대</option>
+            <option value="2" selected>2대</option>
+            <option value="3">3대</option>
+            <option value="4">4대</option>
+            <option value="5">5대</option>
+          </select>
+        </label>
+        <button class="btn" onclick="saveDeviceLimit()">제한 저장</button>
+        <span class="hint" id="deviceManagerHint">기존 등록 기기는 자동 승인되며, 새 기기부터 관리자 승인이 필요합니다.</span>
+      </div>
+      <div id="devicePanel" style="margin-top:12px"></div>
       <div id="permPanel" style="margin-top:12px"></div>
     </div>
   </div>
@@ -2221,7 +2366,7 @@ nav button.active::after{
     <input id="pinInput" inputmode="numeric" maxlength="4" placeholder="4자리 숫자 PIN" onkeydown="if(event.key==='Enter')saveEditor()">
     <div class="gate-msg" id="nameMsg" style="margin:-4px 0 10px;text-align:left"></div>
     <button class="btn primary" style="width:100%" onclick="saveEditor()">등록하기</button>
-    <p class="hint" style="margin-top:12px;font-size:.78rem;line-height:1.5">설정한 PIN은 본인 확인용입니다. 다른 사람이 같은 닉네임을 사용하는 것을 방지하며, 다른 기기에서도 동일한 PIN으로 인증할 수 있습니다.<br>※ PIN을 잊어버리면 관리자에게 재등록을 요청해야 합니다.</p>
+    <p class="hint" style="margin-top:12px;font-size:.78rem;line-height:1.5">설정한 PIN은 본인 확인용입니다. 새 기기에서는 동일한 닉네임과 PIN으로 승인 요청을 보낼 수 있으며, 프로그램 관리자가 승인한 기기만 이용할 수 있습니다.<br>※ PIN을 공유하지 마세요. 기기 승인은 운영진당 최대 2대로 제한됩니다.</p>
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -2230,6 +2375,7 @@ nav button.active::after{
 let sb=null, servers=[], alliances=[], factions=[], factionServers=[], mode='server', basis=1, topN=0, rankMode='server', rankTopN=0, entryIsOurs=true;
 let entryRows=[], rankCache=null, lastCmp=null, cmpShowAll=false, editorPerms=null, adminPin=null;
 let editorRole='operator', programAdminName='관리자', roleSystemReady=false;
+let deviceStatus='unknown', deviceLimit=2, deviceGuardTimer=null;
 let subFilter='pending', subCache=[], historyCache=[], manageSection='servers', historySearchTimer=null, historyRequestSeq=0;
 const TABS=[['compare','📊 전력 비교'],['rank','🏆 순위'],['entry','✏️ 입력'],['subs','📥 제출'],['manage','🛠️ 관리'],['history','🕘 이력']];
 const $=id=>document.getElementById(id);
@@ -2298,16 +2444,49 @@ async function saveEditor(){
   const name=$('nameInput').value.trim(), pin=$('pinInput').value.trim();
   if(!name){$('nameMsg').textContent='닉네임을 입력해주세요.';return;}
   if(!/^\d{4}$/.test(pin)){$('nameMsg').textContent='PIN은 숫자 4자리로 입력해주세요.';return;}
-  $('nameMsg').style.color='var(--muted)'; $('nameMsg').textContent='확인 중...';
-  const {data,error}=await sb.rpc('claim_editor',{p_name:name,p_pin:pin,p_device_id:getDeviceId(),p_device_info:getDeviceInfo()});
-  if(error){$('nameMsg').style.color='var(--red)';$('nameMsg').textContent='오류: '+error.message;return;}
-  if(data==='wrong_pin'){$('nameMsg').style.color='var(--red)';$('nameMsg').textContent='이미 사용 중인 닉네임입니다. 본인이 맞다면 처음 정했던 PIN을 입력해주세요.';return;}
-  if(data==='unauthorized'){$('nameMsg').style.color='var(--red)';$('nameMsg').textContent='세션이 만료됐습니다. 새로고침 후 다시 입장해주세요.';return;}
+
+  $('nameMsg').style.color='var(--muted)';
+  $('nameMsg').textContent='기기 등록 상태 확인 중...';
+
+  const {data,error}=await sb.rpc('claim_editor',{
+    p_name:name,
+    p_pin:pin,
+    p_device_id:getDeviceId(),
+    p_device_info:getDeviceInfo()
+  });
+
+  if(error){
+    $('nameMsg').style.color='var(--red)';
+    $('nameMsg').textContent='오류: '+error.message;
+    return;
+  }
+  if(data==='wrong_pin'){
+    $('nameMsg').style.color='var(--red)';
+    $('nameMsg').textContent='이미 사용 중인 닉네임입니다. 본인이 맞다면 처음 정했던 PIN을 입력해주세요.';
+    return;
+  }
+  if(data==='unauthorized'){
+    $('nameMsg').style.color='var(--red)';
+    $('nameMsg').textContent='세션이 만료됐습니다. 새로고침 후 다시 입장해주세요.';
+    return;
+  }
+
   localStorage.setItem('editorName',name);
-  $('editorName').textContent=name; $('nameOverlay').classList.remove('show');
+  $('editorName').textContent=name;
+  $('nameOverlay').classList.remove('show');
   applyWatermark();
+
   await loadPerms();
-  toast(data==='created'?`'${name}' 닉네임을 등록했습니다`:'본인 확인 완료');
+
+  if(data==='created_pending'){
+    toast(`'${name}' 등록 완료 · 신규 기기 승인을 요청했습니다`);
+  }else if(data==='pending'){
+    toast('신규 기기 승인 요청을 보냈습니다');
+  }else if(data==='limit_pending'){
+    toast(`승인 기기 ${deviceLimit}대가 이미 등록되어 있습니다 · 관리자 확인이 필요합니다`);
+  }else{
+    toast('승인된 기기에서 본인 확인이 완료되었습니다');
+  }
 }
 
 /* ---------- 게이트 ---------- */
@@ -2337,37 +2516,102 @@ function applyWatermark(){
 }
 async function loadPerms(){
   const name=getEditor();
+
   if(!name){
     editorPerms=new Set();
     editorRole='operator';
     programAdminName='관리자';
     roleSystemReady=false;
+    deviceStatus='unregistered';
     updateRoleUI();
     applyPerms();
+    updateNoPermState();
     return;
   }
 
-  const profile=await sb.rpc('get_editor_profile',{p_name:name,p_device_id:getDeviceId()});
-  if(!profile.error && profile.data){
-    const p=profile.data;
+  const profile=await sb.rpc('get_editor_profile',{
+    p_name:name,
+    p_device_id:getDeviceId()
+  });
+
+  if(!profile.error){
     roleSystemReady=true;
-    editorRole=p.role||'operator';
-    programAdminName=p.admin_name||'관리자';
-    const perms=p.perms||'';
-    if(perms==='*') editorPerms=new Set(TABS.map(([k])=>k));
-    else editorPerms=new Set(perms.split(',').map(s=>s.trim()).filter(Boolean));
+
+    if(profile.data){
+      const p=profile.data;
+      editorRole=p.role||'operator';
+      programAdminName=p.admin_name||'관리자';
+      deviceStatus=p.device_status||'approved';
+      deviceLimit=Number(p.device_limit)||2;
+
+      const perms=deviceStatus==='approved'?(p.perms||''):'';
+      if(perms==='*') editorPerms=new Set(TABS.map(([k])=>k));
+      else editorPerms=new Set(perms.split(',').map(s=>s.trim()).filter(Boolean));
+    }else{
+      editorRole='operator';
+      programAdminName='관리자';
+      deviceStatus='unregistered';
+      editorPerms=new Set();
+    }
   }else{
-    // 역할 SQL 패치 적용 전에도 기존 권한 조회는 계속 동작하도록 유지
-    const legacy=await sb.rpc('get_editor_perms',{p_name:name,p_device_id:getDeviceId()});
+    // 기기 승인 SQL 적용 전 호환
+    const legacy=await sb.rpc('get_editor_perms',{
+      p_name:name,
+      p_device_id:getDeviceId()
+    });
     roleSystemReady=false;
     editorRole=name==='부앙'?'admin':'operator';
     programAdminName='부앙';
+    deviceStatus=legacy.data!=null?'approved':'unregistered';
+
     const perms=legacy.data||'';
     if(perms==='*') editorPerms=new Set(TABS.map(([k])=>k));
     else editorPerms=new Set(perms.split(',').map(s=>s.trim()).filter(Boolean));
   }
+
   updateRoleUI();
   applyPerms();
+  updateNoPermState();
+}
+
+
+function updateNoPermState(){
+  const icon=$('noPermIcon');
+  const title=$('noPermTitle');
+  const text=$('noPermText');
+  const registerBtn=$('noPermRegisterBtn');
+  const unlockBtn=$('noPermAdminUnlock');
+
+  if(!icon||!title||!text) return;
+
+  registerBtn.style.display='none';
+  unlockBtn.style.display='none';
+
+  if(deviceStatus==='pending'){
+    icon.textContent='📱';
+    title.textContent='신규 기기 승인 대기 중';
+    text.innerHTML=`현재 기기는 아직 승인되지 않았습니다.<br>프로그램 관리자(${esc(programAdminName)})가 승인하면 이용할 수 있습니다.`;
+  }else if(deviceStatus==='rejected'){
+    icon.textContent='✕';
+    title.textContent='기기 승인 요청이 거절되었습니다';
+    text.innerHTML='관리자에게 확인한 뒤 동일한 닉네임과 PIN으로 다시 승인 요청을 보내주세요.';
+    registerBtn.style.display='block';
+  }else if(deviceStatus==='revoked'){
+    icon.textContent='🔒';
+    title.textContent='이 기기의 사용이 해제되었습니다';
+    text.innerHTML='관리자가 이 기기의 접속 권한을 해제했습니다.<br>다시 이용하려면 관리자 확인 후 승인 요청을 보내주세요.';
+    registerBtn.style.display='block';
+  }else if(deviceStatus==='unregistered'){
+    icon.textContent='📲';
+    title.textContent='이 기기 등록이 필요합니다';
+    text.innerHTML='운영진 닉네임과 개인 PIN을 입력해 신규 기기 승인 요청을 보내주세요.';
+    registerBtn.style.display='block';
+  }else{
+    icon.textContent='⏳';
+    title.textContent='탭 권한 대기 중';
+    text.innerHTML=`기기 승인은 완료되었습니다.<br>프로그램 관리자(${esc(programAdminName)})가 탭 권한을 부여하면 이용할 수 있습니다.`;
+    if(editorRole==='admin') unlockBtn.style.display='block';
+  }
 }
 
 function isMissingRpc(error){
@@ -2421,9 +2665,25 @@ function applyPerms(){
 }
 async function recheckPerms(){
   await loadPerms();
-  if(editorPerms.size===0) toast('아직 부여된 권한이 없습니다. 관리자에게 요청하세요.');
+  if(editorPerms.size>0){
+    toast('✅ 승인 상태와 권한을 다시 확인했습니다');
+    return;
+  }
+
+  const messages={
+    pending:'아직 신규 기기 승인 대기 중입니다',
+    rejected:'기기 승인 요청이 거절되었습니다',
+    revoked:'이 기기의 사용 권한이 해제되었습니다',
+    unregistered:'이 기기에서 다시 등록해 주세요',
+    approved:'아직 부여된 탭 권한이 없습니다'
+  };
+  toast(messages[deviceStatus]||'등록 상태를 확인해 주세요');
 }
 async function unlockAsAdmin(){
+  if(deviceStatus!=='approved'){
+    toast('관리자 기능도 승인된 기기에서만 사용할 수 있습니다');
+    return;
+  }
   const pin=prompt('🔐 관리자 PIN을 입력하세요:');
   if(pin===null) return;
   const name=getEditor(); if(!name){askEditor();return;}
@@ -2452,6 +2712,7 @@ async function enterApp(){
   applyWatermark();
   await loadBase();
   await loadPerms();
+  startDeviceGuard();
   refreshSubBadge();
 
   // 접속할 때 이전 비교 결과를 자동 복원하지 않는다.
@@ -2464,6 +2725,25 @@ async function enterApp(){
   $('compareResult').innerHTML='<div class="compare-empty compare-empty-state"><div class="ce-icon">◇</div><div class="ce-title">두 비교 대상을 선택하세요</div><div class="ce-sub">비교할 대상을 직접 입력하거나 목록에서 선택할 수 있습니다.</div></div>';
   updateCompareCardMeta();
 }
+
+function startDeviceGuard(){
+  if(deviceGuardTimer) clearInterval(deviceGuardTimer);
+  deviceGuardTimer=setInterval(async()=>{
+    if(document.hidden||!getEditor()) return;
+    const before=deviceStatus;
+    await loadPerms();
+    if(before==='approved'&&deviceStatus!=='approved'){
+      toast('이 기기의 사용 권한이 변경되어 화면을 잠갔습니다');
+    }
+  },30000);
+}
+window.addEventListener('focus',()=>{
+  if(getEditor()&&sb) loadPerms();
+});
+document.addEventListener('visibilitychange',()=>{
+  if(!document.hidden&&getEditor()&&sb) loadPerms();
+});
+
 function resetCompare(){
   $('pickA').value=''; $('pickB').value='';
   lastRaw=null; cmpShowAll=false;
@@ -3589,6 +3869,202 @@ async function processExport(id,approve){
   toast(approve?'✅ 승인했습니다 — 본인이 15분 내 다시 내보내기를 누르면 됩니다':'거절했습니다');
   openExportReqs();
 }
+
+
+/* ---------- 승인 기기 관리 (프로그램 관리자) ---------- */
+async function getAdminPinForDevices(){
+  if(editorRole!=='admin'){
+    toast(`기기 관리는 현재 관리자(${programAdminName})만 사용할 수 있습니다`);
+    return null;
+  }
+  if(adminPin) return adminPin;
+  const pin=prompt('🔐 관리자 PIN을 입력하세요:');
+  if(pin===null) return null;
+  return pin.trim();
+}
+async function openDeviceManager(){
+  if(!roleSystemReady){
+    toast('기기 승인 SQL 패치를 먼저 적용해야 합니다');
+    return;
+  }
+
+  const pin=await getAdminPinForDevices();
+  if(pin===null) return;
+
+  const {data,error}=await sb.rpc('admin_list_editor_devices_v2',{
+    p_pin:pin,
+    p_actor:getEditor(),
+    p_device_id:getDeviceId()
+  });
+
+  if(error){
+    toast(/not_admin|wrong_pin/.test(error.message)?'관리자 권한 또는 PIN을 확인하세요':'기기 목록 오류: '+error.message);
+    return;
+  }
+
+  adminPin=pin;
+  const list=data||[];
+
+  if(list.length){
+    deviceLimit=Number(list[0].device_limit)||2;
+  }else{
+    const lim=await sb.rpc('admin_get_device_limit_v2',{
+      p_pin:pin,
+      p_actor:getEditor(),
+      p_device_id:getDeviceId()
+    });
+    if(!lim.error) deviceLimit=Number(lim.data)||2;
+  }
+
+  $('deviceLimitSelect').value=String(deviceLimit);
+  renderDeviceManager(list);
+}
+function renderDeviceManager(list){
+  const panel=$('devicePanel');
+  if(!list.length){
+    panel.innerHTML='<div class="device-empty">등록된 기기가 없습니다.</div>';
+    return;
+  }
+
+  const order={pending:0,approved:1,rejected:2,revoked:3};
+  const grouped=new Map();
+
+  list
+    .slice()
+    .sort((a,b)=>
+      (a.editor_name||'').localeCompare(b.editor_name||'','ko')||
+      (order[a.status]??9)-(order[b.status]??9)||
+      new Date(b.requested_at||b.first_seen)-new Date(a.requested_at||a.first_seen)
+    )
+    .forEach(row=>{
+      if(!grouped.has(row.editor_name)) grouped.set(row.editor_name,[]);
+      grouped.get(row.editor_name).push(row);
+    });
+
+  const statusLabel={
+    pending:'승인 대기',
+    approved:'승인됨',
+    rejected:'거절됨',
+    revoked:'사용 해제'
+  };
+
+  panel.innerHTML=[...grouped.entries()].map(([name,rows])=>{
+    const approved=rows.filter(r=>r.status==='approved').length;
+    const role=rows[0]?.editor_role==='admin'?'프로그램 관리자':'운영진';
+
+    const devices=rows.map(r=>{
+      const current=r.editor_name===getEditor()&&r.device_id===getDeviceId();
+      const shortId=String(r.device_id||'').slice(0,8);
+      const requested=r.requested_at||r.first_seen;
+      const actions=[];
+
+      if(r.status==='pending'){
+        actions.push(`<button class="btn sm primary" onclick="approveDevice(${r.id})">✓ 승인</button>`);
+        actions.push(`<button class="btn sm danger" onclick="rejectDevice(${r.id})">✕ 거절</button>`);
+      }else if(r.status==='approved'){
+        actions.push(`<button class="btn sm danger" ${current?'disabled title="현재 사용 중인 관리자 기기는 여기서 해제할 수 없습니다"':''} onclick="revokeDevice(${r.id})">기기 해제</button>`);
+      }else{
+        actions.push(`<button class="btn sm primary" onclick="approveDevice(${r.id})">재승인</button>`);
+      }
+
+      return `<div class="device-row">
+        <div class="device-main">
+          <div class="device-title">
+            <span>📱 ${esc(r.device_info||'기기 정보 없음')}</span>
+            ${current?'<span class="device-current">현재 기기</span>':''}
+          </div>
+          <div class="device-meta">
+            기기 ID ${esc(shortId)}… · 요청 ${requested?fmtTime(requested):'-'}<br>
+            최근 접속 ${r.last_seen?fmtTime(r.last_seen):'-'}
+            ${r.processed_by?` · 처리 ${esc(r.processed_by)}`:''}
+          </div>
+        </div>
+        <div><span class="device-status ${esc(r.status)}">${statusLabel[r.status]||esc(r.status)}</span></div>
+        <div class="device-actions">${actions.join('')}</div>
+      </div>`;
+    }).join('');
+
+    return `<div class="device-group">
+      <div class="device-group-head">
+        <b>${esc(name)}</b>
+        <span class="role-badge ${rows[0]?.editor_role==='admin'?'admin':'operator'}">${role}</span>
+        <span class="device-count">승인 ${approved}/${deviceLimit}대 · 전체 ${rows.length}대</span>
+      </div>
+      ${devices}
+    </div>`;
+  }).join('');
+}
+async function processDeviceAction(fn,id,successMessage){
+  const pin=await getAdminPinForDevices();
+  if(pin===null) return;
+
+  const {data,error}=await sb.rpc(fn,{
+    p_pin:pin,
+    p_actor:getEditor(),
+    p_device_id:getDeviceId(),
+    p_target_id:id
+  });
+
+  if(error){
+    toast('기기 처리 오류: '+error.message);
+    return;
+  }
+
+  const messages={
+    limit_reached:`승인 기기 제한 ${deviceLimit}대에 도달했습니다. 기존 기기를 먼저 해제하세요.`,
+    current_device:'현재 사용 중인 관리자 기기는 해제할 수 없습니다.',
+    admin_last_device:'프로그램 관리자의 마지막 승인 기기는 해제할 수 없습니다.',
+    not_found:'기기 정보를 찾지 못했습니다.',
+    not_allowed:'처리할 수 없는 기기 상태입니다.'
+  };
+
+  if(data!=='ok'){
+    toast(messages[data]||('처리 실패: '+data));
+    return;
+  }
+
+  adminPin=pin;
+  toast(successMessage);
+  await openDeviceManager();
+}
+function approveDevice(id){
+  processDeviceAction('admin_approve_device_v2',id,'✅ 기기를 승인했습니다');
+}
+function rejectDevice(id){
+  if(!confirm('이 신규 기기 승인 요청을 거절할까요?')) return;
+  processDeviceAction('admin_reject_device_v2',id,'기기 승인 요청을 거절했습니다');
+}
+function revokeDevice(id){
+  if(!confirm('이 기기의 통합 시트 사용 권한을 해제할까요?\n\n해제 후에는 다시 관리자 승인을 받아야 합니다.')) return;
+  processDeviceAction('admin_revoke_device_v2',id,'🔒 기기 사용 권한을 해제했습니다');
+}
+async function saveDeviceLimit(){
+  const pin=await getAdminPinForDevices();
+  if(pin===null) return;
+
+  const limit=Number($('deviceLimitSelect').value);
+  const {data,error}=await sb.rpc('admin_set_device_limit_v2',{
+    p_pin:pin,
+    p_actor:getEditor(),
+    p_device_id:getDeviceId(),
+    p_limit:limit
+  });
+
+  if(error){
+    toast('기기 제한 저장 오류: '+error.message);
+    return;
+  }
+  if(data!==true){
+    toast('기기 제한을 저장하지 못했습니다');
+    return;
+  }
+
+  deviceLimit=limit;
+  adminPin=pin;
+  toast(`운영진당 승인 기기 제한을 ${limit}대로 저장했습니다`);
+  await openDeviceManager();
+}
+
 
 /* ---------- 탭 권한 관리 (관리자) ---------- */
 async function openPerms(){
