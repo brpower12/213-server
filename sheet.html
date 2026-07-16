@@ -1993,6 +1993,145 @@ nav button.active::after{
   box-sizing:border-box;
 }
 
+
+/* ============================================================
+   최종 PC·모바일 마감 보정
+   - 모바일 탭 설명 복원
+   - 인원 추가 / 추가 수 / 엑셀 일괄 입력 높이와 정렬 통일
+   - 폴더블 커버 화면(255px 수준)까지 줄바꿈·이탈 방지
+   ============================================================ */
+@media(max-width:700px){
+  .section-head{
+    min-height:64px;
+    align-items:flex-start;
+    padding:10px 11px;
+    gap:10px;
+  }
+  .section-head-icon{
+    width:34px;
+    height:34px;
+    flex:0 0 34px;
+  }
+  .section-head>div:last-child{
+    min-width:0;
+    padding-top:1px;
+  }
+  .section-head h2{
+    font-size:.94rem;
+    line-height:1.2;
+  }
+  .section-head p{
+    display:block!important;
+    margin-top:4px;
+    color:#8491a8;
+    font-size:.66rem;
+    line-height:1.35;
+    word-break:keep-all;
+  }
+}
+
+@media(max-width:640px){
+  #view-entry .entry-action-group{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) 64px minmax(0,1.22fr)!important;
+    width:100%;
+    gap:6px!important;
+    align-items:stretch!important;
+  }
+  #view-entry .entry-action-group>.btn,
+  #view-entry .entry-add-count{
+    width:100%!important;
+    min-width:0!important;
+    height:44px!important;
+    min-height:44px!important;
+    margin:0!important;
+    box-sizing:border-box;
+  }
+  #view-entry .entry-action-group>.btn{
+    display:flex!important;
+    align-items:center;
+    justify-content:center;
+    padding:6px 5px!important;
+    font-size:.67rem!important;
+    line-height:1.1;
+    white-space:nowrap!important;
+    overflow:hidden;
+  }
+  #view-entry .entry-action-group>.btn span{
+    display:block;
+    min-width:0;
+    white-space:nowrap!important;
+  }
+  #view-entry .entry-add-count{
+    position:relative;
+    display:grid!important;
+    grid-template-rows:16px 1fr;
+    gap:0!important;
+    padding:3px 5px 4px;
+    border:1px solid var(--line);
+    border-radius:9px;
+    background:var(--panel2);
+  }
+  #view-entry .entry-add-count>span{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:16px;
+    font-size:.58rem!important;
+    line-height:1;
+    white-space:nowrap;
+  }
+  #view-entry .entry-add-count input{
+    width:100%!important;
+    height:20px!important;
+    min-height:20px!important;
+    padding:0 2px!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    text-align:center;
+    font-size:.78rem;
+    font-weight:900;
+    line-height:20px;
+  }
+  #view-entry .entry-control-panel>.hint{
+    margin-top:9px!important;
+    font-size:.65rem;
+    line-height:1.4;
+  }
+}
+
+@media(max-width:360px){
+  #view-entry .entry-action-group{
+    grid-template-columns:minmax(0,.95fr) 58px minmax(0,1.25fr)!important;
+    gap:5px!important;
+  }
+  #view-entry .entry-action-group>.btn{
+    font-size:.62rem!important;
+    padding-left:3px!important;
+    padding-right:3px!important;
+  }
+  .section-head p{
+    font-size:.63rem;
+  }
+}
+
+@media(max-width:280px){
+  #view-entry .entry-action-group{
+    grid-template-columns:minmax(0,.9fr) 52px minmax(0,1.28fr)!important;
+    gap:4px!important;
+  }
+  #view-entry .entry-action-group>.btn{
+    font-size:.57rem!important;
+    letter-spacing:-.045em;
+  }
+  #view-entry .entry-add-count>span{font-size:.53rem!important}
+  #view-entry .entry-add-count input{font-size:.72rem}
+  .section-head{padding-left:9px;padding-right:9px}
+  .section-head p{font-size:.59rem}
+}
+
 </style>
 </head>
 <body>
@@ -2225,12 +2364,12 @@ nav button.active::after{
         <button class="btn" onclick="loadEntryTable()">불러오기</button>
       </div>
       <div class="entry-action-group">
-        <button class="btn" onclick="addMemberRows()">＋ 인원 추가</button>
+        <button class="btn entry-add-btn" onclick="addMemberRows()"><span>＋ 인원 추가</span></button>
         <label class="entry-add-count" title="한 번에 추가할 빈 인원 수">
           <span>추가 수</span>
-          <input id="addMemberCount" type="number" min="1" max="100" step="1" value="1" inputmode="numeric">
+          <input id="addMemberCount" aria-label="추가할 인원 수" type="number" min="1" max="100" step="1" value="1" inputmode="numeric">
         </label>
-        <button class="btn" onclick="$('xlsxFile').click()">📤 엑셀 일괄 입력</button>
+        <button class="btn entry-excel-btn" onclick="$('xlsxFile').click()"><span>📤 엑셀 일괄 입력</span></button>
         <input type="file" id="xlsxFile" accept=".xlsx,.xls,.csv" style="display:none" onchange="importExcel(this.files[0])">
       </div>
     </div>
