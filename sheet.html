@@ -1938,6 +1938,43 @@ nav button.active::after{
   }
 }
 
+
+/* ============================================================
+   입력 탭 다중 빈 행 추가
+   ============================================================ */
+.entry-add-count{display:flex;flex-direction:column;gap:5px;width:76px;flex:0 0 76px}
+.entry-add-count>span{color:var(--muted);font-size:.72rem;font-weight:800;text-align:center}
+.entry-add-count input{width:100%;min-width:0;height:38px;padding:7px 8px;text-align:center;font-weight:850;box-sizing:border-box}
+
+/* ============================================================
+   전력 비교 직접 인원 입력
+   ============================================================ */
+.custom-top-control{display:flex;align-items:center;gap:7px;min-width:0;margin-top:7px}
+.custom-top-toggle{min-height:29px;padding:6px 10px;border:1px solid var(--line);border-radius:8px;color:var(--muted);background:rgba(255,255,255,.018);font-size:.71rem;font-weight:800;white-space:nowrap;cursor:pointer}
+.custom-top-toggle:hover{color:var(--text);border-color:#43506a}
+.custom-top-toggle.active{color:#f7d77b;border-color:rgba(242,193,78,.42);background:rgba(242,193,78,.07)}
+.custom-top-box{display:none;align-items:center;gap:6px;min-width:0}
+.custom-top-box.show{display:flex}
+.custom-top-box input{width:126px;min-width:0;padding:6px 8px;font-size:.76rem;text-align:center}
+.custom-top-hint{color:var(--dim);font-size:.68rem;white-space:nowrap}
+.entry-new-badge{display:inline-flex;margin-left:6px;padding:2px 6px;border:1px solid rgba(242,193,78,.28);border-radius:999px;color:var(--gold);background:rgba(242,193,78,.055);font-size:.64rem;font-weight:850}
+@media(max-width:640px){
+  .entry-action-group{display:grid!important;grid-template-columns:minmax(0,1fr) 72px minmax(0,1fr);align-items:end;gap:8px}
+  .entry-action-group .btn{width:100%;min-width:0}
+  .entry-add-count{width:72px;flex-basis:72px}
+  .entry-add-count input{height:40px}
+  .custom-top-control{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px}
+  .custom-top-box{grid-column:1 / -1;width:100%}
+  .custom-top-box input{flex:1;width:auto}
+  .custom-top-hint{justify-self:end;overflow:hidden;text-overflow:ellipsis}
+}
+@media(max-width:360px){
+  .entry-action-group{grid-template-columns:minmax(0,1fr) 68px}
+  .entry-action-group>button:last-of-type{grid-column:1 / -1}
+  .entry-add-count{width:68px;flex-basis:68px}
+  .custom-top-hint{font-size:.63rem}
+}
+
 </style>
 </head>
 <body>
@@ -2060,6 +2097,14 @@ nav button.active::after{
       <button data-t="30" onclick="setTopN(30)">Top 30</button>
       <button data-t="40" onclick="setTopN(40)">Top 40</button>
       <button data-t="50" onclick="setTopN(50)">Top 50</button>
+    </div>
+    <div class="custom-top-control">
+      <button type="button" class="custom-top-toggle" id="customTopToggle" onclick="toggleCustomTopInput()">직접 입력</button>
+      <div class="custom-top-box" id="customTopBox">
+        <input id="customTopInput" type="number" min="1" max="400" step="1" value="60" inputmode="numeric" placeholder="예: 60, 130, 400" onkeydown="if(event.key==='Enter')applyCustomTopN()">
+        <button type="button" class="btn sm primary" onclick="applyCustomTopN()">적용</button>
+      </div>
+      <span class="custom-top-hint" id="customTopHint">1~400명 직접 입력</span>
     </div></div>
     <div class="segwrap"><span class="seglb">&nbsp;</span>
       <button class="btn sm" style="padding:8px 14px" title="선택을 비우고 처음부터" onclick="resetCompare()">↺ 초기화</button>
@@ -2161,7 +2206,11 @@ nav button.active::after{
         <button class="btn" onclick="loadEntryTable()">불러오기</button>
       </div>
       <div class="entry-action-group">
-        <button class="btn" onclick="addMemberRow()">＋ 인원 추가</button>
+        <button class="btn" onclick="addMemberRows()">＋ 인원 추가</button>
+        <label class="entry-add-count" title="한 번에 추가할 빈 인원 수">
+          <span>추가 수</span>
+          <input id="addMemberCount" type="number" min="1" max="100" step="1" value="1" inputmode="numeric">
+        </label>
         <button class="btn" onclick="$('xlsxFile').click()">📤 엑셀 일괄 입력</button>
         <input type="file" id="xlsxFile" accept=".xlsx,.xls,.csv" style="display:none" onchange="importExcel(this.files[0])">
       </div>
@@ -2767,6 +2816,7 @@ function restoreCompare(){
 makeCombo('pickA',function(){return [...pickMap.keys()];},runCompare);
 makeCombo('pickB',function(){return [...pickMap.keys()];},runCompare);
 updateCompareLabels();
+updateCustomTopHint();
 makeCombo('entryServer',function(){return [...entSrvMap.keys()];},onEntryServerChange);
 makeCombo('entryAlliance',function(){return [...entAliMap.keys()];},loadEntryTable);
 
@@ -2881,7 +2931,14 @@ function updateCompareCardMeta(){
   if(mb) mb.textContent=compareMetaText('pickB');
 }
 
-function setMode(m){ mode=m; document.querySelectorAll('#modeSeg button').forEach(b=>b.classList.toggle('active',b.dataset.m===m)); updateCompareLabels(); fillPickers(); $('compareResult').innerHTML='<div class="compare-empty compare-empty-state"><div class="ce-icon">◇</div><div class="ce-title">두 비교 대상을 선택하세요</div><div class="ce-sub">비교할 대상을 직접 입력하거나 목록에서 선택할 수 있습니다.</div></div>'; }
+function setMode(m){
+  mode=m;
+  document.querySelectorAll('#modeSeg button').forEach(b=>b.classList.toggle('active',b.dataset.m===m));
+  updateCompareLabels();
+  updateCustomTopHint();
+  fillPickers();
+  $('compareResult').innerHTML='<div class="compare-empty compare-empty-state"><div class="ce-icon">◇</div><div class="ce-title">두 비교 대상을 선택하세요</div><div class="ce-sub">비교할 대상을 직접 입력하거나 목록에서 선택할 수 있습니다.</div></div>';
+}
 function setBasis(n){ basis=n; document.querySelectorAll('#basisSeg button').forEach(b=>b.classList.toggle('active',+b.dataset.b===n)); rerenderCompare(); }
 let pickMap=new Map(), entSrvMap=new Map(), entAliMap=new Map();
 function resolveFromMap(el,map){
@@ -3178,7 +3235,67 @@ function rerenderCompare(){
   if(!lastRaw) return;
   renderCompare(lastRaw.nameA,calcStats(lastRaw.sa),lastRaw.nameB,calcStats(lastRaw.sc));
 }
-function setTopN(n){ topN=n; document.querySelectorAll('#topSeg button').forEach(b=>b.classList.toggle('active',+b.dataset.t===n)); cmpShowAll=false; rerenderCompare(); }
+function setTopN(n){
+  n=Math.floor(Number(n));
+  if(!Number.isFinite(n)||n<0) n=0;
+  if(n>400) n=400;
+
+  topN=n;
+  const presets=[0,10,20,30,40,50];
+  const isCustom=n>0&&!presets.includes(n);
+
+  document.querySelectorAll('#topSeg button').forEach(
+    b=>b.classList.toggle('active',+b.dataset.t===n)
+  );
+
+  const toggle=$('customTopToggle');
+  const box=$('customTopBox');
+  const input=$('customTopInput');
+
+  if(toggle){
+    toggle.classList.toggle('active',isCustom);
+    toggle.textContent=isCustom?`직접 ${n}명`:'직접 입력';
+  }
+  if(input&&isCustom) input.value=String(n);
+  if(box&&!isCustom) box.classList.remove('show');
+
+  cmpShowAll=false;
+  rerenderCompare();
+}
+function toggleCustomTopInput(){
+  const box=$('customTopBox');
+  const input=$('customTopInput');
+  if(!box||!input) return;
+
+  box.classList.toggle('show');
+  if(box.classList.contains('show')){
+    if(topN>0&&![10,20,30,40,50].includes(topN)) input.value=String(topN);
+    setTimeout(()=>{input.focus();input.select();},50);
+  }
+}
+function applyCustomTopN(){
+  const input=$('customTopInput');
+  if(!input) return;
+
+  const n=Math.floor(Number(input.value));
+  if(!Number.isFinite(n)||n<1||n>400){
+    toast('분석 인원은 1명부터 400명까지 입력할 수 있습니다');
+    input.focus();
+    input.select();
+    return;
+  }
+
+  setTopN(n);
+  $('customTopBox')?.classList.remove('show');
+  toast(`분석 인원을 상위 ${n}명으로 설정했습니다`);
+}
+function updateCustomTopHint(){
+  const hint=$('customTopHint');
+  if(!hint) return;
+  hint.textContent=mode==='faction'
+    ?'파벌 비교 최대 400명'
+    :'필요한 인원을 1~400명 직접 입력';
+}
 function toggleCmpAll(){ cmpShowAll=!cmpShowAll; rerenderCompare(); }
 
 function renderCompare(nameA,A,nameB,B){
@@ -3223,7 +3340,8 @@ function renderCompare(nameA,A,nameB,B){
   ].map(r=>`<tr><td style="text-align:left">${r[0]}</td><td class="va">${r[1]}</td><td class="vb">${r[2]}</td><td>${r[3]}</td></tr>`).join('');
   const trendHTML=trendSVG(computeTrend(lastRaw.sa),computeTrend(lastRaw.sc),nameA,nameB);
 
-  const limit=topN>0?topN:(cmpShowAll?Infinity:20);
+  const maxN=Math.max(A.ranked.length,B.ranked.length);
+  const limit=cmpShowAll?Infinity:Math.min(20,maxN);
   const medal=r=>r===1?'🥇':r===2?'🥈':r===3?'🥉':r;
   const topL=(s,cls)=>{
     let out='',prevP=null,rank=0;
@@ -3233,8 +3351,9 @@ function renderCompare(nameA,A,nameB,B){
     });
     return out||'<tr><td class="empty" colspan="3">데이터 없음</td></tr>';
   };
-  const maxN=Math.max(A.ranked.length,B.ranked.length);
-  const toggleBtn=(topN===0&&maxN>20)?`<button class="btn sm" style="margin-left:auto" onclick="toggleCmpAll()">${cmpShowAll?'상위 20명만 보기':`전체 ${maxN}명 보기`}</button>`:'';
+  const toggleBtn=maxN>20
+    ?`<button class="btn sm" style="margin-left:auto" onclick="toggleCmpAll()">${cmpShowAll?'상위 20명만 보기':`분석 대상 ${maxN}명 전체 보기`}</button>`
+    :'';
 
   $('compareResult').innerHTML=`
   <div class="verdict">
@@ -3562,31 +3681,83 @@ function updateDirty(){
   if(bar) bar.classList.toggle('has-dirty',n>0);
   if(btn) btn.disabled=n===0;
 }
-function addMemberRow(){
-  if(!entryAid()){toast('연맹을 먼저 선택하세요');return;}
+async function addMemberRows(){
+  if(!entryAid()){
+    toast('연맹을 먼저 선택하세요');
+    return;
+  }
+
+  const countInput=$('addMemberCount');
+  let count=Math.floor(Number(countInput?.value||1));
+
+  if(!Number.isFinite(count)||count<1||count>100){
+    toast('추가할 인원 수는 1명부터 100명까지 입력할 수 있습니다');
+    if(countInput){
+      countInput.focus();
+      countInput.select();
+    }
+    return;
+  }
+
+  if(countInput) countInput.value=String(count);
+
   let tb=$('entryTableBox').querySelector('table');
-  if(!tb){loadEntryTable();return;}
-  const tr=buildRow(null,null,null); tr.classList.add('dirty');
-  // 헤더 바로 아래(맨 위)에 삽입 → 스크롤·포커스까지
-  const first=tb.querySelector('tr');
-  if(first&&first.nextElementSibling) first.parentNode.insertBefore(tr, first.nextElementSibling);
-  else if(first) first.parentNode.appendChild(tr);
-  else tb.appendChild(tr);
+  if(!tb){
+    await loadEntryTable();
+    tb=$('entryTableBox').querySelector('table');
+    if(!tb) return;
+  }
+
+  const newRows=[];
+  for(let i=0;i<count;i++){
+    const tr=buildRow(null,null,null);
+    tr.classList.add('dirty');
+    newRows.push(tr);
+  }
+
+  const body=tb.tBodies[0]||tb;
+  const anchor=body.rows&&body.rows.length>1?body.rows[1]:null;
+  const fragment=document.createDocumentFragment();
+  newRows.forEach(tr=>fragment.appendChild(tr));
+
+  if(anchor) body.insertBefore(fragment,anchor);
+  else body.appendChild(fragment);
+
+  const createdRows=newRows.map(tr=>tr._row);
+  const createdSet=new Set(createdRows);
+  entryRows=[
+    ...createdRows,
+    ...entryRows.filter(row=>!createdSet.has(row))
+  ];
+
   updateDirty();
-  tr.scrollIntoView({behavior:'smooth',block:'center'});
-  const nk=tr.querySelector('.nick'); if(nk) setTimeout(()=>nk.focus(),150);
+  renderEntryCards();
+
+  const first=newRows[0];
+  first.scrollIntoView({behavior:'smooth',block:'center'});
+
   if(window.matchMedia('(max-width:640px)').matches){
-    // 모바일: 새 인원도 모달로 입력
-    const r=tr._row; memModalRow=r;
-    $('memTitle').textContent='＋ 인원 추가';
-    ['mNick','mShelter','mS1','mS2','mS3','mS4','mBlack','mKills'].forEach(id=>$(id).value='');
+    const row=first._row;
+    memModalRow=row;
+    $('memTitle').textContent=count===1?'＋ 인원 추가':`＋ 신규 인원 1 / ${count}`;
+    ['mNick','mShelter','mS1','mS2','mS3','mS4','mBlack','mKills']
+      .forEach(id=>$(id).value='');
     $('mTroop').value='';
     $('mBlackWrap').style.display=entryIsOurs?'':'none';
-  $('mS4Wrap').style.display=entryIsOurs?'':'none';
+    $('mS4Wrap').style.display=entryIsOurs?'':'none';
     $('memOverlay').classList.add('show');
-  } else {
-    tr.querySelector('.nick').focus();
+
+    if(count>1){
+      toast(`${count}명의 빈 입력칸을 추가했습니다 · 카드에서 한 명씩 입력하세요`);
+    }
+  }else{
+    const nick=first.querySelector('.nick');
+    if(nick) setTimeout(()=>nick.focus(),100);
+    toast(count===1?'빈 인원 1명을 추가했습니다':`빈 인원 ${count}명을 추가했습니다`);
   }
+}
+function addMemberRow(){
+  return addMemberRows();
 }
 async function removeMember(btn){
   const tr=btn.closest('tr'), row=tr._row;
@@ -3685,14 +3856,16 @@ let memModalRow=null;
 function rowVal(r,f){ return r.el.querySelector(`[data-f=${f}]`).value.trim(); }
 function renderEntryCards(){
   const box=$('entryCards'); if(!box) return;
-  const rows=entryRows.filter(r=>r.memberId);
+  const rows=entryRows;
   box.innerHTML=rows.map((r,i)=>{
+    const isNew=!r.memberId;
+    const nickname=rowVal(r,'nickname')||(isNew?`신규 인원 ${i+1}`:'이름 없음');
     const s1=+rowVal(r,'squad1')||0;
     const sub=[rowVal(r,'troop_type'),rowVal(r,'shelter')?'산업'+rowVal(r,'shelter'):''].filter(Boolean).join(' · ');
-    const meta=r.el.querySelector('.meta').textContent;
+    const meta=isNew?'저장 전':r.el.querySelector('.meta').textContent;
     return `<div class="mcard" onclick="openMemModal(${i})">
-      <div class="t"><b>${esc(rowVal(r,'nickname'))}</b><span class="pw">${s1?fmtG(s1):'-'}</span></div>
-      <div class="s"><span>${esc(sub)||'&nbsp;'}</span><span class="meta">${esc(meta)}</span></div>
+      <div class="t"><b>${esc(nickname)}</b>${isNew?'<span class="entry-new-badge">신규</span>':''}<span class="pw">${s1?fmtG(s1):'-'}</span></div>
+      <div class="s"><span>${esc(sub)||'입력 대기'}</span><span class="meta">${esc(meta)}</span></div>
     </div>`;
   }).join('')||'';
   box._rows=rows;
@@ -3721,12 +3894,30 @@ async function memModalSave(){
   if(ok){ rankCache=null; resortEntryTable(); renderEntryCards(); updateDirty(); closeMemModal(); toast('✅ 저장했습니다'); }
 }
 async function memModalRemove(){
-  const r=memModalRow; if(!r||!r.memberId) return;
+  const r=memModalRow;
+  if(!r) return;
+
+  if(!r.memberId){
+    r.el.remove();
+    entryRows=entryRows.filter(x=>x!==r);
+    renderEntryCards();
+    updateDirty();
+    closeMemModal();
+    toast('저장 전 신규 입력칸을 삭제했습니다');
+    return;
+  }
+
   if(!confirm('이 인원을 목록에서 제외할까요? (기록은 남습니다)')) return;
   const res=await sb.from('members').update({is_active:false}).eq('id',r.memberId);
   if(res.error){toast(res.error.message);return;}
-  r.el.remove(); entryRows=entryRows.filter(x=>x!==r);
-  rankCache=null; resortEntryTable(); renderEntryCards(); updateDirty(); closeMemModal(); toast('제외했습니다');
+  r.el.remove();
+  entryRows=entryRows.filter(x=>x!==r);
+  rankCache=null;
+  resortEntryTable();
+  renderEntryCards();
+  updateDirty();
+  closeMemModal();
+  toast('제외했습니다');
 }
 
 /* ---------- 제출 확인 ---------- */
@@ -3961,10 +4152,12 @@ function renderDeviceManager(list){
       if(r.status==='pending'){
         actions.push(`<button class="btn sm primary" onclick="approveDevice(${r.id})">✓ 승인</button>`);
         actions.push(`<button class="btn sm danger" onclick="rejectDevice(${r.id})">✕ 거절</button>`);
+        actions.push(`<button class="btn sm" onclick="deleteDeviceRecord(${r.id})">기록 삭제</button>`);
       }else if(r.status==='approved'){
         actions.push(`<button class="btn sm danger" ${current?'disabled title="현재 사용 중인 관리자 기기는 여기서 해제할 수 없습니다"':''} onclick="revokeDevice(${r.id})">기기 해제</button>`);
       }else{
         actions.push(`<button class="btn sm primary" onclick="approveDevice(${r.id})">재승인</button>`);
+        actions.push(`<button class="btn sm" onclick="deleteDeviceRecord(${r.id})">기록 삭제</button>`);
       }
 
       return `<div class="device-row">
@@ -4037,6 +4230,18 @@ function rejectDevice(id){
 function revokeDevice(id){
   if(!confirm('이 기기의 통합 시트 사용 권한을 해제할까요?\n\n해제 후에는 다시 관리자 승인을 받아야 합니다.')) return;
   processDeviceAction('admin_revoke_device_v2',id,'🔒 기기 사용 권한을 해제했습니다');
+}
+function deleteDeviceRecord(id){
+  if(!confirm(
+    '이 기기 기록을 목록에서 완전히 삭제할까요?\n\n'+
+    '삭제 후 같은 기기에서 다시 접속하면 신규 승인 요청으로 다시 등록됩니다.'
+  )) return;
+
+  processDeviceAction(
+    'admin_delete_device_record_v2',
+    id,
+    '🗑️ 기기 기록을 삭제했습니다'
+  );
 }
 async function saveDeviceLimit(){
   const pin=await getAdminPinForDevices();
