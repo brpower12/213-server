@@ -2066,6 +2066,7 @@ nav button.active::after{
       <p class="hint" id="noPermText" style="margin-bottom:20px">등록 상태를 확인하고 있습니다.</p>
       <button class="btn" id="noPermCheckBtn" style="width:100%" onclick="recheckPerms()">상태 다시 확인</button>
       <button class="btn primary" id="noPermRegisterBtn" style="display:none;width:100%;margin-top:8px" onclick="askEditor()">이 기기 승인 다시 요청</button>
+      <button class="btn primary" id="noPermAdminSelfApprove" style="display:none;width:100%;margin-top:8px" onclick="selfApproveAdminDevice()">👑 관리자 본인 기기 승인</button>
       <button class="btn" id="noPermAdminUnlock" style="display:none;width:100%;margin-top:8px" onclick="unlockAsAdmin()">🔐 관리자 PIN으로 잠금 해제</button>
       <button class="btn danger" style="width:100%;margin-top:8px" onclick="doLogout()">잠금</button>
     </div>
@@ -2629,27 +2630,38 @@ function updateNoPermState(){
   const title=$('noPermTitle');
   const text=$('noPermText');
   const registerBtn=$('noPermRegisterBtn');
+  const selfApproveBtn=$('noPermAdminSelfApprove');
   const unlockBtn=$('noPermAdminUnlock');
 
   if(!icon||!title||!text) return;
 
   registerBtn.style.display='none';
+  selfApproveBtn.style.display='none';
   unlockBtn.style.display='none';
 
   if(deviceStatus==='pending'){
     icon.textContent='📱';
     title.textContent='신규 기기 승인 대기 중';
-    text.innerHTML=`현재 기기는 아직 승인되지 않았습니다.<br>프로그램 관리자(${esc(programAdminName)})가 승인하면 이용할 수 있습니다.`;
+    text.innerHTML=editorRole==='admin'
+      ?'현재 기기는 아직 승인되지 않았습니다.<br>프로그램 관리자 본인이라면 관리자 PIN으로 직접 승인할 수 있습니다.'
+      :`현재 기기는 아직 승인되지 않았습니다.<br>프로그램 관리자(${esc(programAdminName)})가 승인하면 이용할 수 있습니다.`;
+    if(editorRole==='admin') selfApproveBtn.style.display='block';
   }else if(deviceStatus==='rejected'){
     icon.textContent='✕';
     title.textContent='기기 승인 요청이 거절되었습니다';
-    text.innerHTML='관리자에게 확인한 뒤 동일한 닉네임과 PIN으로 다시 승인 요청을 보내주세요.';
+    text.innerHTML=editorRole==='admin'
+      ?'프로그램 관리자 본인이라면 관리자 PIN으로 이 기기를 다시 승인할 수 있습니다.'
+      :'관리자에게 확인한 뒤 동일한 닉네임과 PIN으로 다시 승인 요청을 보내주세요.';
     registerBtn.style.display='block';
+    if(editorRole==='admin') selfApproveBtn.style.display='block';
   }else if(deviceStatus==='revoked'){
     icon.textContent='🔒';
     title.textContent='이 기기의 사용이 해제되었습니다';
-    text.innerHTML='관리자가 이 기기의 접속 권한을 해제했습니다.<br>다시 이용하려면 관리자 확인 후 승인 요청을 보내주세요.';
+    text.innerHTML=editorRole==='admin'
+      ?'프로그램 관리자 본인이라면 관리자 PIN으로 이 기기를 다시 승인할 수 있습니다.'
+      :'관리자가 이 기기의 접속 권한을 해제했습니다.<br>다시 이용하려면 관리자 확인 후 승인 요청을 보내주세요.';
     registerBtn.style.display='block';
+    if(editorRole==='admin') selfApproveBtn.style.display='block';
   }else if(deviceStatus==='unregistered'){
     icon.textContent='📲';
     title.textContent='이 기기 등록이 필요합니다';
@@ -2728,6 +2740,62 @@ async function recheckPerms(){
   };
   toast(messages[deviceStatus]||'등록 상태를 확인해 주세요');
 }
+
+async function selfApproveAdminDevice(){
+  const name=getEditor();
+  if(!name){
+    askEditor();
+    return;
+  }
+  if(editorRole!=='admin'){
+    toast('프로그램 관리자만 본인 기기를 직접 승인할 수 있습니다');
+    return;
+  }
+
+  const pin=prompt(
+    '🔐 관리자 PIN을 입력하세요.\n\n'+
+    '관리자 본인 확인 후 현재 기기를 즉시 승인합니다.\n'+
+    '승인 기기 제한에 도달한 경우 가장 오래된 관리자 기기 1대가 자동 해제됩니다.'
+  );
+  if(pin===null) return;
+
+  const {data,error}=await sb.rpc('admin_self_approve_device_v2',{
+    p_admin_pin:pin.trim(),
+    p_actor:name,
+    p_device_id:getDeviceId()
+  });
+
+  if(error){
+    if(isMissingRpc(error)){
+      toast('Supabase에 관리자 본인 승인 SQL을 먼저 실행해야 합니다');
+    }else{
+      toast('관리자 본인 승인 오류: '+error.message);
+    }
+    return;
+  }
+
+  const messages={
+    wrong_pin:'❌ 관리자 PIN이 올바르지 않습니다',
+    not_admin:'프로그램 관리자 계정이 아닙니다',
+    not_found:'현재 기기의 승인 요청을 찾지 못했습니다. 닉네임과 개인 PIN으로 다시 등록해 주세요.',
+    not_staff:'운영진 로그인 세션을 확인해 주세요'
+  };
+
+  if(data!=='ok'&&data!=='ok_replaced'){
+    toast(messages[data]||('승인 실패: '+data));
+    return;
+  }
+
+  adminPin=pin.trim();
+  await loadPerms();
+
+  if(data==='ok_replaced'){
+    toast('✅ 현재 기기 승인 완료 · 가장 오래된 관리자 기기 1대를 자동 해제했습니다');
+  }else{
+    toast('✅ 관리자 본인 확인 완료 · 현재 기기를 승인했습니다');
+  }
+}
+
 async function unlockAsAdmin(){
   if(deviceStatus!=='approved'){
     toast('관리자 기능도 승인된 기기에서만 사용할 수 있습니다');
