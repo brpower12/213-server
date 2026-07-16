@@ -1975,6 +1975,24 @@ nav button.active::after{
   .custom-top-hint{font-size:.63rem}
 }
 
+
+/* ============================================================
+   비교 필터 세로 정렬 보정
+   - 직접 입력 행이 추가되어도 모든 항목 제목과 선택 버튼을 상단 기준으로 정렬
+   - 초기화 버튼도 선택 버튼 행과 같은 높이로 유지
+   ============================================================ */
+#view-compare .toolbar .segwrap{
+  justify-content:flex-start!important;
+  align-self:stretch;
+}
+#view-compare .toolbar .segwrap:last-child{
+  justify-content:flex-start!important;
+}
+#view-compare .custom-top-control{
+  width:100%;
+  box-sizing:border-box;
+}
+
 </style>
 </head>
 <body>
