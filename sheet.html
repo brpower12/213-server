@@ -627,6 +627,841 @@ footer b{color:var(--muted)}
   .manage-nav button{min-width:100%}
 }
 
+
+/* ============================================================
+   비교 대시보드 최종 시각 정리
+   - HTML ID / onclick / Supabase / 데이터 로직 변경 없음
+   ============================================================ */
+
+/* 비교 화면 폭과 간격 */
+#view-compare{padding-top:1px}
+#view-compare .toolbar{
+  display:grid;
+  grid-template-columns:minmax(250px,1.05fr) minmax(270px,1fr) minmax(390px,1.45fr) auto;
+  align-items:stretch;
+  justify-content:stretch!important;
+  gap:0;
+  padding:12px 14px;
+  margin-bottom:18px;
+  border-radius:15px;
+  border-color:#2a3549;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.024),transparent 58%),
+    #151b28;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.035),
+    0 10px 28px rgba(0,0,0,.16);
+}
+#view-compare .toolbar .segwrap{
+  justify-content:center;
+  padding:2px 14px;
+  min-width:0;
+  position:relative;
+}
+#view-compare .toolbar .segwrap:not(:last-child)::after{
+  content:'';
+  position:absolute;
+  right:0;top:8px;bottom:5px;
+  width:1px;
+  background:linear-gradient(180deg,transparent,#303b50 25%,#303b50 75%,transparent);
+}
+#view-compare .toolbar .segwrap:last-child{
+  justify-content:flex-end;
+  padding-right:0;
+  padding-left:14px;
+}
+#view-compare .seglb{
+  margin-bottom:6px;
+  color:#8fa2c3;
+  font-size:.73rem;
+  letter-spacing:.055em;
+  text-align:left;
+  padding-left:4px;
+}
+#view-compare .seg{
+  display:flex;
+  width:100%;
+  min-height:39px;
+  flex-wrap:nowrap;
+  align-items:stretch;
+  padding:3px;
+  border-radius:10px;
+  border-color:#29354a;
+  background:#0d121c;
+  box-shadow:inset 0 1px 5px rgba(0,0,0,.28);
+}
+#view-compare .seg button{
+  flex:1 1 auto;
+  min-width:0;
+  min-height:32px;
+  padding:7px 10px;
+  border:1px solid transparent;
+  border-radius:8px;
+  color:#9aabc8;
+  font-size:.82rem;
+  transition:background .14s,border-color .14s,color .14s,box-shadow .14s;
+}
+#view-compare .seg button:hover{
+  color:#e7efff;
+  background:rgba(84,163,255,.045);
+}
+#view-compare .seg button.active{
+  color:#62b0ff;
+  border-color:rgba(84,163,255,.50);
+  background:
+    linear-gradient(180deg,rgba(84,163,255,.17),rgba(84,163,255,.08)),
+    #162238;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.04),
+    0 0 14px rgba(84,163,255,.10);
+}
+#view-compare .toolbar .btn{
+  min-height:39px;
+  align-self:flex-end;
+  padding:8px 13px!important;
+  color:#b9c5da;
+  background:#1b2332;
+  border-color:#2e394d;
+  white-space:nowrap;
+}
+#view-compare .toolbar .btn:hover{
+  color:#fff;
+  border-color:#53627b;
+}
+
+/* 대상 선택 카드 */
+.vs-picker.v2-picker{
+  gap:20px;
+  margin-bottom:18px;
+}
+.v2-side-label{margin-bottom:7px}
+.v2-side-label .main{
+  font-size:.72rem;
+  letter-spacing:.075em;
+}
+.v2-compare-card{
+  min-height:74px!important;
+  border-radius:13px!important;
+  background:
+    linear-gradient(120deg,rgba(255,255,255,.025),transparent 55%),
+    #171e2c!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.025),
+    0 8px 22px rgba(0,0,0,.14);
+}
+.vs-side.a .v2-compare-card{
+  border-color:rgba(84,163,255,.52)!important;
+}
+.vs-side.b .v2-compare-card{
+  border-color:rgba(255,99,87,.48)!important;
+}
+.v2-card-body input{font-size:1.03rem!important}
+.v2-card-sub{font-size:.74rem}
+.v2-vs-badge{
+  width:58px;height:58px;
+  font-size:1.12rem;
+}
+
+/* 비교 결과 최상단 */
+.verdict{
+  margin:15px 0 14px;
+  padding:25px 20px 21px;
+  border-radius:16px;
+  border-color:rgba(242,193,78,.32);
+  background:
+    radial-gradient(700px 180px at 50% -10%,rgba(242,193,78,.095),transparent 64%),
+    linear-gradient(180deg,rgba(255,255,255,.021),transparent 42%),
+    #171d2a;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.035),
+    0 10px 30px rgba(0,0,0,.20);
+}
+.verdict .who{
+  font-size:1.67rem;
+  letter-spacing:-.025em;
+  text-shadow:0 2px 20px rgba(84,163,255,.20);
+}
+.chips{margin-top:10px;gap:7px}
+.chip2{
+  padding:6px 12px;
+  font-size:.79rem;
+  border-color:#2b374b;
+}
+.powerbar{
+  height:35px;
+  margin:14px 0 7px;
+  border-radius:9px;
+  border-color:#2b3649;
+  background:#0f141e;
+}
+.powerbar>div{font-size:.91rem}
+.bar-names{font-size:.77rem}
+
+/* KPI 카드 */
+.kpis{
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:10px;
+  margin:14px 0;
+}
+.kpi{
+  min-height:121px;
+  padding:14px 14px 13px;
+  border-radius:13px;
+  border-color:#2b364a;
+  background:
+    radial-gradient(160px 90px at 0 0,rgba(84,163,255,.08),transparent 68%),
+    linear-gradient(180deg,rgba(255,255,255,.018),transparent),
+    #171e2c;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+}
+.kpi::before{
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(84,163,255,.74),transparent);
+}
+.kpi .kpi-icon{
+  display:flex;
+  width:29px;height:29px;
+  align-items:center;justify-content:center;
+  margin-bottom:7px;
+  border:1px solid #303d53;
+  border-radius:8px;
+  background:#111823;
+  font-size:1.08rem;
+}
+.kpi .kt{margin-bottom:7px;font-size:.72rem}
+.kpi .kva{font-size:1.27rem}
+.kpi .kvb{font-size:.88rem}
+.delta{margin-top:7px;padding:3px 9px;font-size:.69rem}
+
+/* 결과 패널 */
+#view-compare .panel{
+  border-color:#293549;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.018),transparent 28%),
+    #171d2a;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+}
+#view-compare .panel:hover{
+  transform:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+}
+#view-compare .panel h2{
+  margin-bottom:11px;
+  font-size:.92rem;
+}
+#view-compare .panel h2::before{
+  width:3px;height:12px;margin-right:8px;
+}
+#view-compare .grid2{
+  gap:13px;
+  margin-top:13px;
+}
+.top-list td{padding:7px 8px}
+.stat-table th,.stat-table td{padding:9px 9px}
+
+/* 데스크톱 넓은 화면 */
+@media(min-width:1181px){
+  main{max-width:1220px}
+}
+
+/* 중간 폭 */
+@media(max-width:1050px){
+  #view-compare .toolbar{
+    grid-template-columns:1fr 1fr;
+    row-gap:12px;
+  }
+  #view-compare .toolbar .segwrap::after{display:none}
+  #view-compare .toolbar .segwrap{
+    padding:2px 8px;
+  }
+  #view-compare .toolbar .segwrap:last-child{
+    justify-content:flex-end;
+    grid-column:2;
+  }
+  .kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+
+/* 모바일 */
+@media(max-width:640px){
+  #view-compare .toolbar{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    padding:12px;
+  }
+  #view-compare .toolbar .segwrap{
+    padding:0;
+  }
+  #view-compare .toolbar .segwrap:last-child{
+    align-items:stretch;
+  }
+  #view-compare .toolbar .btn{width:100%}
+  #view-compare .seg{
+    overflow-x:auto;
+  }
+  #view-compare .seg button{
+    min-width:max-content;
+  }
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .verdict .who{font-size:1.32rem}
+}
+
+
+/* ============================================================
+   로그인 화면 최종 시각 정리
+   - gatePw / gateMsg / doLogin 이벤트 유지
+   ============================================================ */
+#gate{
+  padding:24px;
+  overflow:auto;
+  background:
+    radial-gradient(620px 340px at 50% 2%,rgba(242,193,78,.10),transparent 66%),
+    radial-gradient(760px 520px at 12% 100%,rgba(84,163,255,.08),transparent 64%),
+    radial-gradient(760px 520px at 88% 100%,rgba(84,163,255,.045),transparent 64%),
+    #090d14;
+}
+#gate::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:.20;
+  background-image:
+    linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.014) 1px,transparent 1px);
+  background-size:46px 46px;
+  mask-image:linear-gradient(to bottom,rgba(0,0,0,.55),transparent 82%);
+}
+.gate-box{
+  width:100%;
+  max-width:420px;
+  padding:28px 30px 25px;
+  border-radius:23px;
+  overflow:hidden;
+  background:
+    radial-gradient(360px 170px at 50% 0%,rgba(242,193,78,.085),transparent 72%),
+    linear-gradient(180deg,rgba(255,255,255,.024),transparent 38%),
+    #151b28;
+  border:1px solid #354057;
+  box-shadow:
+    0 24px 70px rgba(0,0,0,.55),
+    0 0 0 1px rgba(242,193,78,.055),
+    inset 0 1px 0 rgba(255,255,255,.045);
+}
+.gate-box::before{
+  left:9%;
+  right:9%;
+  height:2px;
+  opacity:.95;
+  background:linear-gradient(90deg,transparent,#b9852f 18%,var(--gold2) 50%,#b9852f 82%,transparent);
+  box-shadow:0 0 17px rgba(242,193,78,.26);
+}
+.gate-box::after{
+  content:'';
+  position:absolute;
+  top:0;
+  right:-80px;
+  width:220px;
+  height:220px;
+  pointer-events:none;
+  background:radial-gradient(circle,rgba(84,163,255,.055),transparent 70%);
+}
+.gate-kicker{
+  position:relative;
+  z-index:1;
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  min-height:28px;
+  padding:5px 11px;
+  margin-bottom:14px;
+  border:1px solid rgba(242,193,78,.28);
+  border-radius:999px;
+  color:#e9c870;
+  background:rgba(242,193,78,.055);
+  font-size:.72rem;
+  font-weight:800;
+  letter-spacing:.075em;
+}
+.gate-kicker-icon{
+  font-size:.57rem;
+  text-shadow:0 0 10px rgba(242,193,78,.65);
+}
+.gate-logo-wrap{
+  position:relative;
+  z-index:1;
+  display:flex;
+  justify-content:center;
+  margin-bottom:9px;
+}
+.gate-logo-wrap::before{
+  content:'';
+  position:absolute;
+  top:6px;
+  width:112px;
+  height:75px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(242,193,78,.14),transparent 69%);
+  filter:blur(5px);
+}
+.gate-box .gate-logo-wrap img{
+  position:relative;
+  z-index:1;
+  height:82px;
+  margin:0;
+  filter:drop-shadow(0 8px 20px rgba(242,193,78,.30));
+}
+.gate-box h1{
+  position:relative;
+  z-index:1;
+  margin-top:2px;
+  font-size:1.48rem;
+  font-weight:900;
+  letter-spacing:-.035em;
+  color:#f4f7fc;
+}
+.gate-box .sub{
+  position:relative;
+  z-index:1;
+  margin:8px 0 21px;
+  color:#8794aa;
+  font-size:.84rem;
+  line-height:1.62;
+}
+.gate-field{
+  position:relative;
+  z-index:1;
+  text-align:left;
+}
+.gate-field label{
+  display:block;
+  margin:0 0 7px 3px;
+  color:#aab6ca;
+  font-size:.75rem;
+  font-weight:800;
+  letter-spacing:.025em;
+}
+.gate-input-wrap{
+  position:relative;
+}
+.gate-lock{
+  position:absolute;
+  z-index:2;
+  left:14px;
+  top:50%;
+  width:20px;
+  height:20px;
+  color:#71809a;
+  transform:translateY(-50%);
+  pointer-events:none;
+}
+.gate-lock svg{
+  display:block;
+  width:100%;
+  height:100%;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.7;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.gate-box input{
+  width:100%;
+  min-height:50px;
+  padding:12px 44px;
+  border-radius:11px;
+  border-color:#344159;
+  background:#101722;
+  color:#f2f6fd;
+  font-size:1rem;
+  font-weight:700;
+  text-align:center;
+  letter-spacing:.08em;
+  box-shadow:
+    inset 0 1px 5px rgba(0,0,0,.28),
+    0 0 0 1px rgba(255,255,255,.012);
+}
+.gate-box input::placeholder{
+  color:#5f6c82;
+  font-weight:600;
+  letter-spacing:0;
+}
+.gate-box input:hover{
+  border-color:#43516a;
+}
+.gate-box input:focus{
+  border-color:#5aa8ff;
+  box-shadow:
+    0 0 0 3px rgba(84,163,255,.16),
+    0 0 22px rgba(84,163,255,.08),
+    inset 0 1px 5px rgba(0,0,0,.25);
+}
+.gate-input-wrap:focus-within .gate-lock{
+  color:#67afff;
+}
+.gate-box .gate-enter-btn{
+  position:relative;
+  z-index:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  width:100%;
+  min-height:49px;
+  margin-top:12px;
+  padding:12px 16px;
+  border-radius:11px;
+  font-size:1rem;
+  color:#06101f;
+  background:linear-gradient(180deg,#6bb4ff 0%,#438fec 100%);
+  border-color:#4d9cf5;
+  box-shadow:
+    0 9px 23px rgba(53,135,232,.28),
+    inset 0 1px 0 rgba(255,255,255,.28);
+}
+.gate-box .gate-enter-btn:hover{
+  transform:translateY(-1px);
+  box-shadow:
+    0 12px 28px rgba(53,135,232,.37),
+    inset 0 1px 0 rgba(255,255,255,.30);
+}
+.gate-enter-arrow{
+  font-size:1.16rem;
+  line-height:1;
+  transition:transform .14s ease;
+}
+.gate-enter-btn:hover .gate-enter-arrow{
+  transform:translateX(3px);
+}
+.gate-msg{
+  position:relative;
+  z-index:1;
+  min-height:19px;
+  margin-top:9px;
+  font-size:.78rem;
+}
+.gate-security{
+  position:relative;
+  z-index:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  margin-top:3px;
+  color:#68758b;
+  font-size:.72rem;
+}
+.gate-security-dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#3ddc97;
+  box-shadow:0 0 9px rgba(61,220,151,.45);
+}
+.gate-credit{
+  position:relative;
+  z-index:1;
+  margin-top:20px;
+  padding-top:17px;
+  border-top:1px solid rgba(255,255,255,.055);
+  color:#59657a;
+  font-size:.72rem;
+}
+.gate-credit b{
+  color:#8e9ab0;
+}
+@media(max-width:480px){
+  #gate{padding:16px}
+  .gate-box{
+    max-width:390px;
+    padding:24px 20px 22px;
+    border-radius:20px;
+  }
+  .gate-box h1{font-size:1.32rem}
+  .gate-box .sub{font-size:.81rem}
+  .gate-box .gate-logo-wrap img{height:76px}
+}
+
+
+/* ============================================================
+   참고 시안 요소 반영
+   - 제목 색상 정확 분리
+   - 운영진 전용 배지
+   - 입력자 왕관 배지
+   - 필터 아이콘 및 금색 활성 상태
+   ============================================================ */
+
+/* 제목: 오직 213만 금색, 나머지는 흰색 */
+.brand h1{
+  display:flex;
+  align-items:baseline;
+  gap:5px;
+  background:none!important;
+  -webkit-background-clip:initial!important;
+  background-clip:initial!important;
+  -webkit-text-fill-color:initial!important;
+  color:var(--text);
+}
+.brand-copy{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.brand-gold{
+  color:var(--gold2);
+  text-shadow:0 0 15px rgba(242,193,78,.18);
+}
+.brand-white{
+  color:#f1f4fa;
+}
+
+/* 헤더 좌측 그룹 */
+.header-brand-row{
+  display:flex;
+  align-items:center;
+  gap:22px;
+  min-width:0;
+}
+.header-brand-row .brand{
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+  gap:9px;
+  min-width:0;
+}
+.staff-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  min-height:32px;
+  padding:5px 12px;
+  border:1px solid rgba(242,193,78,.34);
+  border-radius:999px;
+  color:#eac56b;
+  background:
+    linear-gradient(180deg,rgba(242,193,78,.075),rgba(242,193,78,.025)),
+    rgba(14,18,27,.86);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.025),
+    0 0 18px rgba(242,193,78,.055);
+  font-size:.77rem;
+  font-weight:800;
+  white-space:nowrap;
+}
+.staff-lock{
+  width:15px;
+  height:15px;
+  color:var(--gold);
+}
+.staff-lock svg{
+  display:block;
+  width:100%;
+  height:100%;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+/* 입력자 영역 */
+.editor-chip{
+  padding-left:7px;
+}
+.editor-crown{
+  width:26px;
+  height:26px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid rgba(153,91,255,.30);
+  border-radius:50%;
+  color:#b88aff;
+  background:rgba(116,61,198,.16);
+  box-shadow:0 0 14px rgba(153,91,255,.12);
+  font-size:.95rem;
+}
+.editor-label{
+  color:var(--muted);
+  font-size:.78rem;
+}
+
+/* 필터 버튼 아이콘 */
+#view-compare .seg button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+}
+#view-compare .seg-icon{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:16px;
+  color:#7f8da6;
+  font-size:.84rem;
+  line-height:1;
+}
+#view-compare .seg button.active{
+  color:#f5cf6f!important;
+  border-color:rgba(242,193,78,.52)!important;
+  background:
+    linear-gradient(180deg,rgba(242,193,78,.15),rgba(242,193,78,.045)),
+    #191b20!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.035),
+    0 0 15px rgba(242,193,78,.09)!important;
+}
+#view-compare .seg button.active .seg-icon{
+  color:var(--gold2);
+  text-shadow:0 0 10px rgba(242,193,78,.34);
+}
+
+/* 초기화 버튼은 별도 도구처럼 정리 */
+#view-compare .toolbar .btn[onclick="resetCompare()"]{
+  min-width:76px;
+  color:#c3ccdc;
+  border-color:#303b4f;
+  background:linear-gradient(180deg,#1d2533,#171e2a);
+}
+#view-compare .toolbar .btn[onclick="resetCompare()"]:hover{
+  color:#fff;
+  border-color:#526078;
+}
+
+/* 중간 폭 대응 */
+@media(max-width:900px){
+  .header-brand-row{gap:10px}
+  .staff-badge{display:none}
+}
+@media(max-width:640px){
+  .brand h1{gap:3px}
+  .editor-label{display:none}
+  .editor-crown{display:none}
+}
+
+
+/* 전력 추이 패널 높이 균형 조정 */
+#view-compare .panel:has(> h2:first-child){
+  scroll-margin-top:80px;
+}
+#view-compare .panel h2 + svg{
+  margin-top:-2px;
+}
+
+
+/* ============================================================
+   전체 탭 디자인 통일 + 관리자 역할 표시
+   ============================================================ */
+.editor-role-mini{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:21px;padding:2px 7px;border-radius:999px;
+  color:#b99aff;background:rgba(139,92,246,.12);
+  border:1px solid rgba(139,92,246,.24);
+  font-size:.66rem;font-weight:850;
+}
+.editor-role-mini.admin{
+  color:#f2cb68;background:rgba(242,193,78,.10);
+  border-color:rgba(242,193,78,.30);
+}
+.staff-badge.admin{
+  color:#ffe08b;border-color:rgba(242,193,78,.48);
+  background:linear-gradient(180deg,rgba(242,193,78,.12),rgba(242,193,78,.035)),rgba(14,18,27,.88);
+}
+.section-head{
+  display:flex;align-items:center;gap:12px;
+  min-height:62px;margin-bottom:12px;padding:12px 15px;
+  border:1px solid #283449;border-radius:14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.022),transparent),#151b28;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+  position:relative;overflow:hidden;
+}
+.section-head::before{
+  content:'';position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:3px;
+  background:var(--gold);
+}
+.section-head-icon{
+  width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+  border:1px solid #344159;border-radius:10px;background:#101722;font-size:1.05rem;
+}
+.section-head h2{margin:0;font-size:1rem}
+.section-head p{margin-top:3px;color:var(--muted);font-size:.76rem}
+.section-head-rank::before{background:var(--gold)}
+.section-head-entry::before{background:#ff9c55}
+.section-head-subs::before{background:#55a8ff}
+.section-head-manage::before{background:#a88bff}
+.section-head-history::before{background:#7f91b5}
+.section-role-chip{
+  margin-left:auto;padding:5px 10px;border:1px solid #354157;border-radius:999px;
+  color:#aeb9cb;background:#111722;font-size:.7rem;font-weight:800;
+}
+.section-role-chip.admin{color:#f1c95f;border-color:rgba(242,193,78,.34);background:rgba(242,193,78,.07)}
+#view-rank .toolbar,#view-subs>.panel:first-of-type,#view-history>.panel:first-of-type,.entry-control-panel,.manage-nav{
+  border-color:#2a364b;background:linear-gradient(180deg,rgba(255,255,255,.021),transparent),#161c29;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.028),0 8px 24px rgba(0,0,0,.12);
+}
+.rank-search-wrap input,.history-search,.entry-field-mini input{
+  background:#111823;border-color:#303c51;
+}
+#rankBox,#histList{
+  border-color:#29364a;background:#151c29;
+}
+.rank-table thead th{
+  background:#151d2c;color:#96a7c4;
+}
+.rank-table tbody tr:hover td{background:rgba(84,163,255,.035)}
+.entry-table input:focus,.entry-table select:focus{
+  outline:1px solid rgba(84,163,255,.72);
+  box-shadow:0 0 0 3px rgba(84,163,255,.11);
+}
+.entry-table tr:focus-within td{background:rgba(84,163,255,.035)}
+.sub-card{
+  border-color:#2b374b;background:linear-gradient(180deg,rgba(255,255,255,.018),transparent),#171e2b;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.024);
+}
+.sub-card:not(.done){border-left:3px solid var(--ours)}
+.sub-card.done{opacity:.72;border-left:3px solid #526078}
+.manage-nav{padding:8px;gap:7px}
+.manage-nav .btn{border-color:transparent;background:transparent;color:#9ca9bd}
+.manage-nav .btn.active{
+  color:#f2cc6c;border-color:rgba(242,193,78,.36);
+  background:rgba(242,193,78,.075);
+}
+.permission-card{
+  padding:14px 15px;border-color:#2e3a4e!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.018),transparent),#151c29!important;
+}
+.permission-card.admin-card{
+  border-color:rgba(242,193,78,.40)!important;
+  box-shadow:inset 3px 0 0 rgba(242,193,78,.72);
+}
+.permission-person{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.permission-avatar{
+  width:29px;height:29px;display:inline-flex;align-items:center;justify-content:center;
+  border-radius:9px;border:1px solid #354158;color:#7eaef0;background:#111824;font-size:.75rem;
+}
+.permission-avatar.admin{color:#f2cb68;border-color:rgba(242,193,78,.35);background:rgba(242,193,78,.07);font-size:1rem}
+.permission-meta{margin-top:2px;color:var(--dim);font-size:.68rem}
+.role-badge{
+  padding:3px 8px;border-radius:999px;font-size:.66rem;font-weight:850;
+}
+.role-badge.admin{color:#f2cb68;background:rgba(242,193,78,.10);border:1px solid rgba(242,193,78,.28)}
+.role-badge.operator{color:#9aa8bd;background:#1a2230;border:1px solid #303c50}
+.permission-tabs{display:flex;gap:5px 10px;flex-wrap:wrap;margin-top:11px;padding-top:10px;border-top:1px solid #273246}
+.perm-check{display:inline-flex;align-items:center;gap:4px;color:var(--muted);font-size:.79rem;cursor:pointer}
+.admin-transfer-btn{color:#eac760!important;border-color:rgba(242,193,78,.30)!important;background:rgba(242,193,78,.055)!important}
+.admin-control-row{gap:8px}
+.history-date{
+  border-color:#2d394d;color:#d5ddec;background:#121925;
+}
+.hist-item:hover{background:rgba(84,163,255,.025)}
+@media(max-width:700px){
+  .section-head{padding:11px 12px}
+  .section-head p{display:none}
+  .section-role-chip{display:none}
+  .permission-card .head{align-items:flex-start}
+}
+
 </style>
 </head>
 <body>
@@ -634,12 +1469,44 @@ footer b{color:var(--muted)}
 <!-- ============ 비밀번호 게이트 ============ -->
 <div id="gate">
   <div class="gate-box">
-    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTQwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZCIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGOUU3QTAiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIwLjQ1IiBzdG9wLWNvbG9yPSIjRUZDOTVFIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0I4ODYyQiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZDIiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkNFRkMwIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0Q5QTkzRSIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPCEtLSDsmZXqtIAgLS0+CiAgPHBhdGggZD0iTTI3IDQ2IEwyOSAyNCBMNDQgMzQgTDYwIDE1IEw3NiAzNCBMOTEgMjQgTDkzIDQ2IFoiIGZpbGw9InVybCgjZ29sZCkiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIxLjIiLz4KICA8Y2lyY2xlIGN4PSIyOSIgY3k9IjIxIiByPSIzLjQiIGZpbGw9InVybCgjZ29sZDIpIiBzdHJva2U9IiM4QTY0MjAiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iMTIiIHI9IjMuOCIgZmlsbD0idXJsKCNnb2xkMikiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPGNpcmNsZSBjeD0iOTEiIGN5PSIyMSIgcj0iMy40IiBmaWxsPSJ1cmwoI2dvbGQyKSIgc3Ryb2tlPSIjOEE2NDIwIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8cmVjdCB4PSIyNyIgeT0iNDgiIHdpZHRoPSI2NiIgaGVpZ2h0PSI2LjUiIHJ4PSIyLjUiIGZpbGw9InVybCgjZ29sZDIpIiBzdHJva2U9IiM4QTY0MjAiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iNTEuMiIgcj0iMiIgZmlsbD0iIzhBNjQyMCIvPgogIDxjaXJjbGUgY3g9IjQyIiBjeT0iNTEuMiIgcj0iMS41IiBmaWxsPSIjOEE2NDIwIi8+CiAgPGNpcmNsZSBjeD0iNzgiIGN5PSI1MS4yIiByPSIxLjUiIGZpbGw9IiM4QTY0MjAiLz4KICA8IS0tIDIxMyAtLT4KICA8dGV4dCB4PSI2MCIgeT0iOTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCAnVGltZXMgTmV3IFJvbWFuJywgc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9InVybCgjZ29sZCkiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIwLjYiPjIxMzwvdGV4dD4KICA8IS0tIFNFUlZFUiAtLT4KICA8dGV4dCB4PSI2MyIgeT0iMTEzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTIuNSIgbGV0dGVyLXNwYWNpbmc9IjUuNSIgZmlsbD0iI0Q5QjQ1QyI+U0VSVkVSPC90ZXh0PgogIDwhLS0g7ZWY64uoIOyepeyLnSAtLT4KICA8cGF0aCBkPSJNMzggMTIyIEw2MCAxMzEgTDgyIDEyMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ1cmwoI2dvbGQpIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iMTMxIiByPSIyLjIiIGZpbGw9IiNFRkM5NUUiLz4KPC9zdmc+Cg==" alt="213 SERVER" style="height:96px;display:block;margin:0 auto 14px">
+    <div class="gate-kicker">
+      <span class="gate-kicker-icon">◆</span>
+      <span id="staffRoleText">운영진 전용</span>
+    </div>
+
+    <div class="gate-logo-wrap">
+      <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTQwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZCIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGOUU3QTAiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIwLjQ1IiBzdG9wLWNvbG9yPSIjRUZDOTVFIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0I4ODYyQiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZDIiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkNFRkMwIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0Q5QTkzRSIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPCEtLSDsmZXqtIAgLS0+CiAgPHBhdGggZD0iTTI3IDQ2IEwyOSAyNCBMNDQgMzQgTDYwIDE1IEw3NiAzNCBMOTEgMjQgTDkzIDQ2IFoiIGZpbGw9InVybCgjZ29sZCkiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIxLjIiLz4KICA8Y2lyY2xlIGN4PSIyOSIgY3k9IjIxIiByPSIzLjQiIGZpbGw9InVybCgjZ29sZDIpIiBzdHJva2U9IiM4QTY0MjAiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iMTIiIHI9IjMuOCIgZmlsbD0idXJsKCNnb2xkMikiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPGNpcmNsZSBjeD0iOTEiIGN5PSIyMSIgcj0iMy40IiBmaWxsPSJ1cmwoI2dvbGQyKSIgc3Ryb2tlPSIjOEE2NDIwIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8cmVjdCB4PSIyNyIgeT0iNDgiIHdpZHRoPSI2NiIgaGVpZ2h0PSI2LjUiIHJ4PSIyLjUiIGZpbGw9InVybCgjZ29sZDIpIiBzdHJva2U9IiM4QTY0MjAiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iNTEuMiIgcj0iMiIgZmlsbD0iIzhBNjQyMCIvPgogIDxjaXJjbGUgY3g9IjQyIiBjeT0iNTEuMiIgcj0iMS41IiBmaWxsPSIjOEE2NDIwIi8+CiAgPGNpcmNsZSBjeD0iNzgiIGN5PSI1MS4yIiByPSIxLjUiIGZpbGw9IiM4QTY0MjAiLz4KICA8IS0tIDIxMyAtLT4KICA8dGV4dCB4PSI2MCIgeT0iOTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCAnVGltZXMgTmV3IFJvbWFuJywgc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9InVybCgjZ29sZCkiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIwLjYiPjIxMzwvdGV4dD4KICA8IS0tIFNFUlZFUiAtLT4KICA8dGV4dCB4PSI2MyIgeT0iMTEzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTIuNSIgbGV0dGVyLXNwYWNpbmc9IjUuNSIgZmlsbD0iI0Q5QjQ1QyI+U0VSVkVSPC90ZXh0PgogIDwhLS0g7ZWY64uoIOyepeyLnSAtLT4KICA8cGF0aCBkPSJNMzggMTIyIEw2MCAxMzEgTDgyIDEyMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ1cmwoI2dvbGQpIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iMTMxIiByPSIyLjIiIGZpbGw9IiNFRkM5NUUiLz4KPC9zdmc+Cg==" alt="213 SERVER">
+    </div>
+
     <h1>213서버 통합 시트</h1>
-    <div class="sub">운영진 전용 페이지입니다.<br>비밀번호를 입력하세요.</div>
-    <input id="gatePw" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
-    <button class="btn primary" onclick="doLogin()">입장하기</button>
+    <div class="sub">전력 비교와 운영 데이터를 관리하는<br>213 NXT 운영진 전용 대시보드입니다.</div>
+
+    <div class="gate-field">
+      <label for="gatePw">접속 비밀번호</label>
+      <div class="gate-input-wrap">
+        <span class="gate-lock" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M7.5 10V7.5a4.5 4.5 0 0 1 9 0V10"/>
+            <rect x="5" y="10" width="14" height="10" rx="2.5"/>
+            <circle cx="12" cy="15" r="1.2"/>
+          </svg>
+        </span>
+        <input id="gatePw" type="password" placeholder="비밀번호 입력" autocomplete="current-password" aria-label="접속 비밀번호" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+    </div>
+
+    <button class="btn primary gate-enter-btn" onclick="doLogin()">
+      <span>입장하기</span>
+      <span class="gate-enter-arrow" aria-hidden="true">→</span>
+    </button>
+
     <div class="gate-msg" id="gateMsg"></div>
+
+    <div class="gate-security">
+      <span class="gate-security-dot"></span>
+      승인된 운영진만 이용할 수 있습니다
+    </div>
+
     <div class="gate-credit">Powered by <b>213 NXT · 부앙(Bu-ang)</b></div>
   </div>
 </div>
@@ -647,8 +1514,26 @@ footer b{color:var(--muted)}
 <!-- ============ 본 앱 ============ -->
 <div id="appShell">
 <header>
-  <div class="brand" style="flex-direction:row;align-items:center;gap:9px"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTQwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZCIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGOUU3QTAiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIwLjQ1IiBzdG9wLWNvbG9yPSIjRUZDOTVFIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0I4ODYyQiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZDIiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkNFRkMwIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0Q5QTkzRSIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPCEtLSDsmZXqtIAgLS0+CiAgPHBhdGggZD0iTTI3IDQ2IEwyOSAyNCBMNDQgMzQgTDYwIDE1IEw3NiAzNCBMOTEgMjQgTDkzIDQ2IFoiIGZpbGw9InVybCgjZ29sZCkiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIxLjIiLz4KICA8Y2lyY2xlIGN4PSIyOSIgY3k9IjIxIiByPSIzLjQiIGZpbGw9InVybCgjZ29sZDIpIiBzdHJva2U9IiM4QTY0MjAiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iMTIiIHI9IjMuOCIgZmlsbD0idXJsKCNnb2xkMikiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPGNpcmNsZSBjeD0iOTEiIGN5PSIyMSIgcj0iMy40IiBmaWxsPSJ1cmwoI2dvbGQyKSIgc3Ryb2tlPSIjOEE2NDIwIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8cmVjdCB4PSIyNyIgeT0iNDgiIHdpZHRoPSI2NiIgaGVpZ2h0PSI2LjUiIHJ4PSIyLjUiIGZpbGw9InVybCgjZ29sZDIpIiBzdHJva2U9IiM4QTY0MjAiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iNTEuMiIgcj0iMiIgZmlsbD0iIzhBNjQyMCIvPgogIDxjaXJjbGUgY3g9IjQyIiBjeT0iNTEuMiIgcj0iMS41IiBmaWxsPSIjOEE2NDIwIi8+CiAgPGNpcmNsZSBjeD0iNzgiIGN5PSI1MS4yIiByPSIxLjUiIGZpbGw9IiM4QTY0MjAiLz4KICA8IS0tIDIxMyAtLT4KICA8dGV4dCB4PSI2MCIgeT0iOTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCAnVGltZXMgTmV3IFJvbWFuJywgc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9InVybCgjZ29sZCkiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIwLjYiPjIxMzwvdGV4dD4KICA8IS0tIFNFUlZFUiAtLT4KICA8dGV4dCB4PSI2MyIgeT0iMTEzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTIuNSIgbGV0dGVyLXNwYWNpbmc9IjUuNSIgZmlsbD0iI0Q5QjQ1QyI+U0VSVkVSPC90ZXh0PgogIDwhLS0g7ZWY64uoIOyepeyLnSAtLT4KICA8cGF0aCBkPSJNMzggMTIyIEw2MCAxMzEgTDgyIDEyMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ1cmwoI2dvbGQpIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iMTMxIiByPSIyLjIiIGZpbGw9IiNFRkM5NUUiLz4KPC9zdmc+Cg==" alt="" style="height:38px"><div style="display:flex;flex-direction:column;gap:2px"><h1>213서버 통합 시트</h1><span>Powered by 213 NXT · 부앙(Bu-ang)</span></div></div>
-  <div class="editor-chip">입력자 <b id="editorName">-</b><button onclick="askEditor()">변경</button><button onclick="doLogout()">잠금</button></div>
+  <div class="header-brand-row">
+    <div class="brand"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTQwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZCIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGOUU3QTAiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIwLjQ1IiBzdG9wLWNvbG9yPSIjRUZDOTVFIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0I4ODYyQiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZDIiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkNFRkMwIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0Q5QTkzRSIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPCEtLSDsmZXqtIAgLS0+CiAgPHBhdGggZD0iTTI3IDQ2IEwyOSAyNCBMNDQgMzQgTDYwIDE1IEw3NiAzNCBMOTEgMjQgTDkzIDQ2IFoiIGZpbGw9InVybCgjZ29sZCkiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIxLjIiLz4KICA8Y2lyY2xlIGN4PSIyOSIgY3k9IjIxIiByPSIzLjQiIGZpbGw9InVybCgjZ29sZDIpIiBzdHJva2U9IiM4QTY0MjAiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iMTIiIHI9IjMuOCIgZmlsbD0idXJsKCNnb2xkMikiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPGNpcmNsZSBjeD0iOTEiIGN5PSIyMSIgcj0iMy40IiBmaWxsPSJ1cmwoI2dvbGQyKSIgc3Ryb2tlPSIjOEE2NDIwIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8cmVjdCB4PSIyNyIgeT0iNDgiIHdpZHRoPSI2NiIgaGVpZ2h0PSI2LjUiIHJ4PSIyLjUiIGZpbGw9InVybCgjZ29sZDIpIiBzdHJva2U9IiM4QTY0MjAiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iNTEuMiIgcj0iMiIgZmlsbD0iIzhBNjQyMCIvPgogIDxjaXJjbGUgY3g9IjQyIiBjeT0iNTEuMiIgcj0iMS41IiBmaWxsPSIjOEE2NDIwIi8+CiAgPGNpcmNsZSBjeD0iNzgiIGN5PSI1MS4yIiByPSIxLjUiIGZpbGw9IiM4QTY0MjAiLz4KICA8IS0tIDIxMyAtLT4KICA8dGV4dCB4PSI2MCIgeT0iOTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCAnVGltZXMgTmV3IFJvbWFuJywgc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9InVybCgjZ29sZCkiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIwLjYiPjIxMzwvdGV4dD4KICA8IS0tIFNFUlZFUiAtLT4KICA8dGV4dCB4PSI2MyIgeT0iMTEzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTIuNSIgbGV0dGVyLXNwYWNpbmc9IjUuNSIgZmlsbD0iI0Q5QjQ1QyI+U0VSVkVSPC90ZXh0PgogIDwhLS0g7ZWY64uoIOyepeyLnSAtLT4KICA8cGF0aCBkPSJNMzggMTIyIEw2MCAxMzEgTDgyIDEyMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ1cmwoI2dvbGQpIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iMTMxIiByPSIyLjIiIGZpbGw9IiNFRkM5NUUiLz4KPC9zdmc+Cg==" alt="" style="height:38px"><div class="brand-copy">
+      <h1><span class="brand-gold">213</span><span class="brand-white">서버 통합 시트</span></h1>
+      <span>Powered by 213 NXT · 부앙(Bu-ang)</span>
+    </div></div>
+    <div class="staff-badge" id="staffRoleBadge">
+      <span class="staff-lock" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M7.5 10V7.5a4.5 4.5 0 0 1 9 0V10"/><rect x="5" y="10" width="14" height="10" rx="2.5"/></svg>
+      </span>
+      운영진 전용
+    </div>
+  </div>
+  <div class="editor-chip">
+    <span class="editor-crown" aria-hidden="true">♛</span>
+    <span class="editor-label">입력자</span>
+    <b id="editorName">-</b>
+    <span class="editor-role-mini" id="editorRoleMini">운영진</span>
+    <button onclick="askEditor()">변경</button>
+    <button onclick="doLogout()">잠금</button>
+  </div>
 </header>
 
 <nav>
@@ -677,22 +1562,22 @@ footer b{color:var(--muted)}
 <!-- ============ 비교 ============ -->
 <section class="view active" id="view-compare">
   <div class="toolbar" style="justify-content:center">
-    <div class="segwrap"><span class="seglb">비교 모드</span>
+    <div class="segwrap"><span class="seglb">비교 방식</span>
     <div class="seg" id="modeSeg">
-      <button class="active" data-m="server" onclick="setMode('server')">서버 vs 서버</button>
-      <button data-m="alliance" onclick="setMode('alliance')">연맹 vs 연맹</button>
-      <button data-m="faction" onclick="setMode('faction')">파벌 vs 파벌</button>
+      <button class="active" data-m="server" onclick="setMode('server')"><span class="seg-icon">⚔</span><span>서버 vs 서버</span></button>
+      <button data-m="alliance" onclick="setMode('alliance')"><span class="seg-icon">◆</span><span>연맹 vs 연맹</span></button>
+      <button data-m="faction" onclick="setMode('faction')"><span class="seg-icon">⚑</span><span>파벌 vs 파벌</span></button>
     </div></div>
-    <div class="segwrap"><span class="seglb">편대 기준</span>
+    <div class="segwrap"><span class="seglb">편대 범위</span>
     <div class="seg" id="basisSeg" title="비교에 사용할 편대 범위">
-      <button class="active" data-b="1" onclick="setBasis(1)">1편대만</button>
+      <button class="active" data-b="1" onclick="setBasis(1)"><span class="seg-icon">♟</span><span>1편대</span></button>
       <button data-b="2" onclick="setBasis(2)">1~2편대</button>
       <button data-b="3" onclick="setBasis(3)">1~3편대</button>
       <button data-b="4" onclick="setBasis(4)">1~4편대</button>
     </div></div>
-    <div class="segwrap"><span class="seglb">분석 범위</span>
+    <div class="segwrap"><span class="seglb">분석 인원</span>
     <div class="seg" id="topSeg" title="양쪽에서 상위 몇 명까지 분석할지">
-      <button class="active" data-t="0" onclick="setTopN(0)">전체</button>
+      <button class="active" data-t="0" onclick="setTopN(0)"><span class="seg-icon">▥</span><span>전체</span></button>
       <button data-t="10" onclick="setTopN(10)">Top 10</button>
       <button data-t="20" onclick="setTopN(20)">Top 20</button>
       <button data-t="30" onclick="setTopN(30)">Top 30</button>
@@ -749,6 +1634,10 @@ footer b{color:var(--muted)}
 
 <!-- ============ 순위 ============ -->
 <section class="view" id="view-rank">
+  <div class="section-head section-head-rank">
+    <div class="section-head-icon">🏆</div>
+    <div><h2>전력 순위</h2><p>서버·연맹·파벌·유저 단위의 전력을 빠르게 확인합니다.</p></div>
+  </div>
   <div class="toolbar">
     <div class="segwrap"><span class="seglb">순위 종류</span>
     <div class="seg" id="rankSeg">
@@ -783,6 +1672,10 @@ footer b{color:var(--muted)}
 
 <!-- ============ 입력 ============ -->
 <section class="view" id="view-entry">
+  <div class="section-head section-head-entry">
+    <div class="section-head-icon">✎</div>
+    <div><h2>전투력 입력</h2><p>서버와 연맹을 선택한 뒤 최신 전투력을 입력하고 저장합니다.</p></div>
+  </div>
   <div class="panel entry-control-panel">
     <div class="entry-toolbar-main">
       <div class="entry-select-group">
@@ -807,6 +1700,10 @@ footer b{color:var(--muted)}
 
 <!-- ============ 제출 확인 ============ -->
 <section class="view" id="view-subs">
+  <div class="section-head section-head-subs">
+    <div class="section-head-icon">📥</div>
+    <div><h2>제출 확인</h2><p>연맹원이 제출한 전투력 정보를 검토하고 시트에 반영합니다.</p></div>
+  </div>
   <div class="panel" style="margin-bottom:14px">
     <div class="sub-filterbar">
       <div class="seg" id="subFilterSeg">
@@ -823,11 +1720,16 @@ footer b{color:var(--muted)}
 
 <!-- ============ 관리 ============ -->
 <section class="view" id="view-manage">
+  <div class="section-head section-head-manage">
+    <div class="section-head-icon">⚙</div>
+    <div><h2>시스템 관리</h2><p>서버·연맹·파벌과 운영진 권한을 관리합니다.</p></div>
+    <div class="section-role-chip" id="manageRoleChip">운영진</div>
+  </div>
   <div class="panel manage-nav">
     <button class="btn active" data-manage="servers" onclick="setManageSection('servers')">🗂 서버·연맹</button>
     <button class="btn" data-manage="factions" onclick="setManageSection('factions')">⚜️ 파벌</button>
-    <button class="btn" data-manage="exports" onclick="setManageSection('exports')">📤 반출 승인</button>
-    <button class="btn" data-manage="permissions" onclick="setManageSection('permissions')">🔐 운영진 권한</button>
+    <button class="btn" data-manage="exports" data-admin-only onclick="setManageSection('exports')">📤 반출 승인</button>
+    <button class="btn" data-manage="permissions" data-admin-only onclick="setManageSection('permissions')">🔐 운영진 권한</button>
   </div>
   <div class="manage-section active" data-manage-section="servers">
     <div class="panel" style="margin-bottom:14px">
@@ -867,9 +1769,10 @@ footer b{color:var(--muted)}
   <div class="manage-section" data-manage-section="permissions">
     <div class="panel" style="margin-bottom:14px">
       <h2 class="acc-red">🔐 탭 권한 관리 <span class="hint" style="font-weight:400">(관리자 PIN 필요)</span></h2>
-      <div class="row">
-        <button class="btn" onclick="openPerms()">권한 관리 열기</button>
-        <span class="hint">해제한 탭은 해당 운영진에게 비표시</span>
+      <div class="row admin-control-row">
+        <button class="btn primary" onclick="openPerms()">권한 관리 열기</button>
+        <button class="btn" onclick="changeAdminPin()">관리자 PIN 변경</button>
+        <span class="hint" id="adminOwnerHint">현재 프로그램 관리자만 권한을 변경할 수 있습니다.</span>
       </div>
       <div id="permPanel" style="margin-top:12px"></div>
     </div>
@@ -878,6 +1781,10 @@ footer b{color:var(--muted)}
 
 <!-- ============ 이력 ============ -->
 <section class="view" id="view-history">
+  <div class="section-head section-head-history">
+    <div class="section-head-icon">◴</div>
+    <div><h2>변경 이력</h2><p>입력자·닉네임·연맹 기준으로 전체 기록을 검색합니다.</p></div>
+  </div>
   <div class="panel" style="margin-bottom:14px">
     <div class="history-controls">
       <select id="histServer" onchange="loadHistory()"></select>
@@ -975,6 +1882,7 @@ footer b{color:var(--muted)}
 <script>
 let sb=null, servers=[], alliances=[], factions=[], factionServers=[], mode='server', basis=1, topN=0, rankMode='server', rankTopN=0, entryIsOurs=true;
 let entryRows=[], rankCache=null, lastCmp=null, cmpShowAll=false, editorPerms=null, adminPin=null;
+let editorRole='operator', programAdminName='관리자', roleSystemReady=false;
 let subFilter='pending', subCache=[], historyCache=[], manageSection='servers', historySearchTimer=null, historyRequestSeq=0;
 const TABS=[['compare','📊 전력 비교'],['rank','🏆 순위'],['entry','✏️ 입력'],['subs','📥 제출'],['manage','🗂 관리'],['history','🕘 이력']];
 const $=id=>document.getElementById(id);
@@ -1051,7 +1959,7 @@ async function saveEditor(){
   localStorage.setItem('editorName',name);
   $('editorName').textContent=name; $('nameOverlay').classList.remove('show');
   applyWatermark();
-  loadPerms();
+  await loadPerms();
   toast(data==='created'?`'${name}' 닉네임을 등록했습니다`:'본인 확인 완료');
 }
 
@@ -1082,12 +1990,73 @@ function applyWatermark(){
 }
 async function loadPerms(){
   const name=getEditor();
-  if(!name){ editorPerms=new Set(); applyPerms(); return; }
-  const {data}=await sb.rpc('get_editor_perms',{p_name:name,p_device_id:getDeviceId()});
-  if(data==='*') editorPerms=new Set(TABS.map(([k])=>k));
-  else editorPerms=new Set((data||'').split(',').map(s=>s.trim()).filter(Boolean));
+  if(!name){
+    editorPerms=new Set();
+    editorRole='operator';
+    programAdminName='관리자';
+    roleSystemReady=false;
+    updateRoleUI();
+    applyPerms();
+    return;
+  }
+
+  const profile=await sb.rpc('get_editor_profile',{p_name:name,p_device_id:getDeviceId()});
+  if(!profile.error && profile.data){
+    const p=profile.data;
+    roleSystemReady=true;
+    editorRole=p.role||'operator';
+    programAdminName=p.admin_name||'관리자';
+    const perms=p.perms||'';
+    if(perms==='*') editorPerms=new Set(TABS.map(([k])=>k));
+    else editorPerms=new Set(perms.split(',').map(s=>s.trim()).filter(Boolean));
+  }else{
+    // 역할 SQL 패치 적용 전에도 기존 권한 조회는 계속 동작하도록 유지
+    const legacy=await sb.rpc('get_editor_perms',{p_name:name,p_device_id:getDeviceId()});
+    roleSystemReady=false;
+    editorRole=name==='부앙'?'admin':'operator';
+    programAdminName='부앙';
+    const perms=legacy.data||'';
+    if(perms==='*') editorPerms=new Set(TABS.map(([k])=>k));
+    else editorPerms=new Set(perms.split(',').map(s=>s.trim()).filter(Boolean));
+  }
+  updateRoleUI();
   applyPerms();
 }
+
+function isMissingRpc(error){
+  const msg=(error&&error.message)||'';
+  return /function .* does not exist|Could not find the function|PGRST202/i.test(msg);
+}
+function updateRoleUI(){
+  const isAdmin=editorRole==='admin';
+  document.body.classList.toggle('is-program-admin',isAdmin);
+
+  const badge=$('staffRoleBadge');
+  const roleText=$('staffRoleText');
+  const mini=$('editorRoleMini');
+  const manageChip=$('manageRoleChip');
+  const ownerHint=$('adminOwnerHint');
+
+  if(badge) badge.classList.toggle('admin',isAdmin);
+  if(roleText) roleText.textContent=isAdmin?'프로그램 관리자':'운영진 전용';
+  if(mini){
+    mini.textContent=isAdmin?'관리자':'운영진';
+    mini.classList.toggle('admin',isAdmin);
+  }
+  if(manageChip){
+    manageChip.textContent=isAdmin?'프로그램 관리자':'운영진';
+    manageChip.classList.toggle('admin',isAdmin);
+  }
+  if(ownerHint) ownerHint.textContent=`현재 관리자: ${programAdminName||'미지정'} · 관리자 위임 시 역할과 관리 권한이 즉시 이전됩니다.`;
+
+  document.querySelectorAll('[data-admin-only]').forEach(el=>{
+    el.style.display=isAdmin?'':'none';
+  });
+  if(!isAdmin && (manageSection==='exports'||manageSection==='permissions')){
+    setManageSection('servers');
+  }
+}
+
 function canView(v){ return editorPerms&&editorPerms.has(v); }
 function applyPerms(){
   const none=!editorPerms||editorPerms.size===0;
@@ -1111,9 +2080,18 @@ async function unlockAsAdmin(){
   const pin=prompt('🔐 관리자 PIN을 입력하세요:');
   if(pin===null) return;
   const name=getEditor(); if(!name){askEditor();return;}
-  const {data,error}=await sb.rpc('admin_set_perms',{p_pin:pin.trim(),p_name:name,p_perms:'*'});
-  if(error){toast('오류: '+error.message);return;}
-  if(data!==true){toast('❌ 관리자 PIN이 올바르지 않습니다');return;}
+
+  if(roleSystemReady){
+    const {data,error}=await sb.rpc('admin_unlock_self_v2',{
+      p_pin:pin.trim(),p_actor:name,p_device_id:getDeviceId()
+    });
+    if(error){toast(/not_admin/.test(error.message)?'관리자에게만 허용된 기능입니다':'오류: '+error.message);return;}
+    if(data!==true){toast('❌ 관리자 PIN이 올바르지 않거나 관리자 계정이 아닙니다');return;}
+  }else{
+    const {data,error}=await sb.rpc('admin_set_perms',{p_pin:pin.trim(),p_name:name,p_perms:'*'});
+    if(error){toast('오류: '+error.message);return;}
+    if(data!==true){toast('❌ 관리자 PIN이 올바르지 않습니다');return;}
+  }
   adminPin=pin.trim();
   await loadPerms();
   toast('👑 관리자 권한으로 전체 탭이 열렸습니다');
@@ -1499,7 +2477,8 @@ function trendSVG(pa,pb,nameA,nameB){
     return '<div class="empty" style="padding:26px 0">전투력 기록이 2회 이상 쌓이면 추세 그래프가 그려집니다.<br>다음 조사 때부터 상승 곡선을 볼 수 있어요 📈</div>';
   const all=[...pa,...pb];
   const days=[...new Set(all.map(p=>p.d))].sort();
-  const X0=52,X1=590,Y0=18,Y1=196;
+  // 전력 추이 영역을 다른 결과 카드와 균형이 맞도록 약 25% 축소
+  const X0=52,X1=590,Y0=16,Y1=132;
   const x=d=>days.length>1?X0+(days.indexOf(d)/(days.length-1))*(X1-X0):(X0+X1)/2;
   const maxV=Math.max(...all.map(p=>p.v))*1.1||1;
   const y=v=>Y1-(v/maxV)*(Y1-Y0);
@@ -1511,7 +2490,7 @@ function trendSVG(pa,pb,nameA,nameB){
   const fmtDay=d=>{const p=d.split('-');return (+p[1])+'.'+(+p[2]);};
   const xlab=[days[0],days[Math.floor((days.length-1)/2)],days[days.length-1]]
     .filter((d,i,a)=>a.indexOf(d)===i)
-    .map(d=>`<text x="${x(d)}" y="214" fill="#5B6478" font-size="10.5" text-anchor="middle">${fmtDay(d)}</text>`).join('');
+    .map(d=>`<text x="${x(d)}" y="154" fill="#5B6478" font-size="10.5" text-anchor="middle">${fmtDay(d)}</text>`).join('');
   const line=(pts,color)=>{
     if(!pts.length) return '';
     const pl=pts.map(p=>x(p.d).toFixed(1)+','+y(p.v).toFixed(1)).join(' ');
@@ -1520,7 +2499,7 @@ function trendSVG(pa,pb,nameA,nameB){
       +pts.map(p=>`<circle cx="${x(p.d).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="4" style="fill:${color}"/>`).join('')
       +`<text x="${Math.min(x(last.d)+9,610)}" y="${y(last.v)+4}" style="fill:${color}" font-size="12" font-weight="800">${fmtG(last.v)}</text>`;
   };
-  return `<svg viewBox="0 0 660 222" style="width:100%;display:block">
+  return `<svg viewBox="0 0 660 166" style="width:100%;display:block">
     ${grid}${xlab}
     ${line(pa,'#4E9BFF')}${line(pb,'#FF6357')}
   </svg>
@@ -2216,12 +3195,22 @@ async function rejectSub(id){
 
 /* ---------- 엑셀 반출 승인 (관리자) ---------- */
 async function openExportReqs(){
+  if(editorRole!=='admin'){toast(`반출 승인은 현재 관리자(${programAdminName})만 처리할 수 있습니다`);return;}
   let pin=adminPin;
   if(!pin){ pin=prompt('🔐 관리자 PIN을 입력하세요:'); if(pin===null) return; pin=pin.trim(); }
-  const {data,error}=await sb.rpc('admin_list_export_requests',{p_pin:pin});
+
+  let res;
+  if(roleSystemReady){
+    res=await sb.rpc('admin_list_export_requests_v2',{
+      p_pin:pin,p_actor:getEditor(),p_device_id:getDeviceId()
+    });
+  }else{
+    res=await sb.rpc('admin_list_export_requests',{p_pin:pin});
+  }
+  const {data,error}=res;
   if(error){
     adminPin=null;
-    toast(/wrong_pin/.test(error.message)?'❌ 관리자 PIN이 올바르지 않습니다':'오류: '+error.message);
+    toast(/wrong_pin/.test(error.message)?'❌ 관리자 PIN이 올바르지 않습니다':/not_admin/.test(error.message)?'관리자에게만 허용된 기능입니다':'오류: '+error.message);
     return;
   }
   adminPin=pin;
@@ -2239,64 +3228,155 @@ function renderExportReqs(list){
     </div></div>`).join('');
 }
 async function processExport(id,approve){
-  const {data,error}=await sb.rpc('admin_process_export',{p_pin:adminPin,p_id:id,p_approve:approve});
+  let res;
+  if(roleSystemReady){
+    res=await sb.rpc('admin_process_export_v2',{
+      p_pin:adminPin,p_actor:getEditor(),p_device_id:getDeviceId(),p_id:id,p_approve:approve
+    });
+  }else{
+    res=await sb.rpc('admin_process_export',{p_pin:adminPin,p_id:id,p_approve:approve});
+  }
+  const {data,error}=res;
   if(error){toast(error.message);return;}
-  if(data!==true){toast('처리 실패: PIN을 다시 확인하세요');adminPin=null;return;}
+  if(data!==true){toast('처리 실패: 관리자 권한과 PIN을 확인하세요');adminPin=null;return;}
   toast(approve?'✅ 승인했습니다 — 본인이 15분 내 다시 내보내기를 누르면 됩니다':'거절했습니다');
   openExportReqs();
 }
 
 /* ---------- 탭 권한 관리 (관리자) ---------- */
 async function openPerms(){
+  if(editorRole!=='admin'){toast(`권한 관리는 현재 관리자(${programAdminName})만 사용할 수 있습니다`);return;}
   const pin=prompt('🔐 관리자 PIN을 입력하세요:');
   if(pin===null) return;
-  const {data,error}=await sb.rpc('admin_list_editors',{p_pin:pin.trim()});
+
+  let res;
+  if(roleSystemReady){
+    res=await sb.rpc('admin_list_editors_v2',{
+      p_pin:pin.trim(),p_actor:getEditor(),p_device_id:getDeviceId()
+    });
+  }else{
+    res=await sb.rpc('admin_list_editors',{p_pin:pin.trim()});
+  }
+  const {data,error}=res;
   if(error){
-    toast(/wrong_pin/.test(error.message)?'❌ 관리자 PIN이 올바르지 않습니다':'오류: '+error.message);
+    toast(/wrong_pin/.test(error.message)?'❌ 관리자 PIN이 올바르지 않습니다':/not_admin/.test(error.message)?'관리자에게만 허용된 기능입니다':'오류: '+error.message);
     return;
   }
   adminPin=pin.trim();
-  renderPerms(data||[]);
+  renderPerms((data||[]).map(e=>({...e,role:e.role||e.editor_role||(e.name===programAdminName?'admin':'operator')})));
 }
 function renderPerms(list){
   const box=$('permPanel');
-  if(!list.length){box.innerHTML='<div class="hint">아직 등록된 운영진 닉네임이 없습니다. (각자 처음 접속해서 닉네임+PIN을 등록하면 여기 나타납니다)</div>';return;}
+  if(!list.length){box.innerHTML='<div class="hint">아직 등록된 운영진 닉네임이 없습니다.</div>';return;}
   box.innerHTML=list.map(e=>{
+    const isAdmin=e.role==='admin';
     const allowed=(e.perms==='*')?new Set(TABS.map(([k])=>k)):new Set((e.perms||'').split(',').map(s=>s.trim()).filter(Boolean));
     const boxes=TABS.map(([k,label])=>{
       const on=allowed.has(k);
-      return `<label style="display:inline-flex;align-items:center;gap:4px;font-size:.82rem;color:var(--muted);margin:2px 8px 2px 0;cursor:pointer">
+      return `<label class="perm-check">
         <input type="checkbox" data-tab="${k}" ${on?'checked':''} style="width:auto;accent-color:var(--ours)">${label}</label>`;
     }).join('');
-    return `<div class="srv-card" data-editor="${esc(e.name)}" style="background:var(--panel)">
-      <div class="head"><b>${esc(e.name)}</b><span class="cnt">${fmtTime(e.created_at)} 등록${(e.perms==null||e.perms==='')?' · <span class="manage-status wait">권한 대기 중</span>':''}</span>
+    return `<div class="srv-card permission-card ${isAdmin?'admin-card':''}" data-editor="${esc(e.name)}" data-role="${esc(e.role||'operator')}">
+      <div class="head">
+        <div class="permission-person">
+          <span class="permission-avatar ${isAdmin?'admin':''}">${isAdmin?'♛':'●'}</span>
+          <div><b>${esc(e.name)}</b><div class="permission-meta">${fmtTime(e.created_at)} 등록</div></div>
+          <span class="role-badge ${isAdmin?'admin':'operator'}">${isAdmin?'프로그램 관리자':'운영진'}</span>
+          ${(e.perms==null||e.perms==='')?'<span class="manage-status wait">권한 대기 중</span>':''}
+        </div>
         <span style="flex:1"></span>
+        ${!isAdmin&&editorRole==='admin'?`<button class="btn sm admin-transfer-btn" onclick="transferAdmin(this)">♛ 관리자 위임</button>`:''}
         <button class="btn sm primary" onclick="savePerms(this)">저장</button>
-        <button class="btn sm danger manage-danger-action" title="이 운영진 등록을 삭제" onclick="deleteEditor(this)">🗑</button></div>
-      <div style="margin-top:8px">${boxes}</div>
+        ${!isAdmin?`<button class="btn sm danger manage-danger-action" title="이 운영진 등록을 삭제" onclick="deleteEditor(this)">🗑</button>`:''}
+      </div>
+      <div class="permission-tabs">${boxes}</div>
     </div>`;
   }).join('');
 }
 async function deleteEditor(btn){
+  if(editorRole!=='admin'){toast('관리자에게만 허용된 기능입니다');return;}
   const card=btn.closest('.srv-card');
   const name=card.dataset.editor;
-  if(!confirm(`'${name}' 운영진 등록을 삭제할까요?\n\n· 닉네임·PIN·기기 등록·탭 권한이 모두 삭제됩니다\n· 입력 이력 기록은 그대로 남습니다\n· 다시 쓰려면 처음부터 재등록해야 합니다`)) return;
-  const {data,error}=await sb.rpc('admin_delete_editor',{p_pin:adminPin,p_name:name});
+  if(card.dataset.role==='admin'){toast('프로그램 관리자는 삭제할 수 없습니다. 먼저 다른 운영진에게 관리자 역할을 위임하세요.');return;}
+  if(!confirm(`'${name}' 운영진 등록을 삭제할까요?\n\n· 닉네임·PIN·기기 등록·탭 권한이 모두 삭제됩니다\n· 입력 이력 기록은 그대로 남습니다`)) return;
+
+  let res;
+  if(roleSystemReady){
+    res=await sb.rpc('admin_delete_editor_v2',{
+      p_pin:adminPin,p_actor:getEditor(),p_device_id:getDeviceId(),p_name:name
+    });
+  }else{
+    res=await sb.rpc('admin_delete_editor',{p_pin:adminPin,p_name:name});
+  }
+  const {data,error}=res;
   if(error){toast(error.message);return;}
-  if(data!==true){toast('삭제 실패 — 관리자 PIN을 다시 확인하세요');adminPin=null;return;}
+  if(data!==true){toast('삭제 실패 — 관리자 권한과 PIN을 확인하세요');adminPin=null;return;}
   card.remove();
   toast(`🗑 '${name}' 삭제 완료`);
 }
+
+async function transferAdmin(btn){
+  if(!roleSystemReady){toast('관리자 역할 SQL 패치를 먼저 적용해야 합니다');return;}
+  if(editorRole!=='admin'){toast('현재 관리자만 역할을 위임할 수 있습니다');return;}
+  const card=btn.closest('.srv-card');
+  const target=card.dataset.editor;
+  if(!confirm(`프로그램 관리자 역할을 '${target}'에게 넘길까요?\n\n· ${target}에게 관리자 역할과 전체 탭 권한이 부여됩니다\n· 현재 계정은 일반 운영진으로 전환됩니다\n· 기존 데이터와 입력 이력은 그대로 유지됩니다`)) return;
+
+  let pin=adminPin;
+  if(!pin){pin=prompt('🔐 관리자 PIN을 입력하세요:');if(pin===null)return;pin=pin.trim();}
+  const {data,error}=await sb.rpc('admin_transfer_role_v2',{
+    p_pin:pin,p_actor:getEditor(),p_device_id:getDeviceId(),p_target:target
+  });
+  if(error){toast(/wrong_pin/.test(error.message)?'관리자 PIN이 올바르지 않습니다':'위임 실패: '+error.message);return;}
+  if(data!==true){toast('관리자 위임에 실패했습니다');return;}
+
+  adminPin=null;
+  toast(`♛ 프로그램 관리자 역할을 ${target}에게 위임했습니다`);
+  await loadPerms();
+  setManageSection('servers');
+}
+async function changeAdminPin(){
+  if(!roleSystemReady){toast('관리자 역할 SQL 패치를 먼저 적용해야 합니다');return;}
+  if(editorRole!=='admin'){toast('현재 관리자만 PIN을 변경할 수 있습니다');return;}
+  const current=prompt('현재 관리자 PIN을 입력하세요:');
+  if(current===null)return;
+  const next=prompt('새 관리자 PIN 숫자 4자리를 입력하세요:');
+  if(next===null)return;
+  if(!/^\d{4}$/.test(next.trim())){toast('새 PIN은 숫자 4자리여야 합니다');return;}
+  const again=prompt('새 관리자 PIN을 한 번 더 입력하세요:');
+  if(again===null)return;
+  if(next.trim()!==again.trim()){toast('새 PIN이 서로 일치하지 않습니다');return;}
+
+  const {data,error}=await sb.rpc('admin_change_pin_v2',{
+    p_current_pin:current.trim(),p_new_pin:next.trim(),
+    p_actor:getEditor(),p_device_id:getDeviceId()
+  });
+  if(error){toast(/wrong_pin/.test(error.message)?'현재 PIN이 올바르지 않습니다':'PIN 변경 실패: '+error.message);return;}
+  if(data!==true){toast('PIN 변경에 실패했습니다');return;}
+  adminPin=next.trim();
+  toast('✅ 관리자 PIN을 변경했습니다');
+}
+
 async function savePerms(btn){
+  if(editorRole!=='admin'){toast('관리자에게만 허용된 기능입니다');return;}
   const card=btn.closest('.srv-card');
   const name=card.dataset.editor;
   const checked=[...card.querySelectorAll('input[type=checkbox]')].filter(c=>c.checked).map(c=>c.dataset.tab);
-  if(!checked.length&&!confirm(`'${name}'의 모든 탭을 차단합니다. 이 사람은 권한 대기 화면만 보게 됩니다. 계속할까요?`))return;
+  if(!checked.length&&!confirm(`'${name}'의 모든 탭을 차단합니다. 계속할까요?`))return;
   const perms=checked.length===TABS.length?'*':checked.join(',');
-  const {data,error}=await sb.rpc('admin_set_perms',{p_pin:adminPin,p_name:name,p_perms:perms});
+
+  let res;
+  if(roleSystemReady){
+    res=await sb.rpc('admin_set_perms_v2',{
+      p_pin:adminPin,p_actor:getEditor(),p_device_id:getDeviceId(),p_name:name,p_perms:perms
+    });
+  }else{
+    res=await sb.rpc('admin_set_perms',{p_pin:adminPin,p_name:name,p_perms:perms});
+  }
+  const {data,error}=res;
   if(error){toast(error.message);return;}
-  if(data!==true){toast('저장 실패: 관리자 PIN을 다시 확인하세요');return;}
-  toast(`✅ ${name}의 탭 권한을 저장했습니다 (본인이 '권한 다시 확인'을 누르면 적용)`);
+  if(data!==true){toast('저장 실패: 관리자 권한과 PIN을 확인하세요');return;}
+  toast(`✅ ${name}의 탭 권한을 저장했습니다`);
 }
 
 function renderFactions(){
@@ -2355,6 +3435,10 @@ async function removeFactionServer(fid,sid){
 }
 /* ---------- 관리 ---------- */
 function setManageSection(name){
+  if((name==='exports'||name==='permissions')&&editorRole!=='admin'){
+    toast(`현재 관리자(${programAdminName})만 사용할 수 있는 메뉴입니다`);
+    name='servers';
+  }
   manageSection=name;
   document.querySelectorAll('.manage-nav button').forEach(b=>b.classList.toggle('active',b.dataset.manage===name));
   document.querySelectorAll('.manage-section').forEach(s=>s.classList.toggle('active',s.dataset.manageSection===name));
@@ -2552,21 +3636,36 @@ async function runExport(){
   // 1) 승인이 이미 떨어졌는지 먼저 확인
   const chk=await sb.rpc('check_export_approval',{p_editor:editor,p_device:getDeviceId()});
   if(chk.error){toast('오류: '+chk.error.message);return;}
-  if(chk.data==='pending'){toast('⏳ 승인 대기 중입니다. 관리자(부앙) 승인 후 다시 눌러주세요.');return;}
+  if(chk.data==='pending'){toast(`⏳ 승인 대기 중입니다. 관리자(${programAdminName}) 승인 후 다시 눌러주세요.`);return;}
   if(chk.data==='rejected'){toast('❌ 반출 요청이 거절되었습니다.');return;}
   if(chk.data!=='ok'){
-    // 2) 승인 전: 관리자 PIN 알면 즉시, 모르면 승인 요청
-    const pin=prompt('📊 엑셀 내보내기는 관리자 승인이 필요합니다.\n\n· 관리자 PIN을 알면 입력 후 확인\n· 모르면 빈 칸으로 확인 → 부앙에게 승인 요청이 전송됩니다');
-    if(pin===null) return;
-    if(pin.trim()===''){
+    if(editorRole==='admin'){
+      const pin=prompt('📊 관리자 PIN을 입력하면 즉시 내보낼 수 있습니다.\n빈 칸으로 확인하면 승인 요청으로 등록됩니다.');
+      if(pin===null) return;
+      if(pin.trim()===''){
+        const rq=await sb.rpc('request_export',{p_editor:editor,p_device:getDeviceId()});
+        if(rq.error){toast('오류: '+rq.error.message);return;}
+        toast(rq.data==='already_pending'?'⏳ 이미 요청되어 승인 대기 중입니다.':'📨 승인 요청을 등록했습니다.');
+        return;
+      }
+      let ok;
+      if(roleSystemReady){
+        ok=await sb.rpc('verify_export_pin_v2',{
+          p_pin:pin.trim(),p_editor:editor,p_device_id:getDeviceId(),p_device_info:getDeviceInfo()
+        });
+      }else{
+        ok=await sb.rpc('verify_export_pin',{p_pin:pin.trim(),p_editor:editor,p_device:getDeviceInfo()});
+      }
+      if(ok.error){toast('오류: '+ok.error.message);return;}
+      if(ok.data!==true){toast('❌ 관리자 권한 또는 PIN을 확인하세요');return;}
+    }else{
       const rq=await sb.rpc('request_export',{p_editor:editor,p_device:getDeviceId()});
       if(rq.error){toast('오류: '+rq.error.message);return;}
-      toast(rq.data==='already_pending'?'⏳ 이미 요청되어 승인 대기 중입니다.':'📨 승인 요청을 보냈습니다! 부앙이 승인하면 이 버튼을 다시 눌러주세요.');
+      toast(rq.data==='already_pending'
+        ?`⏳ 이미 요청되어 관리자(${programAdminName}) 승인 대기 중입니다.`
+        :`📨 관리자(${programAdminName})에게 반출 승인 요청을 보냈습니다.`);
       return;
     }
-    const ok=await sb.rpc('verify_export_pin',{p_pin:pin.trim(),p_editor:editor,p_device:getDeviceInfo()});
-    if(ok.error){toast('오류: '+ok.error.message);return;}
-    if(ok.data!==true){toast('❌ 관리자 PIN이 올바르지 않습니다');return;}
   }
   toast('엑셀 파일 생성 중...');
   try{
