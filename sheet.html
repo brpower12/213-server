@@ -1653,6 +1653,162 @@ nav button.active::after{
   }
 }
 
+
+/* ============================================================
+   모바일 순위 필터 최종 보정
+   - 서버·연맹·파벌·유저: 항상 한 줄 4칸
+   - 전체·Top10~Top50: 항상 한 줄 6칸
+   - 280px CSS viewport까지 글자 줄바꿈/카드 이탈 방지
+   ============================================================ */
+@media(max-width:640px){
+  #view-rank{
+    width:100%;
+    min-width:0;
+    overflow-x:hidden;
+  }
+
+  #view-rank .toolbar{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr);
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    box-sizing:border-box;
+    padding:12px 10px;
+    gap:10px;
+    overflow:hidden;
+  }
+
+  #view-rank .toolbar > .segwrap{
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    box-sizing:border-box;
+    overflow:hidden;
+  }
+
+  #view-rank .toolbar .seg{
+    display:grid!important;
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    padding:3px;
+    gap:0;
+    overflow:hidden;
+    box-sizing:border-box;
+  }
+
+  #view-rank #rankSeg{
+    grid-template-columns:repeat(4,minmax(0,1fr));
+  }
+
+  #view-rank #rankTopSeg{
+    grid-template-columns:repeat(6,minmax(0,1fr));
+  }
+
+  #view-rank .seg button{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    min-width:0!important;
+    max-width:100%;
+    box-sizing:border-box;
+    padding:7px 2px;
+    border-width:1px;
+    font-size:clamp(.62rem,2.7vw,.74rem);
+    line-height:1.15;
+    letter-spacing:-.035em;
+    white-space:nowrap!important;
+    word-break:keep-all;
+    overflow:hidden;
+    text-overflow:clip;
+  }
+
+  #view-rank #rankTopSeg button{
+    padding-left:1px;
+    padding-right:1px;
+    font-size:clamp(.58rem,2.45vw,.69rem);
+  }
+
+  #view-rank .toolbar > .segwrap:nth-of-type(3){
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+
+  #view-rank .toolbar > .segwrap:nth-of-type(3) .btn{
+    width:min(116px,100%);
+    min-width:0;
+    margin:0 auto;
+    box-sizing:border-box;
+  }
+
+  #view-rank .rank-search-row{
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    gap:7px;
+    margin-top:0;
+    padding-top:10px;
+    box-sizing:border-box;
+  }
+
+  #view-rank .rank-search-wrap,
+  #view-rank .rank-search-wrap input{
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    box-sizing:border-box;
+  }
+
+  #view-rank .rank-result-count{
+    width:100%;
+    text-align:center;
+    white-space:normal;
+  }
+}
+
+/* 폴더블 커버 화면 및 소형 기기 추가 보정 */
+@media(max-width:360px){
+  #view-rank .toolbar{
+    padding-left:8px;
+    padding-right:8px;
+  }
+
+  #view-rank .seg button{
+    padding-left:1px;
+    padding-right:1px;
+    font-size:.64rem;
+  }
+
+  #view-rank #rankTopSeg button{
+    font-size:.59rem;
+    letter-spacing:-.05em;
+  }
+}
+
+@media(max-width:300px){
+  #view-rank .toolbar{
+    padding-left:6px;
+    padding-right:6px;
+  }
+
+  #view-rank .seglb{
+    font-size:.77rem;
+  }
+
+  #view-rank .seg button{
+    font-size:.59rem;
+  }
+
+  #view-rank #rankTopSeg button{
+    font-size:.54rem;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1732,7 +1888,7 @@ nav button.active::after{
   <button data-view="rank" onclick="switchView('rank')">🏆 순위</button>
   <button data-view="entry" onclick="switchView('entry')">✏️ 입력</button>
   <button data-view="subs" onclick="switchView('subs')">📥 제출<span class="badge" id="subBadge" style="display:none">0</span></button>
-  <button data-view="manage" onclick="switchView('manage')">🗂 관리</button>
+  <button data-view="manage" onclick="switchView('manage')">🛠️ 관리</button>
   <button data-view="history" onclick="switchView('history')">🕘 이력</button>
 </nav>
 
@@ -1924,7 +2080,7 @@ nav button.active::after{
   </div>
   <div class="manage-section active" data-manage-section="servers">
     <div class="panel" style="margin-bottom:14px">
-      <h2>🗂 서버·연맹 관리</h2>
+      <h2>🛠️ 서버·연맹 관리</h2>
       <div class="row">
         <input id="newServerName" placeholder="서버 번호 (예: 213)" style="width:150px" onkeydown="if(event.key==='Enter')addServer()">
         <button class="btn primary" onclick="addServer()">＋ 서버 추가</button>
@@ -2075,7 +2231,7 @@ let sb=null, servers=[], alliances=[], factions=[], factionServers=[], mode='ser
 let entryRows=[], rankCache=null, lastCmp=null, cmpShowAll=false, editorPerms=null, adminPin=null;
 let editorRole='operator', programAdminName='관리자', roleSystemReady=false;
 let subFilter='pending', subCache=[], historyCache=[], manageSection='servers', historySearchTimer=null, historyRequestSeq=0;
-const TABS=[['compare','📊 전력 비교'],['rank','🏆 순위'],['entry','✏️ 입력'],['subs','📥 제출'],['manage','🗂 관리'],['history','🕘 이력']];
+const TABS=[['compare','📊 전력 비교'],['rank','🏆 순위'],['entry','✏️ 입력'],['subs','📥 제출'],['manage','🛠️ 관리'],['history','🕘 이력']];
 const $=id=>document.getElementById(id);
 const BASIS_LABEL=['1편대','1~2편대','1~3편대','1~4편대'];
 const BANDS=[['1G 미만',0,1000],['1G대',1000,2000],['2G대',2000,3000],['3G대',3000,4000],['4G대',4000,5000],['5G대',5000,6000],['6~9G대',6000,10000],['10~14G대',10000,15000],['15~19G대',15000,20000],['20~29G대',20000,30000],['30~49G대',30000,50000],['50G+',50000,1e15]];
@@ -2596,7 +2752,7 @@ function fillPickers(){
   const ph=mode==='server'?'서버 입력 (예: 213)':mode==='alliance'?'연맹 입력 (예: NXT / AST)':'파벌 입력';
   $('pickA').placeholder=ph; $('pickB').placeholder=ph;
   if(mode==='server'){ const k=[...pickMap.keys()].find(x=>x.indexOf('213 ')===0); if(k) $('pickA').value=k; }
-  if(mode==='faction'&&!factions.length){ $('compareResult').innerHTML='<div class="empty">아직 파벌이 없습니다. 🗂 관리 탭에서 파벌을 만들고 서버를 넣어주세요.</div>'; }
+  if(mode==='faction'&&!factions.length){ $('compareResult').innerHTML='<div class="empty">아직 파벌이 없습니다. 🛠️ 관리 탭에서 파벌을 만들고 서버를 넣어주세요.</div>'; }
   updateCompareLabels(); updateCompareCardMeta();
 }
 function resolvePick(id){
@@ -2911,7 +3067,7 @@ function renderRank(){
   const {members,recs}=rankCache;
   if(rankMode==='user'){ renderUserRank(members,recs); return; }
   updateRankStamp(recs);
-  if(rankMode==='faction'&&!factions.length){ $('rankBox').innerHTML='<div class="empty">아직 파벌이 없습니다. 🗂 관리 탭에서 만들어주세요.</div>'; return; }
+  if(rankMode==='faction'&&!factions.length){ $('rankBox').innerHTML='<div class="empty">아직 파벌이 없습니다. 🛠️ 관리 탭에서 만들어주세요.</div>'; return; }
   const groups=new Map();
   const s213=servers.find(s=>s.name==='213');
   const ensure=(key,name,sub,mine)=>{ if(!groups.has(key)) groups.set(key,{name,sub,mine,total:0,list:[]}); return groups.get(key); };
