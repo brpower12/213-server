@@ -2662,7 +2662,7 @@ nav button.active::after{
 let sb=null, servers=[], alliances=[], factions=[], factionServers=[], mode='server', basis=1, topN=0, rankMode='server', rankTopN=0, entryIsOurs=true;
 let entryRows=[], rankCache=null, lastCmp=null, cmpShowAll=false, editorPerms=null, adminPin=null;
 let editorRole='operator', programAdminName='관리자', roleSystemReady=false;
-let deviceStatus='unknown', deviceLimit=Math.min(5,Math.max(1,Number(localStorage.getItem('deviceLimitHint'))||2)), deviceGuardTimer=null;
+let deviceStatus='unknown', deviceLimit=Math.min(5,Math.max(1,Number(localStorage.getItem('deviceLimitHint'))||2)), deviceGuardTimer=null, deviceHeartbeatTimer=null;
 let subFilter='pending', subCache=[], historyCache=[], manageSection='servers', historySearchTimer=null, historyRequestSeq=0;
 const TABS=[['compare','📊 전력 비교'],['rank','🏆 순위'],['entry','✏️ 입력'],['subs','📥 제출'],['manage','🛠️ 관리'],['history','🕘 이력']];
 const $=id=>document.getElementById(id);
@@ -3076,10 +3076,10 @@ async function enterApp(){
   $('editorName').textContent=getEditor()||'-';
   editorPerms=new Set(); applyPerms(); // 권한 확인 전엔 아무것도 안 보임
   if(!getEditor()) askEditor();
-  else sb.rpc('touch_device',{p_name:getEditor(),p_device_id:getDeviceId()});
   applyWatermark();
   await loadBase();
   await loadPerms();
+  if(deviceStatus==='approved') await touchCurrentDevice(true);
   startDeviceGuard();
   refreshSubBadge();
 
@@ -3094,8 +3094,28 @@ async function enterApp(){
   updateCompareCardMeta();
 }
 
+async function touchCurrentDevice(quiet=false){
+  const name=getEditor();
+  if(!sb||!name||deviceStatus!=='approved') return false;
+
+  const {data,error}=await sb.rpc('touch_device_v2',{
+    p_name:name,
+    p_device_id:getDeviceId()
+  });
+
+  if(error){
+    console.warn('touch_device_v2 failed:',error.message);
+    if(!quiet) toast('최근 접속 갱신 오류: '+error.message);
+    return false;
+  }
+
+  return data===true;
+}
+
 function startDeviceGuard(){
   if(deviceGuardTimer) clearInterval(deviceGuardTimer);
+  if(deviceHeartbeatTimer) clearInterval(deviceHeartbeatTimer);
+
   deviceGuardTimer=setInterval(async()=>{
     if(document.hidden||!getEditor()) return;
     const before=deviceStatus;
@@ -3104,12 +3124,21 @@ function startDeviceGuard(){
       toast('이 기기의 사용 권한이 변경되어 화면을 잠갔습니다');
     }
   },30000);
+
+  deviceHeartbeatTimer=setInterval(async()=>{
+    if(document.hidden||!getEditor()||deviceStatus!=='approved') return;
+    await touchCurrentDevice(true);
+  },60000);
 }
-window.addEventListener('focus',()=>{
-  if(getEditor()&&sb) loadPerms();
+window.addEventListener('focus',async()=>{
+  if(!getEditor()||!sb) return;
+  await loadPerms();
+  if(deviceStatus==='approved') await touchCurrentDevice(true);
 });
-document.addEventListener('visibilitychange',()=>{
-  if(!document.hidden&&getEditor()&&sb) loadPerms();
+document.addEventListener('visibilitychange',async()=>{
+  if(document.hidden||!getEditor()||!sb) return;
+  await loadPerms();
+  if(deviceStatus==='approved') await touchCurrentDevice(true);
 });
 
 function resetCompare(){
@@ -4401,6 +4430,8 @@ async function openDeviceManager(){
 
   const pin=await getAdminPinForDevices();
   if(pin===null) return;
+
+  await touchCurrentDevice(true);
 
   const {data,error}=await sb.rpc('admin_list_editor_devices_v2',{
     p_pin:pin,
