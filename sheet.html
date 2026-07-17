@@ -341,8 +341,8 @@ footer b{color:var(--muted)}
 
 /* ===== 입력표 최종 규칙 (우선순위 최상) ===== */
 .entry-table{border-collapse:separate!important;border-spacing:0!important}
-.entry-table th{position:sticky!important;top:0!important;z-index:60!important;background:#161D2B!important;text-align:center}
-.entry-table td{text-align:center;z-index:1}
+.entry-table thead th{position:sticky!important;top:0!important;z-index:60!important;background:#161D2B!important;text-align:center;box-shadow:0 1px 0 var(--line),0 8px 16px rgba(0,0,0,.16)}
+.entry-table tbody td{text-align:center;z-index:1}
 .entry-table input,.entry-table select{position:relative;z-index:2}
 .entry-table td.meta{text-align:center}
 .no4 .col4{display:none}
@@ -2206,6 +2206,12 @@ nav button.active::after{
   }
 }
 
+
+/* 입력 표 헤더 고정 겹침 보정 */
+#view-entry .entry-table thead{position:sticky;top:0;z-index:60}
+#view-entry .entry-table thead th:first-child{border-top-left-radius:10px}
+#view-entry .entry-table thead th:last-child{border-top-right-radius:10px}
+
 </style>
 </head>
 <body>
@@ -3856,8 +3862,9 @@ async function loadEntryTable(){
   m.data.sort((x,y)=>((+((recs.get(y.id)||{}).squad1))||0)-((+((recs.get(x.id)||{}).squad1))||0));
   entryRows=[];
   const tb=document.createElement('table'); tb.className='entry-table';
-  tb.innerHTML=`<tr><th>#</th><th>닉네임</th><th>병종</th><th>산업</th><th>1편대</th><th>2편대</th><th>3편대</th><th class="col4">4편대</th><th class="colblack">블머</th><th>킬수</th><th>합산</th><th>마지막 수정</th><th></th></tr>`;
-  m.data.forEach((mem,i)=>tb.appendChild(buildRow(mem,recs.get(mem.id),i+1)));
+  tb.innerHTML=`<thead><tr><th>#</th><th>닉네임</th><th>병종</th><th>산업</th><th>1편대</th><th>2편대</th><th>3편대</th><th class="col4">4편대</th><th class="colblack">블머</th><th>킬수</th><th>합산</th><th>마지막 수정</th><th></th></tr></thead><tbody></tbody>`;
+  const tbody=tb.tBodies[0];
+  m.data.forEach((mem,i)=>tbody.appendChild(buildRow(mem,recs.get(mem.id),i+1)));
   const svSel=servers.find(s=>s.id===entrySid());
   entryIsOurs=!!(svSel&&(svSel.name==='213'||svSel.note==='우리 서버'));
   tb.classList.toggle('noblack',!entryIsOurs);
