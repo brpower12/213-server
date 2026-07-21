@@ -2483,6 +2483,93 @@ nav button.active::after{
   .sub-audit-summary{grid-template-columns:1fr}
 }
 
+
+/* ============================================================
+   입력표 좌우 고정 열
+   - 닉네임은 가로 스크롤 중에도 항상 표시
+   - 이동/제외 버튼은 오른쪽에 항상 표시
+   ============================================================ */
+#view-entry .entry-table th:nth-child(1),
+#view-entry .entry-table td:nth-child(1){
+  position:sticky!important;
+  left:0!important;
+  width:38px;
+  min-width:38px;
+  max-width:38px;
+}
+#view-entry .entry-table th:nth-child(2),
+#view-entry .entry-table td:nth-child(2){
+  position:sticky!important;
+  left:38px!important;
+  min-width:122px;
+}
+#view-entry .entry-table th:last-child,
+#view-entry .entry-table td:last-child{
+  position:sticky!important;
+  right:0!important;
+  min-width:98px;
+}
+#view-entry .entry-table thead th:nth-child(1),
+#view-entry .entry-table thead th:nth-child(2),
+#view-entry .entry-table thead th:last-child{
+  z-index:85!important;
+  background:#161D2B!important;
+}
+#view-entry .entry-table tbody td:nth-child(1),
+#view-entry .entry-table tbody td:nth-child(2),
+#view-entry .entry-table tbody td:last-child{
+  z-index:12!important;
+  background:var(--bg)!important;
+}
+#view-entry .entry-table tbody tr.dirty td:nth-child(1),
+#view-entry .entry-table tbody tr.dirty td:nth-child(2),
+#view-entry .entry-table tbody tr.dirty td:last-child{
+  background:#1C1B12!important;
+}
+#view-entry .entry-table th:nth-child(2),
+#view-entry .entry-table td:nth-child(2){
+  box-shadow:7px 0 13px -10px rgba(0,0,0,.95);
+}
+#view-entry .entry-table th:last-child,
+#view-entry .entry-table td:last-child{
+  box-shadow:-7px 0 13px -10px rgba(0,0,0,.95);
+}
+#view-entry .entry-table td:last-child{
+  padding-left:8px;
+  padding-right:8px;
+}
+
+/* 제출명 자동 보정 표시 */
+.sub-match-note{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  margin-left:6px;
+  padding:2px 6px;
+  border:1px solid rgba(84,163,255,.26);
+  border-radius:999px;
+  color:#83bdff;
+  background:rgba(84,163,255,.055);
+  font-size:.64rem;
+  font-weight:800;
+  white-space:nowrap;
+}
+.sub-match-note.warn{
+  color:#f0cd72;
+  border-color:rgba(242,193,78,.26);
+  background:rgba(242,193,78,.055);
+}
+.sub-card .match-line{
+  margin-top:6px;
+  color:var(--muted);
+  font-size:.7rem;
+  line-height:1.45;
+}
+@media(max-width:640px){
+  .entry-select-group .btn{min-width:0}
+  .sub-match-note{margin-left:0;margin-top:4px}
+}
+
 </style>
 </head>
 <body>
@@ -2713,6 +2800,7 @@ nav button.active::after{
         <label class="entry-field-mini"><span>서버</span><input id="entryServer" placeholder="예: 213" autocomplete="off" style="width:150px"></label>
         <label class="entry-field-mini"><span>연맹</span><input id="entryAlliance" placeholder="예: NXT" autocomplete="off" style="width:150px"></label>
         <button class="btn" onclick="loadEntryTable()">불러오기</button>
+        <button class="btn" onclick="cleanupDuplicateMembers()">🧹 중복 정리</button>
       </div>
       <div class="entry-action-group">
         <button class="btn entry-add-btn" onclick="addMemberRows()"><span>＋ 인원 추가</span></button>
@@ -4551,6 +4639,83 @@ async function memModalRemove(){
   toast('제외했습니다');
 }
 
+
+/* ---------- 닉네임 중복 정리 ---------- */
+async function cleanupDuplicateMembers(){
+  const aid=entryAid();
+  if(!aid){
+    toast('서버와 연맹을 먼저 선택하세요');
+    return;
+  }
+
+  const {data:members,error}=await sb.from('members')
+    .select('id,nickname,is_active')
+    .eq('alliance_id',aid)
+    .eq('is_active',true)
+    .order('id');
+
+  if(error){toast(error.message);return;}
+
+  const groups=new Map();
+  (members||[]).forEach(member=>{
+    const key=normalizeIdentity(member.nickname);
+    if(!key) return;
+    if(!groups.has(key)) groups.set(key,[]);
+    groups.get(key).push(member);
+  });
+
+  const duplicates=[...groups.values()].filter(group=>group.length>1);
+  if(!duplicates.length){
+    toast('띄어쓰기·기호 차이로 중복된 인원이 없습니다');
+    return;
+  }
+
+  const allIds=duplicates.flatMap(group=>group.map(member=>member.id));
+  const latest=await fetchLatest(allIds);
+  const plans=duplicates.map(group=>{
+    const sorted=group.slice().sort((a,b)=>{
+      const ta=new Date((latest.get(a.id)||{}).recorded_at||0).getTime();
+      const tb=new Date((latest.get(b.id)||{}).recorded_at||0).getTime();
+      return (tb-ta)||(a.id-b.id);
+    });
+    return {primary:sorted[0],duplicates:sorted.slice(1),all:sorted};
+  });
+
+  const preview=plans.slice(0,10).map(plan=>
+    `• ${plan.all.map(member=>member.nickname).join(' / ')} → ${plan.primary.nickname}`
+  ).join('\n');
+  const more=plans.length>10?`\n외 ${plans.length-10}개 그룹`:'';
+
+  if(!confirm(
+    `띄어쓰기·기호 차이로 중복된 ${plans.length}개 그룹을 정리할까요?\n\n`+
+    `${preview}${more}\n\n`+
+    '가장 최근 기록이 있는 이름을 대표로 유지하고, 나머지 기록은 대표 인원에게 이동합니다.'
+  )) return;
+
+  let merged=0;
+  for(const plan of plans){
+    const duplicateIds=plan.duplicates.map(member=>member.id);
+    if(!duplicateIds.length) continue;
+
+    const move=await sb.from('power_records')
+      .update({member_id:plan.primary.id})
+      .in('member_id',duplicateIds);
+    if(move.error){toast('기록 이동 오류: '+move.error.message);return;}
+
+    const deactivate=await sb.from('members')
+      .update({is_active:false})
+      .in('id',duplicateIds);
+    if(deactivate.error){toast('중복 인원 정리 오류: '+deactivate.error.message);return;}
+
+    merged+=duplicateIds.length;
+  }
+
+  rankCache=null;
+  lastRaw=null;
+  await loadEntryTable();
+  toast(`✅ 중복 인원 ${merged}명을 정리했습니다`);
+}
+
 /* ---------- 제출 확인 ---------- */
 function get213Server(){
   return servers.find(s=>String(s.name||'').replace(/[^0-9]/g,'')==='213')
@@ -4643,8 +4808,102 @@ function onSubScopeChange(){
   updateSubScopeSummary();
   loadSubs();
 }
+function normalizeIdentity(value){
+  return String(value??'')
+    .normalize('NFKC')
+    .toLocaleLowerCase('ko')
+    .replace(/[\s\u200B-\u200D\uFEFF]+/g,'')
+    .replace(/[^\p{L}\p{N}]/gu,'');
+}
 function normalizeSubmitName(value){
-  return String(value||'').trim().replace(/\s+/g,' ').toLocaleLowerCase('ko');
+  return normalizeIdentity(value);
+}
+function identityDistance(a,b){
+  a=normalizeIdentity(a);
+  b=normalizeIdentity(b);
+  if(a===b) return 0;
+  if(!a.length) return b.length;
+  if(!b.length) return a.length;
+
+  const prev=Array.from({length:b.length+1},(_,i)=>i);
+  for(let i=1;i<=a.length;i++){
+    let left=i;
+    let diagonal=prev[0];
+    prev[0]=i;
+    for(let j=1;j<=b.length;j++){
+      const up=prev[j];
+      const cost=a[i-1]===b[j-1]?0:1;
+      const value=Math.min(up+1,left+1,diagonal+cost);
+      diagonal=up;
+      prev[j]=value;
+      left=value;
+    }
+  }
+  return prev[b.length];
+}
+function resolveSubmissionAlliance(value){
+  const key=normalizeIdentity(value);
+  const list=get213Alliances();
+  if(!key) return {alliance:null,kind:'none',distance:null};
+
+  const exact=list.filter(alliance=>normalizeIdentity(alliance.name)===key);
+  if(exact.length===1) return {alliance:exact[0],kind:'exact',distance:0};
+  if(exact.length>1) return {alliance:null,kind:'ambiguous',candidates:exact,distance:0};
+
+  if(key.length>=2){
+    const contained=list.filter(alliance=>{
+      const candidate=normalizeIdentity(alliance.name);
+      return candidate.length>=2&&(key.includes(candidate)||candidate.includes(key));
+    });
+    if(contained.length===1) return {alliance:contained[0],kind:'contained',distance:null};
+  }
+
+  const scored=list.map(alliance=>({
+    alliance,
+    distance:identityDistance(key,alliance.name)
+  })).sort((a,b)=>a.distance-b.distance);
+  const best=scored[0];
+  const next=scored[1];
+  const maxDistance=key.length<=4?1:key.length<=8?2:3;
+  if(best&&best.distance<=maxDistance&&(!next||next.distance>best.distance)){
+    return {alliance:best.alliance,kind:'fuzzy',distance:best.distance};
+  }
+
+  return {alliance:null,kind:'none',distance:null};
+}
+function resolveSubmissionMember(value,members){
+  const key=normalizeIdentity(value);
+  const keyed=(members||[]).map(member=>({member,key:normalizeIdentity(member.nickname)})).filter(row=>row.key);
+  if(!key) return {member:null,kind:'none',candidates:[]};
+
+  const exact=keyed.filter(row=>row.key===key);
+  if(exact.length===1) return {member:exact[0].member,kind:'exact',candidates:exact.map(row=>row.member)};
+  if(exact.length>1) return {member:null,kind:'duplicate',candidates:exact.map(row=>row.member)};
+
+  if(key.length>=3){
+    const contained=keyed.filter(row=>
+      row.key.length>=3&&(key.includes(row.key)||row.key.includes(key))
+    );
+    if(contained.length===1) return {member:contained[0].member,kind:'contained',candidates:[contained[0].member]};
+  }
+
+  const scored=keyed.map(row=>({
+    member:row.member,
+    distance:identityDistance(key,row.key)
+  })).sort((a,b)=>a.distance-b.distance);
+  const best=scored[0];
+  const next=scored[1];
+  const maxDistance=key.length<=4?1:key.length<=8?2:3;
+  if(best&&key.length>=3&&best.distance<=maxDistance&&(!next||next.distance>best.distance)){
+    return {member:best.member,kind:'fuzzy',distance:best.distance,candidates:[best.member]};
+  }
+
+  return {member:null,kind:scored.length?'none':'empty',candidates:[]};
+}
+function submissionMatchesSelectedAlliance(submission){
+  if(subAllianceFilter==='all') return true;
+  const resolved=resolveSubmissionAlliance(submission.alliance_name);
+  return !!(resolved.alliance&&normalizeIdentity(resolved.alliance.name)===normalizeIdentity(subAllianceFilter));
 }
 function submissionStatusLabel(status){
   return status==='applied'?'반영됨':status==='rejected'?'거절됨':'대기 중';
@@ -4653,34 +4912,47 @@ function renderSubAudit(){
   const members=subAuditMembers||[];
   const submissions=subCache||[];
   const latest=new Map();
+  const unresolved=[];
 
-  submissions.forEach(s=>{
-    const key=normalizeSubmitName(s.nickname);
-    if(key&&!latest.has(key)) latest.set(key,s);
+  submissions.forEach(submission=>{
+    const match=resolveSubmissionMember(submission.nickname,members);
+    if(!match.member){
+      unresolved.push({submission,match});
+      return;
+    }
+
+    const current=latest.get(match.member.id);
+    if(!current||new Date(submission.submitted_at)>new Date(current.submission.submitted_at)){
+      latest.set(match.member.id,{submission,match});
+    }
   });
 
-  const memberNames=new Set(members.map(m=>normalizeSubmitName(m.nickname)).filter(Boolean));
-  const rows=members.map(m=>{
-    const submission=latest.get(normalizeSubmitName(m.nickname))||null;
-    return {member:m,submission,submitted:!!submission};
+  const rows=members.map(member=>{
+    const matched=latest.get(member.id)||null;
+    return {
+      member,
+      submission:matched?.submission||null,
+      match:matched?.match||null,
+      submitted:!!matched
+    };
   }).sort((a,b)=>{
     if(a.submitted!==b.submitted) return a.submitted?1:-1;
     return String(a.member.nickname||'').localeCompare(String(b.member.nickname||''),'ko');
   });
 
-  const submittedCount=rows.filter(r=>r.submitted).length;
+  const submittedCount=rows.filter(row=>row.submitted).length;
   const missingCount=rows.length-submittedCount;
   if($('subAuditCount')) $('subAuditCount').textContent=`${submittedCount}/${rows.length}`;
 
-  const filtered=rows.filter(r=>
+  const filtered=rows.filter(row=>
     subAuditFilter==='all'
-      ||(subAuditFilter==='submitted'&&r.submitted)
-      ||(subAuditFilter==='missing'&&!r.submitted)
+      ||(subAuditFilter==='submitted'&&row.submitted)
+      ||(subAuditFilter==='missing'&&!row.submitted)
   );
 
   const alliance=subAllianceFilter==='all'?'연맹 미선택':subAllianceFilter;
   const dateLabel=formatSubDate(subDateFrom);
-  const rowHtml=filtered.map(({member,submission,submitted})=>{
+  const rowHtml=filtered.map(({member,submission,match,submitted})=>{
     if(!submitted){
       return `<div class="sub-audit-row missing">
         <div class="sub-audit-name">${esc(member.nickname)}</div>
@@ -4688,19 +4960,34 @@ function renderSubAudit(){
         <div class="sub-audit-meta">${dateLabel} 이후 제출 기록 없음</div>
       </div>`;
     }
+
     const status=submission.status||'pending';
+    const corrected=String(submission.nickname||'').trim()!==String(member.nickname||'').trim();
+    const nameNote=corrected
+      ?`<span class="sub-match-note ${match?.kind==='contained'||match?.kind==='fuzzy'?'warn':''}">입력명 ${esc(submission.nickname)} → ${esc(member.nickname)}</span>`
+      :'';
+    const allianceResolved=resolveSubmissionAlliance(submission.alliance_name);
+    const allianceNote=allianceResolved.alliance&&normalizeIdentity(submission.alliance_name)!==normalizeIdentity(allianceResolved.alliance.name)
+      ?`<span class="sub-match-note warn">연맹 ${esc(submission.alliance_name)} → ${esc(allianceResolved.alliance.name)}</span>`
+      :'';
     const detail=[fmtTime(submission.submitted_at),submission.squad1!=null?`1편대 ${fmtG(+submission.squad1)}`:null]
       .filter(Boolean).join(' · ');
+
     return `<div class="sub-audit-row submitted">
-      <div class="sub-audit-name">${esc(member.nickname)}</div>
+      <div class="sub-audit-name">${esc(member.nickname)} ${nameNote} ${allianceNote}</div>
       <span class="sub-audit-state ${esc(status)}">${submissionStatusLabel(status)}</span>
       <div class="sub-audit-meta">${esc(detail)}</div>
     </div>`;
   }).join('');
 
-  const orphans=submissions.filter(s=>!memberNames.has(normalizeSubmitName(s.nickname)));
-  const orphanHtml=orphans.length
-    ?`<div class="sub-audit-orphans"><b>⚠ 명단 외 제출 ${orphans.length}건</b><br>${orphans.map(s=>`${esc(s.nickname)} (${fmtTime(s.submitted_at)})`).join(' · ')}</div>`
+  const orphanHtml=unresolved.length
+    ?`<div class="sub-audit-orphans"><b>⚠ 자동 일치 실패 ${unresolved.length}건</b><br>${unresolved.map(({submission})=>{
+      const allianceResolved=resolveSubmissionAlliance(submission.alliance_name);
+      const allianceText=allianceResolved.alliance&&normalizeIdentity(submission.alliance_name)!==normalizeIdentity(allianceResolved.alliance.name)
+        ?` · ${esc(submission.alliance_name)}→${esc(allianceResolved.alliance.name)}`
+        :'';
+      return `${esc(submission.nickname)}${allianceText} (${fmtTime(submission.submitted_at)})`;
+    }).join(' · ')}</div>`
     :'';
 
   $('subList').innerHTML=`
@@ -4736,6 +5023,11 @@ function renderSubs(){
   const shown=subFilter==='pending'?pend:subFilter==='done'?done:all;
   const card=(s)=>{
     const isPend=s.status==='pending';
+    const allianceResolved=resolveSubmissionAlliance(s.alliance_name);
+    const officialAlliance=allianceResolved.alliance?.name||s.alliance_name;
+    const allianceCorrection=allianceResolved.alliance&&normalizeIdentity(s.alliance_name)!==normalizeIdentity(officialAlliance)
+      ?`<div class="match-line">연맹 자동 인식: <b>${esc(s.alliance_name)}</b> → <b>${esc(officialAlliance)}</b></div>`
+      :'';
     const vals=[['1편대',s.squad1],['2편대',s.squad2],['3편대',s.squad3],['4편대',s.squad4]]
       .filter(([,v])=>v!=null).map(([l,v])=>`<span class="vchip">${l} <b>${fmtG(+v)}</b></span>`)
       .concat(s.kills!=null?[`<span class="vchip">킬수 <b>${fmtKills(+s.kills)}</b></span>`]:[]).join('');
@@ -4747,7 +5039,8 @@ function renderSubs(){
         ${isPend?'':`<span class="st-tag ${s.status}">${s.status==='applied'?'반영됨':'거절됨'}${s.processed_by?' · '+esc(s.processed_by):''}</span>`}
         <span class="when">${fmtTime(s.submitted_at)}</span></div>
       <div class="vals">${vals||'값 없음'}</div>
-      ${isPend?`<div class="acts"><button class="btn sm ok" onclick="applySub(${s.id})">✓ 반영</button><button class="btn sm danger" onclick="rejectSub(${s.id})">✕ 거절</button></div>`:''}
+      ${allianceCorrection}
+      ${isPend?`<div class="acts"><button class="btn sm ok" onclick="applySub(${s.id})">✓ 자동 반영</button><button class="btn sm" onclick="applySub(${s.id},true)">✎ 대상 지정</button><button class="btn sm danger" onclick="rejectSub(${s.id})">✕ 거절</button></div>`:''}
     </div>`;
   };
   const title=subFilter==='pending'?'대기 중':subFilter==='done'?'처리 완료':'전체 제출';
@@ -4790,50 +5083,172 @@ async function loadSubs(){
     .order('submitted_at',{ascending:false})
     .limit(1000);
 
-  if(subAllianceFilter!=='all') query=query.ilike('alliance_name',subAllianceFilter);
-
   const r=await query;
   if(r.error){
     $('subList').innerHTML='<div class="empty">오류: '+esc(r.error.message)+'</div>';
     return;
   }
 
-  subCache=r.data||[];
+  subCache=(r.data||[]).filter(submissionMatchesSelectedAlliance);
   if(subFilter==='audit') await loadSubAuditMembers();
   await refreshSubBadge();
   renderSubs();
 }
-async function applySub(id){
-  const editor=getEditor(); if(!editor){askEditor();return;}
-  const {data:s,error}=await sb.from('submissions').select('*').eq('id',id).single();
+async function applySub(id,manual=false){
+  const editor=getEditor();
+  if(!editor){askEditor();return;}
+
+  const {data:submission,error}=await sb.from('submissions').select('*').eq('id',id).single();
   if(error){toast(error.message);return;}
-  let sv=servers.find(x=>String(x.name||'').replace(/[^0-9]/g,'')==='213')||servers.find(x=>x.note==='우리 서버');
-  if(!sv){toast('213서버를 찾을 수 없습니다. 관리 탭에서 확인해주세요.');return;}
-  let al=alliances.find(a=>a.server_id===sv.id&&a.name.toLowerCase()===s.alliance_name.toLowerCase());
-  if(!al){
-    const ins=await sb.from('alliances').insert({server_id:sv.id,name:s.alliance_name}).select().single();
-    if(ins.error){toast('연맹 생성 실패: '+ins.error.message);return;}
-    al=ins.data; await loadBase();
-    toast(`'${s.alliance_name}' 연맹을 ${sv.name} 서버에 새로 만들었습니다`);
+
+  const server=get213Server();
+  if(!server){toast('213서버를 찾을 수 없습니다. 관리 탭에서 확인해주세요.');return;}
+
+  let allianceResolution=resolveSubmissionAlliance(submission.alliance_name);
+  let alliance=allianceResolution.alliance;
+
+  if(manual||!alliance){
+    const defaultName=alliance?.name||submission.alliance_name||'';
+    const selected=prompt(
+      '반영할 213서버 연맹명을 입력하세요.\n\n등록된 연맹명과 정확히 일치해야 합니다.',
+      defaultName
+    );
+    if(selected===null) return;
+    alliance=get213Alliances().find(item=>normalizeIdentity(item.name)===normalizeIdentity(selected));
+    if(!alliance){
+      toast('213서버에 등록된 연맹을 찾지 못했습니다. 관리 탭의 연맹명을 확인하세요.');
+      return;
+    }
+  }else if(allianceResolution.kind!=='exact'){
+    if(!confirm(
+      `제출 연맹 '${submission.alliance_name}'을(를) 등록된 '${alliance.name}' 연맹으로 인식했습니다.\n\n이 연맹에 반영할까요?`
+    )) return;
   }
-  let {data:found,error:e2}=await sb.from('members').select('*').eq('alliance_id',al.id).ilike('nickname',s.nickname).limit(1);
-  if(e2){toast(e2.message);return;}
-  let mid;
-  const meta={troop_type:s.troop_type||undefined,shelter:s.shelter||undefined,is_active:true};
-  Object.keys(meta).forEach(k=>meta[k]===undefined&&delete meta[k]);
-  if(found&&found.length){
-    mid=found[0].id;
-    if(Object.keys(meta).length){ const u=await sb.from('members').update(meta).eq('id',mid); if(u.error){toast(u.error.message);return;} }
+
+  const memberResult=await sb.from('members')
+    .select('*')
+    .eq('alliance_id',alliance.id)
+    .eq('is_active',true)
+    .order('id');
+  if(memberResult.error){toast(memberResult.error.message);return;}
+
+  let members=memberResult.data||[];
+  let memberMatch=resolveSubmissionMember(submission.nickname,members);
+  let member=null;
+
+  if(memberMatch.kind==='duplicate'){
+    const exactGroup=memberMatch.candidates||[];
+    const latest=await fetchLatest(exactGroup.map(item=>item.id));
+    const sorted=exactGroup.slice().sort((a,b)=>{
+      const ta=new Date((latest.get(a.id)||{}).recorded_at||0).getTime();
+      const tb=new Date((latest.get(b.id)||{}).recorded_at||0).getTime();
+      return (tb-ta)||(a.id-b.id);
+    });
+    const primary=sorted[0];
+    const duplicateIds=sorted.slice(1).map(item=>item.id);
+
+    if(!confirm(
+      `같은 인원으로 보이는 중복 닉네임이 있습니다.\n\n${sorted.map(item=>item.nickname).join(' / ')}\n\n`+
+      `'${primary.nickname}'을 대표 인원으로 유지하고 기록을 통합할까요?`
+    )) return;
+
+    if(duplicateIds.length){
+      const move=await sb.from('power_records').update({member_id:primary.id}).in('member_id',duplicateIds);
+      if(move.error){toast('기록 통합 오류: '+move.error.message);return;}
+      const deactivate=await sb.from('members').update({is_active:false}).in('id',duplicateIds);
+      if(deactivate.error){toast('중복 인원 정리 오류: '+deactivate.error.message);return;}
+    }
+    member=primary;
+  }else if(manual){
+    const defaultNickname=memberMatch.member?.nickname||submission.nickname||'';
+    const selectedNickname=prompt(
+      '반영할 공식 게임 닉네임을 입력하세요.\n\n기존 인원이 없으면 입력한 이름으로 새 인원을 만듭니다.',
+      defaultNickname
+    );
+    if(selectedNickname===null) return;
+
+    const exact=members.filter(item=>normalizeIdentity(item.nickname)===normalizeIdentity(selectedNickname));
+    if(exact.length===1){
+      member=exact[0];
+    }else if(exact.length>1){
+      toast('동일하게 인식되는 중복 인원이 있습니다. 입력 탭의 중복 정리를 먼저 실행하세요.');
+      return;
+    }else{
+      const create=await sb.from('members').insert({
+        alliance_id:alliance.id,
+        nickname:selectedNickname.trim(),
+        troop_type:submission.troop_type,
+        shelter:submission.shelter
+      }).select().single();
+      if(create.error){toast(create.error.message);return;}
+      member=create.data;
+    }
+  }else if(memberMatch.member){
+    member=memberMatch.member;
+    if(memberMatch.kind!=='exact'||String(submission.nickname||'').trim()!==String(member.nickname||'').trim()){
+      if(!confirm(
+        `제출 닉네임 '${submission.nickname}'을(를) 기존 인원 '${member.nickname}'으로 인식했습니다.\n\n이 인원에게 반영할까요?`
+      )) return;
+    }
   }else{
-    const ins=await sb.from('members').insert({alliance_id:al.id,nickname:s.nickname,troop_type:s.troop_type,shelter:s.shelter}).select().single();
-    if(ins.error){toast(ins.error.message);return;}
-    mid=ins.data.id;
+    const officialName=prompt(
+      `연맹 '${alliance.name}'에서 '${submission.nickname}'과 일치하는 인원을 찾지 못했습니다.\n\n`+
+      '새 인원으로 만들 공식 게임 닉네임을 입력하세요.',
+      submission.nickname||''
+    );
+    if(officialName===null||!officialName.trim()) return;
+
+    const retry=members.filter(item=>normalizeIdentity(item.nickname)===normalizeIdentity(officialName));
+    if(retry.length===1){
+      member=retry[0];
+    }else if(retry.length>1){
+      toast('동일하게 인식되는 중복 인원이 있습니다. 입력 탭의 중복 정리를 먼저 실행하세요.');
+      return;
+    }else{
+      const create=await sb.from('members').insert({
+        alliance_id:alliance.id,
+        nickname:officialName.trim(),
+        troop_type:submission.troop_type,
+        shelter:submission.shelter
+      }).select().single();
+      if(create.error){toast(create.error.message);return;}
+      member=create.data;
+    }
   }
-  const rec=await sb.from('power_records').insert({member_id:mid,squad1:s.squad1,squad2:s.squad2,squad3:s.squad3,squad4:s.squad4,kills:s.kills,editor:s.nickname+'(셀프제출)'});
-  if(rec.error){toast(rec.error.message);return;}
-  await sb.from('submissions').update({status:'applied',processed_by:editor,processed_at:new Date().toISOString()}).eq('id',id);
-  rankCache=null; lastRaw=null;
-  toast(`✅ ${s.nickname} 제출을 반영했습니다`); loadSubs();
+
+  const meta={
+    troop_type:submission.troop_type||undefined,
+    shelter:submission.shelter||undefined,
+    is_active:true
+  };
+  Object.keys(meta).forEach(key=>meta[key]===undefined&&delete meta[key]);
+  if(Object.keys(meta).length){
+    const update=await sb.from('members').update(meta).eq('id',member.id);
+    if(update.error){toast(update.error.message);return;}
+  }
+
+  const record=await sb.from('power_records').insert({
+    member_id:member.id,
+    squad1:submission.squad1,
+    squad2:submission.squad2,
+    squad3:submission.squad3,
+    squad4:submission.squad4,
+    kills:submission.kills,
+    editor:submission.nickname+'(셀프제출)'
+  });
+  if(record.error){toast(record.error.message);return;}
+
+  const processed=await sb.from('submissions').update({
+    status:'applied',
+    processed_by:editor,
+    processed_at:new Date().toISOString()
+  }).eq('id',id);
+  if(processed.error){toast(processed.error.message);return;}
+
+  rankCache=null;
+  lastRaw=null;
+  toast(`✅ ${submission.nickname} → ${member.nickname} 반영 완료`);
+  loadSubs();
 }
 async function rejectSub(id){
   const editor=getEditor(); if(!editor){askEditor();return;}
