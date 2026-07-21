@@ -2212,6 +2212,277 @@ nav button.active::after{
 #view-entry .entry-table thead th:first-child{border-top-left-radius:10px}
 #view-entry .entry-table thead th:last-child{border-top-right-radius:10px}
 
+
+/* ============================================================
+   제출 탭: 213서버 연맹별·기준일별 제출 현황
+   ============================================================ */
+.sub-scopebar{
+  display:grid;
+  grid-template-columns:minmax(150px,220px) minmax(145px,180px) auto minmax(180px,1fr);
+  align-items:end;
+  gap:9px;
+  margin-top:11px;
+  padding-top:11px;
+  border-top:1px solid rgba(255,255,255,.055);
+}
+.sub-scope-field{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  min-width:0;
+}
+.sub-scope-field>span{
+  color:var(--muted);
+  font-size:.7rem;
+  font-weight:850;
+}
+.sub-scope-field select,
+.sub-scope-field input{
+  width:100%;
+  min-width:0;
+  height:39px;
+  box-sizing:border-box;
+}
+.sub-scope-field input[type="date"]{
+  color-scheme:dark;
+  text-align:left;
+}
+.sub-audit-seg{
+  align-self:end;
+}
+.sub-scope-summary{
+  align-self:center;
+  justify-self:end;
+  color:var(--dim);
+  font-size:.72rem;
+  text-align:right;
+  line-height:1.4;
+}
+.sub-audit-summary{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:9px;
+  margin:7px 0 12px;
+}
+.sub-audit-stat{
+  padding:12px 13px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:linear-gradient(180deg,rgba(255,255,255,.018),transparent),#151c29;
+}
+.sub-audit-stat span{
+  display:block;
+  color:var(--muted);
+  font-size:.7rem;
+  font-weight:800;
+}
+.sub-audit-stat b{
+  display:block;
+  margin-top:4px;
+  font-size:1.18rem;
+  font-variant-numeric:tabular-nums;
+}
+.sub-audit-stat.submitted b{color:var(--green)}
+.sub-audit-stat.missing b{color:var(--red)}
+.sub-audit-list{
+  overflow:hidden;
+  border:1px solid var(--line);
+  border-radius:13px;
+  background:#141b28;
+}
+.sub-audit-row{
+  display:grid;
+  grid-template-columns:minmax(150px,1fr) minmax(115px,.55fr) minmax(180px,.85fr);
+  align-items:center;
+  gap:10px;
+  padding:11px 13px;
+  border-top:1px solid rgba(255,255,255,.045);
+}
+.sub-audit-row:first-child{border-top:0}
+.sub-audit-row.missing{background:rgba(255,107,107,.025)}
+.sub-audit-name{
+  min-width:0;
+  font-weight:850;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.sub-audit-state{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:max-content;
+  min-width:70px;
+  padding:4px 8px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  font-size:.69rem;
+  font-weight:850;
+  white-space:nowrap;
+}
+.sub-audit-state.pending{color:var(--gold);border-color:rgba(242,193,78,.28);background:rgba(242,193,78,.06)}
+.sub-audit-state.applied{color:var(--green);border-color:rgba(61,220,151,.26);background:rgba(61,220,151,.05)}
+.sub-audit-state.rejected{color:#ff8b8b;border-color:rgba(255,107,107,.27);background:rgba(255,107,107,.05)}
+.sub-audit-state.missing{color:var(--red);border-color:rgba(255,107,107,.27);background:rgba(255,107,107,.05)}
+.sub-audit-meta{
+  color:var(--muted);
+  font-size:.73rem;
+  text-align:right;
+  line-height:1.4;
+}
+.sub-audit-orphans{
+  margin-top:10px;
+  padding:10px 12px;
+  border:1px solid rgba(242,193,78,.20);
+  border-radius:11px;
+  color:#c9ad65;
+  background:rgba(242,193,78,.04);
+  font-size:.73rem;
+  line-height:1.5;
+}
+.sub-audit-orphans b{color:#f0cd72}
+
+/* ============================================================
+   모바일 상단 로고/제목 겹침 방지
+   ============================================================ */
+@media(max-width:640px){
+  header{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    align-items:start!important;
+    gap:7px!important;
+  }
+  .header-brand-row{
+    width:100%;
+    min-width:0;
+    max-width:100%;
+    overflow:hidden;
+  }
+  .header-brand-row .brand{
+    display:grid!important;
+    grid-template-columns:31px minmax(0,1fr);
+    align-items:center;
+    width:100%;
+    min-width:0;
+    max-width:100%;
+    gap:7px!important;
+    overflow:hidden;
+  }
+  .header-brand-row .brand>img{
+    display:block;
+    width:31px!important;
+    height:36px!important;
+    min-width:31px!important;
+    max-width:31px!important;
+    object-fit:contain;
+    flex:none!important;
+  }
+  .brand-copy{
+    min-width:0;
+    max-width:100%;
+    overflow:hidden;
+  }
+  .brand h1{
+    display:flex!important;
+    align-items:baseline!important;
+    flex-wrap:nowrap!important;
+    min-width:0;
+    max-width:100%;
+    margin:0!important;
+    font-size:1rem!important;
+    line-height:1.1!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+  }
+  .brand-gold{
+    position:static!important;
+    display:inline-block!important;
+    flex:0 0 auto!important;
+    transform:none!important;
+    font-size:1em!important;
+    line-height:inherit!important;
+    white-space:nowrap!important;
+  }
+  .brand-white{
+    position:static!important;
+    display:inline-block!important;
+    min-width:0!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+    transform:none!important;
+  }
+  .brand-copy>span{
+    display:block;
+    width:100%;
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .editor-chip{
+    width:max-content;
+    max-width:100%;
+    min-width:0;
+    justify-self:start;
+    overflow:hidden;
+  }
+  #view-subs #subFilterSeg{
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    width:100%;
+    margin-right:0;
+  }
+  #view-subs #subFilterSeg button{
+    min-width:0;
+    padding-left:3px;
+    padding-right:3px;
+    font-size:clamp(.62rem,2.65vw,.72rem);
+    white-space:nowrap;
+  }
+  #view-subs .sub-filterbar{align-items:stretch}
+  #view-subs .sub-filterbar>.btn{width:max-content}
+  .sub-scopebar{
+    grid-template-columns:minmax(0,1fr) minmax(126px,.82fr);
+    align-items:end;
+    gap:7px;
+  }
+  .sub-audit-seg{
+    grid-column:1 / -1;
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    width:100%;
+  }
+  .sub-audit-seg[style*="display:none"],
+  .sub-audit-seg[style*="display: none"]{display:none!important}
+  .sub-audit-seg button{min-width:0;padding-left:5px;padding-right:5px}
+  .sub-scope-summary{
+    grid-column:1 / -1;
+    justify-self:start;
+    text-align:left;
+  }
+  .sub-audit-summary{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  .sub-audit-stat{padding:9px 8px}
+  .sub-audit-stat b{font-size:1rem}
+  .sub-audit-row{
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:7px;
+    padding:10px 11px;
+  }
+  .sub-audit-meta{
+    grid-column:1 / -1;
+    text-align:left;
+  }
+}
+@media(max-width:340px){
+  .header-brand-row .brand{grid-template-columns:28px minmax(0,1fr)}
+  .header-brand-row .brand>img{width:28px!important;height:33px!important;min-width:28px!important;max-width:28px!important}
+  .brand h1{font-size:.93rem!important;gap:3px!important}
+  .brand-copy>span{font-size:.61rem!important}
+  .sub-scopebar{grid-template-columns:1fr}
+  .sub-audit-summary{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
@@ -2474,9 +2745,20 @@ nav button.active::after{
         <button class="active" data-sub="pending" onclick="setSubFilter('pending')">대기 중 <span class="sub-filter-count" id="subPendingCount">0</span></button>
         <button data-sub="done" onclick="setSubFilter('done')">처리 완료 <span class="sub-filter-count" id="subDoneCount">0</span></button>
         <button data-sub="all" onclick="setSubFilter('all')">전체 <span class="sub-filter-count" id="subAllCount">0</span></button>
+        <button data-sub="audit" onclick="setSubFilter('audit')">제출 현황 <span class="sub-filter-count" id="subAuditCount">0/0</span></button>
       </div>
       <button class="btn sm" onclick="loadSubs()">↻ 새로고침</button>
-      <span class="hint">✓ 반영하면 해당 인원의 최신 기록으로 저장됩니다.</span>
+      <span class="hint">✓ 213서버 제출만 표시하며, 반영하면 해당 인원의 최신 기록으로 저장됩니다.</span>
+    </div>
+    <div class="sub-scopebar">
+      <label class="sub-scope-field"><span>연맹</span><select id="subAllianceFilter" onchange="onSubScopeChange()"><option value="all">전체 연맹</option></select></label>
+      <label class="sub-scope-field"><span>기준일</span><input id="subDateFrom" type="date" value="2026-07-20" onchange="onSubScopeChange()"></label>
+      <div class="seg sub-audit-seg" id="subAuditSeg" style="display:none">
+        <button class="active" data-audit="all" onclick="setSubAuditFilter('all')">전체</button>
+        <button data-audit="submitted" onclick="setSubAuditFilter('submitted')">제출</button>
+        <button data-audit="missing" onclick="setSubAuditFilter('missing')">미제출</button>
+      </div>
+      <span class="sub-scope-summary" id="subScopeSummary">213서버 · 2026.07.20 이후</span>
     </div>
   </div>
   <div id="subList"><div class="empty">불러오는 중...</div></div>
@@ -2663,7 +2945,7 @@ let sb=null, servers=[], alliances=[], factions=[], factionServers=[], mode='ser
 let entryRows=[], rankCache=null, lastCmp=null, cmpShowAll=false, editorPerms=null, adminPin=null;
 let editorRole='operator', programAdminName='관리자', roleSystemReady=false;
 let deviceStatus='unknown', deviceLimit=Math.min(5,Math.max(1,Number(localStorage.getItem('deviceLimitHint'))||2)), deviceGuardTimer=null, deviceHeartbeatTimer=null;
-let subFilter='pending', subCache=[], historyCache=[], manageSection='servers', historySearchTimer=null, historyRequestSeq=0;
+let subFilter='pending', subCache=[], subAllianceFilter='all', subDateFrom=(localStorage.getItem('sub_date_from')||'2026-07-20'), subAuditFilter='all', subAuditMembers=[], historyCache=[], manageSection='servers', historySearchTimer=null, historyRequestSeq=0;
 const TABS=[['compare','📊 전력 비교'],['rank','🏆 순위'],['entry','✏️ 입력'],['subs','📥 제출'],['manage','🛠️ 관리'],['history','🕘 이력']];
 const $=id=>document.getElementById(id);
 const BASIS_LABEL=['1편대','1~2편대','1~3편대','1~4편대'];
@@ -3196,7 +3478,7 @@ async function loadBase(){
   ]);
   if(s.error||a.error||f.error||fs.error){ toast('데이터 로딩 실패: '+(s.error||a.error||f.error||fs.error).message); return; }
   servers=s.data; alliances=a.data; factions=f.data; factionServers=fs.data;
-  fillPickers(); fillEntrySelectors(); fillHistFilter(); renderManage();
+  fillPickers(); fillEntrySelectors(); fillHistFilter(); populateSubAllianceFilter(); renderManage();
 }
 function factionServerIds(fid){ return factionServers.filter(x=>x.faction_id===fid).map(x=>x.server_id); }
 function factionLabel(f){
@@ -4065,7 +4347,7 @@ async function addMemberRows(){
   }
 
   const body=tb.tBodies[0]||tb;
-  const anchor=body.rows&&body.rows.length>1?body.rows[1]:null;
+  const anchor=body.firstElementChild;
   const fragment=document.createDocumentFragment();
   newRows.forEach(tr=>fragment.appendChild(tr));
 
@@ -4270,14 +4552,166 @@ async function memModalRemove(){
 }
 
 /* ---------- 제출 확인 ---------- */
+function get213Server(){
+  return servers.find(s=>String(s.name||'').replace(/[^0-9]/g,'')==='213')
+    ||servers.find(s=>s.note==='우리 서버')
+    ||null;
+}
+function get213Alliances(){
+  const sv=get213Server();
+  if(!sv) return [];
+  return alliances
+    .filter(a=>a.server_id===sv.id)
+    .slice()
+    .sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'ko'));
+}
+function populateSubAllianceFilter(){
+  const select=$('subAllianceFilter');
+  const dateInput=$('subDateFrom');
+  if(!select) return;
+
+  const current=select.value||subAllianceFilter||'all';
+  const list=get213Alliances();
+  select.replaceChildren(new Option('전체 연맹','all'));
+  list.forEach(a=>select.add(new Option(a.name,a.name)));
+
+  if([...select.options].some(o=>o.value===current)) select.value=current;
+  else select.value='all';
+
+  subAllianceFilter=select.value;
+  if(dateInput){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(subDateFrom)) subDateFrom='2026-07-20';
+    dateInput.value=subDateFrom;
+  }
+  updateSubScopeSummary();
+}
+function ensureSubAuditAlliance(){
+  const select=$('subAllianceFilter');
+  if(!select) return null;
+  if(select.value==='all'){
+    const options=[...select.options].filter(o=>o.value!=='all');
+    const preferred=options.find(o=>o.value.toUpperCase()==='NXT')||options[0];
+    if(preferred) select.value=preferred.value;
+  }
+  subAllianceFilter=select.value;
+  return subAllianceFilter==='all'?null:subAllianceFilter;
+}
+function getSubDateStart(){
+  const input=$('subDateFrom');
+  let value=(input?.value||subDateFrom||'2026-07-20').trim();
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(value)) value='2026-07-20';
+  subDateFrom=value;
+  if(input) input.value=value;
+  localStorage.setItem('sub_date_from',value);
+  return value;
+}
+function formatSubDate(value){
+  const m=String(value||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return m?`${m[1]}.${m[2]}.${m[3]}`:value;
+}
+function updateSubScopeSummary(){
+  const el=$('subScopeSummary');
+  if(!el) return;
+  const alliance=subAllianceFilter==='all'?'전체 연맹':subAllianceFilter;
+  el.textContent=`213서버 · ${alliance} · ${formatSubDate(getSubDateStart())} 이후 제출`;
+}
 async function refreshSubBadge(){
-  const r=await sb.from('submissions').select('id',{count:'exact',head:true}).eq('status','pending');
-  if(!r.error){ const n=r.count||0; $('subBadge').style.display=n?'inline-block':'none'; $('subBadge').textContent=n; }
+  const r=await sb.from('submissions').select('id',{count:'exact',head:true}).eq('server_name','213').eq('status','pending');
+  if(!r.error){
+    const n=r.count||0;
+    $('subBadge').style.display=n?'inline-block':'none';
+    $('subBadge').textContent=n;
+  }
 }
 function setSubFilter(f){
   subFilter=f;
   document.querySelectorAll('#subFilterSeg button').forEach(b=>b.classList.toggle('active',b.dataset.sub===f));
+  const auditSeg=$('subAuditSeg');
+  if(auditSeg) auditSeg.style.display=f==='audit'?'inline-flex':'none';
+  if(f==='audit') ensureSubAuditAlliance();
+  loadSubs();
+}
+function setSubAuditFilter(f){
+  subAuditFilter=f;
+  document.querySelectorAll('#subAuditSeg button').forEach(b=>b.classList.toggle('active',b.dataset.audit===f));
   renderSubs();
+}
+function onSubScopeChange(){
+  subAllianceFilter=$('subAllianceFilter')?.value||'all';
+  getSubDateStart();
+  if(subFilter==='audit') ensureSubAuditAlliance();
+  updateSubScopeSummary();
+  loadSubs();
+}
+function normalizeSubmitName(value){
+  return String(value||'').trim().replace(/\s+/g,' ').toLocaleLowerCase('ko');
+}
+function submissionStatusLabel(status){
+  return status==='applied'?'반영됨':status==='rejected'?'거절됨':'대기 중';
+}
+function renderSubAudit(){
+  const members=subAuditMembers||[];
+  const submissions=subCache||[];
+  const latest=new Map();
+
+  submissions.forEach(s=>{
+    const key=normalizeSubmitName(s.nickname);
+    if(key&&!latest.has(key)) latest.set(key,s);
+  });
+
+  const memberNames=new Set(members.map(m=>normalizeSubmitName(m.nickname)).filter(Boolean));
+  const rows=members.map(m=>{
+    const submission=latest.get(normalizeSubmitName(m.nickname))||null;
+    return {member:m,submission,submitted:!!submission};
+  }).sort((a,b)=>{
+    if(a.submitted!==b.submitted) return a.submitted?1:-1;
+    return String(a.member.nickname||'').localeCompare(String(b.member.nickname||''),'ko');
+  });
+
+  const submittedCount=rows.filter(r=>r.submitted).length;
+  const missingCount=rows.length-submittedCount;
+  if($('subAuditCount')) $('subAuditCount').textContent=`${submittedCount}/${rows.length}`;
+
+  const filtered=rows.filter(r=>
+    subAuditFilter==='all'
+      ||(subAuditFilter==='submitted'&&r.submitted)
+      ||(subAuditFilter==='missing'&&!r.submitted)
+  );
+
+  const alliance=subAllianceFilter==='all'?'연맹 미선택':subAllianceFilter;
+  const dateLabel=formatSubDate(subDateFrom);
+  const rowHtml=filtered.map(({member,submission,submitted})=>{
+    if(!submitted){
+      return `<div class="sub-audit-row missing">
+        <div class="sub-audit-name">${esc(member.nickname)}</div>
+        <span class="sub-audit-state missing">미제출</span>
+        <div class="sub-audit-meta">${dateLabel} 이후 제출 기록 없음</div>
+      </div>`;
+    }
+    const status=submission.status||'pending';
+    const detail=[fmtTime(submission.submitted_at),submission.squad1!=null?`1편대 ${fmtG(+submission.squad1)}`:null]
+      .filter(Boolean).join(' · ');
+    return `<div class="sub-audit-row submitted">
+      <div class="sub-audit-name">${esc(member.nickname)}</div>
+      <span class="sub-audit-state ${esc(status)}">${submissionStatusLabel(status)}</span>
+      <div class="sub-audit-meta">${esc(detail)}</div>
+    </div>`;
+  }).join('');
+
+  const orphans=submissions.filter(s=>!memberNames.has(normalizeSubmitName(s.nickname)));
+  const orphanHtml=orphans.length
+    ?`<div class="sub-audit-orphans"><b>⚠ 명단 외 제출 ${orphans.length}건</b><br>${orphans.map(s=>`${esc(s.nickname)} (${fmtTime(s.submitted_at)})`).join(' · ')}</div>`
+    :'';
+
+  $('subList').innerHTML=`
+    <div class="sub-list-head"><h2>${esc(alliance)} 제출 현황</h2><span class="hint">${dateLabel} 이후 · 미제출 우선 표시</span></div>
+    <div class="sub-audit-summary">
+      <div class="sub-audit-stat"><span>전체 명단</span><b>${rows.length}명</b></div>
+      <div class="sub-audit-stat submitted"><span>제출</span><b>${submittedCount}명</b></div>
+      <div class="sub-audit-stat missing"><span>미제출</span><b>${missingCount}명</b></div>
+    </div>
+    ${filtered.length?`<div class="sub-audit-list">${rowHtml}</div>`:`<div class="empty">선택한 조건에 해당하는 인원이 없습니다</div>`}
+    ${orphanHtml}`;
 }
 function renderSubs(){
   const all=subCache||[];
@@ -4286,10 +4720,19 @@ function renderSubs(){
   if($('subPendingCount')) $('subPendingCount').textContent=pend.length;
   if($('subDoneCount')) $('subDoneCount').textContent=done.length;
   if($('subAllCount')) $('subAllCount').textContent=all.length;
-  if(!all.length){
-    $('subList').innerHTML='<div class="empty">아직 제출된 내용이 없습니다.<br>연맹원들에게 제출 페이지(…/submit.html) 링크를 공유하세요.</div>';
+
+  updateSubScopeSummary();
+
+  if(subFilter==='audit'){
+    renderSubAudit();
     return;
   }
+
+  if(!all.length){
+    $('subList').innerHTML='<div class="empty">선택한 연맹·기준일에 제출된 내용이 없습니다.<br>연맹원들에게 제출 페이지(…/submit.html) 링크를 공유하세요.</div>';
+    return;
+  }
+
   const shown=subFilter==='pending'?pend:subFilter==='done'?done:all;
   const card=(s)=>{
     const isPend=s.status==='pending';
@@ -4299,7 +4742,7 @@ function renderSubs(){
     const extra=[s.troop_type,s.shelter?'산업'+esc(s.shelter):null].filter(Boolean).join(' · ');
     const stale=isPend&&(Date.now()-new Date(s.submitted_at).getTime()>86400000);
     return `<div class="sub-card ${isPend?'pending':'done'}">
-      <div class="top"><b>${esc(s.nickname)}</b><span class="where">${esc(s.server_name)} · ${esc(s.alliance_name)}${extra?' · '+extra:''}</span>
+      <div class="top"><b>${esc(s.nickname)}</b><span class="where">213서버 · ${esc(s.alliance_name)}${extra?' · '+extra:''}</span>
         ${stale?'<span class="st-tag stale">24시간 경과</span>':''}
         ${isPend?'':`<span class="st-tag ${s.status}">${s.status==='applied'?'반영됨':'거절됨'}${s.processed_by?' · '+esc(s.processed_by):''}</span>`}
         <span class="when">${fmtTime(s.submitted_at)}</span></div>
@@ -4312,20 +4755,60 @@ function renderSubs(){
     ?`<div class="sub-list-head"><h2>${title}</h2><span class="hint">${shown.length}건</span></div>${shown.map(card).join('')}`
     :`<div class="empty">${title} 항목이 없습니다</div>`;
 }
+async function loadSubAuditMembers(){
+  subAuditMembers=[];
+  const allianceName=ensureSubAuditAlliance();
+  if(!allianceName) return;
+
+  const sv=get213Server();
+  const alliance=sv&&alliances.find(a=>a.server_id===sv.id&&String(a.name).toLocaleLowerCase('ko')===String(allianceName).toLocaleLowerCase('ko'));
+  if(!alliance){
+    $('subList').innerHTML='<div class="empty">213서버의 해당 연맹을 찾을 수 없습니다.</div>';
+    return;
+  }
+
+  const r=await sb.from('members').select('id,nickname,is_active').eq('alliance_id',alliance.id).eq('is_active',true).order('nickname');
+  if(r.error){
+    $('subList').innerHTML='<div class="empty">연맹원 명단 오류: '+esc(r.error.message)+'</div>';
+    return;
+  }
+  subAuditMembers=r.data||[];
+}
 async function loadSubs(){
+  populateSubAllianceFilter();
+  subAllianceFilter=$('subAllianceFilter')?.value||'all';
+  if(subFilter==='audit') ensureSubAuditAlliance();
+  const date=getSubDateStart();
+  updateSubScopeSummary();
+
   $('subList').innerHTML='<div class="empty">불러오는 중...</div>';
-  const r=await sb.from('submissions').select('*').order('submitted_at',{ascending:false}).limit(100);
-  if(r.error){$('subList').innerHTML='<div class="empty">오류: '+esc(r.error.message)+'</div>';return;}
+
+  let query=sb.from('submissions')
+    .select('*')
+    .eq('server_name','213')
+    .gte('submitted_at',date+'T00:00:00+09:00')
+    .order('submitted_at',{ascending:false})
+    .limit(1000);
+
+  if(subAllianceFilter!=='all') query=query.ilike('alliance_name',subAllianceFilter);
+
+  const r=await query;
+  if(r.error){
+    $('subList').innerHTML='<div class="empty">오류: '+esc(r.error.message)+'</div>';
+    return;
+  }
+
   subCache=r.data||[];
-  refreshSubBadge();
+  if(subFilter==='audit') await loadSubAuditMembers();
+  await refreshSubBadge();
   renderSubs();
 }
 async function applySub(id){
   const editor=getEditor(); if(!editor){askEditor();return;}
   const {data:s,error}=await sb.from('submissions').select('*').eq('id',id).single();
   if(error){toast(error.message);return;}
-  let sv=servers.find(x=>x.name===s.server_name)||servers.find(x=>x.note==='우리 서버');
-  if(!sv){toast('대상 서버를 찾을 수 없습니다. 관리 탭에서 확인해주세요.');return;}
+  let sv=servers.find(x=>String(x.name||'').replace(/[^0-9]/g,'')==='213')||servers.find(x=>x.note==='우리 서버');
+  if(!sv){toast('213서버를 찾을 수 없습니다. 관리 탭에서 확인해주세요.');return;}
   let al=alliances.find(a=>a.server_id===sv.id&&a.name.toLowerCase()===s.alliance_name.toLowerCase());
   if(!al){
     const ins=await sb.from('alliances').insert({server_id:sv.id,name:s.alliance_name}).select().single();
