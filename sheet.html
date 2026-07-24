@@ -2621,6 +2621,24 @@ nav button.active::after{
   .rank-band-presets{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
+
+/* ============================================================
+   유저 순위 1위 강조 및 동점 순위 표시 보정
+   ============================================================ */
+#rankBox .rank-table tbody tr.t1 td{
+  background:linear-gradient(180deg,rgba(242,193,78,.16),rgba(242,193,78,.075))!important;
+  border-bottom-color:rgba(242,193,78,.22)!important;
+}
+#rankBox .rank-table tbody tr.t1 td:first-child{
+  box-shadow:inset 4px 0 #f2c14e;
+}
+#rankBox .rank-table tbody tr.t1 td.selected-power{
+  background:linear-gradient(180deg,rgba(242,193,78,.22),rgba(84,163,255,.075))!important;
+}
+#rankBox .rank-table tbody tr.t1:hover td{
+  background:linear-gradient(180deg,rgba(242,193,78,.21),rgba(242,193,78,.10))!important;
+}
+
 </style>
 </head>
 <body>
@@ -4416,7 +4434,8 @@ function renderUserRank(members,recs){
     const s1=rec?(+rec.squad1||0):0;
     const recAt=rec&&rec.recorded_at?new Date(rec.recorded_at).getTime():Infinity;
     const sum4=basisPow(rec,4);
-    return {m,al,sv,s1,recAt,sum4,kills:rec?(+rec.kills||0):0,mine:sv&&sv.name==='213'};
+    const industry=Number.parseInt((String(m.shelter||'').match(/\d+/)||['0'])[0],10)||0;
+    return {m,al,sv,s1,recAt,sum4,industry,kills:rec?(+rec.kills||0):0,mine:sv&&sv.name==='213'};
   }).filter(r=>r.s1>0);
 
   if(rankBandServerId) rows=rows.filter(r=>r.sv&&String(r.sv.id)===String(rankBandServerId));
@@ -4430,9 +4449,23 @@ function renderUserRank(members,recs){
     return lower&&upper;
   });
 
-  if(rankBandSort==='asc') rows.sort((a,b)=>(a.bandPower-b.bandPower)||a.m.nickname.localeCompare(b.m.nickname,'ko'));
-  else if(rankBandSort==='name') rows.sort((a,b)=>a.m.nickname.localeCompare(b.m.nickname,'ko'));
-  else rows.sort((a,b)=>(b.bandPower-a.bandPower)||(a.recAt-b.recAt)||a.m.nickname.localeCompare(b.m.nickname,'ko'));
+  const tieBreak=(a,b)=>{
+    // 같은 전투력이면 산업 레벨이 높은 인원을 우선한다.
+    if(b.industry!==a.industry) return b.industry-a.industry;
+    // 산업 레벨도 같으면 킬수가 높은 인원을 우선한다.
+    if(b.kills!==a.kills) return b.kills-a.kills;
+    // 그래도 같으면 반대 기준 전투력으로 한 번 더 정렬한다.
+    const secondaryA=rankBandBasis==='sum4'?a.s1:a.sum4;
+    const secondaryB=rankBandBasis==='sum4'?b.s1:b.sum4;
+    if(secondaryB!==secondaryA) return secondaryB-secondaryA;
+    // 이후에는 최신 기록, 닉네임 순으로 안정적으로 정렬한다.
+    if(b.recAt!==a.recAt) return b.recAt-a.recAt;
+    return a.m.nickname.localeCompare(b.m.nickname,'ko');
+  };
+
+  if(rankBandSort==='asc') rows.sort((a,b)=>(a.bandPower-b.bandPower)||tieBreak(a,b));
+  else if(rankBandSort==='name') rows.sort((a,b)=>a.m.nickname.localeCompare(b.m.nickname,'ko')||tieBreak(a,b));
+  else rows.sort((a,b)=>(b.bandPower-a.bandPower)||tieBreak(a,b));
 
   const totalFiltered=rows.length;
   const shown=rankTopN>0?rows.slice(0,rankTopN):rows;
@@ -4445,8 +4478,7 @@ function renderUserRank(members,recs){
   const summary=$('rankBandResultSummary');
   if(summary) summary.textContent=`선별 ${totalFiltered}명${rankTopN>0&&totalFiltered>rankTopN?` · 화면 ${shown.length}명`:''}`;
 
-  let prev=null,rank=0;
-  shown.forEach((r,i)=>{ if(r.bandPower!==prev){rank=i+1;prev=r.bandPower;} r.rank=rank; });
+  shown.forEach((r,i)=>{ r.rank=i+1; });
   const medal=r=>r===1?'🥇':r===2?'🥈':r===3?'🥉':r;
   const fd=t=>{ if(!t||t===Infinity) return '-'; const d=new Date(t); return String(d.getFullYear()).slice(2)+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0'); };
 
