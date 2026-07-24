@@ -2570,6 +2570,57 @@ nav button.active::after{
   .sub-match-note{margin-left:0;margin-top:4px}
 }
 
+
+/* ============================================================
+   순위 탭 전투력 구간 선별
+   ============================================================ */
+.rank-band-panel{margin-bottom:12px;padding:16px 18px}
+.rank-band-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px}
+.rank-band-head h3{margin:0 0 4px;font-size:1rem}
+.rank-band-head p{margin:0;color:var(--muted);font-size:.78rem;line-height:1.5}
+.rank-band-summary{flex:0 0 auto;padding:6px 10px;border:1px solid rgba(84,163,255,.24);border-radius:999px;color:#8fc3ff;background:rgba(84,163,255,.045);font-size:.74rem;font-weight:850;white-space:nowrap}
+.rank-band-grid{display:grid;grid-template-columns:1fr 1fr 1.05fr .9fr 1.05fr;gap:10px;align-items:end}
+.rank-band-grid label,.rank-band-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.rank-band-grid label>span,.rank-band-field>span{color:var(--muted);font-size:.72rem;font-weight:850}
+.rank-band-grid select{width:100%;min-width:0;padding:8px 10px}
+.rank-band-mini-seg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));padding:3px;border:1px solid var(--line);border-radius:10px;background:rgba(0,0,0,.12)}
+.rank-band-mini-seg button{min-width:0;padding:7px 8px;border:0;border-radius:7px;color:var(--muted);background:transparent;font-size:.76rem;font-weight:850;cursor:pointer}
+.rank-band-mini-seg button.active{color:#f7d77b;background:rgba(242,193,78,.10);box-shadow:inset 0 0 0 1px rgba(242,193,78,.26)}
+.rank-band-presets{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px;margin-top:12px}
+.rank-band-presets button{min-width:0;padding:8px 5px;border:1px solid var(--line);border-radius:9px;color:var(--muted);background:rgba(255,255,255,.015);font-size:.72rem;font-weight:800;white-space:nowrap;cursor:pointer}
+.rank-band-presets button.active{color:#f7d77b;border-color:rgba(242,193,78,.38);background:rgba(242,193,78,.075)}
+.rank-band-custom{display:none;align-items:center;gap:7px;margin-top:10px}
+.rank-band-custom.show{display:flex}
+.rank-band-custom input{width:150px;min-width:0;padding:8px 10px;text-align:center}
+.rank-band-custom>span{color:var(--dim);font-weight:900}
+.rank-band-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.05)}
+.rank-table .selected-power{background:rgba(84,163,255,.045)}
+.rank-table th.selected-power{color:#8fc3ff}
+@media(max-width:900px){
+  .rank-band-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .rank-band-field{grid-column:auto}
+  .rank-band-presets{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media(max-width:640px){
+  .rank-band-panel{padding:13px 11px}
+  .rank-band-head{display:block}
+  .rank-band-summary{display:inline-flex;margin-top:9px}
+  .rank-band-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .rank-band-grid label:nth-child(1),.rank-band-grid label:nth-child(2){grid-column:auto}
+  .rank-band-presets{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+  .rank-band-presets button{font-size:.66rem;padding-left:2px;padding-right:2px}
+  .rank-band-custom{display:none;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:5px}
+  .rank-band-custom.show{display:grid}
+  .rank-band-custom input{width:100%;box-sizing:border-box}
+  .rank-band-custom .btn{grid-column:1 / -1;width:100%}
+  .rank-band-actions .btn{flex:1 1 130px}
+  .rank-band-actions .hint{flex-basis:100%;text-align:center}
+}
+@media(max-width:340px){
+  .rank-band-grid{grid-template-columns:1fr}
+  .rank-band-presets{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
 </style>
 </head>
 <body>
@@ -2779,6 +2830,52 @@ nav button.active::after{
     <div class="rank-search-row" style="flex-basis:100%">
       <div class="rank-search-wrap"><input id="rankSearch" placeholder="닉네임·서버·연맹·파벌 검색" autocomplete="off" oninput="filterRankRows()"></div>
       <span class="rank-result-count" id="rankSearchCount">검색어 없이 전체 표시</span>
+    </div>
+  </div>
+  <div class="panel rank-band-panel" id="rankBandPanel" style="display:none">
+    <div class="rank-band-head">
+      <div>
+        <h3>🎯 전투력 구간 선별</h3>
+        <p>서버와 연맹을 선택한 뒤 전투력 구간별 인원 명단을 확인하고 복사합니다.</p>
+      </div>
+      <span class="rank-band-summary" id="rankBandResultSummary">선별 조건을 설정하세요</span>
+    </div>
+    <div class="rank-band-grid">
+      <label><span>서버</span><select id="rankBandServer" onchange="onRankBandServerChange()"></select></label>
+      <label><span>연맹</span><select id="rankBandAlliance" onchange="onRankBandAllianceChange()"></select></label>
+      <div class="rank-band-field"><span>기준</span>
+        <div class="rank-band-mini-seg" id="rankBandBasisSeg">
+          <button class="active" data-b="s1" onclick="setRankBandBasis('s1')">1편대</button>
+          <button data-b="sum4" onclick="setRankBandBasis('sum4')">합산</button>
+        </div>
+      </div>
+      <label><span>병종</span><select id="rankBandTroop" onchange="onRankBandTroopChange()">
+        <option value="">전체 병종</option><option value="슈터">슈터</option><option value="파이터">파이터</option><option value="라이더">라이더</option>
+      </select></label>
+      <label><span>정렬</span><select id="rankBandSort" onchange="onRankBandSortChange()">
+        <option value="desc">전투력 높은 순</option><option value="asc">전투력 낮은 순</option><option value="name">닉네임 순</option>
+      </select></label>
+    </div>
+    <div class="rank-band-presets" id="rankBandPresets">
+      <button class="active" data-band="all" onclick="setRankBandPreset('all')">전체</button>
+      <button data-band="lt1" onclick="setRankBandPreset('lt1')">1G 미만</button>
+      <button data-band="g1" onclick="setRankBandPreset('g1')">1G대</button>
+      <button data-band="g2" onclick="setRankBandPreset('g2')">2G대</button>
+      <button data-band="g3" onclick="setRankBandPreset('g3')">3G대</button>
+      <button data-band="g1to2" onclick="setRankBandPreset('g1to2')">1~2G대</button>
+      <button data-band="g3to6" onclick="setRankBandPreset('g3to6')">3~6G대</button>
+      <button data-band="custom" onclick="toggleRankBandCustom()">직접 입력</button>
+    </div>
+    <div class="rank-band-custom" id="rankBandCustom">
+      <input id="rankBandMin" inputmode="decimal" placeholder="최소 예: 2.5G">
+      <span>~</span>
+      <input id="rankBandMax" inputmode="decimal" placeholder="최대 예: 4.8G">
+      <button class="btn sm primary" onclick="applyRankBandCustom()">구간 적용</button>
+    </div>
+    <div class="rank-band-actions">
+      <button class="btn sm" onclick="copyRankBandList('names')">닉네임만 복사</button>
+      <button class="btn sm primary" onclick="copyRankBandList('detail')">전투력 포함 복사</button>
+      <span class="hint">수비조·공격조 후보 명단을 채팅이나 공지에 바로 붙여넣을 수 있습니다.</span>
     </div>
   </div>
   <div class="rank-meta-strip">
@@ -3030,6 +3127,7 @@ nav button.active::after{
 
 <script>
 let sb=null, servers=[], alliances=[], factions=[], factionServers=[], mode='server', basis=1, topN=0, rankMode='server', rankTopN=0, entryIsOurs=true;
+let rankBandServerId='', rankBandAllianceId='', rankBandBasis='s1', rankBandPreset='all', rankBandMin=0, rankBandMax=Infinity, rankBandMaxExclusive=false, rankBandTroop='', rankBandSort='desc', rankBandLastRows=[];
 let entryRows=[], rankCache=null, lastCmp=null, cmpShowAll=false, editorPerms=null, adminPin=null;
 let editorRole='operator', programAdminName='관리자', roleSystemReady=false;
 let deviceStatus='unknown', deviceLimit=Math.min(5,Math.max(1,Number(localStorage.getItem('deviceLimitHint'))||2)), deviceGuardTimer=null, deviceHeartbeatTimer=null;
@@ -3566,7 +3664,7 @@ async function loadBase(){
   ]);
   if(s.error||a.error||f.error||fs.error){ toast('데이터 로딩 실패: '+(s.error||a.error||f.error||fs.error).message); return; }
   servers=s.data; alliances=a.data; factions=f.data; factionServers=fs.data;
-  fillPickers(); fillEntrySelectors(); fillHistFilter(); populateSubAllianceFilter(); renderManage();
+  fillPickers(); fillEntrySelectors(); fillHistFilter(); populateSubAllianceFilter(); populateRankBandSelectors(); renderManage();
 }
 function factionServerIds(fid){ return factionServers.filter(x=>x.faction_id===fid).map(x=>x.server_id); }
 function factionLabel(f){
@@ -4111,6 +4209,144 @@ function renderCompare(nameA,A,nameB,B){
 }
 
 /* ---------- 순위 ---------- */
+function populateRankBandSelectors(){
+  const serverSel=$('rankBandServer');
+  if(!serverSel) return;
+
+  const serverExists=servers.some(s=>String(s.id)===String(rankBandServerId));
+  if(!serverExists){
+    const s213=servers.find(s=>String(s.name).trim()==='213');
+    rankBandServerId=s213?String(s213.id):'';
+  }
+
+  serverSel.innerHTML='<option value="">전체 서버</option>'+servers.map(s=>`<option value="${esc(s.id)}">${esc(s.name)} 서버</option>`).join('');
+  serverSel.value=rankBandServerId;
+  refreshRankBandAlliances(false);
+}
+function refreshRankBandAlliances(fromUser=false){
+  const allianceSel=$('rankBandAlliance');
+  if(!allianceSel) return;
+
+  const list=alliances.filter(a=>!rankBandServerId||String(a.server_id)===String(rankBandServerId));
+  if(fromUser) rankBandAllianceId='';
+
+  const valid=list.some(a=>String(a.id)===String(rankBandAllianceId));
+  if(!valid){
+    const selectedServer=servers.find(s=>String(s.id)===String(rankBandServerId));
+    const nxt=selectedServer&&String(selectedServer.name)==='213'?list.find(a=>String(a.name).toUpperCase()==='NXT'):null;
+    rankBandAllianceId=nxt?String(nxt.id):'';
+  }
+
+  allianceSel.innerHTML='<option value="">전체 연맹</option>'+list.map(a=>`<option value="${esc(a.id)}">${esc(a.name)}</option>`).join('');
+  allianceSel.value=rankBandAllianceId;
+}
+function onRankBandServerChange(){
+  rankBandServerId=$('rankBandServer').value;
+  refreshRankBandAlliances(true);
+  renderRank();
+}
+function onRankBandAllianceChange(){
+  rankBandAllianceId=$('rankBandAlliance').value;
+  renderRank();
+}
+function onRankBandTroopChange(){
+  rankBandTroop=$('rankBandTroop').value;
+  renderRank();
+}
+function onRankBandSortChange(){
+  rankBandSort=$('rankBandSort').value;
+  renderRank();
+}
+function setRankBandBasis(value){
+  rankBandBasis=value==='sum4'?'sum4':'s1';
+  document.querySelectorAll('#rankBandBasisSeg button').forEach(b=>b.classList.toggle('active',b.dataset.b===rankBandBasis));
+  renderRank();
+}
+function setRankBandPreset(key){
+  const presets={
+    all:[0,Infinity,false],
+    lt1:[0,1000,true],
+    g1:[1000,2000,true],
+    g2:[2000,3000,true],
+    g3:[3000,4000,true],
+    g1to2:[1000,3000,true],
+    g3to6:[3000,7000,true]
+  };
+  if(!presets[key]) return;
+  rankBandPreset=key;
+  [rankBandMin,rankBandMax,rankBandMaxExclusive]=presets[key];
+  $('rankBandCustom')?.classList.remove('show');
+  document.querySelectorAll('#rankBandPresets button').forEach(b=>b.classList.toggle('active',b.dataset.band===key));
+  renderRank();
+}
+function toggleRankBandCustom(){
+  const box=$('rankBandCustom');
+  if(!box) return;
+  box.classList.toggle('show');
+  if(box.classList.contains('show')) setTimeout(()=>$('rankBandMin')?.focus(),50);
+}
+function applyRankBandCustom(){
+  const minText=$('rankBandMin').value.trim();
+  const maxText=$('rankBandMax').value.trim();
+  const min=minText===''?0:parsePower(minText);
+  const max=maxText===''?Infinity:parsePower(maxText);
+  if(Number.isNaN(min)||Number.isNaN(max)||min<0||max<=0||max<min){
+    toast('최소·최대 전투력 구간을 확인해 주세요');
+    return;
+  }
+  rankBandPreset='custom';
+  rankBandMin=min;
+  rankBandMax=max;
+  rankBandMaxExclusive=false;
+  document.querySelectorAll('#rankBandPresets button').forEach(b=>b.classList.toggle('active',b.dataset.band==='custom'));
+  $('rankBandCustom').classList.remove('show');
+  renderRank();
+}
+function rankBandRangeLabel(){
+  const labels={all:'전체 전력',lt1:'1G 미만',g1:'1G대',g2:'2G대',g3:'3G대',g1to2:'1~2G대',g3to6:'3~6G대'};
+  if(rankBandPreset!=='custom') return labels[rankBandPreset]||'전체 전력';
+  const min=rankBandMin>0?fmtG(rankBandMin):'0';
+  const max=Number.isFinite(rankBandMax)?fmtG(rankBandMax):'이상';
+  return Number.isFinite(rankBandMax)?`${min}~${max}`:`${min} 이상`;
+}
+function rankBandScopeLabel(){
+  const s=servers.find(x=>String(x.id)===String(rankBandServerId));
+  const a=alliances.find(x=>String(x.id)===String(rankBandAllianceId));
+  if(a&&s) return `${s.name} 서버 · ${a.name}`;
+  if(s) return `${s.name} 서버 · 전체 연맹`;
+  return '전체 서버';
+}
+async function writeClipboardText(text){
+  try{
+    await navigator.clipboard.writeText(text);
+    return true;
+  }catch(e){
+    const ta=document.createElement('textarea');
+    ta.value=text;
+    ta.style.position='fixed';
+    ta.style.opacity='0';
+    document.body.appendChild(ta);
+    ta.select();
+    const ok=document.execCommand('copy');
+    ta.remove();
+    return ok;
+  }
+}
+async function copyRankBandList(mode){
+  const q=(($('rankSearch')||{}).value||'').trim().toLowerCase();
+  const rows=rankBandLastRows.filter(r=>!q||r.searchText.includes(q));
+  if(!rows.length){ toast('복사할 인원이 없습니다'); return; }
+
+  const basisLabel=rankBandBasis==='sum4'?'합산':'1편대';
+  const title=`[${rankBandScopeLabel()} · ${rankBandRangeLabel()} · ${basisLabel} 기준]`;
+  const lines=rows.map((r,i)=>{
+    if(mode==='names') return `${i+1}. ${r.m.nickname}`;
+    const troop=r.m.troop_type||'-';
+    return `${i+1}. ${r.m.nickname} — ${troop} — ${fmtG(r.bandPower)}`;
+  });
+  const result=await writeClipboardText(`${title}\n${lines.join('\n')}\n\n총 ${rows.length}명`);
+  toast(result?`${rows.length}명 명단을 복사했습니다`:'복사에 실패했습니다');
+}
 function setRankTop(n){ rankTopN=n; document.querySelectorAll('#rankTopSeg button').forEach(b=>b.classList.toggle('active',+b.dataset.t===n)); renderRank(); }
 function filterRankRows(){
   const q=(($('rankSearch')||{}).value||'').trim().toLowerCase();
@@ -4123,11 +4359,15 @@ function filterRankRows(){
 function setRankMode(m){
   rankMode=m;
   document.querySelectorAll('#rankSeg button').forEach(b=>b.classList.toggle('active',b.dataset.r===m));
-  // 유저 순위는 인원이 많아 범위 버튼을 크게 (50~200), 그룹 순위는 10~50
+  const panel=$('rankBandPanel');
+  if(panel) panel.style.display=m==='user'?'block':'none';
+
+  // 유저 순위는 명단 선별을 위해 넓은 범위를 제공하고, 그룹 순위는 10~50을 유지한다.
   const opts=m==='user'?[[0,'전체'],[50,'Top 50'],[100,'Top 100'],[150,'Top 150'],[200,'Top 200']]
                        :[[0,'전체'],[10,'Top 10'],[20,'Top 20'],[30,'Top 30'],[40,'Top 40'],[50,'Top 50']];
   if(!opts.some(([v])=>v===rankTopN)) rankTopN=0;
   $('rankTopSeg').innerHTML=opts.map(([v,l])=>`<button class="${v===rankTopN?'active':''}" data-t="${v}" onclick="setRankTop(${v})">${l}</button>`).join('');
+  if(m==='user') populateRankBandSelectors();
   renderRank();
 }
 async function loadRank(force){
@@ -4148,32 +4388,65 @@ function updateRankStamp(recs){
 }
 function renderUserRank(members,recs){
   updateRankStamp(recs);
-  const rows=members.map(m=>{
+  populateRankBandSelectors();
+
+  let rows=members.map(m=>{
     const al=alliances.find(a=>a.id===m.alliance_id);
     const sv=al&&servers.find(s=>s.id===al.server_id);
     const rec=recs.get(m.id);
     const s1=rec?(+rec.squad1||0):0;
     const recAt=rec&&rec.recorded_at?new Date(rec.recorded_at).getTime():Infinity;
-    return {m,al,sv,s1,recAt,sum4:basisPow(rec,4),kills:rec?(+rec.kills||0):0,mine:sv&&sv.name==='213'};
-  }).filter(r=>r.s1>0)
-    .sort((a,b)=>(b.s1-a.s1)||(a.recAt-b.recAt)||a.m.nickname.localeCompare(b.m.nickname,'ko'));
-  const limit=rankTopN>0?rankTopN:200;
-  const shown=rows.slice(0,limit);
-  $('rankScopeHint').textContent=rankTopN>0?`전체 서버 유저 상위 ${rankTopN}명 · 총 ${rows.length}명 집계`:`전체 서버 유저 상위 200명 · 총 ${rows.length}명 집계`;
+    const sum4=basisPow(rec,4);
+    return {m,al,sv,s1,recAt,sum4,kills:rec?(+rec.kills||0):0,mine:sv&&sv.name==='213'};
+  }).filter(r=>r.s1>0);
+
+  if(rankBandServerId) rows=rows.filter(r=>r.sv&&String(r.sv.id)===String(rankBandServerId));
+  if(rankBandAllianceId) rows=rows.filter(r=>r.al&&String(r.al.id)===String(rankBandAllianceId));
+  if(rankBandTroop) rows=rows.filter(r=>r.m.troop_type===rankBandTroop);
+
+  rows=rows.map(r=>({...r,bandPower:rankBandBasis==='sum4'?r.sum4:r.s1})).filter(r=>{
+    if(rankBandPreset==='all') return true;
+    const lower=r.bandPower>=rankBandMin;
+    const upper=rankBandMaxExclusive?r.bandPower<rankBandMax:r.bandPower<=rankBandMax;
+    return lower&&upper;
+  });
+
+  if(rankBandSort==='asc') rows.sort((a,b)=>(a.bandPower-b.bandPower)||a.m.nickname.localeCompare(b.m.nickname,'ko'));
+  else if(rankBandSort==='name') rows.sort((a,b)=>a.m.nickname.localeCompare(b.m.nickname,'ko'));
+  else rows.sort((a,b)=>(b.bandPower-a.bandPower)||(a.recAt-b.recAt)||a.m.nickname.localeCompare(b.m.nickname,'ko'));
+
+  const totalFiltered=rows.length;
+  const shown=rankTopN>0?rows.slice(0,rankTopN):rows;
+  rankBandLastRows=shown.map(r=>({...r,searchText:[r.m.nickname,r.sv?r.sv.name:'',r.al?r.al.name:'',r.m.troop_type||''].join(' ').toLowerCase()}));
+
+  const basisLabel=rankBandBasis==='sum4'?'합산':'1편대';
+  const rangeLabel=rankBandRangeLabel();
+  const scopeLabel=rankBandScopeLabel();
+  $('rankScopeHint').textContent=`${scopeLabel} · ${rangeLabel} · ${basisLabel} 기준${rankTopN>0?` · 상위 ${rankTopN}명 표시`:''}`;
+  const summary=$('rankBandResultSummary');
+  if(summary) summary.textContent=`선별 ${totalFiltered}명${rankTopN>0&&totalFiltered>rankTopN?` · 화면 ${shown.length}명`:''}`;
+
   let prev=null,rank=0;
-  shown.forEach((r,i)=>{ if(r.s1!==prev){rank=i+1;prev=r.s1;} r.rank=rank; });
+  shown.forEach((r,i)=>{ if(r.bandPower!==prev){rank=i+1;prev=r.bandPower;} r.rank=rank; });
   const medal=r=>r===1?'🥇':r===2?'🥈':r===3?'🥉':r;
   const fd=t=>{ if(!t||t===Infinity) return '-'; const d=new Date(t); return String(d.getFullYear()).slice(2)+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0'); };
+
+  if(!shown.length){
+    $('rankBox').innerHTML='<div class="empty">선택한 조건에 해당하는 인원이 없습니다.</div>';
+    filterRankRows();
+    return;
+  }
+
   $('rankBox').innerHTML=`<table class="rank-table">
-    <thead><tr><th>순위</th><th>닉네임</th><th>소속</th><th class="ctr">병종</th><th class="ctr">산업</th><th class="num">1편대</th><th class="num">합산</th><th class="num">킬수</th><th class="ctr">기록일</th></tr></thead>
+    <thead><tr><th>순위</th><th>닉네임</th><th>소속</th><th class="ctr">병종</th><th class="ctr">산업</th><th class="num ${rankBandBasis==='s1'?'selected-power':''}">1편대</th><th class="num ${rankBandBasis==='sum4'?'selected-power':''}">합산</th><th class="num">킬수</th><th class="ctr">기록일</th></tr></thead>
     <tbody>${shown.map(r=>`<tr class="rank-data-row ${r.mine?'mine':''} ${r.rank<=3?'t'+r.rank:''}" data-search="${esc([r.m.nickname,r.sv?r.sv.name:'',r.al?r.al.name:'',r.m.troop_type||''].join(' ').toLowerCase())}">
       <td>${medal(r.rank)}</td>
       <td><b>${esc(r.m.nickname)}</b>${r.mine?'<span class="rank-origin-badge">213</span>':''}</td>
       <td><span class="sub2">${esc(r.sv?r.sv.name:'?')} · ${esc(r.al?r.al.name:'?')}</span></td>
       <td class="ctr">${esc(r.m.troop_type||'-')}</td>
       <td class="ctr">${esc(r.m.shelter||'-')}</td>
-      <td class="num"><b>${fmtG(r.s1)}</b></td>
-      <td class="num">${fmtG(r.sum4)}</td>
+      <td class="num ${rankBandBasis==='s1'?'selected-power':''}"><b>${fmtG(r.s1)}</b></td>
+      <td class="num ${rankBandBasis==='sum4'?'selected-power':''}">${fmtG(r.sum4)}</td>
       <td class="num">${r.kills?r.kills.toLocaleString():'-'}</td>
       <td class="ctr"><span class="sub2">${fd(r.recAt)}</span></td></tr>`).join('')}</tbody>
   </table>`;
