@@ -2836,9 +2836,9 @@ nav button.active::after{
     <div class="rank-band-head">
       <div>
         <h3>🎯 전투력 구간 선별</h3>
-        <p>서버와 연맹을 선택한 뒤 전투력 구간별 인원 명단을 확인하고 복사합니다.</p>
+        <p>기본은 등록된 모든 서버·연맹입니다. 필요할 때만 서버나 연맹을 좁혀 전투력 구간별 명단을 확인합니다.</p>
       </div>
-      <span class="rank-band-summary" id="rankBandResultSummary">선별 조건을 설정하세요</span>
+      <span class="rank-band-summary" id="rankBandResultSummary">전체 서버 기준</span>
     </div>
     <div class="rank-band-grid">
       <label><span>서버</span><select id="rankBandServer" onchange="onRankBandServerChange()"></select></label>
@@ -2873,6 +2873,7 @@ nav button.active::after{
       <button class="btn sm primary" onclick="applyRankBandCustom()">구간 적용</button>
     </div>
     <div class="rank-band-actions">
+      <button class="btn sm" onclick="resetRankBandFilters()">↻ 전체 서버로 초기화</button>
       <button class="btn sm" onclick="copyRankBandList('names')">닉네임만 복사</button>
       <button class="btn sm primary" onclick="copyRankBandList('detail')">전투력 포함 복사</button>
       <span class="hint">수비조·공격조 후보 명단을 채팅이나 공지에 바로 붙여넣을 수 있습니다.</span>
@@ -4213,13 +4214,12 @@ function populateRankBandSelectors(){
   const serverSel=$('rankBandServer');
   if(!serverSel) return;
 
+  // 유저 순위의 기본 범위는 등록된 모든 서버다.
+  // 기존에 선택한 서버가 삭제되었을 때만 전체 서버로 되돌린다.
   const serverExists=servers.some(s=>String(s.id)===String(rankBandServerId));
-  if(!serverExists){
-    const s213=servers.find(s=>String(s.name).trim()==='213');
-    rankBandServerId=s213?String(s213.id):'';
-  }
+  if(rankBandServerId&&!serverExists) rankBandServerId='';
 
-  serverSel.innerHTML='<option value="">전체 서버</option>'+servers.map(s=>`<option value="${esc(s.id)}">${esc(s.name)} 서버</option>`).join('');
+  serverSel.innerHTML='<option value="">전체 서버 (기본)</option>'+servers.map(s=>`<option value="${esc(s.id)}">${esc(s.name)} 서버</option>`).join('');
   serverSel.value=rankBandServerId;
   refreshRankBandAlliances(false);
 }
@@ -4230,14 +4230,11 @@ function refreshRankBandAlliances(fromUser=false){
   const list=alliances.filter(a=>!rankBandServerId||String(a.server_id)===String(rankBandServerId));
   if(fromUser) rankBandAllianceId='';
 
+  // 선택 연맹이 현재 서버 범위에 없을 때만 전체 연맹으로 초기화한다.
   const valid=list.some(a=>String(a.id)===String(rankBandAllianceId));
-  if(!valid){
-    const selectedServer=servers.find(s=>String(s.id)===String(rankBandServerId));
-    const nxt=selectedServer&&String(selectedServer.name)==='213'?list.find(a=>String(a.name).toUpperCase()==='NXT'):null;
-    rankBandAllianceId=nxt?String(nxt.id):'';
-  }
+  if(rankBandAllianceId&&!valid) rankBandAllianceId='';
 
-  allianceSel.innerHTML='<option value="">전체 연맹</option>'+list.map(a=>`<option value="${esc(a.id)}">${esc(a.name)}</option>`).join('');
+  allianceSel.innerHTML='<option value="">전체 연맹 (기본)</option>'+list.map(a=>`<option value="${esc(a.id)}">${esc(a.name)}</option>`).join('');
   allianceSel.value=rankBandAllianceId;
 }
 function onRankBandServerChange(){
@@ -4256,6 +4253,28 @@ function onRankBandTroopChange(){
 function onRankBandSortChange(){
   rankBandSort=$('rankBandSort').value;
   renderRank();
+}
+function resetRankBandFilters(){
+  rankBandServerId='';
+  rankBandAllianceId='';
+  rankBandBasis='s1';
+  rankBandPreset='all';
+  rankBandMin=0;
+  rankBandMax=Infinity;
+  rankBandMaxExclusive=false;
+  rankBandTroop='';
+  rankBandSort='desc';
+
+  populateRankBandSelectors();
+  if($('rankBandTroop')) $('rankBandTroop').value='';
+  if($('rankBandSort')) $('rankBandSort').value='desc';
+  document.querySelectorAll('#rankBandBasisSeg button').forEach(b=>b.classList.toggle('active',b.dataset.b==='s1'));
+  document.querySelectorAll('#rankBandPresets button').forEach(b=>b.classList.toggle('active',b.dataset.band==='all'));
+  $('rankBandCustom')?.classList.remove('show');
+  if($('rankBandMin')) $('rankBandMin').value='';
+  if($('rankBandMax')) $('rankBandMax').value='';
+  renderRank();
+  toast('전체 서버·전체 연맹 순위로 초기화했습니다');
 }
 function setRankBandBasis(value){
   rankBandBasis=value==='sum4'?'sum4':'s1';
