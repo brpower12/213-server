@@ -3187,6 +3187,10 @@ body.tactical-tab-open footer{display:none!important}
 
       <div class="tactical-access-divider"></div>
       <h3 style="margin:0 0 5px;font-size:.92rem">운영진별 작업공간 권한</h3>
+      <div style="margin:0 0 10px;padding:9px 11px;border:1px solid rgba(169,139,255,.42);border-radius:10px;background:rgba(98,65,150,.12);color:#cfc3ff;font-size:.78rem;line-height:1.5;font-weight:700">
+        ⚠ 시즌 6 전략맵 <b>탭 보기 권한</b>과 아래 <b>서버·연맹 작업공간 권한</b>은 별도입니다.<br>
+        탭 권한만 허용하면 전략맵 화면에는 들어올 수 있지만, 여기서 허용한 작업공간이 없으면 지도 데이터는 열리지 않습니다.
+      </div>
       <p class="hint" style="margin:0 0 10px">운영진에게 허용한 작업공간만 전략맵 목록에 표시되며 Supabase RPC에서도 같은 권한을 검사합니다.</p>
       <div class="tactical-access-toolbar">
         <select id="tacticalAccessEditor"><option value="">운영진 선택</option></select>
@@ -3913,7 +3917,7 @@ async function loadTacticalWorkspaces(force=false){
     const result=parseTacticalRpcData(data)||{};
     tacticalWatermarkMin=Math.max(0,Math.min(3,+result.watermark_min||0));
     tacticalWorkspaces=Array.isArray(result.workspaces)?result.workspaces:[];
-    if(!tacticalWorkspaces.length){tacticalWorkspaceId=null;tacticalWorkspaceRole='';sendTacticalPolicy();sendTacticalWorkspaceContext({publicStatus:'허용된 작업공간 없음',draftStatus:editorRole==='admin'?'관리 → 전략맵 권한에서 사용할 작업공간을 추가해 주세요':'관리자에게 전략맵 작업공간 권한을 요청하세요'});showTacticalBlank('no-workspace');return;}
+    if(!tacticalWorkspaces.length){tacticalWorkspaceId=null;tacticalWorkspaceRole='';sendTacticalPolicy();sendTacticalWorkspaceContext({publicStatus:'허용된 작업공간 없음',draftStatus:editorRole==='admin'?'관리 → 전략맵 권한에서 사용할 서버·연맹 작업공간을 추가해 주세요':'시즌 6 전략맵 탭 권한은 있으나 서버·연맹 작업공간 권한이 없습니다. 관리자에게 해당 작업공간의 보기/편집/관리 권한을 요청하세요'});showTacticalBlank('no-workspace');return;}
     const pref=localStorage.getItem(`tacticalWorkspace_${TACTICAL_SEASON_KEY}_${getEditor()}`);
     const chosen=tacticalWorkspaces.find(w=>String(w.id)===String(tacticalWorkspaceId))||tacticalWorkspaces.find(w=>String(w.id)===String(pref));
     if(chosen){
@@ -4037,6 +4041,7 @@ window.addEventListener('message',event=>{
   const frame=$('tacticalFrame');if(!frame||event.source!==frame.contentWindow)return;if(location.origin!=='null'&&event.origin!==location.origin)return;const d=event.data||{},type=d.type;
   if(type==='nxt-tactical-map:ready'){tacticalMapReady=true;clearTimeout(tacticalMapTimer);setTacticalLoading(false);setTacticalError(false);syncTacticalViewport();sendTacticalPolicy();loadTacticalWorkspaces(true);}
   else if(type==='nxt-tactical-map:changed')scheduleTacticalDraftSave();
+  else if(type==='nxt-tactical-map:get-state'){postToTactical({type:'nxt-tactical-map:get-state',reason:d.reason||'',requestId:d.requestId||''});}
   else if(type==='nxt-tactical-map:state'){if(d.reason==='autosave')saveTacticalPersonalDraft(d.state,true);else if(d.reason==='publish')publishTacticalWorkspaceDefault(d.state);}
   else if(type==='nxt-tactical-map:select-workspace')loadTacticalWorkspace(d.workspaceId,'auto',true);
   else if(type==='nxt-tactical-map:select-view')switchTacticalView(d.viewMode,d.force===true);
