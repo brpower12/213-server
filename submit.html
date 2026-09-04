@@ -7,16 +7,17 @@
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; frame-src 'none'; form-action 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self' https://lrvjbtesukremdyxwvtd.supabase.co; upgrade-insecure-requests">
 <meta name="theme-color" content="#0E1117">
-<meta name="author" content="213 NXT · 부앙(Bu-ang)">
-<meta name="copyright" content="© 213 NXT · 부앙(Bu-ang)">
+<meta name="author" content="213 NXT / 부앙(Bu-ang)">
+<meta name="copyright" content="© 213 NXT / 부앙(Bu-ang)">
 
-<title>213 SERVER | 전투력 제출</title>
-<meta property="og:title" content="213 SERVER | 전투력 제출">
-<meta property="og:description" content="현재 전투력을 등록해 주세요. 운영진 확인 후 시트에 반영됩니다.">
+<title>213 SERVER | 전투력 / 참여</title>
+<meta property="og:title" content="213 SERVER | 전투력 / 참여">
+<meta property="og:description" content="전투력 제출과 참여 투표를 한곳에서 이용할 수 있습니다.">
 <meta property="og:type" content="website">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js" crossorigin="anonymous"></script>
 
 <script>
 /* ============================================================
@@ -36,9 +37,12 @@ const CONFIG = {
   --ours:#4E9BFF; --gold:#F2C14E; --green:#3DDC97; --red:#FF6B6B;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{font-size:15px}
-body{background:radial-gradient(800px 420px at 20% -8%, rgba(78,155,255,.10), transparent 60%),radial-gradient(600px 340px at 85% -6%, rgba(242,193,78,.07), transparent 55%),var(--bg);color:var(--text);font-family:"Pretendard Variable",Pretendard,-apple-system,"Hiragino Sans","Microsoft YaHei",sans-serif;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:20px 16px 48px}
-button{font-family:inherit;cursor:pointer}
+html{font-size:15px;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{background:radial-gradient(800px 420px at 20% -8%, rgba(78,155,255,.10), transparent 60%),radial-gradient(600px 340px at 85% -6%, rgba(242,193,78,.07), transparent 55%),var(--bg);color:var(--text);font-family:"Pretendard Variable",Pretendard,-apple-system,"Hiragino Sans","Microsoft YaHei",sans-serif;min-height:100vh;min-height:100dvh;width:100%;overflow-x:hidden;display:flex;align-items:flex-start;justify-content:center;padding:max(20px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(48px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+html[lang="en"] body{font-family:"Pretendard Variable","SF Pro Text","Segoe UI",Arial,sans-serif}
+html[lang="ja"] body{font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,"Pretendard Variable",sans-serif}
+html[lang="zh-CN"] body{font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC","Pretendard Variable",sans-serif}
+button{font-family:inherit;cursor:pointer;touch-action:manipulation}
 input,select{font-family:inherit;background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:11px;padding:13px 14px;font-size:1.02rem;outline:none;width:100%;transition:border-color .12s,box-shadow .12s}
 input:focus,select:focus{border-color:var(--ours);box-shadow:0 0 0 3px rgba(78,155,255,.18)}
 option{background:#1C222E;color:#E9EDF5}
@@ -58,7 +62,8 @@ input:hover,select:hover{border-color:#39445C}
 .field label{display:block;font-size:.8rem;font-weight:800;color:var(--muted);margin-bottom:6px;letter-spacing:.01em}
 .field label b{color:var(--gold)}
 .field label span.opt{color:var(--dim);font-weight:400}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.row2>*{min-width:0}
 .preview{font-size:.8rem;color:var(--green);min-height:17px;margin-top:5px;font-weight:600;font-variant-numeric:tabular-nums}
 .preview.bad{color:var(--red)}
 .btn{width:100%;background:linear-gradient(180deg,#6CB2FF,#3E8EF0);border:1px solid #3E8EF0;color:#06101F;border-radius:13px;padding:16px;font-size:1.1rem;font-weight:800;margin-top:12px;box-shadow:0 5px 18px rgba(78,155,255,.32);transition:transform .12s,box-shadow .12s}
@@ -75,7 +80,7 @@ input:hover,select:hover{border-color:#39445C}
 .guide-sec h3{font-size:.85rem;color:var(--muted);font-weight:700;margin-bottom:8px}
 .guide-sec img{display:block;margin:0 auto 10px;border-radius:10px;border:1px solid var(--line);max-width:100%;cursor:zoom-in}
 @media(max-width:640px){
-  input,select{font-size:16px}
+  input,select,textarea{font-size:16px}
   .box{padding:24px 18px 28px;border-radius:18px}
   h1{font-size:1.35rem}
 }
@@ -96,8 +101,8 @@ input:hover,select:hover{border-color:#39445C}
 }
 .msg:empty{margin-top:0;min-height:0}
 .langbar button{white-space:nowrap}
-@media(max-width:360px){
-  body{padding-left:10px;padding-right:10px}
+@media(max-width:420px){
+  body{padding-left:max(10px,env(safe-area-inset-left));padding-right:max(10px,env(safe-area-inset-right))}
   .box{padding:22px 14px 26px}
   .langbar{
     display:grid;
@@ -115,7 +120,7 @@ input:hover,select:hover{border-color:#39445C}
 
 
 /* ============================================================
-   공식 제출 페이지 브랜딩 · 가독성 · 복제 억제 표시
+   공식 제출 페이지 브랜딩 / 가독성 / 복제 억제 표시
    ============================================================ */
 body{
   position:relative;
@@ -246,7 +251,9 @@ h1{
 }
 .field{
   position:relative;
+  min-width:0;
 }
+.field label,h1,h2,.msg{overflow-wrap:anywhere;word-break:break-word}
 .field:focus-within label{
   color:#b8c7dc;
 }
@@ -294,17 +301,54 @@ input:focus,select:focus{
   .privacy-note{font-size:.66rem;padding-left:7px;padding-right:7px}
 }
 @media(max-width:300px){
-  body{padding-left:6px;padding-right:6px}
+  body{padding-left:max(6px,env(safe-area-inset-left));padding-right:max(6px,env(safe-area-inset-right))}
   .box{padding-left:11px;padding-right:11px}
   .official-badge em{display:none}
   .langbar button{font-size:.66rem}
 }
 
+/* 참여 투표 / 제출 항목 선택 */
+.page-view[hidden]{display:none!important}
+body[data-page="home"] .official-badge{display:none}
+body[data-page="home"] .langbar{margin-bottom:12px}
+.brand-logo{height:80px;display:block;margin:0 auto 12px;filter:drop-shadow(0 6px 18px rgba(242,193,78,.35))}
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.home-logo{display:block;width:145px;height:auto;margin:0 auto 17px;object-fit:contain;filter:drop-shadow(0 9px 24px rgba(0,0,0,.28))}
+.home-prompt{margin:0 0 21px;color:#aeb7c8;font-size:.9rem;font-weight:650;line-height:1.6;letter-spacing:-.015em}
+.service-grid{display:grid;gap:12px;margin-top:22px}
+.service-card{width:100%;display:grid;grid-template-columns:48px minmax(0,1fr) 22px;align-items:center;gap:13px;padding:17px 16px;border:1px solid #344057;border-radius:15px;background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.012));color:var(--text);text-align:left;transition:transform .14s,border-color .14s,background .14s;box-shadow:0 8px 22px rgba(0,0,0,.17)}
+.service-card:hover{transform:translateY(-1px);border-color:rgba(78,155,255,.62);background:linear-gradient(145deg,rgba(78,155,255,.09),rgba(255,255,255,.018))}
+.service-card.vote:hover{border-color:rgba(242,193,78,.62);background:linear-gradient(145deg,rgba(242,193,78,.09),rgba(255,255,255,.018))}
+.service-icon{display:grid;place-items:center;width:48px;height:48px;border-radius:13px;background:rgba(78,155,255,.12);border:1px solid rgba(78,155,255,.25);font-size:1.45rem}
+.service-card.vote .service-icon{background:rgba(242,193,78,.11);border-color:rgba(242,193,78,.27)}
+.service-copy{min-width:0}.service-copy b{display:block;font-size:1.02rem;margin-bottom:4px;font-weight:850;letter-spacing:-.025em;overflow-wrap:anywhere}.service-copy span{display:block;color:var(--muted);font-size:.78rem;line-height:1.45;letter-spacing:-.012em;overflow-wrap:anywhere}
+html[lang="en"] .home-prompt,html[lang="en"] .service-copy b,html[lang="en"] .service-copy span{letter-spacing:-.01em}
+html[lang="ja"] .home-prompt,html[lang="ja"] .service-copy b,html[lang="ja"] .service-copy span,html[lang="zh-CN"] .home-prompt,html[lang="zh-CN"] .service-copy b,html[lang="zh-CN"] .service-copy span{letter-spacing:0}
+.service-arrow{color:var(--dim);font-size:1.25rem;text-align:center}
+.view-back{display:flex;align-items:center;gap:6px;width:max-content;margin:0 0 15px;padding:7px 10px;border:1px solid var(--line);border-radius:9px;background:var(--panel2);color:var(--muted);font-size:.76rem;font-weight:800}
+.view-back:hover{color:var(--text);border-color:#3b475d}
+.poll-head{padding:14px 15px;margin:0 0 17px;border:1px solid rgba(242,193,78,.22);border-radius:13px;background:linear-gradient(145deg,rgba(242,193,78,.07),rgba(255,255,255,.015))}
+.poll-head h2{font-size:1.08rem;line-height:1.35;margin-bottom:5px}.poll-head p{color:var(--muted);font-size:.8rem;line-height:1.5;white-space:pre-line}.poll-deadline{display:block;margin-top:8px;color:#d8b75d;font-size:.73rem;font-weight:750}
+.choice-list{display:grid;gap:9px;margin-bottom:18px}
+.choice-item{position:relative;display:flex;align-items:flex-start;gap:11px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);cursor:pointer;transition:border-color .12s,background .12s,transform .12s}
+.choice-item:hover{transform:translateY(-1px);border-color:#46536b}.choice-item.selected{border-color:var(--choice,#4E9BFF);background:color-mix(in srgb,var(--choice,#4E9BFF) 12%,var(--panel2));box-shadow:0 0 0 2px color-mix(in srgb,var(--choice,#4E9BFF) 20%,transparent)}
+.choice-item input{position:absolute;opacity:0;pointer-events:none}.choice-dot{width:18px;height:18px;flex:0 0 18px;margin-top:1px;border-radius:50%;border:2px solid #566177;box-shadow:inset 0 0 0 4px var(--panel2)}
+.choice-item.selected .choice-dot{border-color:var(--choice,#4E9BFF);background:var(--choice,#4E9BFF)}
+.choice-label{min-width:0;font-size:.9rem;line-height:1.45;font-weight:750;overflow-wrap:anywhere;word-break:break-word}
+.poll-empty{padding:22px 14px;text-align:center;border:1px dashed #39445a;border-radius:13px;color:var(--muted);line-height:1.55}
+textarea{font-family:inherit;background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:11px;padding:13px 14px;font-size:1.02rem;outline:none;width:100%;min-height:82px;resize:vertical;transition:border-color .12s,box-shadow .12s}
+textarea:focus{border-color:var(--ours);box-shadow:0 0 0 3px rgba(78,155,255,.18)}
+.poll-update-note{margin:-3px 0 10px;color:var(--dim);font-size:.72rem;line-height:1.45;text-align:center}
+.vote-done-choice{display:inline-block;margin:10px 0;padding:7px 11px;border:1px solid rgba(61,220,151,.25);border-radius:999px;color:#8ce7bd;background:rgba(61,220,151,.055);font-size:.79rem;font-weight:800}
+@media(max-width:420px){.home-logo{width:132px;margin-bottom:14px}.service-card{grid-template-columns:42px minmax(0,1fr) 18px;padding:14px 12px}.service-icon{width:42px;height:42px}.choice-item{padding:12px}.sub,.poll-head p,.poll-empty,.poll-update-note,.credit{overflow-wrap:anywhere;word-break:break-word}}
+@media(max-width:420px){.langbar button{min-height:40px}}
+@media(hover:none){.service-card:hover,.choice-item:hover,.btn:hover{transform:none}}
+
 </style>
 </head>
-<body>
+<body data-page="home">
 <div class="box" data-owner="213-NXT-BUANG" data-project="213-server-power-submit">
-  <div class="owner-watermark" aria-hidden="true">213 NXT · BU-ANG</div>
+  <div class="owner-watermark" aria-hidden="true">213 NXT / BU-ANG</div>
   <div class="official-badge"><span class="official-mark" aria-hidden="true"></span><b>213 SERVER</b><em>OFFICIAL FORM</em></div>
   <div class="langbar" id="langbar">
     <button data-l="ko" onclick="setLang('ko')">한국어</button>
@@ -313,8 +357,29 @@ input:focus,select:focus{
     <button data-l="zh" onclick="setLang('zh')">中文</button>
   </div>
 
+  <!-- 제출 항목 선택 -->
+  <div id="homeView" class="page-view">
+    <img class="home-logo" src="data:image/png;base64,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" alt="" aria-hidden="true">
+    <h1 class="sr-only" id="hTitle"></h1>
+    <div class="sub home-prompt" id="hSub"></div>
+    <div class="service-grid">
+      <button class="service-card" type="button" onclick="showPowerForm()">
+        <span class="service-icon" aria-hidden="true">⚔️</span>
+        <span class="service-copy"><b id="hPowerTitle"></b><span id="hPowerDesc"></span></span>
+        <span class="service-arrow" aria-hidden="true">›</span>
+      </button>
+      <button class="service-card vote" type="button" onclick="showVoteForm()">
+        <span class="service-icon" aria-hidden="true">🗳️</span>
+        <span class="service-copy"><b id="hVoteTitle"></b><span id="hVoteDesc"></span></span>
+        <span class="service-arrow" aria-hidden="true">›</span>
+      </button>
+    </div>
+    <div class="credit">Powered by <b>213 NXT / 부앙(Bu-ang)</b><span class="copyright-note">© 2026 / UI 및 소스 무단 복제 금지</span></div>
+  </div>
+
   <!-- 제출 폼 -->
-  <div id="formView">
+  <div id="formView" class="page-view" hidden>
+    <button class="view-back" type="button" onclick="showHome()">← <span id="powerBackText"></span></button>
     <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTQwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZCIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGOUU3QTAiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIwLjQ1IiBzdG9wLWNvbG9yPSIjRUZDOTVFIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0I4ODYyQiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZDIiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkNFRkMwIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0Q5QTkzRSIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPCEtLSDsmZXqtIAgLS0+CiAgPHBhdGggZD0iTTI3IDQ2IEwyOSAyNCBMNDQgMzQgTDYwIDE1IEw3NiAzNCBMOTEgMjQgTDkzIDQ2IFoiIGZpbGw9InVybCgjZ29sZCkiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIxLjIiLz4KICA8Y2lyY2xlIGN4PSIyOSIgY3k9IjIxIiByPSIzLjQiIGZpbGw9InVybCgjZ29sZDIpIiBzdHJva2U9IiM4QTY0MjAiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iMTIiIHI9IjMuOCIgZmlsbD0idXJsKCNnb2xkMikiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPGNpcmNsZSBjeD0iOTEiIGN5PSIyMSIgcj0iMy40IiBmaWxsPSJ1cmwoI2dvbGQyKSIgc3Ryb2tlPSIjOEE2NDIwIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8cmVjdCB4PSIyNyIgeT0iNDgiIHdpZHRoPSI2NiIgaGVpZ2h0PSI2LjUiIHJ4PSIyLjUiIGZpbGw9InVybCgjZ29sZDIpIiBzdHJva2U9IiM4QTY0MjAiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iNTEuMiIgcj0iMiIgZmlsbD0iIzhBNjQyMCIvPgogIDxjaXJjbGUgY3g9IjQyIiBjeT0iNTEuMiIgcj0iMS41IiBmaWxsPSIjOEE2NDIwIi8+CiAgPGNpcmNsZSBjeD0iNzgiIGN5PSI1MS4yIiByPSIxLjUiIGZpbGw9IiM4QTY0MjAiLz4KICA8IS0tIDIxMyAtLT4KICA8dGV4dCB4PSI2MCIgeT0iOTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCAnVGltZXMgTmV3IFJvbWFuJywgc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9InVybCgjZ29sZCkiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIwLjYiPjIxMzwvdGV4dD4KICA8IS0tIFNFUlZFUiAtLT4KICA8dGV4dCB4PSI2MyIgeT0iMTEzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTIuNSIgbGV0dGVyLXNwYWNpbmc9IjUuNSIgZmlsbD0iI0Q5QjQ1QyI+U0VSVkVSPC90ZXh0PgogIDwhLS0g7ZWY64uoIOyepeyLnSAtLT4KICA8cGF0aCBkPSJNMzggMTIyIEw2MCAxMzEgTDgyIDEyMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ1cmwoI2dvbGQpIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iMTMxIiByPSIyLjIiIGZpbGw9IiNFRkM5NUUiLz4KPC9zdmc+Cg==" alt="213 SERVER" style="height:80px;display:block;margin:0 auto 12px;filter:drop-shadow(0 6px 18px rgba(242,193,78,.35))">
     <h1 id="tTitle"></h1>
     <div class="sub" id="tSub"></div>
@@ -351,22 +416,60 @@ input:focus,select:focus{
     </div>
     <button class="btn" type="button" id="submitBtn" onclick="doSubmit()"></button>
     <div class="msg" id="formMsg" role="status" aria-live="polite"></div>
-    <div class="credit">Powered by <b>213 NXT · 부앙(Bu-ang)</b><span class="copyright-note">© 2026 · UI·소스 무단 복제 금지</span></div>
+    <div class="credit">Powered by <b>213 NXT / 부앙(Bu-ang)</b><span class="copyright-note">© 2026 / UI 및 소스 무단 복제 금지</span></div>
   </div>
 
   <!-- 완료 -->
-  <div id="doneView">
+  <div id="doneView" class="page-view" hidden>
     <div class="done-icon">✅</div>
     <h1 id="tDone"></h1>
     <div class="sub" id="doneSummary" aria-live="polite"></div>
     <button class="btn ghost" type="button" id="againBtn" onclick="showForm()"></button>
-    <div class="credit">Powered by <b>213 NXT · 부앙(Bu-ang)</b><span class="copyright-note">© 2026 · UI·소스 무단 복제 금지</span></div>
+    <div class="credit">Powered by <b>213 NXT / 부앙(Bu-ang)</b><span class="copyright-note">© 2026 / UI 및 소스 무단 복제 금지</span></div>
+  </div>
+
+  <!-- 참여 투표 -->
+  <div id="voteView" class="page-view" hidden>
+    <button class="view-back" type="button" onclick="showHome()">← <span id="voteBackText"></span></button>
+    <h1 id="vTitle"></h1>
+    <div class="sub" id="vSub"></div>
+    <div id="pollLoading" class="poll-empty"></div>
+    <div id="pollForm" hidden>
+      <div class="field" id="pollSelectWrap" hidden><label id="vPollSelectLabel"></label><select id="vPollSelect" onchange="selectPublicPoll(this.value)"></select></div>
+      <div class="poll-head"><h2 id="publicPollTitle"></h2><p id="publicPollDescription"></p><span class="poll-deadline" id="publicPollDeadline"></span></div>
+      <div class="sechd"><span id="vSecChoice"></span></div>
+      <div class="choice-list" id="publicPollOptions"></div>
+      <div class="sechd"><span id="vSecInfo"></span></div>
+      <div class="field"><label><span id="vAlliance"></span> <b>*</b></label><input id="vAllianceInput" maxlength="30" autocomplete="organization" enterkeyhint="next"></div>
+      <div class="field"><label><span id="vNick"></span> <b>*</b></label><input id="vNickInput" maxlength="60" autocomplete="nickname" enterkeyhint="next"></div>
+      <div class="row2">
+        <div class="field"><label><span id="vTroop"></span> <b>*</b></label><select id="vTroopInput"></select></div>
+        <div class="field"><label><span id="vIndustry"></span> <b>*</b></label><input id="vIndustryInput" inputmode="numeric" maxlength="4" enterkeyhint="next"></div>
+      </div>
+      <div class="field"><label><span id="vSquad1"></span> <b>*</b></label><input id="vSquad1Input" inputmode="decimal" maxlength="16" enterkeyhint="next"><div class="preview" id="vPowerPreview"></div></div>
+      <div class="field"><label><span id="vNote"></span> <span class="opt" id="vOptional"></span></label><textarea id="vNoteInput" maxlength="300"></textarea></div>
+      <div class="poll-update-note" id="vUpdateNote"></div>
+      <button class="btn" type="button" id="voteSubmitBtn" onclick="doVoteSubmit()"></button>
+      <div class="msg" id="voteMsg" role="status" aria-live="polite"></div>
+    </div>
+    <div class="credit">Powered by <b>213 NXT / 부앙(Bu-ang)</b><span class="copyright-note">© 2026 / UI 및 소스 무단 복제 금지</span></div>
+  </div>
+
+  <!-- 참여 투표 완료 -->
+  <div id="voteDoneView" class="page-view" hidden>
+    <div class="done-icon">✅</div>
+    <h1 id="vDoneTitle"></h1>
+    <div class="sub" id="voteDoneSummary" aria-live="polite"></div>
+    <button class="btn ghost" type="button" id="voteAgainBtn" onclick="showVoteForm()"></button>
+    <button class="view-back" style="margin:10px auto 0" type="button" onclick="showHome()">← <span id="voteDoneHome"></span></button>
+    <div class="credit">Powered by <b>213 NXT / 부앙(Bu-ang)</b><span class="copyright-note">© 2026 / UI 및 소스 무단 복제 금지</span></div>
   </div>
 </div>
 
 <script>
-let sb=null, lang='ko', submitting=false;
-const BUILD_SIGNATURE='213-NXT-BUANG::POWER-SUBMIT::2026';
+let sb=null, lang='ko', submitting=false, voteSubmitting=false;
+let publicPolls=[], selectedPublicPollId=null, currentPage='home';
+const BUILD_SIGNATURE='213-NXT-BUANG::SUBMIT-HUB-POLL::2026.09';
 const $=id=>document.getElementById(id);
 
 function normalizeNumericText(value){
@@ -473,6 +576,60 @@ zh:{
   again:'再次提交', errLong:'输入内容过长。', squadWord:['第1编队','第2编队','第3编队','第4编队'],
   confirmQ:'确认提交以下内容吗？', required:'标有 <b>*</b> 的项目为必填项。', privacy:'提交的信息仅用于213服务器运营。', networkErr:'提交时发生错误', scriptFail:'无法加载必要脚本。请检查网络连接后刷新页面。', runtimeErr:'页面处理时发生错误。'
 }};
+
+const HUB_I18N={
+ko:{
+  hubTitle:'213 SERVER',browserTitle:'전투력 / 참여',hubSub:'입력할 항목을 선택해 주세요.',
+  powerTitle:'전투력 제출',powerDesc:'현재 편대 전투력을 입력하고 운영진 검토를 요청합니다.',
+  voteTitle:'참여 투표',voteDesc:'진행 중인 이벤트의 참여 가능 여부를 제출합니다.',back:'처음으로',
+  pollTitle:'참여 투표',pollSub:'진행 중인 투표를 선택하고 참여 정보를 입력해 주세요.',pollSelect:'진행 중인 투표',
+  choiceSec:'01 / 참여 항목',infoSec:'02 / 참여자 정보',alliance:'연맹',alliancePh:'예: NXT',nick:'게임 닉네임',nickPh:'게임 내 닉네임을 정확히 입력',
+  troop:'주병종',troops:['슈터','파이터','라이더'],industry:'산업 레벨',industryPh:'예: 7',squad1:'1편대 전투력',squad1Ph:'예: 6.22G',
+  note:'전달 사항',notePh:'운영진에게 전달할 내용이 있으면 입력',optional:'(선택)',updateNote:'같은 투표에 동일한 연맹과 닉네임으로 다시 제출하면 기존 응답이 수정됩니다.',
+  submit:'참여 응답 제출',submitting:'제출 중...',loading:'진행 중인 투표를 불러오는 중입니다...',noPoll:'현재 진행 중인 참여 투표가 없습니다.',
+  deadline:'마감',noDeadline:'마감 시간 없음',chooseOption:'참여 항목을 선택해 주세요.',errAlliance:'연맹을 입력해 주세요.',errNick:'닉네임을 입력해 주세요.',errTroop:'주병종을 선택해 주세요.',errIndustry:'산업 레벨을 숫자로 입력해 주세요.',errPower:'1편대 전투력을 확인해 주세요. (예: 6.22G 또는 6220)',
+  confirm:'아래 내용으로 참여 응답을 제출할까요?',networkErr:'투표 제출 중 오류가 발생했습니다',pollClosed:'투표가 마감되었거나 공개 상태가 아닙니다.',notTarget:'이 투표의 대상 연맹이 아닙니다.',badOption:'선택한 항목을 사용할 수 없습니다.',
+  done:'참여 응답이 제출되었습니다',doneTail:'마감 전까지 같은 정보로 다시 제출하면 응답을 수정할 수 있습니다.',again:'응답 수정하기',home:'처음 화면으로',updated:'기존 응답이 있으면 최신 내용으로 변경되었습니다.'
+},
+en:{
+  hubTitle:'213 SERVER',browserTitle:'Power & Participation',hubSub:'Choose what you would like to submit.',
+  powerTitle:'Combat Power Submission',powerDesc:'Submit your current squad power for staff review.',
+  voteTitle:'Participation Survey',voteDesc:'Submit your availability for the current event.',back:'Back to menu',
+  pollTitle:'Participation Survey',pollSub:'Select an active survey and enter your participation details.',pollSelect:'Active Survey',
+  choiceSec:'01 / Availability',infoSec:'02 / Player Information',alliance:'Alliance',alliancePh:'e.g. NXT',nick:'In-game Nickname',nickPh:'Enter your exact in-game nickname',
+  troop:'Main Troop Type',troops:['Shooter','Fighter','Rider'],industry:'Industry Level',industryPh:'e.g. 7',squad1:'Squad 1 Combat Power',squad1Ph:'e.g. 6.22G',
+  note:'Note for Staff',notePh:'Add any details staff should know',optional:'(optional)',updateNote:'Submitting again with the same alliance and nickname will update your previous response.',
+  submit:'Submit Response',submitting:'Submitting...',loading:'Loading active surveys...',noPoll:'There are no active participation surveys at this time.',
+  deadline:'Closes',noDeadline:'No deadline',chooseOption:'Please select your availability.',errAlliance:'Please enter your alliance.',errNick:'Please enter your nickname.',errTroop:'Please select your main troop type.',errIndustry:'Please enter your industry level as a number.',errPower:'Please check your Squad 1 power. (e.g. 6.22G or 6220)',
+  confirm:'Submit the response below?',networkErr:'An error occurred while submitting your response',pollClosed:'This survey is closed or no longer available.',notTarget:'Your alliance is not included in this survey.',badOption:'The selected option is no longer available.',
+  done:'Response Submitted',doneTail:'You can update your response before the deadline by submitting again with the same information.',again:'Update Response',home:'Home',updated:'If you had already responded, your previous response has been updated.'
+},
+ja:{
+  hubTitle:'213 SERVER',browserTitle:'戦闘力・参加確認',hubSub:'入力する項目を選択してください。',
+  powerTitle:'戦闘力を提出',powerDesc:'現在の部隊戦力を入力し、運営側の確認を依頼します。',
+  voteTitle:'参加確認',voteDesc:'開催中のイベントへの参加可否を回答します。',back:'メニューに戻る',
+  pollTitle:'参加確認',pollSub:'受付中の投票を選び、参加情報を入力してください。',pollSelect:'受付中の投票',
+  choiceSec:'01 / 参加区分',infoSec:'02 / プレイヤー情報',alliance:'同盟',alliancePh:'例：NXT',nick:'ゲーム内ニックネーム',nickPh:'ゲーム内ニックネームを正確に入力',
+  troop:'主力兵種',troops:['シューター','ファイター','ライダー'],industry:'産業レベル',industryPh:'例：7',squad1:'第1部隊戦力',squad1Ph:'例：6.22G',
+  note:'運営への連絡事項',notePh:'運営側に伝えたい内容があれば入力',optional:'（任意）',updateNote:'同じ投票に同一の同盟名・ニックネームで再提出すると、以前の回答が更新されます。',
+  submit:'参加回答を提出',submitting:'提出中...',loading:'受付中の投票を読み込んでいます...',noPoll:'現在、受付中の参加投票はありません。',
+  deadline:'締切',noDeadline:'締切なし',chooseOption:'参加区分を選択してください。',errAlliance:'同盟名を入力してください。',errNick:'ニックネームを入力してください。',errTroop:'主力兵種を選択してください。',errIndustry:'産業レベルを数字で入力してください。',errPower:'第1部隊の戦力をご確認ください。（例：6.22G または 6220）',
+  confirm:'以下の内容で参加回答を提出しますか？',networkErr:'回答の提出中にエラーが発生しました',pollClosed:'この投票は締め切られたか、現在公開されていません。',notTarget:'この投票の対象同盟ではありません。',badOption:'選択した項目は現在利用できません。',
+  done:'参加回答を提出しました',doneTail:'締切前であれば、同じ情報で再提出して回答を変更できます。',again:'回答を変更する',home:'最初の画面へ',updated:'すでに回答済みの場合は、最新の内容に更新されています。'
+},
+zh:{
+  hubTitle:'213 SERVER',browserTitle:'战力与参与',hubSub:'请选择要填写的项目。',
+  powerTitle:'提交战力',powerDesc:'填写当前编队战力，提交给管理员审核。',
+  voteTitle:'参与调查',voteDesc:'提交您是否能够参加当前活动。',back:'返回菜单',
+  pollTitle:'参与调查',pollSub:'请选择正在进行的调查并填写参与信息。',pollSelect:'正在进行的调查',
+  choiceSec:'01 / 参与选项',infoSec:'02 / 玩家信息',alliance:'联盟',alliancePh:'例：NXT',nick:'游戏昵称',nickPh:'请准确输入游戏内昵称',
+  troop:'主兵种',troops:['射手','战士','骑手'],industry:'产业等级',industryPh:'例：7',squad1:'第1编队战力',squad1Ph:'例：6.22G',
+  note:'给管理员的备注',notePh:'如有需要告知管理员的内容，请在此填写',optional:'（选填）',updateNote:'在同一调查中使用相同的联盟和昵称再次提交，将更新原有回答。',
+  submit:'提交参与回答',submitting:'提交中...',loading:'正在加载进行中的调查...',noPoll:'目前没有正在进行的参与调查。',
+  deadline:'截止时间',noDeadline:'无截止时间',chooseOption:'请选择参与选项。',errAlliance:'请输入联盟。',errNick:'请输入昵称。',errTroop:'请选择主兵种。',errIndustry:'请用数字填写产业等级。',errPower:'请检查第1编队战力。（例：6.22G 或 6220）',
+  confirm:'确认提交以下参与信息吗？',networkErr:'提交回答时发生错误',pollClosed:'该调查已截止或当前未开放。',notTarget:'您的联盟不在本次调查范围内。',badOption:'所选项目当前不可用。',
+  done:'参与回答已提交',doneTail:'截止前可使用相同信息再次提交以修改回答。',again:'修改回答',home:'返回首页',updated:'如您之前已经回答，原有回答已更新为最新内容。'
+}};
 // 시트에는 항상 한국어 병종으로 저장 (화면 표기만 번역)
 const TROOP_CANON=['슈터','파이터','라이더'];
 
@@ -482,8 +639,8 @@ function setLang(l){
   document.querySelectorAll('#langbar button').forEach(b=>b.classList.toggle('active',b.dataset.l===l));
   const t=I18N[l];
   document.title='213 SERVER | '+t.title;
-  $('tSec1').textContent='01 · '+t.sec1;
-  $('tSec2').textContent='02 · '+t.sec2;
+  $('tSec1').textContent='01 / '+t.sec1;
+  $('tSec2').textContent='02 / '+t.sec2;
   $('tTitle').textContent=t.title;
   $('tSub').innerHTML=t.sub;
   $('tRequired').innerHTML=t.required;
@@ -507,6 +664,32 @@ function setLang(l){
   $('tDone').textContent=t.done;
   $('againBtn').textContent=t.again;
   ['fS1','fS2','fS3','fS4','fKills'].forEach((id,i)=>refreshPreview(id,'pS'+(i+1)));
+  applyHubLanguage();
+  if(sb&&currentPage==='vote') loadOpenPolls(true);
+}
+
+function applyHubLanguage(){
+  const t=HUB_I18N[lang]||HUB_I18N.ko;
+  document.title='213 SERVER | '+(currentPage==='home'?t.browserTitle:currentPage.startsWith('vote')?t.voteTitle:I18N[lang].title);
+  $('hTitle').textContent=t.hubTitle;$('hSub').textContent=t.hubSub;
+  $('hPowerTitle').textContent=t.powerTitle;$('hPowerDesc').textContent=t.powerDesc;
+  $('hVoteTitle').textContent=t.voteTitle;$('hVoteDesc').textContent=t.voteDesc;
+  $('powerBackText').textContent=t.back;$('voteBackText').textContent=t.back;$('voteDoneHome').textContent=t.home;
+  $('vTitle').textContent=t.pollTitle;$('vSub').textContent=t.pollSub;$('vPollSelectLabel').textContent=t.pollSelect;
+  $('vSecChoice').textContent=t.choiceSec;$('vSecInfo').textContent=t.infoSec;
+  $('vAlliance').textContent=t.alliance;$('vAllianceInput').placeholder=t.alliancePh;
+  $('vNick').textContent=t.nick;$('vNickInput').placeholder=t.nickPh;
+  $('vTroop').textContent=t.troop;
+  const currentTroop=$('vTroopInput').value;
+  $('vTroopInput').innerHTML='<option value=""></option>'+TROOP_CANON.map((value,index)=>`<option value="${value}">${t.troops[index]}</option>`).join('');
+  $('vTroopInput').value=currentTroop;
+  $('vIndustry').textContent=t.industry;$('vIndustryInput').placeholder=t.industryPh;
+  $('vSquad1').textContent=t.squad1;$('vSquad1Input').placeholder=t.squad1Ph;
+  $('vNote').textContent=t.note;$('vNoteInput').placeholder=t.notePh;$('vOptional').textContent=t.optional;
+  $('vUpdateNote').textContent=t.updateNote;$('voteSubmitBtn').textContent=t.submit;
+  $('vDoneTitle').textContent=t.done;$('voteAgainBtn').textContent=t.again;
+  if($('pollLoading')&&!$('pollLoading').hidden&&!publicPolls.length)$('pollLoading').textContent=t.loading;
+  updateVotePreview();
 }
 
 /* 전투력 해석: "6.22g"→6220M, "6220"→6220M, "6.22"→6220M, "850m"→850M */
@@ -545,7 +728,145 @@ function refreshPreview(inp,prev){
 }
 ['fS1','fS2','fS3','fS4','fKills'].forEach((id,i)=>$(id).addEventListener('input',()=>refreshPreview(id,'pS'+(i+1))));
 
-function showForm(){ $('formView').style.display='block'; $('doneView').style.display='none'; $('formMsg').textContent=''; }
+function setPage(page){
+  const ids={home:'homeView',power:'formView',powerDone:'doneView',vote:'voteView',voteDone:'voteDoneView'};
+  Object.entries(ids).forEach(([key,id])=>{
+    const element=$(id),active=key===page;
+    element.hidden=!active;
+    element.style.display=active?'block':'none';
+  });
+  currentPage=page;
+  document.body.dataset.page=page;
+  const ht=HUB_I18N[lang]||HUB_I18N.ko;
+  const title=page==='home'?ht.browserTitle:page.startsWith('vote')?ht.voteTitle:I18N[lang].title;
+  document.title='213 SERVER | '+title;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function showHome(){setPage('home');}
+function showPowerForm(){setPage('power');$('formMsg').textContent='';}
+function showForm(){showPowerForm();}
+function showVoteForm(){
+  setPage('vote');
+  $('voteMsg').textContent='';
+  loadOpenPolls(true);
+}
+
+function pollLocale(){return ({ko:'ko-KR',en:'en-US',ja:'ja-JP',zh:'zh-CN'})[lang]||'ko-KR';}
+function formatPollDeadline(value){
+  const t=HUB_I18N[lang]||HUB_I18N.ko;
+  if(!value)return t.noDeadline;
+  const date=new Date(value);
+  if(Number.isNaN(date.getTime()))return t.noDeadline;
+  return t.deadline+' / '+new Intl.DateTimeFormat(pollLocale(),{
+    timeZone:'Asia/Seoul',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:false
+  }).format(date)+' (KST)';
+}
+function parsePollPayload(data){
+  if(Array.isArray(data))return data;
+  if(typeof data==='string'){try{const parsed=JSON.parse(data);return Array.isArray(parsed)?parsed:[];}catch(e){return [];}}
+  return [];
+}
+async function loadOpenPolls(keepSelection=false){
+  const t=HUB_I18N[lang]||HUB_I18N.ko;
+  if(!sb){$('pollLoading').hidden=false;$('pollLoading').textContent=t.loading;return;}
+  const oldPoll=keepSelection?selectedPublicPollId:null;
+  const oldOption=document.querySelector('input[name="publicPollOption"]:checked')?.value||null;
+  $('pollLoading').hidden=false;$('pollLoading').textContent=t.loading;$('pollForm').hidden=true;
+  try{
+    const {data,error}=await sb.rpc('get_open_participation_polls',{p_lang:lang});
+    if(error)throw error;
+    publicPolls=parsePollPayload(data);
+    selectedPublicPollId=publicPolls.some(p=>String(p.id)===String(oldPoll))?oldPoll:(publicPolls[0]?.id||null);
+    renderPublicPoll(oldOption);
+  }catch(error){
+    publicPolls=[];selectedPublicPollId=null;
+    $('pollLoading').hidden=false;
+    $('pollLoading').textContent=t.networkErr+': '+(error?.message||String(error));
+  }
+}
+function selectPublicPoll(value){
+  selectedPublicPollId=value;
+  renderPublicPoll(null);
+}
+function renderPublicPoll(preserveOptionId=null){
+  const t=HUB_I18N[lang]||HUB_I18N.ko;
+  const poll=publicPolls.find(row=>String(row.id)===String(selectedPublicPollId));
+  if(!poll){
+    $('pollLoading').hidden=false;$('pollLoading').textContent=t.noPoll;$('pollForm').hidden=true;
+    return;
+  }
+  $('pollLoading').hidden=true;$('pollForm').hidden=false;
+  $('pollSelectWrap').hidden=publicPolls.length<=1;
+  $('vPollSelect').innerHTML=publicPolls.map(row=>`<option value="${escapeHtml(row.id)}">${escapeHtml(row.title)}</option>`).join('');
+  $('vPollSelect').value=String(poll.id);
+  $('publicPollTitle').textContent=poll.title||t.pollTitle;
+  $('publicPollDescription').textContent=poll.description||'';
+  $('publicPollDeadline').textContent=formatPollDeadline(poll.closes_at);
+  const options=Array.isArray(poll.options)?poll.options:[];
+  $('publicPollOptions').innerHTML=options.map(option=>{
+    const color=/^#[0-9a-f]{6}$/i.test(option.color||'')?option.color:'#4E9BFF';
+    const selected=String(option.id)===String(preserveOptionId);
+    return `<label class="choice-item${selected?' selected':''}" style="--choice:${color}">
+      <input type="radio" name="publicPollOption" value="${escapeHtml(option.id)}" ${selected?'checked':''} onchange="syncPublicChoice()">
+      <span class="choice-dot" aria-hidden="true"></span><span class="choice-label">${escapeHtml(option.label)}</span>
+    </label>`;
+  }).join('');
+  const targets=Array.isArray(poll.target_alliances)?poll.target_alliances:[];
+  if(targets.length===1&&!$('vAllianceInput').value.trim())$('vAllianceInput').value=targets[0];
+}
+function syncPublicChoice(){
+  document.querySelectorAll('.choice-item').forEach(label=>label.classList.toggle('selected',!!label.querySelector('input:checked')));
+}
+function updateVotePreview(){
+  const input=$('vSquad1Input'),preview=$('vPowerPreview');
+  if(!input||!preview)return;
+  const raw=input.value.trim(),t=I18N[lang]||I18N.ko;
+  if(!raw){preview.textContent='';preview.classList.remove('bad');return;}
+  const value=parsePower(raw);
+  if(value==null||Number.isNaN(value)||value<=0){preview.textContent=t.badNum;preview.classList.add('bad');}
+  else{preview.textContent=t.preview(fmtG(value));preview.classList.remove('bad');}
+}
+async function doVoteSubmit(){
+  if(voteSubmitting)return;
+  const t=HUB_I18N[lang]||HUB_I18N.ko;
+  const poll=publicPolls.find(row=>String(row.id)===String(selectedPublicPollId));
+  const optionId=document.querySelector('input[name="publicPollOption"]:checked')?.value;
+  const alliance=$('vAllianceInput').value.trim(),nickname=$('vNickInput').value.trim(),troop=$('vTroopInput').value;
+  const industryText=normalizeNumericText($('vIndustryInput').value).trim().replace(/\s/g,'');
+  const squad1=parsePower($('vSquad1Input').value),note=$('vNoteInput').value.trim();
+  const fail=message=>{$('voteMsg').style.color='var(--red)';$('voteMsg').textContent=message;};
+  if(!poll){fail(t.pollClosed);return;}
+  if(!optionId){fail(t.chooseOption);return;}
+  if(!alliance){fail(t.errAlliance);return;}
+  if(!nickname){fail(t.errNick);return;}
+  if(!troop){fail(t.errTroop);return;}
+  if(!/^[0-9]{1,4}$/.test(industryText)||Number(industryText)<=0){fail(t.errIndustry);return;}
+  if(squad1==null||Number.isNaN(squad1)||squad1<=0){fail(t.errPower);return;}
+  const option=(poll.options||[]).find(row=>String(row.id)===String(optionId));
+  const troopText=$('vTroopInput').selectedOptions[0]?.textContent||troop;
+  const lines=[poll.title,option?.label||'',t.alliance+': '+alliance.toUpperCase(),t.nick+': '+nickname,t.troop+': '+troopText,t.industry+': '+industryText,t.squad1+': '+fmtG(squad1)];
+  if(note)lines.push(t.note+': '+note);
+  if(!confirm(t.confirm+'\n\n'+lines.join('\n')))return;
+  voteSubmitting=true;$('voteSubmitBtn').disabled=true;$('voteSubmitBtn').textContent=t.submitting;
+  $('voteMsg').style.color='var(--muted)';$('voteMsg').textContent=t.submitting;
+  try{
+    const {data,error}=await sb.rpc('submit_participation_vote',{
+      p_poll_id:+poll.id,p_option_id:+optionId,p_alliance:alliance,p_nickname:nickname,p_troop:troop,
+      p_industry:Number(industryText),p_squad1:squad1,p_note:note||null
+    });
+    if(error)throw error;
+    const errors={poll_not_found:t.pollClosed,poll_closed:t.pollClosed,bad_option:t.badOption,no_alliance:t.errAlliance,no_nickname:t.errNick,bad_troop:t.errTroop,bad_industry:t.errIndustry,bad_power:t.errPower,alliance_not_target:t.notTarget,too_long:I18N[lang].errLong};
+    if(data!=='ok'){fail(errors[data]||('Error: '+data));return;}
+    ['vAllianceInput','vNickInput','vTroopInput','vIndustryInput'].forEach(id=>localStorage.setItem('vote_'+id,$(id).value));
+    $('voteDoneSummary').innerHTML=`<b>${escapeHtml(alliance.toUpperCase())} / ${escapeHtml(nickname)}</b><br><span class="vote-done-choice">${escapeHtml(option?.label||'')}</span><br>${escapeHtml(t.updated)}<br><br>${escapeHtml(t.doneTail)}`;
+    setPage('voteDone');
+  }catch(error){fail(t.networkErr+': '+(error?.message||String(error)));}
+  finally{voteSubmitting=false;$('voteSubmitBtn').disabled=false;$('voteSubmitBtn').textContent=t.submit;}
+}
+
+$('vSquad1Input').addEventListener('input',updateVotePreview);
+['vAllianceInput','vNickInput'].forEach(id=>$(id).addEventListener('input',()=>localStorage.setItem('vote_'+id,$(id).value)));
+['vTroopInput','vIndustryInput'].forEach(id=>$(id).addEventListener('change',()=>localStorage.setItem('vote_'+id,$(id).value)));
 
 ['fAlliance','fNick'].forEach(id=>{
   $(id).addEventListener('input',()=>{
@@ -672,18 +993,16 @@ async function doSubmit(){
       .filter(([,v])=>v)
       .map(([i,v])=>t.squadWord[i]+' '+fmtG(v))
       .concat([t.kills+' '+kills.toLocaleString()])
-      .join(' · ');
+      .join(' / ');
 
     $('doneSummary').innerHTML=
-      `<b>${escapeHtml(alliance.toUpperCase())} · ${escapeHtml(nick)}</b><br>`+
+      `<b>${escapeHtml(alliance.toUpperCase())} / ${escapeHtml(nick)}</b><br>`+
       `${escapeHtml(summaryParts)}<br><br>${t.doneTail}`;
 
     ['fS1','fS2','fS3','fS4','fKills'].forEach(id=>{$(id).value='';});
     ['pS1','pS2','pS3','pS4','pS5'].forEach(id=>{$(id).textContent='';});
 
-    $('formView').style.display='none';
-    $('doneView').style.display='block';
-    window.scrollTo({top:0,behavior:'smooth'});
+    setPage('powerDone');
   }catch(error){
     showError(t.networkErr+': '+(error?.message||String(error)));
   }finally{
@@ -712,7 +1031,7 @@ async function loadGuideImgs(){
       img.alt=I18N[lang].guide;
       img.style.width=width;
       img.loading='lazy';
-      img.addEventListener('click',()=>window.open(url,'_blank','noopener'));
+      img.addEventListener('click',()=>window.open(url,'_blank','noopener,noreferrer'));
       wrap.appendChild(img);
     });
 
@@ -745,7 +1064,13 @@ function init(){
   }
   sb=window.supabase.createClient(CONFIG.SUPABASE_URL,CONFIG.SUPABASE_ANON_KEY);
   ['fAlliance','fNick','fTroop','fShelter'].forEach(id=>{const v=localStorage.getItem('sub_'+id);if(v)$(id).value=v;});
+  ['vAllianceInput','vNickInput','vTroopInput','vIndustryInput'].forEach(id=>{const v=localStorage.getItem('vote_'+id);if(v)$(id).value=v;});
+  if(!$('vAllianceInput').value&&$('fAlliance').value)$('vAllianceInput').value=$('fAlliance').value;
+  if(!$('vNickInput').value&&$('fNick').value)$('vNickInput').value=$('fNick').value;
+  if(!$('vTroopInput').value&&$('fTroop').value)$('vTroopInput').value=$('fTroop').value;
+  if(!$('vIndustryInput').value&&$('fShelter').value)$('vIndustryInput').value=$('fShelter').value;
   loadGuideImgs();
+  showHome();
 }
 init();
 </script>
