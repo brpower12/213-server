@@ -3344,7 +3344,7 @@ body.tactical-tab-open footer{display:none!important}
       </div>
       <label class="poll-field"><span>안내 문구</span><textarea id="pollDescKo" maxlength="500" placeholder="참여 가능한 시간대를 선택해 주세요."></textarea></label>
       <div class="poll-grid two">
-        <label class="poll-field"><span>시작 시간</span><input id="pollOpensAt" type="datetime-local"></label>
+        <label class="poll-field"><span>공개 시작 시간</span><input id="pollOpensAt" type="datetime-local"><small>투표 시작 버튼을 누르면 현재 시각으로 자동 설정됩니다.</small></label>
         <label class="poll-field"><span>마감 시간</span><input id="pollClosesAt" type="datetime-local"></label>
       </div>
 
@@ -7783,11 +7783,19 @@ async function saveParticipationPoll(silent=false){
 }
 async function changePollStatus(status){
   let pollId=participationCurrent?.id;
-  if(status==='open'){pollId=await saveParticipationPoll(true);if(!pollId)return;}
-  if(!pollId){setPollMessage('투표를 먼저 저장해 주세요.','bad');return;}
   const messages={open:'이 투표를 공개하고 응답 접수를 시작할까요?',closed:'이 투표를 마감할까요?',archived:'이 투표를 보관 처리할까요?'};
   if(!confirm(messages[status]))return;
-  const {error}=await sb.from('participation_polls').update({status}).eq('id',pollId);
+  let openedAt=null;
+  if(status==='open'){
+    openedAt=new Date();
+    const closesAt=pollIsoValue($('pollClosesAt').value);
+    if(closesAt&&new Date(closesAt)<=openedAt){setPollMessage('마감 시간이 이미 지났습니다. 마감 시간을 현재 이후로 변경해 주세요.','bad');return;}
+    $('pollOpensAt').value=pollLocalDateValue(openedAt.toISOString());
+    pollId=await saveParticipationPoll(true);if(!pollId)return;
+  }
+  if(!pollId){setPollMessage('투표를 먼저 저장해 주세요.','bad');return;}
+  const changes=status==='open'?{status,opens_at:openedAt.toISOString()}:{status};
+  const {error}=await sb.from('participation_polls').update(changes).eq('id',pollId);
   if(error){setPollMessage(participationErrorText(error),'bad');return;}
   await loadPollManager(true);await loadPollDetails(pollId);setPollMessage(`투표 상태를 '${participationStatusLabel(status)}'으로 변경했습니다.`,'good');refreshPollBadge();
 }
