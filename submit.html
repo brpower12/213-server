@@ -324,11 +324,14 @@ body[data-page="home"] .langbar{margin-bottom:12px}
 html[lang="en"] .home-prompt,html[lang="en"] .service-copy b,html[lang="en"] .service-copy span{letter-spacing:-.01em}
 html[lang="ja"] .home-prompt,html[lang="ja"] .service-copy b,html[lang="ja"] .service-copy span,html[lang="zh-CN"] .home-prompt,html[lang="zh-CN"] .service-copy b,html[lang="zh-CN"] .service-copy span{letter-spacing:0}
 .service-arrow{color:var(--dim);font-size:1.25rem;text-align:center}
-.view-back{display:flex;align-items:center;justify-content:center;gap:6px;width:max-content;min-height:42px;margin:0 0 15px;padding:9px 13px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);color:var(--muted);font-size:.82rem;font-weight:800}
+.view-back{display:flex;align-items:center;justify-content:center;gap:6px;width:max-content;min-height:42px;margin:0 0 15px;padding:9px 13px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);color:var(--muted);font-size:.82rem;font-weight:800;transition:transform .12s,border-color .12s,box-shadow .12s,background .12s}
 .view-back:hover{color:var(--text);border-color:#3b475d}
-.vote-home-btn{width:100%;min-height:48px;margin:10px 0 0;padding:12px 14px;font-size:.9rem;color:var(--text)}
+.vote-home-btn{width:100%;min-height:48px;margin:10px 0 0;padding:12px 14px;border-color:#34445e;background:linear-gradient(180deg,#222c3d,#192230);color:var(--text);font-size:.9rem;box-shadow:0 5px 18px rgba(78,155,255,.18),inset 0 1px 0 rgba(255,255,255,.025)}
+.vote-home-btn:hover{border-color:#4b6487;background:linear-gradient(180deg,#273449,#1c2737);box-shadow:0 8px 24px rgba(78,155,255,.25);transform:translateY(-1px)}
+.vote-home-btn:active{transform:translateY(0);box-shadow:0 3px 12px rgba(78,155,255,.16)}
 .poll-head{padding:14px 15px;margin:0 0 17px;border:1px solid rgba(242,193,78,.22);border-radius:13px;background:linear-gradient(145deg,rgba(242,193,78,.07),rgba(255,255,255,.015))}
 .poll-head h2{font-size:1.08rem;line-height:1.35;margin-bottom:5px}.poll-head p{color:var(--muted);font-size:.8rem;line-height:1.5;white-space:pre-line}.poll-deadline{display:block;margin-top:8px;color:#d8b75d;font-size:.73rem;font-weight:750}
+.poll-picker{margin:0 0 16px}.poll-picker-label{display:block;margin:0 0 8px;color:var(--muted);font-size:.76rem;font-weight:850}.poll-select-list{display:grid;gap:8px}.poll-select-card{display:grid;grid-template-columns:minmax(0,1fr) 26px;align-items:center;gap:10px;width:100%;min-height:58px;padding:11px 12px;border:1px solid #344057;border-radius:12px;background:linear-gradient(145deg,rgba(255,255,255,.03),rgba(255,255,255,.012));color:var(--text);text-align:left;transition:transform .12s,border-color .12s,background .12s,box-shadow .12s}.poll-select-copy{min-width:0}.poll-select-copy b{display:block;font-size:.84rem;line-height:1.4;overflow-wrap:anywhere;word-break:break-word}.poll-select-copy small{display:block;margin-top:4px;color:var(--dim);font-size:.68rem;line-height:1.35}.poll-select-mark{display:grid;place-items:center;width:24px;height:24px;border:1px solid #3b465b;border-radius:50%;color:transparent;font-size:.75rem;font-weight:900}.poll-select-card.active{border-color:rgba(242,193,78,.58);background:linear-gradient(145deg,rgba(242,193,78,.10),rgba(255,255,255,.018));box-shadow:0 5px 18px rgba(242,193,78,.10)}.poll-select-card.active .poll-select-mark{border-color:rgba(242,193,78,.62);background:rgba(242,193,78,.14);color:var(--gold)}.poll-select-card:hover{transform:translateY(-1px);border-color:rgba(242,193,78,.5)}
 .choice-list{display:grid;gap:9px;margin-bottom:18px}
 .choice-item{position:relative;display:flex;align-items:flex-start;gap:11px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);cursor:pointer;transition:border-color .12s,background .12s,transform .12s}
 .choice-item:hover{transform:translateY(-1px);border-color:#46536b}.choice-item.selected{border-color:var(--choice,#4E9BFF);background:color-mix(in srgb,var(--choice,#4E9BFF) 12%,var(--panel2));box-shadow:0 0 0 2px color-mix(in srgb,var(--choice,#4E9BFF) 20%,transparent)}
@@ -342,7 +345,7 @@ textarea:focus{border-color:var(--ours);box-shadow:0 0 0 3px rgba(78,155,255,.18
 .vote-done-choice{display:inline-block;margin:10px 0;padding:7px 11px;border:1px solid rgba(61,220,151,.25);border-radius:999px;color:#8ce7bd;background:rgba(61,220,151,.055);font-size:.79rem;font-weight:800}
 @media(max-width:420px){.home-logo{width:132px;margin-bottom:14px}.service-card{grid-template-columns:42px minmax(0,1fr) 18px;padding:14px 12px}.service-icon{width:42px;height:42px}.choice-item{padding:12px}.sub,.poll-head p,.poll-empty,.poll-update-note,.credit{overflow-wrap:anywhere;word-break:break-word}}
 @media(max-width:420px){.langbar button{min-height:40px}}
-@media(hover:none){.service-card:hover,.choice-item:hover,.btn:hover{transform:none}}
+@media(hover:none){.service-card:hover,.choice-item:hover,.poll-select-card:hover,.btn:hover{transform:none}}
 
 </style>
 </head>
@@ -435,7 +438,7 @@ textarea:focus{border-color:var(--ours);box-shadow:0 0 0 3px rgba(78,155,255,.18
     <div class="sub" id="vSub"></div>
     <div id="pollLoading" class="poll-empty"></div>
     <div id="pollForm" hidden>
-      <div class="field" id="pollSelectWrap" hidden><label id="vPollSelectLabel"></label><select id="vPollSelect" onchange="selectPublicPoll(this.value)"></select></div>
+      <div class="poll-picker" id="pollSelectWrap" hidden><span class="poll-picker-label" id="vPollSelectLabel"></span><div class="poll-select-list" id="vPollSelectList"></div></div>
       <div class="poll-head"><h2 id="publicPollTitle"></h2><p id="publicPollDescription"></p><span class="poll-deadline" id="publicPollDeadline"></span></div>
       <div class="sechd"><span id="vSecChoice"></span></div>
       <div class="choice-list" id="publicPollOptions"></div>
@@ -797,8 +800,10 @@ function renderPublicPoll(preserveOptionId=null){
   }
   $('pollLoading').hidden=true;$('pollForm').hidden=false;
   $('pollSelectWrap').hidden=publicPolls.length<=1;
-  $('vPollSelect').innerHTML=publicPolls.map(row=>`<option value="${escapeHtml(row.id)}">${escapeHtml(row.title)}</option>`).join('');
-  $('vPollSelect').value=String(poll.id);
+  $('vPollSelectList').innerHTML=publicPolls.length>1?publicPolls.map(row=>{
+    const active=String(row.id)===String(poll.id);
+    return `<button class="poll-select-card${active?' active':''}" type="button" data-poll-id="${escapeHtml(row.id)}" aria-pressed="${active?'true':'false'}" onclick="selectPublicPoll(this.dataset.pollId)"><span class="poll-select-copy"><b>${escapeHtml(row.title)}</b><small>${escapeHtml(formatPollDeadline(row.closes_at))}</small></span><span class="poll-select-mark" aria-hidden="true">✓</span></button>`;
+  }).join(''):'';
   $('publicPollTitle').textContent=poll.title||t.pollTitle;
   $('publicPollDescription').textContent=poll.description||'';
   $('publicPollDeadline').textContent=formatPollDeadline(poll.closes_at);
