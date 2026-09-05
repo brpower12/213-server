@@ -2815,7 +2815,7 @@ body.tactical-tab-open footer{display:none!important}
 .poll-targets{display:flex;gap:7px;flex-wrap:wrap;padding:9px;border:1px solid var(--line);border-radius:10px;background:#111827}.poll-target-check{display:flex;align-items:center;gap:6px;padding:6px 8px;border:1px solid #344056;border-radius:8px;color:#bbc5d5;font-size:.74rem;font-weight:800;background:#172031;cursor:pointer}.poll-target-check:has(input:checked){color:#eaf2ff;border-color:rgba(78,155,255,.5);background:rgba(78,155,255,.1)}.poll-target-check input{width:auto;accent-color:var(--ours)}
 .poll-language-box{margin:7px 0 17px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.012)}.poll-language-box summary{cursor:pointer;padding:11px 12px;color:#b9c5d8;font-size:.77rem;font-weight:850}.poll-language-grid{display:grid;gap:9px;padding:0 11px 11px}.poll-language-card{display:grid;grid-template-columns:72px minmax(0,1fr);gap:7px;align-items:start;padding:9px;border:1px solid #2b3548;border-radius:9px;background:#121925}.poll-language-card b{font-size:.71rem;color:#8ea1ba;padding-top:10px}.poll-language-card textarea{grid-column:2;min-height:56px}.poll-language-card input{min-width:0}
 .poll-option-head{padding-top:13px;border-top:1px solid var(--line)}
-.poll-options-editor{display:grid;gap:9px}.poll-option-row{display:grid;grid-template-columns:32px minmax(150px,1.25fr) 112px 54px auto;gap:7px;align-items:center;padding:9px;border:1px solid #2d384b;border-radius:10px;background:#121925}.poll-option-index{display:grid;place-items:center;width:27px;height:27px;border-radius:8px;background:#202b3d;color:#9fb0c6;font-size:.72rem;font-weight:900}.poll-option-main{display:grid;gap:6px}.poll-option-main small{color:var(--dim);font-size:.64rem}.poll-option-more{display:none;grid-column:2 / -1;gap:6px;padding-top:3px}.poll-option-row.expanded .poll-option-more{display:grid}.poll-option-more input{width:100%}.poll-option-color{width:44px!important;min-width:44px;height:38px;padding:3px!important}.poll-option-actions{display:flex;gap:4px}.poll-option-actions .btn{min-width:33px;padding:7px}
+.poll-options-editor{display:grid;gap:9px}.poll-option-row{display:grid;grid-template-columns:32px minmax(0,1fr) 112px 54px;gap:7px;align-items:center;padding:9px;border:1px solid #2d384b;border-radius:10px;background:#121925;overflow:hidden}.poll-option-index{display:grid;place-items:center;width:27px;height:27px;border-radius:8px;background:#202b3d;color:#9fb0c6;font-size:.72rem;font-weight:900}.poll-option-main{display:grid;gap:6px;min-width:0}.poll-option-main small{color:var(--dim);font-size:.64rem}.poll-option-more{display:none;grid-column:2 / -1;gap:6px;padding-top:3px;min-width:0}.poll-option-row.expanded .poll-option-more{display:grid}.poll-option-more input{width:100%;min-width:0}.poll-option-color{width:44px!important;min-width:44px;height:38px;padding:3px!important}.poll-option-actions{grid-column:2 / -1;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px;min-width:0}.poll-option-actions .btn{flex:0 0 33px;min-width:33px;padding:7px}
 .poll-editor-actions{display:grid;grid-template-columns:1.4fr 1fr 1fr .8fr;gap:7px;margin-top:14px}.poll-editor-message{min-height:18px;margin-top:8px;color:var(--muted);font-size:.72rem;line-height:1.45}.poll-editor-message.bad{color:var(--red)}.poll-editor-message.good{color:var(--green)}
 .poll-stats{display:grid;grid-template-columns:repeat(6,minmax(82px,1fr));gap:7px;margin-bottom:12px}.poll-stats>div{padding:10px;border:1px solid var(--line);border-radius:10px;background:#121925}.poll-stats span{display:block;color:var(--muted);font-size:.66rem;margin-bottom:4px}.poll-stats b{font-size:1.04rem}.poll-stats>div:nth-child(3) b{color:var(--green)}.poll-stats>div:nth-child(4) b{color:var(--gold)}.poll-stats>div:nth-child(5) b{color:var(--red)}.poll-stats>div:nth-child(6) b{color:#9ba7ba}
 .poll-filters{display:grid;grid-template-columns:repeat(4,minmax(120px,1fr));gap:7px;margin-bottom:10px}.poll-filters input,.poll-filters select{min-width:0}.poll-result-summary{display:flex;align-items:center;min-height:34px;padding:7px 9px;margin-bottom:8px;border:1px solid rgba(78,155,255,.16);border-radius:8px;background:rgba(78,155,255,.035);color:#9fb4d0;font-size:.72rem;font-weight:750}
@@ -3288,7 +3288,7 @@ body.tactical-tab-open footer{display:none!important}
 <section class="view" id="view-polls">
   <div class="section-head section-head-polls">
     <div class="section-head-icon">🗳️</div>
-    <div><h2>투표 관리</h2><p>투표 생성부터 응답·미응답 확인, 전투력순 정렬과 역할 배정까지 한곳에서 관리합니다.</p></div>
+    <div><h2>투표 관리</h2><p>투표 생성부터 응답과 미응답 확인, 전투력순 정렬과 역할 배정까지 한곳에서 관리합니다.</p></div>
   </div>
 
   <div class="panel poll-manager-bar">
@@ -3319,7 +3319,7 @@ body.tactical-tab-open footer{display:none!important}
       <div class="poll-field"><span>대상 연맹 <b>*</b></span><div class="poll-targets" id="pollTargetAlliances"><span class="hint">연맹 목록을 불러오는 중...</span></div><small>선택한 연맹의 활성 인원만 미응답자 계산에 포함됩니다.</small></div>
 
       <details class="poll-language-box">
-        <summary>🌐 다국어 제목·안내 문구</summary>
+        <summary>🌐 다국어 제목 / 안내 문구</summary>
         <div class="poll-language-grid">
           <div class="poll-language-card"><b>English</b><input id="pollTitleEn" maxlength="100" placeholder="Poll title"><textarea id="pollDescEn" maxlength="500" placeholder="Poll description"></textarea></div>
           <div class="poll-language-card"><b>日本語</b><input id="pollTitleJa" maxlength="100" placeholder="投票タイトル"><textarea id="pollDescJa" maxlength="500" placeholder="投票の案内"></textarea></div>
@@ -3327,7 +3327,7 @@ body.tactical-tab-open footer{display:none!important}
         </div>
       </details>
 
-      <div class="poll-option-head"><div><h3>선택 항목</h3><p>참여·부분 참여·미참여 분류를 지정하면 결과가 자동 집계됩니다.</p></div><button class="btn sm" onclick="addPollOption()">＋ 항목 추가</button></div>
+      <div class="poll-option-head"><div><h3>선택 항목</h3><p>참여, 부분 참여, 미참여 분류를 지정하면 결과가 자동 집계됩니다.</p></div><button class="btn sm" onclick="addPollOption()">＋ 항목 추가</button></div>
       <div class="poll-options-editor" id="pollOptionsEditor"></div>
 
       <div class="poll-editor-actions">
@@ -7613,7 +7613,9 @@ function pollLocalDateValue(value){
 function pollIsoValue(value){if(!value)return null;const date=new Date(value);return Number.isNaN(date.getTime())?null:date.toISOString();}
 function renderPollTargets(selected=[]){
   const chosen=new Set((selected||[]).map(v=>normalizeIdentity(v)));
-  const rows=get213Alliances();
+  const priority=['NXT','AST','G','KBAZ'];
+  const order=name=>{const index=priority.indexOf(String(name||'').trim().toUpperCase());return index<0?priority.length:index;};
+  const rows=get213Alliances().slice().sort((a,b)=>order(a.name)-order(b.name)||String(a.name||'').localeCompare(String(b.name||''),'ko'));
   $('pollTargetAlliances').innerHTML=rows.length?rows.map(alliance=>`<label class="poll-target-check"><input type="checkbox" value="${esc(alliance.name)}" ${chosen.has(normalizeIdentity(alliance.name))?'checked':''}>${esc(alliance.name)}</label>`).join(''):'<span class="hint">213서버 연맹이 없습니다. 관리 탭에서 연맹을 먼저 등록해 주세요.</span>';
 }
 function defaultPollOptions(){return [
@@ -7633,7 +7635,7 @@ function fillParticipationEditor(){
   renderPollOptionsEditor();
   updatePollStatusPill();
   $('pollDuplicateBtn').disabled=!poll.id;
-  setPollMessage(poll.id?`투표 #${poll.id} · ${participationStatusLabel(poll.status)}`:'새 투표 내용을 입력한 뒤 설정 저장을 눌러 주세요.');
+  setPollMessage(poll.id?`투표 #${poll.id} / ${participationStatusLabel(poll.status)}`:'새 투표 내용을 입력한 뒤 설정 저장을 눌러 주세요.');
 }
 function renderPollOptionsEditor(){
   const categories=[['attend','참여'],['partial','부분 참여'],['absent','미참여'],['other','기타']];
@@ -7685,7 +7687,7 @@ async function loadPollManager(force=false){
   }
   participationPolls=data||[];
   $('pollManagerSelect').innerHTML='<option value="">＋ 새 투표 작성</option>'+participationPolls.map(p=>`<option value="${p.id}">[${participationStatusLabel(p.status)}] ${esc(p.title_ko)}</option>`).join('');
-  $('pollManagerStatus').textContent=`전체 ${participationPolls.length}개 · 진행 중 ${participationPolls.filter(p=>p.status==='open').length}개`;
+  $('pollManagerStatus').textContent=`전체 ${participationPolls.length}개 / 진행 중 ${participationPolls.filter(p=>p.status==='open').length}개`;
   const remembered=localStorage.getItem('participation_poll_id');
   const candidate=participationPolls.find(p=>String(p.id)===String(participationCurrent?.id))||participationPolls.find(p=>String(p.id)===String(remembered))||participationPolls[0];
   if(candidate)await loadPollDetails(candidate.id);else newParticipationPoll();
@@ -7703,7 +7705,7 @@ async function loadPollDetails(id){
   if(error){setPollMessage(participationErrorText(error),'bad');return;}
   participationCurrent=pollResult.data;participationOptions=optionResult.data||[];participationPersistedOptionIds=participationOptions.map(option=>option.id);participationResponses=responseResult.data||[];
   localStorage.setItem('participation_poll_id',String(id));fillParticipationEditor();
-  $('pollManagerStatus').textContent=`${participationStatusLabel(participationCurrent.status)} · 응답 ${participationResponses.length}명`;
+  $('pollManagerStatus').textContent=`${participationStatusLabel(participationCurrent.status)} / 응답 ${participationResponses.length}명`;
   await loadPollResults(false);
 }
 function readParticipationForm(){
@@ -7788,7 +7790,7 @@ async function loadPollResults(showToast=true){
   participationMembers=memberResult.data||[];
   try{participationLatest=await fetchLatest(participationMembers.map(m=>m.id));}catch(error){participationLatest=new Map();console.warn('투표 최신 전투력 로딩 실패',error);}
   populatePollResultFilters(targetAllianceRows);renderPollResults();
-  $('pollManagerStatus').textContent=`${participationStatusLabel(participationCurrent.status)} · 응답 ${participationResponses.length}명`;
+  $('pollManagerStatus').textContent=`${participationStatusLabel(participationCurrent.status)} / 응답 ${participationResponses.length}명`;
   if(showToast)toast('✅ 투표 결과를 갱신했습니다');
 }
 function populatePollResultFilters(targetAllianceRows){
@@ -7836,20 +7838,20 @@ function renderPollResults(){
   $('pollStats').innerHTML=`<div><span>대상 인원</span><b>${participationMembers.length}명</b></div><div><span>응답</span><b>${responses.length}명</b></div><div><span>참여</span><b>${attend.length}명</b></div><div><span>부분 참여</span><b>${partial.length}명</b></div><div><span>미참여</span><b>${absent.length}명</b></div><div><span>미응답</span><b>${missing.length}명</b></div>`;
   const rows=filteredParticipationRows();participationDisplayRows=rows;
   const powerTotal=rows.reduce((sum,row)=>sum+(row.power||0),0);
-  $('pollResultSummary').textContent=`표시 ${rows.length}명 · 1편대 합계 ${fmtG(powerTotal)}${unresolved.length?` · 명단 자동 일치 실패 ${unresolved.length}명`:''}`;
+  $('pollResultSummary').textContent=`표시 ${rows.length}명 / 1편대 합계 ${fmtG(powerTotal)}${unresolved.length?` / 명단 자동 일치 실패 ${unresolved.length}명`:''}`;
   if(!rows.length){$('pollResultsTable').innerHTML='<div class="empty">선택한 조건에 해당하는 인원이 없습니다.</div>';return;}
   const roleOptions=['','공격','수비','견제','집결','대기','미정'];
   $('pollResultsTable').innerHTML=`<table class="poll-result-table"><thead><tr><th>#</th><th>상태</th><th>연맹</th><th>닉네임</th><th>병종</th><th>산업</th><th>1편대</th><th>선택 항목</th><th>응답 시간</th><th>역할</th><th>운영 메모</th></tr></thead><tbody>${rows.map((row,index)=>{
     const response=row.response,option=row.option,color=/^#[0-9a-f]{6}$/i.test(option?.color||'')?option.color:'#4E9BFF';
     const role=response?.assigned_role||'';
-    return `<tr class="${row.state}"><td class="rank-num">${index+1}</td><td><span class="poll-state-chip ${row.state}">${participationCategoryLabel(row.state)}${row.unresolved?' · 미등록':''}</span></td><td>${esc(row.alliance)}</td><td><b>${esc(row.nickname)}</b></td><td>${esc(row.troop||'-')}</td><td>${esc(row.industry||'-')}</td><td class="power">${row.power?fmtG(row.power):'-'}</td><td>${option?`<span class="poll-choice-chip" style="--chip:${color}" title="${esc(option.label_ko)}">${esc(option.label_ko)}</span>`:'-'}</td><td>${response?fmtTime(response.submitted_at):'-'}</td><td>${response?`<select class="poll-role-select" onchange="savePollResponseField(${response.id},'assigned_role',this.value)">${roleOptions.map(value=>`<option value="${value}" ${role===value?'selected':''}>${value||'역할 선택'}</option>`).join('')}</select>`:'-'}</td><td>${response?`<input class="poll-note-input" value="${esc(response.staff_note||'')}" maxlength="200" placeholder="메모" onchange="savePollResponseField(${response.id},'staff_note',this.value)">`:'-'}</td></tr>`;
+    return `<tr class="${row.state}"><td class="rank-num">${index+1}</td><td><span class="poll-state-chip ${row.state}">${participationCategoryLabel(row.state)}${row.unresolved?' / 미등록':''}</span></td><td>${esc(row.alliance)}</td><td><b>${esc(row.nickname)}</b></td><td>${esc(row.troop||'-')}</td><td>${esc(row.industry||'-')}</td><td class="power">${row.power?fmtG(row.power):'-'}</td><td>${option?`<span class="poll-choice-chip" style="--chip:${color}" title="${esc(option.label_ko)}">${esc(option.label_ko)}</span>`:'-'}</td><td>${response?fmtTime(response.submitted_at):'-'}</td><td>${response?`<select class="poll-role-select" onchange="savePollResponseField(${response.id},'assigned_role',this.value)">${roleOptions.map(value=>`<option value="${value}" ${role===value?'selected':''}>${value||'역할 선택'}</option>`).join('')}</select>`:'-'}</td><td>${response?`<input class="poll-note-input" value="${esc(response.staff_note||'')}" maxlength="200" placeholder="메모" onchange="savePollResponseField(${response.id},'staff_note',this.value)">`:'-'}</td></tr>`;
   }).join('')}</tbody></table>`;
 }
 async function savePollResponseField(id,field,value){
   if(!['assigned_role','staff_note'].includes(field))return;
   const {error}=await sb.from('participation_responses').update({[field]:value.trim()||null}).eq('id',id);
   if(error){toast('저장 실패: '+participationErrorText(error));return;}
-  const row=participationResponses.find(r=>String(r.id)===String(id));if(row)row[field]=value.trim()||null;toast('✅ 역할·메모 저장 완료');
+  const row=participationResponses.find(r=>String(r.id)===String(id));if(row)row[field]=value.trim()||null;toast('✅ 역할 / 메모 저장 완료');
 }
 function pollCsvCell(value){const text=String(value??'');return /[",\n]/.test(text)?'"'+text.replace(/"/g,'""')+'"':text;}
 function exportPollResultsCsv(){
