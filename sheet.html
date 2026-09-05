@@ -5,6 +5,8 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; frame-src 'self' blob:; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://cdn.sheetjs.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data: blob: https:; connect-src 'self' https://lrvjbtesukremdyxwvtd.supabase.co wss://lrvjbtesukremdyxwvtd.supabase.co; worker-src 'self' blob:; form-action 'self'; upgrade-insecure-requests">
 <title>213 SERVER | 통합 시트</title>
 <!-- Tactical workspace V3.10: public-state preserved + HQ PNG grid readability + 5-cell guides -->
 <meta property="og:title" content="213 SERVER | 통합 시트">
@@ -2804,9 +2806,9 @@ body.tactical-tab-open footer{display:none!important}
 .poll-manager-select{display:grid;gap:5px;min-width:min(360px,100%);flex:1}.poll-manager-select>span,.poll-field>span{font-size:.72rem;color:var(--muted);font-weight:800}
 .poll-manager-status{margin-left:auto;color:var(--muted);font-size:.75rem;font-weight:750;padding:8px 10px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.018)}
 .poll-workspace{display:grid;grid-template-columns:minmax(420px,.84fr) minmax(620px,1.35fr);gap:14px;align-items:start}
-.poll-editor-panel,.poll-results-panel{min-width:0}
+.poll-editor-panel,.poll-results-panel{min-width:0}.poll-editor-panel{container-type:inline-size;container-name:pollEditor}
 .poll-panel-head,.poll-option-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:15px}
-.poll-panel-head h3,.poll-option-head h3{font-size:1.02rem;margin:0 0 4px}.poll-panel-head p,.poll-option-head p{font-size:.73rem;color:var(--muted);line-height:1.5;margin:0}
+.poll-panel-head>div,.poll-option-head>div{min-width:0}.poll-panel-head h3,.poll-option-head h3{font-size:1.02rem;margin:0 0 4px}.poll-panel-head p,.poll-option-head p{font-size:.73rem;color:var(--muted);line-height:1.5;margin:0;overflow-wrap:anywhere}.poll-option-head>.btn{flex:0 0 auto;white-space:nowrap}
 .poll-status-pill{flex:0 0 auto;padding:6px 10px;border-radius:999px;border:1px solid var(--line);font-size:.71rem;font-weight:900}
 .poll-status-pill.draft{color:#aeb8c8;background:#202836}.poll-status-pill.open{color:#75e3b0;border-color:rgba(61,220,151,.32);background:rgba(61,220,151,.07)}.poll-status-pill.closed{color:#f0c65a;border-color:rgba(242,193,78,.28);background:rgba(242,193,78,.06)}.poll-status-pill.archived{color:#8f9aae}
 .poll-grid{display:grid;gap:10px}.poll-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -2815,18 +2817,48 @@ body.tactical-tab-open footer{display:none!important}
 .poll-targets{display:flex;gap:7px;flex-wrap:wrap;padding:9px;border:1px solid var(--line);border-radius:10px;background:#111827}.poll-target-check{display:flex;align-items:center;gap:6px;padding:6px 8px;border:1px solid #344056;border-radius:8px;color:#bbc5d5;font-size:.74rem;font-weight:800;background:#172031;cursor:pointer}.poll-target-check:has(input:checked){color:#eaf2ff;border-color:rgba(78,155,255,.5);background:rgba(78,155,255,.1)}.poll-target-check input{width:auto;accent-color:var(--ours)}
 .poll-language-box{margin:7px 0 17px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.012)}.poll-language-box summary{cursor:pointer;padding:11px 12px;color:#b9c5d8;font-size:.77rem;font-weight:850}.poll-language-grid{display:grid;gap:9px;padding:0 11px 11px}.poll-language-card{display:grid;grid-template-columns:72px minmax(0,1fr);gap:7px;align-items:start;padding:9px;border:1px solid #2b3548;border-radius:9px;background:#121925}.poll-language-card b{font-size:.71rem;color:#8ea1ba;padding-top:10px}.poll-language-card textarea{grid-column:2;min-height:56px}.poll-language-card input{min-width:0}
 .poll-option-head{padding-top:13px;border-top:1px solid var(--line)}
-.poll-options-editor{display:grid;gap:9px}.poll-option-row{display:grid;grid-template-columns:32px minmax(0,1fr) 112px 54px;gap:7px;align-items:center;padding:9px;border:1px solid #2d384b;border-radius:10px;background:#121925;overflow:hidden}.poll-option-index{display:grid;place-items:center;width:27px;height:27px;border-radius:8px;background:#202b3d;color:#9fb0c6;font-size:.72rem;font-weight:900}.poll-option-main{display:grid;gap:6px;min-width:0}.poll-option-main small{color:var(--dim);font-size:.64rem}.poll-option-more{display:none;grid-column:2 / -1;gap:6px;padding-top:3px;min-width:0}.poll-option-row.expanded .poll-option-more{display:grid}.poll-option-more input{width:100%;min-width:0}.poll-option-color{width:44px!important;min-width:44px;height:38px;padding:3px!important}.poll-option-actions{grid-column:2 / -1;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px;min-width:0}.poll-option-actions .btn{flex:0 0 33px;min-width:33px;padding:7px}
-.poll-editor-actions{display:grid;grid-template-columns:1.4fr 1fr 1fr .8fr;gap:7px;margin-top:14px}.poll-editor-message{min-height:18px;margin-top:8px;color:var(--muted);font-size:.72rem;line-height:1.45}.poll-editor-message.bad{color:var(--red)}.poll-editor-message.good{color:var(--green)}
+.poll-options-editor{display:grid;gap:9px}.poll-option-row{display:grid;grid-template-columns:32px minmax(0,1fr) 112px 54px;gap:7px;align-items:center;padding:9px;border:1px solid #2d384b;border-radius:10px;background:#121925;overflow:hidden}.poll-option-index{display:grid;place-items:center;width:27px;height:27px;border-radius:8px;background:#202b3d;color:#9fb0c6;font-size:.72rem;font-weight:900}.poll-option-main{display:grid;gap:6px;min-width:0}.poll-option-main small{color:var(--dim);font-size:.64rem}.poll-option-label{display:block;width:100%;min-width:0;min-height:42px!important;height:42px;resize:vertical!important;line-height:1.4;overflow-wrap:anywhere}.poll-option-more{display:none;grid-column:2 / -1;gap:6px;padding-top:3px;min-width:0}.poll-option-row.expanded .poll-option-more{display:grid}.poll-option-more input{width:100%;min-width:0}.poll-option-color{width:44px!important;min-width:44px;height:38px;padding:3px!important}.poll-option-actions{grid-column:2 / -1;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px;min-width:0}.poll-option-actions .btn{flex:0 0 33px;min-width:33px;padding:7px}
+.poll-editor-actions{display:grid;grid-template-columns:1.4fr 1fr 1fr .8fr;gap:7px;margin-top:14px}.poll-editor-actions .btn{min-width:0;white-space:nowrap}.poll-editor-message{min-height:18px;margin-top:8px;color:var(--muted);font-size:.72rem;line-height:1.45;overflow-wrap:anywhere}.poll-editor-message.bad{color:var(--red)}.poll-editor-message.good{color:var(--green)}
 .poll-stats{display:grid;grid-template-columns:repeat(6,minmax(82px,1fr));gap:7px;margin-bottom:12px}.poll-stats>div{padding:10px;border:1px solid var(--line);border-radius:10px;background:#121925}.poll-stats span{display:block;color:var(--muted);font-size:.66rem;margin-bottom:4px}.poll-stats b{font-size:1.04rem}.poll-stats>div:nth-child(3) b{color:var(--green)}.poll-stats>div:nth-child(4) b{color:var(--gold)}.poll-stats>div:nth-child(5) b{color:var(--red)}.poll-stats>div:nth-child(6) b{color:#9ba7ba}
 .poll-filters{display:grid;grid-template-columns:repeat(4,minmax(120px,1fr));gap:7px;margin-bottom:10px}.poll-filters input,.poll-filters select{min-width:0}.poll-result-summary{display:flex;align-items:center;min-height:34px;padding:7px 9px;margin-bottom:8px;border:1px solid rgba(78,155,255,.16);border-radius:8px;background:rgba(78,155,255,.035);color:#9fb4d0;font-size:.72rem;font-weight:750}
 .poll-results-wrap{overflow:auto;border:1px solid var(--line);border-radius:10px}.poll-result-table{width:100%;min-width:1040px;border-collapse:separate;border-spacing:0;font-size:.75rem}.poll-result-table th{position:sticky;top:0;z-index:2;padding:9px 7px;background:#182234;color:#9eabc0;text-align:left;border-bottom:1px solid #334057;white-space:nowrap}.poll-result-table td{padding:8px 7px;border-bottom:1px solid #252f41;vertical-align:middle}.poll-result-table tr:last-child td{border-bottom:0}.poll-result-table tr.missing{background:rgba(255,255,255,.014);color:#9ca6b7}.poll-result-table tr.absent{background:rgba(255,107,107,.025)}.poll-result-table .rank-num{color:#708096;font-weight:800;text-align:center}.poll-result-table .power{font-variant-numeric:tabular-nums;font-weight:900;color:#e7edf6}.poll-choice-chip{display:inline-block;max-width:210px;padding:4px 7px;border-radius:7px;border:1px solid color-mix(in srgb,var(--chip,#4E9BFF) 45%,transparent);background:color-mix(in srgb,var(--chip,#4E9BFF) 10%,transparent);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.poll-state-chip{display:inline-block;padding:4px 7px;border-radius:999px;font-size:.65rem;font-weight:900}.poll-state-chip.attend{color:#78e3b1;background:rgba(61,220,151,.09)}.poll-state-chip.partial{color:#efd174;background:rgba(242,193,78,.09)}.poll-state-chip.absent{color:#ff9898;background:rgba(255,107,107,.09)}.poll-state-chip.missing{color:#a1adbf;background:#222b39}.poll-role-select{min-width:104px;padding:6px 7px;font-size:.7rem}.poll-note-input{min-width:135px;padding:6px 7px;font-size:.7rem}
 @media(max-width:1180px){.poll-workspace{grid-template-columns:1fr}.poll-stats{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:720px){
-  .poll-manager-bar{align-items:stretch}.poll-manager-select{flex-basis:100%}.poll-manager-bar>.btn{flex:1}.poll-manager-status{width:100%;margin-left:0;text-align:center}
-  .poll-grid.two{grid-template-columns:1fr}.poll-language-card{grid-template-columns:1fr}.poll-language-card textarea{grid-column:1}.poll-option-row{grid-template-columns:28px minmax(0,1fr) 94px 45px}.poll-option-actions{grid-column:2 / -1}.poll-option-more{grid-column:1 / -1}.poll-editor-actions{grid-template-columns:repeat(2,1fr)}
+  .poll-manager-bar{align-items:stretch}.poll-manager-select{flex-basis:100%}.poll-manager-bar>.btn{flex:1;min-height:44px}.poll-manager-status{width:100%;margin-left:0;text-align:center}
+  .poll-grid.two{grid-template-columns:1fr}.poll-language-card{grid-template-columns:1fr}.poll-language-card textarea{grid-column:1}.poll-editor-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
   .poll-stats{grid-template-columns:repeat(2,1fr)}.poll-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.poll-filters .btn{width:100%}
+  .poll-filters input,.poll-filters select,.poll-filters .btn{min-height:44px}
+  .poll-results-wrap{overflow:visible;border:0;border-radius:0}
+  .poll-result-table{display:block;width:100%;min-width:0;background:transparent}
+  .poll-result-table thead{display:none}
+  .poll-result-table tbody{display:grid;gap:10px}
+  .poll-result-table tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 12px;padding:12px;border:1px solid var(--line);border-radius:11px;background:#121925}
+  .poll-result-table tr.missing{background:#151c28}.poll-result-table tr.absent{background:rgba(255,107,107,.035)}
+  .poll-result-table td{display:grid;align-content:start;gap:4px;min-width:0;padding:0;border:0;overflow-wrap:anywhere}
+  .poll-result-table td::before{content:attr(data-label);display:block;color:var(--dim);font-size:.62rem;font-weight:850;line-height:1.2}
+  .poll-result-table td:nth-child(4),.poll-result-table td:nth-child(8),.poll-result-table td:nth-child(9),.poll-result-table td:nth-child(11){grid-column:1 / -1}
+  .poll-result-table .rank-num{text-align:left}.poll-result-table .power{text-align:left}
+  .poll-choice-chip{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+  .poll-role-select,.poll-note-input{width:100%;min-width:0;min-height:42px}
 }
-@media(max-width:420px){.poll-filters{grid-template-columns:1fr}.poll-option-row{grid-template-columns:26px minmax(0,1fr) 42px}.poll-option-row>select{grid-column:2 / 3}.poll-option-color{grid-column:3}.poll-option-actions{grid-column:1 / -1}.poll-editor-actions{grid-template-columns:1fr}.poll-panel-head{align-items:flex-start}.poll-manager-bar>.btn{min-width:calc(50% - 5px)}}
+@media(max-width:420px){.poll-filters{grid-template-columns:1fr}.poll-panel-head{align-items:flex-start}.poll-manager-bar>.btn{min-width:calc(50% - 5px)}}
+@container pollEditor (max-width:560px){
+  .poll-grid.two{grid-template-columns:1fr}
+  .poll-language-card{grid-template-columns:1fr}.poll-language-card textarea{grid-column:1}
+  .poll-editor-panel input:not([type=color]),.poll-editor-panel select,.poll-editor-panel textarea{min-height:42px}
+  .poll-language-box summary{display:flex;align-items:center;min-height:44px}
+  .poll-target-check{min-height:40px;padding:8px 10px}
+  .poll-option-head>.btn{min-height:38px}
+  .poll-option-row{grid-template-columns:28px minmax(0,1fr) 45px;align-items:start}
+  .poll-option-index{grid-column:1;grid-row:1;margin-top:7px}
+  .poll-option-main{grid-column:2 / -1;grid-row:1}
+  .poll-option-row>select{grid-column:2 / 3;grid-row:2;width:100%;min-width:0}
+  .poll-option-color{grid-column:3;grid-row:2}
+  .poll-option-actions{grid-column:2 / -1;grid-row:3}.poll-option-actions .btn{flex-basis:42px;min-width:42px;min-height:42px;padding:8px}
+  .poll-option-more{grid-column:2 / -1;grid-row:4}
+  .poll-editor-actions{grid-template-columns:repeat(2,minmax(0,1fr))}.poll-editor-actions .btn{min-height:44px}
+}
+@container pollEditor (max-width:340px){.poll-editor-actions{grid-template-columns:1fr}}
 </style>
 
 <style id="v327-admin-manager-style">
@@ -7641,8 +7673,8 @@ function renderPollOptionsEditor(){
   const categories=[['attend','참여'],['partial','부분 참여'],['absent','미참여'],['other','기타']];
   $('pollOptionsEditor').innerHTML=(participationOptions||[]).map((option,index)=>`<div class="poll-option-row" data-option-index="${index}" data-option-id="${option.id||''}">
     <span class="poll-option-index">${index+1}</span>
-    <div class="poll-option-main"><input data-poll-option-field="label_ko" maxlength="160" value="${esc(option.label_ko||'')}" placeholder="한국어 선택 항목"><small>한국어 필수</small></div>
-    <select data-poll-option-field="category">${categories.map(([value,label])=>`<option value="${value}" ${option.category===value?'selected':''}>${label}</option>`).join('')}</select>
+    <div class="poll-option-main"><textarea class="poll-option-label" data-poll-option-field="label_ko" maxlength="160" rows="2" placeholder="한국어 선택 항목">${esc(option.label_ko||'')}</textarea><small>한국어 필수</small></div>
+    <select data-poll-option-field="category" aria-label="결과 분류" title="결과 분류">${categories.map(([value,label])=>`<option value="${value}" ${option.category===value?'selected':''}>${label}</option>`).join('')}</select>
     <input class="poll-option-color" data-poll-option-field="color" type="color" value="${/^#[0-9a-f]{6}$/i.test(option.color||'')?option.color:'#4E9BFF'}" title="항목 색상">
     <div class="poll-option-actions"><button class="btn" title="다국어 입력" onclick="togglePollOptionDetails(${index})">🌐</button><button class="btn" title="위로" onclick="movePollOption(${index},-1)">↑</button><button class="btn" title="아래로" onclick="movePollOption(${index},1)">↓</button><button class="btn danger" title="삭제" onclick="removePollOption(${index})">×</button></div>
     <div class="poll-option-more"><input data-poll-option-field="label_en" maxlength="160" value="${esc(option.label_en||'')}" placeholder="English"><input data-poll-option-field="label_ja" maxlength="160" value="${esc(option.label_ja||'')}" placeholder="日本語"><input data-poll-option-field="label_zh" maxlength="160" value="${esc(option.label_zh||'')}" placeholder="中文"></div>
@@ -7844,7 +7876,7 @@ function renderPollResults(){
   $('pollResultsTable').innerHTML=`<table class="poll-result-table"><thead><tr><th>#</th><th>상태</th><th>연맹</th><th>닉네임</th><th>병종</th><th>산업</th><th>1편대</th><th>선택 항목</th><th>응답 시간</th><th>역할</th><th>운영 메모</th></tr></thead><tbody>${rows.map((row,index)=>{
     const response=row.response,option=row.option,color=/^#[0-9a-f]{6}$/i.test(option?.color||'')?option.color:'#4E9BFF';
     const role=response?.assigned_role||'';
-    return `<tr class="${row.state}"><td class="rank-num">${index+1}</td><td><span class="poll-state-chip ${row.state}">${participationCategoryLabel(row.state)}${row.unresolved?' / 미등록':''}</span></td><td>${esc(row.alliance)}</td><td><b>${esc(row.nickname)}</b></td><td>${esc(row.troop||'-')}</td><td>${esc(row.industry||'-')}</td><td class="power">${row.power?fmtG(row.power):'-'}</td><td>${option?`<span class="poll-choice-chip" style="--chip:${color}" title="${esc(option.label_ko)}">${esc(option.label_ko)}</span>`:'-'}</td><td>${response?fmtTime(response.submitted_at):'-'}</td><td>${response?`<select class="poll-role-select" onchange="savePollResponseField(${response.id},'assigned_role',this.value)">${roleOptions.map(value=>`<option value="${value}" ${role===value?'selected':''}>${value||'역할 선택'}</option>`).join('')}</select>`:'-'}</td><td>${response?`<input class="poll-note-input" value="${esc(response.staff_note||'')}" maxlength="200" placeholder="메모" onchange="savePollResponseField(${response.id},'staff_note',this.value)">`:'-'}</td></tr>`;
+    return `<tr class="${row.state}"><td class="rank-num" data-label="번호">${index+1}</td><td data-label="상태"><span class="poll-state-chip ${row.state}">${participationCategoryLabel(row.state)}${row.unresolved?' / 미등록':''}</span></td><td data-label="연맹">${esc(row.alliance)}</td><td data-label="닉네임"><b>${esc(row.nickname)}</b></td><td data-label="병종">${esc(row.troop||'-')}</td><td data-label="산업">${esc(row.industry||'-')}</td><td class="power" data-label="1편대">${row.power?fmtG(row.power):'-'}</td><td data-label="선택 항목">${option?`<span class="poll-choice-chip" style="--chip:${color}" title="${esc(option.label_ko)}">${esc(option.label_ko)}</span>`:'-'}</td><td data-label="응답 시간">${response?fmtTime(response.submitted_at):'-'}</td><td data-label="역할">${response?`<select class="poll-role-select" onchange="savePollResponseField(${response.id},'assigned_role',this.value)">${roleOptions.map(value=>`<option value="${value}" ${role===value?'selected':''}>${value||'역할 선택'}</option>`).join('')}</select>`:'-'}</td><td data-label="운영 메모">${response?`<input class="poll-note-input" value="${esc(response.staff_note||'')}" maxlength="200" placeholder="메모" onchange="savePollResponseField(${response.id},'staff_note',this.value)">`:'-'}</td></tr>`;
   }).join('')}</tbody></table>`;
 }
 async function savePollResponseField(id,field,value){
