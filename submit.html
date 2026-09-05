@@ -324,8 +324,9 @@ body[data-page="home"] .langbar{margin-bottom:12px}
 html[lang="en"] .home-prompt,html[lang="en"] .service-copy b,html[lang="en"] .service-copy span{letter-spacing:-.01em}
 html[lang="ja"] .home-prompt,html[lang="ja"] .service-copy b,html[lang="ja"] .service-copy span,html[lang="zh-CN"] .home-prompt,html[lang="zh-CN"] .service-copy b,html[lang="zh-CN"] .service-copy span{letter-spacing:0}
 .service-arrow{color:var(--dim);font-size:1.25rem;text-align:center}
-.view-back{display:flex;align-items:center;gap:6px;width:max-content;margin:0 0 15px;padding:7px 10px;border:1px solid var(--line);border-radius:9px;background:var(--panel2);color:var(--muted);font-size:.76rem;font-weight:800}
+.view-back{display:flex;align-items:center;justify-content:center;gap:6px;width:max-content;min-height:42px;margin:0 0 15px;padding:9px 13px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);color:var(--muted);font-size:.82rem;font-weight:800}
 .view-back:hover{color:var(--text);border-color:#3b475d}
+.vote-home-btn{width:100%;min-height:48px;margin:10px 0 0;padding:12px 14px;font-size:.9rem;color:var(--text)}
 .poll-head{padding:14px 15px;margin:0 0 17px;border:1px solid rgba(242,193,78,.22);border-radius:13px;background:linear-gradient(145deg,rgba(242,193,78,.07),rgba(255,255,255,.015))}
 .poll-head h2{font-size:1.08rem;line-height:1.35;margin-bottom:5px}.poll-head p{color:var(--muted);font-size:.8rem;line-height:1.5;white-space:pre-line}.poll-deadline{display:block;margin-top:8px;color:#d8b75d;font-size:.73rem;font-weight:750}
 .choice-list{display:grid;gap:9px;margin-bottom:18px}
@@ -460,7 +461,7 @@ textarea:focus{border-color:var(--ours);box-shadow:0 0 0 3px rgba(78,155,255,.18
     <h1 id="vDoneTitle"></h1>
     <div class="sub" id="voteDoneSummary" aria-live="polite"></div>
     <button class="btn ghost" type="button" id="voteAgainBtn" onclick="showVoteForm()"></button>
-    <button class="view-back" style="margin:10px auto 0" type="button" onclick="showHome()">← <span id="voteDoneHome"></span></button>
+    <button class="view-back vote-home-btn" type="button" onclick="showHome()">← <span id="voteDoneHome"></span></button>
     <div class="credit">Powered by <b>213 NXT / 부앙(Bu-ang)</b><span class="copyright-note">© 2026 / UI 및 소스 무단 복제 금지</span></div>
   </div>
 </div>
