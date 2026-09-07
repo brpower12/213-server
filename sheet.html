@@ -2097,7 +2097,7 @@ nav button.active::after{
     background:transparent!important;
     box-shadow:none!important;
     text-align:center;
-    font-size:.78rem;
+    font-size:12px;
     font-weight:900;
     line-height:20px;
   }
@@ -2983,6 +2983,136 @@ body.tactical-tab-open footer{display:none!important}
 }
 </style>
 <!-- V3.28: iPhone device persistence + planning Excel export + rank header safety -->
+<style id="entry-mobile-layer-layout-fix">
+/* 모바일 입력 툴바와 인원 편집 모달 정리 */
+.overlay{z-index:5000}
+.overlay .modal{position:relative;z-index:1}
+.toast{z-index:5100}
+body.mem-modal-open{overflow:hidden}
+
+@media(max-width:640px){
+  #view-entry .entry-select-group{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    width:100%;
+    gap:6px!important;
+    align-items:end!important;
+  }
+  #view-entry .entry-select-group .entry-field-mini{
+    width:100%;
+    min-width:0!important;
+  }
+  #view-entry .entry-select-group>.btn{
+    width:100%;
+    min-width:0;
+    min-height:42px;
+    height:42px;
+    padding:7px 8px;
+    font-size:.78rem;
+    font-weight:800;
+    white-space:nowrap;
+  }
+  #view-entry .entry-action-group{
+    grid-template-columns:minmax(0,1fr) 70px!important;
+    gap:6px!important;
+    align-items:stretch!important;
+  }
+  #view-entry .entry-action-group>.btn,
+  #view-entry .entry-add-count,
+  #view-entry .entry-excel-actions .btn{
+    min-height:42px!important;
+    height:42px!important;
+  }
+  #view-entry .entry-add-btn{
+    padding:7px 10px!important;
+    font-size:13px!important;
+    font-weight:900!important;
+    letter-spacing:0!important;
+  }
+  #view-entry .entry-add-count{
+    width:70px!important;
+    padding:3px 6px 4px!important;
+  }
+  #view-entry .entry-add-count>span{font-size:9px!important}
+  #view-entry .entry-add-count input{font-size:16px!important}
+  #view-entry .entry-excel-actions{gap:6px!important}
+  #view-entry .entry-excel-actions .btn{font-size:12px!important}
+
+  #memOverlay{
+    align-items:center;
+    padding:10px;
+    overflow:hidden;
+  }
+  #memOverlay .mem-modal{
+    width:100%;
+    max-width:420px;
+    max-height:calc(100vh - 20px)!important;
+    max-height:calc(100dvh - 20px)!important;
+    padding:15px 14px 14px;
+    border-radius:14px;
+    overflow-y:auto!important;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+  }
+  #memOverlay .mem-modal h3{
+    margin-bottom:4px;
+    font-size:1rem;
+    line-height:1.25;
+  }
+  #memOverlay .mem-modal>p{
+    margin-bottom:9px!important;
+    font-size:.69rem;
+    line-height:1.4;
+  }
+  #memOverlay .mgrid{gap:6px 8px}
+  #memOverlay .mfield{margin-bottom:7px}
+  #memOverlay .mfield label{
+    margin-bottom:3px;
+    font-size:.68rem;
+  }
+  #memOverlay .mfield input,
+  #memOverlay .mfield select{
+    width:100%;
+    min-width:0;
+    min-height:42px;
+    height:42px;
+    margin-bottom:0;
+    padding:7px 9px;
+    font-size:16px;
+  }
+  #memOverlay .mem-save-btn{
+    min-height:44px;
+    margin-top:1px;
+    font-size:.82rem;
+  }
+  #memOverlay .mem-modal-actions{
+    display:grid!important;
+    grid-template-columns:.82fr .82fr 1.25fr;
+    gap:6px!important;
+    margin-top:7px!important;
+  }
+  #memOverlay .mem-modal-actions .btn{
+    min-width:0;
+    min-height:42px;
+    padding:6px 4px;
+    font-size:.72rem;
+    line-height:1.18;
+    white-space:normal;
+  }
+}
+
+@media(max-width:300px){
+  #view-entry .entry-action-group{grid-template-columns:minmax(0,1fr) 64px!important}
+  #view-entry .entry-add-count{width:64px!important}
+  #view-entry .entry-add-btn{font-size:12px!important}
+  #memOverlay{padding:6px}
+  #memOverlay .mem-modal{
+    max-height:calc(100vh - 12px)!important;
+    max-height:calc(100dvh - 12px)!important;
+    padding:13px 10px 11px;
+  }
+}
+</style>
 </head>
 <body>
 
@@ -3600,7 +3730,7 @@ body.tactical-tab-open footer{display:none!important}
 
 <!-- 인원 수정 (모바일) -->
 <div class="overlay" id="memOverlay">
-  <div class="modal" style="max-height:88vh;overflow-y:auto">
+  <div class="modal mem-modal" style="max-height:88vh;overflow-y:auto">
     <h3 id="memTitle">인원 수정</h3>
     <p class="hint" style="margin-bottom:12px">전투력은 6.22G 또는 6220 형식으로 입력할 수 있습니다.</p>
     <div class="mfield"><label>닉네임 *</label><input id="mNick"></div>
@@ -3616,8 +3746,8 @@ body.tactical-tab-open footer{display:none!important}
       <div class="mfield" id="mBlackWrap"><label>블머</label><input id="mBlack" inputmode="decimal"></div>
       <div class="mfield"><label>킬수</label><input id="mKills" inputmode="numeric"></div>
     </div>
-    <button class="btn primary" style="width:100%" onclick="memModalSave()">💾 저장</button>
-    <div style="display:flex;gap:8px;margin-top:8px">
+    <button class="btn primary mem-save-btn" style="width:100%" onclick="memModalSave()">💾 저장</button>
+    <div class="mem-modal-actions" style="display:flex;gap:8px;margin-top:8px">
       <button class="btn" style="flex:1" onclick="closeMemModal()">취소</button>
       <button class="btn" style="flex:1" onclick="memModalMove()">⇄ 이동</button>
       <button class="btn danger" style="flex:1" onclick="memModalRemove()">목록에서 제외</button>
@@ -5735,7 +5865,7 @@ async function addMemberRows(){
     $('mTroop').value='';
     $('mBlackWrap').style.display=entryIsOurs?'':'none';
     $('mS4Wrap').style.display=entryIsOurs?'':'none';
-    $('memOverlay').classList.add('show');
+    showMemModal(true);
 
     if(count>1){
       toast(`${count}명의 빈 입력칸을 추가했습니다 · 카드에서 한 명씩 입력하세요`);
@@ -5869,9 +5999,25 @@ function openMemModal(i){
   $('mBlack').value=rowVal(r,'black'); $('mKills').value=rowVal(r,'kills');
   $('mBlackWrap').style.display=entryIsOurs?'':'none';
   $('mS4Wrap').style.display=entryIsOurs?'':'none';
-  $('memOverlay').classList.add('show');
+  showMemModal(false);
 }
-function closeMemModal(){ $('memOverlay').classList.remove('show'); memModalRow=null; }
+function showMemModal(focusNickname=false){
+  const active=document.activeElement;
+  if(active&&typeof active.blur==='function')active.blur();
+  const overlay=$('memOverlay');
+  overlay.classList.add('show');
+  overlay.scrollTop=0;
+  document.body.classList.add('mem-modal-open');
+  if(focusNickname){
+    const input=$('mNick');
+    try{input.focus({preventScroll:true});}catch(_){input.focus();}
+  }
+}
+function closeMemModal(){
+  $('memOverlay').classList.remove('show');
+  document.body.classList.remove('mem-modal-open');
+  memModalRow=null;
+}
 async function memModalSave(){
   const r=memModalRow; if(!r) return;
   const set=(f,v)=>{ const el=r.el.querySelector(`[data-f=${f}]`); el.value=v; };
