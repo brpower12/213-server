@@ -343,6 +343,8 @@ textarea{font-family:inherit;background:var(--panel2);border:1px solid var(--lin
 textarea:focus{border-color:var(--ours);box-shadow:0 0 0 3px rgba(78,155,255,.18)}
 .poll-update-note{margin:-3px 0 10px;color:var(--dim);font-size:.72rem;line-height:1.45;text-align:center}
 .vote-done-choice{display:inline-block;margin:10px 0;padding:7px 11px;border:1px solid rgba(61,220,151,.25);border-radius:999px;color:#8ce7bd;background:rgba(61,220,151,.055);font-size:.79rem;font-weight:800}
+.poll-submitted-notice{display:grid;grid-template-columns:30px minmax(0,1fr);align-items:center;gap:9px;margin:-4px 0 14px;padding:10px 11px;border:1px solid rgba(61,220,151,.28);border-radius:11px;background:rgba(61,220,151,.065);color:#cbeedd}.poll-submitted-notice[hidden]{display:none!important}.poll-submitted-notice-mark{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:rgba(61,220,151,.15);color:#71e3ad;font-size:.9rem;font-weight:950}.poll-submitted-notice-copy{min-width:0}.poll-submitted-notice-copy b{display:block;font-size:.78rem;line-height:1.35}.poll-submitted-notice-copy small{display:block;margin-top:3px;color:#82a99a;font-size:.68rem;line-height:1.4;overflow-wrap:anywhere}
+.vote-receipt{margin:16px 0 10px;padding:14px;border:1px solid rgba(61,220,151,.32);border-radius:14px;background:linear-gradient(145deg,rgba(61,220,151,.085),rgba(255,255,255,.014));box-shadow:0 8px 24px rgba(0,0,0,.16)}.vote-receipt-status{display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:12px;color:#88e8bb;font-size:.88rem;font-weight:900;text-align:center}.vote-receipt-status-mark{display:grid;place-items:center;width:23px;height:23px;border-radius:50%;background:#3ddc97;color:#07140e;font-size:.76rem}.vote-receipt-details{display:grid;gap:7px}.vote-receipt-row{display:grid;grid-template-columns:78px minmax(0,1fr);align-items:start;gap:9px;padding-top:7px;border-top:1px solid rgba(255,255,255,.055)}.vote-receipt-row:first-child{padding-top:0;border-top:0}.vote-receipt-row dt{color:#80908d;font-size:.7rem;font-weight:800}.vote-receipt-row dd{min-width:0;color:#e8f4ee;font-size:.78rem;font-weight:750;line-height:1.4;overflow-wrap:anywhere}.vote-receipt-proof{margin:12px 0 0;color:#83aa9a;font-size:.71rem;line-height:1.5;text-align:center}.vote-done-tail{margin:10px 0 0!important;font-size:.76rem!important}
 @media(max-width:420px){.home-logo{width:132px;margin-bottom:14px}.service-card{grid-template-columns:42px minmax(0,1fr) 18px;padding:14px 12px}.service-icon{width:42px;height:42px}.choice-item{padding:12px}.sub,.poll-head p,.poll-empty,.poll-update-note,.credit{overflow-wrap:anywhere;word-break:break-word}}
 @media(max-width:420px){.langbar button{min-height:40px}}
 @media(hover:none){.service-card:hover,.choice-item:hover,.poll-select-card:hover,.btn:hover{transform:none}}
@@ -440,6 +442,7 @@ textarea:focus{border-color:var(--ours);box-shadow:0 0 0 3px rgba(78,155,255,.18
     <div id="pollForm" hidden>
       <div class="poll-picker" id="pollSelectWrap" hidden><span class="poll-picker-label" id="vPollSelectLabel"></span><div class="poll-select-list" id="vPollSelectList"></div></div>
       <div class="poll-head"><h2 id="publicPollTitle"></h2><p id="publicPollDescription"></p><span class="poll-deadline" id="publicPollDeadline"></span></div>
+      <div class="poll-submitted-notice" id="voteReceiptNotice" hidden><span class="poll-submitted-notice-mark">✓</span><span class="poll-submitted-notice-copy"><b id="voteReceiptNoticeTitle"></b><small id="voteReceiptNoticeText"></small></span></div>
       <div class="sechd"><span id="vSecChoice"></span></div>
       <div class="choice-list" id="publicPollOptions"></div>
       <div class="sechd"><span id="vSecInfo"></span></div>
@@ -462,7 +465,17 @@ textarea:focus{border-color:var(--ours);box-shadow:0 0 0 3px rgba(78,155,255,.18
   <div id="voteDoneView" class="page-view" hidden>
     <div class="done-icon">✅</div>
     <h1 id="vDoneTitle"></h1>
-    <div class="sub" id="voteDoneSummary" aria-live="polite"></div>
+    <div class="vote-receipt" id="voteReceipt" aria-live="polite">
+      <div class="vote-receipt-status"><span class="vote-receipt-status-mark">✓</span><span id="vDoneSaved"></span></div>
+      <dl class="vote-receipt-details">
+        <div class="vote-receipt-row"><dt id="vDonePollLabel"></dt><dd id="vDonePollValue">-</dd></div>
+        <div class="vote-receipt-row"><dt id="vDoneChoiceLabel"></dt><dd id="vDoneChoiceValue">-</dd></div>
+        <div class="vote-receipt-row"><dt id="vDonePlayerLabel"></dt><dd id="vDonePlayerValue">-</dd></div>
+        <div class="vote-receipt-row"><dt id="vDoneTimeLabel"></dt><dd id="vDoneTimeValue">-</dd></div>
+      </dl>
+      <p class="vote-receipt-proof" id="vDoneProof"></p>
+    </div>
+    <div class="sub vote-done-tail" id="voteDoneSummary"></div>
     <button class="btn ghost" type="button" id="voteAgainBtn" onclick="showVoteForm()"></button>
     <button class="view-back vote-home-btn" type="button" onclick="showHome()">← <span id="voteDoneHome"></span></button>
     <div class="credit">Powered by <b>213 NXT / 부앙(Bu-ang)</b><span class="copyright-note">© 2026 / UI 및 소스 무단 복제 금지</span></div>
@@ -472,7 +485,8 @@ textarea:focus{border-color:var(--ours);box-shadow:0 0 0 3px rgba(78,155,255,.18
 <script>
 let sb=null, lang='ko', submitting=false, voteSubmitting=false;
 let publicPolls=[], selectedPublicPollId=null, currentPage='home';
-const BUILD_SIGNATURE='213-NXT-BUANG::SUBMIT-HUB-POLL::2026.09';
+let latestVoteReceipt=null;
+const BUILD_SIGNATURE='213-NXT-BUANG::SUBMIT-HUB-POLL::2026.09.10-V3.69';
 const $=id=>document.getElementById(id);
 
 function normalizeNumericText(value){
@@ -592,7 +606,8 @@ ko:{
   submit:'참여 응답 제출',submitting:'제출 중...',loading:'진행 중인 투표를 불러오는 중입니다...',noPoll:'현재 진행 중인 참여 투표가 없습니다.',
   deadline:'마감',noDeadline:'마감 시간 없음',chooseOption:'참여 항목을 선택해 주세요.',errAlliance:'연맹을 입력해 주세요.',errNick:'닉네임을 입력해 주세요.',errTroop:'주병종을 선택해 주세요.',errIndustry:'산업 레벨을 숫자로 입력해 주세요.',errPower:'1편대 전투력을 확인해 주세요. (예: 6.22G 또는 6220)',
   confirm:'아래 내용으로 참여 응답을 제출할까요?',networkErr:'투표 제출 중 오류가 발생했습니다',pollClosed:'투표가 마감되었거나 공개 상태가 아닙니다.',notTarget:'이 투표의 대상 연맹이 아닙니다.',badOption:'선택한 항목을 사용할 수 없습니다.',
-  done:'참여 응답이 제출되었습니다',doneTail:'마감 전까지 같은 정보로 다시 제출하면 응답을 수정할 수 있습니다.',again:'응답 수정하기',home:'처음 화면으로',updated:'기존 응답이 있으면 최신 내용으로 변경되었습니다.'
+  done:'참여 응답이 제출되었습니다',doneTail:'마감 전까지 같은 정보로 다시 제출하면 기존 응답이 수정됩니다.',again:'응답 수정하기',home:'처음 화면으로',updated:'기존 응답이 있으면 최신 내용으로 변경되었습니다.',
+  doneSaved:'서버에 정상 저장되었습니다.',doneProof:'이 화면이 보이면 투표 제출이 완료된 것입니다.',receiptPoll:'투표',receiptChoice:'선택 항목',receiptPlayer:'제출자',receiptTime:'저장 확인',recentTitle:'이 기기에서 제출 완료',recentAt:'저장 확인'
 },
 en:{
   hubTitle:'213 SERVER',browserTitle:'Power & Participation',hubSub:'Choose what you would like to submit.',
@@ -605,7 +620,8 @@ en:{
   submit:'Submit Response',submitting:'Submitting...',loading:'Loading active surveys...',noPoll:'There are no active participation surveys at this time.',
   deadline:'Closes',noDeadline:'No deadline',chooseOption:'Please select your availability.',errAlliance:'Please enter your alliance.',errNick:'Please enter your nickname.',errTroop:'Please select your main troop type.',errIndustry:'Please enter your industry level as a number.',errPower:'Please check your Squad 1 power. (e.g. 6.22G or 6220)',
   confirm:'Submit the response below?',networkErr:'An error occurred while submitting your response',pollClosed:'This survey is closed or no longer available.',notTarget:'Your alliance is not included in this survey.',badOption:'The selected option is no longer available.',
-  done:'Response Submitted',doneTail:'You can update your response before the deadline by submitting again with the same information.',again:'Update Response',home:'Home',updated:'If you had already responded, your previous response has been updated.'
+  done:'Response Submitted',doneTail:'Submitting again with the same information before the deadline will update your response.',again:'Update Response',home:'Home',updated:'If you had already responded, your previous response has been updated.',
+  doneSaved:'Successfully saved to the server.',doneProof:'If you can see this screen, your response has been submitted.',receiptPoll:'Survey',receiptChoice:'Response',receiptPlayer:'Player',receiptTime:'Saved at',recentTitle:'Submitted from this device',recentAt:'Saved'
 },
 ja:{
   hubTitle:'213 SERVER',browserTitle:'戦闘力・参加確認',hubSub:'入力する項目を選択してください。',
@@ -618,7 +634,8 @@ ja:{
   submit:'参加回答を提出',submitting:'提出中...',loading:'受付中の投票を読み込んでいます...',noPoll:'現在、受付中の参加投票はありません。',
   deadline:'締切',noDeadline:'締切なし',chooseOption:'参加区分を選択してください。',errAlliance:'同盟名を入力してください。',errNick:'ニックネームを入力してください。',errTroop:'主力兵種を選択してください。',errIndustry:'産業レベルを数字で入力してください。',errPower:'第1部隊の戦力をご確認ください。（例：6.22G または 6220）',
   confirm:'以下の内容で参加回答を提出しますか？',networkErr:'回答の提出中にエラーが発生しました',pollClosed:'この投票は締め切られたか、現在公開されていません。',notTarget:'この投票の対象同盟ではありません。',badOption:'選択した項目は現在利用できません。',
-  done:'参加回答を提出しました',doneTail:'締切前であれば、同じ情報で再提出して回答を変更できます。',again:'回答を変更する',home:'最初の画面へ',updated:'すでに回答済みの場合は、最新の内容に更新されています。'
+  done:'参加回答を提出しました',doneTail:'締切前に同じ情報で再提出すると、以前の回答が更新されます。',again:'回答を変更する',home:'最初の画面へ',updated:'すでに回答済みの場合は、最新の内容に更新されています。',
+  doneSaved:'サーバーに正常に保存されました。',doneProof:'この画面が表示されていれば、回答の提出は完了しています。',receiptPoll:'投票',receiptChoice:'回答',receiptPlayer:'プレイヤー',receiptTime:'保存確認',recentTitle:'この端末から回答済み',recentAt:'保存'
 },
 zh:{
   hubTitle:'213 SERVER',browserTitle:'战力与参与',hubSub:'请选择要填写的项目。',
@@ -631,7 +648,8 @@ zh:{
   submit:'提交参与回答',submitting:'提交中...',loading:'正在加载进行中的调查...',noPoll:'目前没有正在进行的参与调查。',
   deadline:'截止时间',noDeadline:'无截止时间',chooseOption:'请选择参与选项。',errAlliance:'请输入联盟。',errNick:'请输入昵称。',errTroop:'请选择主兵种。',errIndustry:'请用数字填写产业等级。',errPower:'请检查第1编队战力。（例：6.22G 或 6220）',
   confirm:'确认提交以下参与信息吗？',networkErr:'提交回答时发生错误',pollClosed:'该调查已截止或当前未开放。',notTarget:'您的联盟不在本次调查范围内。',badOption:'所选项目当前不可用。',
-  done:'参与回答已提交',doneTail:'截止前可使用相同信息再次提交以修改回答。',again:'修改回答',home:'返回首页',updated:'如您之前已经回答，原有回答已更新为最新内容。'
+  done:'参与回答已提交',doneTail:'截止前使用相同信息再次提交时，将更新原有回答。',again:'修改回答',home:'返回首页',updated:'如您之前已经回答，原有回答已更新为最新内容。',
+  doneSaved:'已成功保存到服务器。',doneProof:'看到此页面即表示您的回答已提交完成。',receiptPoll:'调查',receiptChoice:'所选项目',receiptPlayer:'玩家',receiptTime:'保存确认',recentTitle:'已从此设备提交',recentAt:'保存'
 }};
 // 시트에는 항상 한국어 병종으로 저장 (화면 표기만 번역)
 const TROOP_CANON=['슈터','파이터','라이더'];
@@ -691,7 +709,14 @@ function applyHubLanguage(){
   $('vNote').textContent=t.note;$('vNoteInput').placeholder=t.notePh;$('vOptional').textContent=t.optional;
   $('vUpdateNote').textContent=t.updateNote;$('voteSubmitBtn').textContent=t.submit;
   $('vDoneTitle').textContent=t.done;$('voteAgainBtn').textContent=t.again;
+  $('vDoneSaved').textContent=t.doneSaved;$('vDoneProof').textContent=t.doneProof;
+  $('vDonePollLabel').textContent=t.receiptPoll;$('vDoneChoiceLabel').textContent=t.receiptChoice;
+  $('vDonePlayerLabel').textContent=t.receiptPlayer;$('vDoneTimeLabel').textContent=t.receiptTime;
+  $('voteDoneSummary').textContent=t.doneTail;
   if($('pollLoading')&&!$('pollLoading').hidden&&!publicPolls.length)$('pollLoading').textContent=t.loading;
+  renderVoteDoneReceipt();
+  const poll=publicPolls.find(row=>String(row.id)===String(selectedPublicPollId));
+  if(poll)renderVoteReceiptNotice(poll);
   updateVotePreview();
 }
 
@@ -755,6 +780,43 @@ function showVoteForm(){
 }
 
 function pollLocale(){return ({ko:'ko-KR',en:'en-US',ja:'ja-JP',zh:'zh-CN'})[lang]||'ko-KR';}
+function voteReceiptKey(pollId){return 'vote_receipt_'+String(pollId||'');}
+function readVoteReceipt(pollId){
+  try{
+    const receipt=JSON.parse(localStorage.getItem(voteReceiptKey(pollId))||'null');
+    return receipt&&String(receipt.pollId)===String(pollId)&&receipt.savedAt?receipt:null;
+  }catch(error){return null;}
+}
+function saveVoteReceipt(receipt){
+  latestVoteReceipt=receipt;
+  try{localStorage.setItem(voteReceiptKey(receipt.pollId),JSON.stringify(receipt));}catch(error){}
+}
+function formatVoteReceiptTime(value){
+  const date=new Date(value);if(Number.isNaN(date.getTime()))return '-';
+  return new Intl.DateTimeFormat(pollLocale(),{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(date)+' (KST)';
+}
+function receiptLocalizedValues(receipt){
+  const poll=publicPolls.find(row=>String(row.id)===String(receipt?.pollId));
+  const option=(poll?.options||[]).find(row=>String(row.id)===String(receipt?.optionId));
+  return {pollTitle:poll?.title||receipt?.pollTitle||'-',optionLabel:option?.label||receipt?.optionLabel||'-'};
+}
+function renderVoteDoneReceipt(){
+  const receipt=latestVoteReceipt;if(!receipt)return;
+  const values=receiptLocalizedValues(receipt);
+  $('vDonePollValue').textContent=values.pollTitle;
+  $('vDoneChoiceValue').textContent=values.optionLabel;
+  $('vDonePlayerValue').textContent=(receipt.alliance||'')+' / '+(receipt.nickname||'');
+  $('vDoneTimeValue').textContent=formatVoteReceiptTime(receipt.savedAt);
+}
+function renderVoteReceiptNotice(poll){
+  const notice=$('voteReceiptNotice');if(!notice)return;
+  const receipt=readVoteReceipt(poll?.id);
+  if(!receipt){notice.hidden=true;return;}
+  const t=HUB_I18N[lang]||HUB_I18N.ko,values=receiptLocalizedValues(receipt);
+  $('voteReceiptNoticeTitle').textContent=t.recentTitle;
+  $('voteReceiptNoticeText').textContent=`${receipt.nickname||'-'} / ${values.optionLabel} / ${t.recentAt} ${formatVoteReceiptTime(receipt.savedAt)}`;
+  notice.hidden=false;
+}
 function formatPollDeadline(value){
   const t=HUB_I18N[lang]||HUB_I18N.ko;
   if(!value)return t.noDeadline;
@@ -807,6 +869,7 @@ function renderPublicPoll(preserveOptionId=null){
   $('publicPollTitle').textContent=poll.title||t.pollTitle;
   $('publicPollDescription').textContent=poll.description||'';
   $('publicPollDeadline').textContent=formatPollDeadline(poll.closes_at);
+  renderVoteReceiptNotice(poll);
   const options=Array.isArray(poll.options)?poll.options:[];
   $('publicPollOptions').innerHTML=options.map(option=>{
     const color=/^#[0-9a-f]{6}$/i.test(option.color||'')?option.color:'#4E9BFF';
@@ -863,7 +926,9 @@ async function doVoteSubmit(){
     const errors={poll_not_found:t.pollClosed,poll_closed:t.pollClosed,bad_option:t.badOption,no_alliance:t.errAlliance,no_nickname:t.errNick,bad_troop:t.errTroop,bad_industry:t.errIndustry,bad_power:t.errPower,alliance_not_target:t.notTarget,too_long:I18N[lang].errLong};
     if(data!=='ok'){fail(errors[data]||('Error: '+data));return;}
     ['vAllianceInput','vNickInput','vTroopInput','vIndustryInput'].forEach(id=>localStorage.setItem('vote_'+id,$(id).value));
-    $('voteDoneSummary').innerHTML=`<b>${escapeHtml(alliance.toUpperCase())} / ${escapeHtml(nickname)}</b><br><span class="vote-done-choice">${escapeHtml(option?.label||'')}</span><br>${escapeHtml(t.updated)}<br><br>${escapeHtml(t.doneTail)}`;
+    saveVoteReceipt({pollId:String(poll.id),optionId:String(optionId),pollTitle:poll.title||t.pollTitle,optionLabel:option?.label||'',alliance:alliance.toUpperCase(),nickname,savedAt:new Date().toISOString()});
+    renderVoteDoneReceipt();
+    $('voteDoneSummary').textContent=t.doneTail;
     setPage('voteDone');
   }catch(error){fail(t.networkErr+': '+(error?.message||String(error)));}
   finally{voteSubmitting=false;$('voteSubmitBtn').disabled=false;$('voteSubmitBtn').textContent=t.submit;}
