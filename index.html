@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- DEPLOY_BUILD: 2026.09.15_MIGRATION_FORM_V37 -->
+<!-- DEPLOY_BUILD: 2026.09.15_MIGRATION_FORM_V38 -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -888,6 +888,7 @@ const TX = {
 const MIGRATION_GRADES=['통솔자','특급','고급','중견'];
 const GRADE_TX_KEYS={통솔자:'t-grade-commander',특급:'t-grade-special',고급:'t-grade-advanced',중견:'t-grade-veteran'};
 const DESIRED_ALLIANCES=['NXT','AST','G','KABZ','VJP'];
+const APPLICATION_ROUND='2026-09';
 let lang='ko', pData=null, selModeVal='혼자', selIndVal=null, selSqVal='파이터', selGradeVal='', selDesiredAllianceVal='';
 const getDB=()=>{try{return JSON.parse(localStorage.getItem('dw213')||'[]')}catch{return[]}};
 const saveDB=d=>localStorage.setItem('dw213',JSON.stringify(d));
@@ -1114,8 +1115,8 @@ function save(){
 
   const entry={
     schemaVersion:2,
-    applicationRound:'2026-09',
-    submissionKey:'migration:'+pData.uid,
+    applicationRound:APPLICATION_ROUND,
+    submissionKey:'migration:'+APPLICATION_ROUND+':'+pData.uid,
     id:Date.now(), registeredAt:new Date().toLocaleString('ko-KR',{timeZone:'Asia/Seoul'}),
     name:pData.name, uid:pData.uid, fromSid:pData.sid,
     currentAlliance:pData.currentAlliance,
@@ -1133,7 +1134,7 @@ function save(){
     industry:selIndVal, squad:selSqVal, recommender:rec, status:'검토중'
   };
   const db=getDB();
-  const existing=db.findIndex(r=>String(r.uid||'')===entry.uid);
+  const existing=db.findIndex(r=>String(r.submissionKey||'')===entry.submissionKey);
   if(existing>=0)db[existing]={...db[existing],...entry};else db.push(entry);
   saveDB(db);
   if(SHEET_URL){
