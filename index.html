@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- DEPLOY_BUILD: 2026.09.15_MIGRATION_FORM_V37 -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -9,18 +10,18 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0a0b0f;--bg2:#111318;--bg3:#181c24;
-  --border:#242a38;--border2:#2e3650;
-  --text:#c8d0e0;--text2:#6a7490;--text3:#3a4260;
-  --accent:#4f8ef7;--accent2:#7aadff;
-  --gold:#d4a843;--gold2:#f0c040;
-  --green:#2eb87a;--red:#e04848;
+  --bg:#0b0e14;--bg2:#141926;--bg3:#1b2231;
+  --border:#262f42;--border2:#35415a;
+  --text:#edf1f9;--text2:#8d97ac;--text3:#5b6478;
+  --accent:#54a3ff;--accent2:#8dc0ff;
+  --gold:#f2c14e;--gold2:#ffde8a;
+  --green:#3ddc97;--green2:#76e3b0;--red:#ff6b6b;
   --purple:#8250d2;--purple2:#b080f0;
   --r:8px;--r2:14px;
 }
-body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:0 0 6rem}
-body.lang-ja{font-family:'Noto Sans JP',sans-serif}
-body.lang-zh{font-family:'Noto Sans SC',sans-serif}
+body{font-family:'Noto Sans KR','Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:0 0 6rem;overflow-x:hidden}
+body.lang-ja{font-family:'Noto Sans JP','Yu Gothic UI','Hiragino Kaku Gothic ProN',sans-serif}
+body.lang-zh{font-family:'Noto Sans SC','Microsoft YaHei','PingFang SC',sans-serif}
 .wrap{width:100%;max-width:480px;padding:0 1rem;margin:0 auto}
 
 .lang-bar{display:flex;justify-content:center;padding:.875rem 0 0;gap:6px}
@@ -51,7 +52,13 @@ select option{background:var(--bg3)}
 
 /* 플레이어 입력 */
 .player-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.player-grid>div{min-width:0}
 .field-label{font-size:11px;color:var(--text2);margin-bottom:5px;display:block}
+.desired-alliance-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-top:7px}
+.alliance-btn{min-width:0;min-height:44px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--text2);font:700 13px/1.2 inherit;cursor:pointer;transition:.18s;padding:10px 6px;overflow-wrap:anywhere}
+.alliance-btn:hover{border-color:var(--border2);color:var(--text)}
+.alliance-btn.on{border-color:var(--accent);background:rgba(79,142,247,.1);color:var(--accent2);box-shadow:0 0 0 1px rgba(79,142,247,.14) inset}
+.alliance-help{font-size:10px;color:var(--text3);line-height:1.55;margin-top:8px}
 .uid-wrap{position:relative}
 .uid-inp{font-size:15px;letter-spacing:1px;border-color:rgba(79,142,247,.35)!important;padding-right:70px!important}
 .uid-inp:focus{border-color:var(--accent)!important}
@@ -72,6 +79,20 @@ select option{background:var(--bg3)}
 .mode-desc{font-size:11px;color:var(--text3);margin-top:2px;transition:.2s}
 .mode-btn.on .mode-name{color:var(--accent2)}
 .mode-btn.on .mode-desc{color:var(--text2)}
+
+/* 개편 이민 등급 */
+.grade-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.grade-btn{min-width:0;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:13px 10px;color:var(--text2);font:600 13px/1.35 inherit;cursor:pointer;transition:.18s;text-align:center}
+.grade-btn:hover{border-color:var(--border2);color:var(--text)}
+.grade-btn[data-grade="통솔자"]{color:#ff8b8b;border-color:rgba(255,107,107,.28)}
+.grade-btn[data-grade="특급"]{color:#ffad78;border-color:rgba(255,138,101,.28)}
+.grade-btn[data-grade="고급"]{color:#c9b9ff;border-color:rgba(185,156,255,.28)}
+.grade-btn[data-grade="중견"]{color:#82c3ff;border-color:rgba(84,163,255,.28)}
+.grade-btn[data-grade="통솔자"].on{background:rgba(255,107,107,.13);border-color:#ff6b6b;box-shadow:0 0 0 2px rgba(255,107,107,.08) inset}
+.grade-btn[data-grade="특급"].on{background:rgba(255,138,101,.13);border-color:#ff8a65;box-shadow:0 0 0 2px rgba(255,138,101,.08) inset}
+.grade-btn[data-grade="고급"].on{background:rgba(185,156,255,.13);border-color:#b99cff;box-shadow:0 0 0 2px rgba(185,156,255,.08) inset}
+.grade-btn[data-grade="중견"].on{background:rgba(84,163,255,.13);border-color:#54a3ff;box-shadow:0 0 0 2px rgba(84,163,255,.08) inset}
+.grade-tip{font-size:10px;color:var(--text3);line-height:1.55;margin-top:8px}
 
 /* 이민전투력 */
 .migr-box{border:1px solid rgba(130,80,210,.35);background:rgba(130,80,210,.05);border-radius:var(--r);padding:12px 14px}
@@ -198,6 +219,19 @@ input[type=file]{display:none}
 .modal-body{padding:16px;overflow-y:auto}
 .modal-body img{width:100%;border-radius:var(--r);border:1px solid var(--border)}
 .modal-cap{font-size:11px;color:var(--text2);margin-top:10px;line-height:1.6;padding:10px;background:var(--bg3);border-radius:var(--r)}
+
+@media(max-width:390px){
+  .wrap{padding:0 .75rem}
+  .hdr{padding:1.35rem 0 1.2rem;margin-bottom:1rem}
+  .hdr-title{font-size:27px;letter-spacing:1px}
+  .card{padding:1rem}
+  .desired-alliance-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .alliance-btn{font-size:12px;padding:10px 4px}
+  .mode-btn{padding:13px 9px;gap:8px;min-width:0}
+  .mode-ico{font-size:20px}.mode-name{font-size:13px}.mode-desc{font-size:10px}
+  .apc-grid{gap:5px}.apc-grid>div{min-width:0}.apc-grid input{min-width:0;padding:9px 7px;font-size:12px}
+  .apc-badge{padding:2px 5px}.sq-btn{padding:13px 5px}.sq-ico{font-size:22px}
+}
 </style>
 </head>
 <body class="lang-ko">
@@ -240,12 +274,22 @@ input[type=file]{display:none}
     <button class="btn-confirm" id="t-confirm" onclick="confirmPlayer()"></button>
   </div>
 
-  <!-- 02~09: UID 확인 후 표시 -->
+  <!-- 02~13: UID 확인 후 표시 -->
   <div id="form-body" style="display:none">
 
-    <!-- 02 이동방식 -->
+    <!-- 02 연맹 정보 -->
     <div class="card">
-      <div class="sec-label"><span class="sec-num">02</span> <span id="t-sec2"></span></div>
+      <div class="sec-label"><span class="sec-num">02</span> <span id="t-sec-alliance"></span></div>
+      <label class="field-label" id="t-lbl-current-alliance"></label>
+      <input type="text" id="inp-current-alliance" maxlength="40" autocomplete="organization">
+      <label class="field-label" id="t-lbl-desired-alliance" style="margin-top:12px"></label>
+      <div class="desired-alliance-grid" id="desired-alliance-grid" role="radiogroup" aria-label="213 희망 연맹"></div>
+      <div class="alliance-help" id="t-desired-help"></div>
+    </div>
+
+    <!-- 03 이동방식 -->
+    <div class="card">
+      <div class="sec-label"><span class="sec-num">03</span> <span id="t-sec2"></span></div>
       <div class="mode-grid">
         <div class="mode-btn on" data-mode="혼자" onclick="selMode(this)">
           <div class="mode-ico">🧍</div>
@@ -258,22 +302,30 @@ input[type=file]{display:none}
       </div>
     </div>
 
-    <!-- 03 이민전투력 -->
+    <!-- 04 개편 이민 등급 -->
     <div class="card">
-      <div class="sec-label"><span class="sec-num">03</span> <span id="t-sec3"></span></div>
+      <div class="sec-label"><span class="sec-num">04</span> <span id="t-sec-grade"></span></div>
+      <div class="grade-grid" id="grade-grid" role="radiogroup" aria-label="이민 등급"></div>
+      <div class="grade-tip" id="t-grade-tip"></div>
+    </div>
+
+    <!-- 05 이민전투력 -->
+    <div class="card">
+      <div class="sec-label"><span class="sec-num">05</span> <span id="t-sec3"></span></div>
       <div class="migr-box">
         <div class="migr-lbl">
           <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
           <span id="t-migr-lbl"></span>
         </div>
         <input type="text" id="cp-migr" inputmode="decimal" placeholder="" oninput="showUnit()">
+        <div class="migr-tip" id="migr-unit" aria-live="polite"></div>
         <div class="migr-tip" id="t-migr-tip"></div>
       </div>
     </div>
 
-    <!-- 04 APC 편대 -->
+    <!-- 06 APC 편대 -->
     <div class="card">
-      <div class="sec-label"><span class="sec-num">04</span> <span id="t-sec4"></span></div>
+      <div class="sec-label"><span class="sec-num">06</span> <span id="t-sec4"></span></div>
       <div class="apc-grid">
         <div>
           <div class="apc-badge" id="t-apc1b"></div>
@@ -293,9 +345,9 @@ input[type=file]{display:none}
       </div>
     </div>
 
-    <!-- 05 활동시간 -->
+    <!-- 07 활동시간 -->
     <div class="card">
-      <div class="sec-label"><span class="sec-num">05</span> <span id="t-sec5"></span> <span class="time-kst">KST</span></div>
+      <div class="sec-label"><span class="sec-num">07</span> <span id="t-sec5"></span> <span class="time-kst">KST</span></div>
       <div class="kst-note" id="t-kst-note"></div>
       <div class="time-grid">
         <div>
@@ -323,15 +375,15 @@ input[type=file]{display:none}
       </div>
     </div>
 
-    <!-- 06 산업 -->
+    <!-- 08 산업 -->
     <div class="card">
-      <div class="sec-label"><span class="sec-num">06</span> <span id="t-sec6"></span></div>
+      <div class="sec-label"><span class="sec-num">08</span> <span id="t-sec6"></span></div>
       <div class="ind-grid" id="ind-grid"></div>
     </div>
 
-    <!-- 07 주 병종 -->
+    <!-- 09 주 병종 -->
     <div class="card">
-      <div class="sec-label"><span class="sec-num">07</span> <span id="t-sec7"></span></div>
+      <div class="sec-label"><span class="sec-num">09</span> <span id="t-sec7"></span></div>
       <div class="sq-grid">
         <div class="sq-btn on" data-sq="파이터" onclick="selSq(this)">
           <div class="sq-ico">⚔️</div><div class="sq-name" id="t-sq1"></div>
@@ -346,9 +398,9 @@ input[type=file]{display:none}
     </div>
 
 
-      <!-- 08 킬수 -->
+      <!-- 10 킬수 -->
       <div class="card">
-        <div class="sec-label"><span class="sec-num">08</span> <span id="t-sec8"></span></div>
+        <div class="sec-label"><span class="sec-num">10</span> <span id="t-sec8"></span></div>
         <div class="migr-box" style="border-color:rgba(214,48,48,.3);background:rgba(214,48,48,.04)">
           <div class="migr-lbl" style="color:#ff7070">
             <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" style="stroke:#ff7070;fill:none;width:13px;height:13px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -359,9 +411,9 @@ input[type=file]{display:none}
         </div>
       </div>
 
-      <!-- 09 블랙머니 -->
+      <!-- 11 블랙머니 -->
       <div class="card">
-        <div class="sec-label"><span class="sec-num">09</span> <span id="t-sec9-bm"></span></div>
+        <div class="sec-label"><span class="sec-num">11</span> <span id="t-sec9-bm"></span></div>
         <div class="migr-box" style="border-color:rgba(212,168,67,.3);background:rgba(212,168,67,.04)">
           <div class="migr-lbl" style="color:var(--gold2)">
             <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" style="stroke:var(--gold2);fill:none;width:13px;height:13px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
@@ -372,16 +424,16 @@ input[type=file]{display:none}
         </div>
       </div>
 
-      <!-- 10 추천인 -->
+      <!-- 12 추천인 -->
       <div class="card">
-        <div class="sec-label"><span class="sec-num">10</span> <span id="t-sec10-rec"></span></div>
+        <div class="sec-label"><span class="sec-num">12</span> <span id="t-sec10-rec"></span></div>
       <div class="rec-tip" id="t-rec-tip"></div>
       <input type="text" id="recommender">
     </div>
 
-    <!-- 09 스크린샷 -->
+    <!-- 13 스크린샷 -->
     <div class="card">
-      <div class="sec-label"><span class="sec-num">11</span> <span id="t-sec11"></span></div>
+      <div class="sec-label"><span class="sec-num">13</span> <span id="t-sec11-ss"></span></div>
       <div class="ss-tabs">
         <button class="ss-tab on" onclick="ssTab(0,this)" id="t-ss-tab0"></button>
         <button class="ss-tab" onclick="ssTab(1,this)" id="t-ss-tab1"></button>
@@ -489,16 +541,25 @@ const TX = {
     't-live':'LIVE · 이민 신청 접수 중',
     't-sub':'다른 서버 → 213서버 합류',
     't-sec1':'플레이어 정보',
+    't-sec-alliance':'연맹 정보',
     't-lbl-nick':'닉네임 *',
     't-lbl-server':'현재 서버 번호 *',
+    't-lbl-current-alliance':'현재 연맹명 *',
+    't-lbl-desired-alliance':'213 희망 연맹 *',
     't-lbl-uid':'UID (16자리) *',
     'inp-name':'게임 내 닉네임',
     'inp-server':'예: 213',
+    'inp-current-alliance':'예: ABC',
+    't-desired-placeholder':'희망 연맹 선택',
+    't-desired-help':'213서버 합류 후 희망하는 연맹을 하나 선택해주세요.',
     'inp-uid':'숫자 16자리 입력',
     'ph-migr':'예: 182.4','ph-apc1':'100M / 1G','ph-apc2':'100M / 1G','ph-apc3':'100M / 1G','ph-kill':'예: 24,709,428','ph-bm':'예: 1,786,217,310','t-uid-warn':'⚠ UID는 게임 내 프로필에서 정확히 확인 후 입력해주세요. 잘못된 UID 입력 시 이민 처리가 불가할 수 있습니다.','t-confirm':'확인 후 신청서 작성하기 →',
     't-sec2':'이동 방식',
     't-alone':'혼자','t-aloneD':'단독 이민',
     't-group':'연맹 이민','t-groupD':'연맹과 함께',
+    't-sec-grade':'이민 등급',
+    't-grade-tip':'게임 내 이민 화면에 표시된 등급을 선택해주세요. 전투력만으로 자동 판정하지 않습니다.',
+    't-grade-commander':'통솔자','t-grade-special':'특급','t-grade-advanced':'고급','t-grade-veteran':'중견',
     't-sec3':'이민 전투력',
     't-migr-lbl':'이민 전투력',
     't-migr-tip':'M 단위로 입력해주세요. 예) 182.4M → 182.4 입력',
@@ -540,18 +601,22 @@ const TX = {
     't-pw-ok':'확인','t-pw-cancel':'취소',
     ERR_NAME:'닉네임을 입력해주세요.',
     ERR_SERVER:'서버 번호를 입력해주세요.',
+    ERR_CURRENT_ALLIANCE:'현재 연맹명을 입력해주세요.',
+    ERR_DESIRED_ALLIANCE:'213서버에서 희망하는 연맹을 선택해주세요.',
     ERR_UID:'UID 16자리를 정확히 입력해주세요.',
     ERR_NUM:'UID는 숫자만 입력 가능합니다.',
     ERR_MIGR:'이민 전투력을 입력해주세요.',
+    ERR_GRADE:'이민 등급을 선택해주세요.',
     ERR_IND:'산업을 선택해주세요.',
     ERR_REC:'추천인/지인 닉네임을 입력해주세요.',
     ERR_PW:'비밀번호가 틀렸습니다.',
-    F_NICK:'닉네임', F_UID:'UID', F_FROM:'출발 서버',
+    F_NICK:'닉네임', F_UID:'UID', F_FROM:'출발 서버', F_CURRENT_ALLIANCE:'현재 연맹', F_DESIRED_ALLIANCE:'희망 연맹',
+    F_GRADE:'이민 등급',
     F_MODE:'이동 방식', F_MIGR:'이민 전투력',
     F_KILL:'적 처치 (킬수)', F_BM:'블랙머니 전투력',
     F_APC1:'1편대 CP', F_APC2:'2편대 CP', F_APC3:'3편대 CP',
     F_TIME:'활동 시간(KST)', F_IND:'산업', F_SQ:'주 병종', F_REC:'추천인',
-    ADM_HDR:['닉네임','UID','서버','방식','자동등급','이민CP','킬수','블랙머니','1편대','2편대','3편대','활동시간','산업','병종','추천인','결정'],
+    ADM_HDR:['닉네임','UID','서버','현재 연맹','희망 연맹','방식','이민 등급','이민CP','킬수','블랙머니','1편대','2편대','3편대','활동시간','산업','병종','추천인','결정'],
     NO_DATA:'데이터 없음', EMPTY:'아직 신청자가 없습니다.',
     CP_MODAL_TITLE:'CP 스크린샷 예시',
     APC_MODAL_TITLE:'APC 스크린샷 예시',
@@ -563,16 +628,25 @@ const TX = {
     't-live':'LIVE · Migration Open',
     't-sub':'Other Server → Join Server 213',
     't-sec1':'Player Info',
+    't-sec-alliance':'Alliance Info',
     't-lbl-nick':'Nickname *',
     't-lbl-server':'Current Server # *',
+    't-lbl-current-alliance':'Current Alliance *',
+    't-lbl-desired-alliance':'Preferred Alliance in 213 *',
     't-lbl-uid':'UID (16 digits) *',
     'inp-name':'In-game Nickname',
     'inp-server':'e.g. 213',
+    'inp-current-alliance':'e.g. ABC',
+    't-desired-placeholder':'Select preferred alliance',
+    't-desired-help':'Choose one alliance you prefer to join after arriving in Server 213.',
     'inp-uid':'Enter 16-digit UID',
     'ph-migr':'e.g. 182.4','ph-apc1':'100M / 1G','ph-apc2':'100M / 1G','ph-apc3':'100M / 1G','ph-kill':'e.g. 24,709,428','ph-bm':'e.g. 1,786,217,310','t-uid-warn':'⚠ Please double-check your UID from your in-game profile before entering. Incorrect UID may result in failed migration processing.','t-confirm':'Confirm & Fill Out Form →',
     't-sec2':'Migration Type',
     't-alone':'Solo','t-aloneD':'Solo Migration',
     't-group':'Alliance','t-groupD':'Migrate with Alliance',
+    't-sec-grade':'Migration Grade',
+    't-grade-tip':'Select the grade shown on the in-game migration screen. It is not estimated from combat power.',
+    't-grade-commander':'Commander · 통솔자','t-grade-special':'Special · 특급','t-grade-advanced':'Advanced · 고급','t-grade-veteran':'Veteran · 중견',
     't-sec3':'Migration Power',
     't-migr-lbl':'Migration Power',
     't-migr-tip':'Enter in M units. e.g. 182.4M → type 182.4',
@@ -614,18 +688,22 @@ const TX = {
     't-pw-ok':'Confirm','t-pw-cancel':'Cancel',
     ERR_NAME:'Please enter your nickname.',
     ERR_SERVER:'Please enter your server number.',
+    ERR_CURRENT_ALLIANCE:'Please enter your current alliance.',
+    ERR_DESIRED_ALLIANCE:'Please select your preferred alliance in Server 213.',
     ERR_UID:'Please enter your 16-digit UID.',
     ERR_NUM:'UID must be numbers only.',
     ERR_MIGR:'Please enter your migration power.',
+    ERR_GRADE:'Please select your migration grade.',
     ERR_IND:'Please select an industry.',
     ERR_REC:'Please enter a referrer nickname.',
     ERR_PW:'Incorrect password.',
-    F_NICK:'Nickname', F_UID:'UID', F_FROM:'From Server',
+    F_NICK:'Nickname', F_UID:'UID', F_FROM:'From Server', F_CURRENT_ALLIANCE:'Current Alliance', F_DESIRED_ALLIANCE:'Preferred Alliance',
+    F_GRADE:'Migration Grade',
     F_MODE:'Type', F_MIGR:'Migration Power',
     F_KILL:'Kill Points', F_BM:'Black Money Power',
     F_APC1:'Squad 1 CP', F_APC2:'Squad 2 CP', F_APC3:'Squad 3 CP',
     F_TIME:'Active Hours (KST)', F_IND:'Industry', F_SQ:'Squad Type', F_REC:'Referrer',
-    ADM_HDR:['Nickname','UID','Server','Type','Auto Grade','Migr Power','Kills','Black Money','Sq1','Sq2','Sq3','Hours','Industry','Squad','Referrer','Status'],
+    ADM_HDR:['Nickname','UID','Server','Current Alliance','Preferred Alliance','Type','Migration Grade','Migr Power','Kills','Black Money','Sq1','Sq2','Sq3','Hours','Industry','Squad','Referrer','Status'],
     NO_DATA:'No data', EMPTY:'No applicants yet.',
     CP_MODAL_TITLE:'CP Screenshot Example',
     APC_MODAL_TITLE:'APC Screenshot Example',
@@ -637,16 +715,25 @@ const TX = {
     't-live':'LIVE · 移転申請受付中',
     't-sub':'他サーバー → 213サーバーへ移転',
     't-sec1':'プレイヤー情報',
+    't-sec-alliance':'連盟情報',
     't-lbl-nick':'ニックネーム *',
     't-lbl-server':'現在のサーバー番号 *',
+    't-lbl-current-alliance':'現在の連盟名 *',
+    't-lbl-desired-alliance':'213で希望する連盟 *',
     't-lbl-uid':'UID（16桁）*',
     'inp-name':'ゲーム内ニックネーム',
     'inp-server':'例: 213',
+    'inp-current-alliance':'例: ABC',
+    't-desired-placeholder':'希望する連盟を選択',
+    't-desired-help':'213サーバー移転後に加入を希望する連盟を1つ選択してください。',
     'inp-uid':'16桁の数字を入力',
     'ph-migr':'例: 182.4','ph-apc1':'100M / 1G','ph-apc2':'100M / 1G','ph-apc3':'100M / 1G','ph-kill':'例: 24,709,428','ph-bm':'例: 1,786,217,310','t-uid-warn':'⚠ ゲーム内プロフィールでUIDを正確に確認してから入力してください。誤ったUIDでは移転処理ができない場合があります。','t-confirm':'確認して申請書を記入する →',
     't-sec2':'移転方式',
     't-alone':'単独','t-aloneD':'個人移転',
     't-group':'連盟','t-groupD':'連盟と一緒に移転する',
+    't-sec-grade':'移転等級',
+    't-grade-tip':'ゲーム内の移転画面に表示される等級を選択してください。戦闘力から自動判定しません。',
+    't-grade-commander':'統率者 · 통솔자','t-grade-special':'特級 · 특급','t-grade-advanced':'上級 · 고급','t-grade-veteran':'中堅 · 중견',
     't-sec3':'移転戦闘力',
     't-migr-lbl':'移転戦闘力',
     't-migr-tip':'M単位で入力してください。例）182.4M → 182.4と入力',
@@ -688,18 +775,22 @@ const TX = {
     't-pw-ok':'確認','t-pw-cancel':'キャンセル',
     ERR_NAME:'ニックネームを入力してください。',
     ERR_SERVER:'サーバー番号を入力してください。',
+    ERR_CURRENT_ALLIANCE:'現在の連盟名を入力してください。',
+    ERR_DESIRED_ALLIANCE:'213サーバーで希望する連盟を選択してください。',
     ERR_UID:'16桁のUIDを正確に入力してください。',
     ERR_NUM:'UIDは数字のみ入力できます。',
     ERR_MIGR:'移転戦闘力を入力してください。',
+    ERR_GRADE:'移転等級を選択してください。',
     ERR_IND:'産業を選択してください。',
     ERR_REC:'紹介者のニックネームを入力してください。',
     ERR_PW:'パスワードが違います。',
-    F_NICK:'ニックネーム', F_UID:'UID', F_FROM:'出発サーバー',
+    F_NICK:'ニックネーム', F_UID:'UID', F_FROM:'出発サーバー', F_CURRENT_ALLIANCE:'現在の連盟', F_DESIRED_ALLIANCE:'希望連盟',
+    F_GRADE:'移転等級',
     F_MODE:'方式', F_MIGR:'移転戦闘力',
     F_KILL:'敵撃破数', F_BM:'ブラックマネー戦闘力',
     F_APC1:'第1分隊CP', F_APC2:'第2分隊CP', F_APC3:'第3分隊CP',
     F_TIME:'活動時間(KST)', F_IND:'産業', F_SQ:'分隊タイプ', F_REC:'紹介者',
-    ADM_HDR:['ニックネーム','UID','サーバー','方式','自動等級','移転戦闘力','敵撃破数','ブラックマネー','1分隊','2分隊','3分隊','活動時間','産業','分隊','紹介者','状態'],
+    ADM_HDR:['ニックネーム','UID','サーバー','現在の連盟','希望連盟','方式','移転等級','移転戦闘力','敵撃破数','ブラックマネー','1分隊','2分隊','3分隊','活動時間','産業','分隊','紹介者','状態'],
     NO_DATA:'データなし', EMPTY:'申請者はまだいません。',
     CP_MODAL_TITLE:'CPスクリーンショット例',
     APC_MODAL_TITLE:'APCスクリーンショット例',
@@ -711,16 +802,25 @@ const TX = {
     't-live':'LIVE · 迁移申请受理中',
     't-sub':'从其他服务器迁移至213服务器',
     't-sec1':'玩家信息',
+    't-sec-alliance':'联盟信息',
     't-lbl-nick':'昵称 *',
     't-lbl-server':'当前服务器编号 *',
+    't-lbl-current-alliance':'当前联盟名称 *',
+    't-lbl-desired-alliance':'希望加入的213联盟 *',
     't-lbl-uid':'UID（16位）*',
     'inp-name':'游戏内昵称',
     'inp-server':'例: 213',
+    'inp-current-alliance':'例: ABC',
+    't-desired-placeholder':'请选择希望加入的联盟',
+    't-desired-help':'请选择迁入213服务器后希望加入的一个联盟。',
     'inp-uid':'请输入16位数字',
     'ph-migr':'例: 182.4','ph-apc1':'100M / 1G','ph-apc2':'100M / 1G','ph-apc3':'100M / 1G','ph-kill':'例: 24,709,428','ph-bm':'例: 1,786,217,310','t-uid-warn':'⚠ 请在游戏内个人资料中确认UID后再填写。UID填写错误可能导致迁移处理失败。','t-confirm':'确认并填写申请表 →',
     't-sec2':'迁移方式',
     't-alone':'单独','t-aloneD':'单独迁移',
     't-group':'联盟','t-groupD':'与联盟一同迁移',
+    't-sec-grade':'迁移等级',
+    't-grade-tip':'请选择游戏迁移界面中显示的等级。本表不会根据战斗力自动判断。',
+    't-grade-commander':'统帅 · 통솔자','t-grade-special':'特级 · 특급','t-grade-advanced':'高级 · 고급','t-grade-veteran':'中坚 · 중견',
     't-sec3':'迁移战斗力',
     't-migr-lbl':'迁移战斗力',
     't-migr-tip':'请以M为单位输入。例：182.4M → 输入182.4',
@@ -762,18 +862,22 @@ const TX = {
     't-pw-ok':'确认','t-pw-cancel':'取消',
     ERR_NAME:'请输入昵称。',
     ERR_SERVER:'请输入服务器编号。',
+    ERR_CURRENT_ALLIANCE:'请输入当前联盟名称。',
+    ERR_DESIRED_ALLIANCE:'请选择希望加入的213服务器联盟。',
     ERR_UID:'请正确输入16位UID。',
     ERR_NUM:'UID只能输入数字。',
     ERR_MIGR:'请输入迁移战斗力。',
+    ERR_GRADE:'请选择迁移等级。',
     ERR_IND:'请选择产业。',
     ERR_REC:'请输入推荐人昵称。',
     ERR_PW:'密码错误。',
-    F_NICK:'昵称', F_UID:'UID', F_FROM:'出发服务器',
+    F_NICK:'昵称', F_UID:'UID', F_FROM:'出发服务器', F_CURRENT_ALLIANCE:'当前联盟', F_DESIRED_ALLIANCE:'希望联盟',
+    F_GRADE:'迁移等级',
     F_MODE:'方式', F_MIGR:'迁移战斗力',
     F_KILL:'击杀数', F_BM:'黑钱战斗力',
     F_APC1:'第1队CP', F_APC2:'第2队CP', F_APC3:'第3队CP',
     F_TIME:'活动时间(KST)', F_IND:'产业', F_SQ:'小队类型', F_REC:'推荐人',
-    ADM_HDR:['昵称','UID','服务器','方式','自动等级','迁移战斗力','击杀数','黑钱战斗力','队1','队2','队3','活动时间','产业','小队','推荐人','状态'],
+    ADM_HDR:['昵称','UID','服务器','当前联盟','希望联盟','方式','迁移等级','迁移战斗力','击杀数','黑钱战斗力','队1','队2','队3','活动时间','产业','小队','推荐人','状态'],
     NO_DATA:'无数据', EMPTY:'暂无申请者。',
     CP_MODAL_TITLE:'CP截图示例',
     APC_MODAL_TITLE:'APC截图示例',
@@ -781,10 +885,17 @@ const TX = {
     APC_MODAL_CAP:'截图使所有APC车辆及战斗力数值可见。',
   }
 };
-let lang='ko', pData=null, selModeVal='혼자', selIndVal=null, selSqVal='파이터';
+const MIGRATION_GRADES=['통솔자','특급','고급','중견'];
+const GRADE_TX_KEYS={통솔자:'t-grade-commander',특급:'t-grade-special',고급:'t-grade-advanced',중견:'t-grade-veteran'};
+const DESIRED_ALLIANCES=['NXT','AST','G','KABZ','VJP'];
+let lang='ko', pData=null, selModeVal='혼자', selIndVal=null, selSqVal='파이터', selGradeVal='', selDesiredAllianceVal='';
 const getDB=()=>{try{return JSON.parse(localStorage.getItem('dw213')||'[]')}catch{return[]}};
 const saveDB=d=>localStorage.setItem('dw213',JSON.stringify(d));
 const fmtN=n=>n?Number(n).toLocaleString('ko-KR'):'0';
+const escHtml=s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const gradeLabel=v=>TX[lang][GRADE_TX_KEYS[v]]||v||'-';
+const normalizeGrade=v=>MIGRATION_GRADES.includes(String(v||'').trim())?String(v).trim():'미지정';
+function cpMillions(v){const n=Number(String(v??'').replace(/,/g,''));if(!Number.isFinite(n)||n<=0)return 0;return n>1000?n/1000000:n;}
 
 // ═══════════ 언어 전환 ═══════════
 function setLang(l){
@@ -810,7 +921,37 @@ function setLang(l){
     if(el.tagName==='INPUT'||el.tagName==='TEXTAREA') el.placeholder=t[id];
     else el.textContent=t[id];
   });
+  buildDesiredAlliance();
   buildInd();
+  buildGrade();
+}
+
+// ═══════════ 213 희망 연맹 버튼 ═══════════
+function buildDesiredAlliance(){
+  const g=document.getElementById('desired-alliance-grid');
+  if(!g)return;
+  g.setAttribute('aria-label',TX[lang]['t-lbl-desired-alliance']||'213 희망 연맹');
+  g.innerHTML='';
+  DESIRED_ALLIANCES.forEach(alliance=>{
+    const b=document.createElement('button');
+    b.type='button';
+    b.className='alliance-btn'+(selDesiredAllianceVal===alliance?' on':'');
+    b.dataset.alliance=alliance;
+    b.setAttribute('role','radio');
+    b.setAttribute('aria-checked',selDesiredAllianceVal===alliance?'true':'false');
+    b.textContent=alliance;
+    b.onclick=()=>selectDesiredAlliance(alliance);
+    g.appendChild(b);
+  });
+}
+function selectDesiredAlliance(alliance){
+  if(!DESIRED_ALLIANCES.includes(alliance))return;
+  selDesiredAllianceVal=alliance;
+  document.querySelectorAll('.alliance-btn').forEach(b=>{
+    const on=b.dataset.alliance===alliance;
+    b.classList.toggle('on',on);
+    b.setAttribute('aria-checked',on?'true':'false');
+  });
 }
 
 // ═══════════ 산업 버튼 ═══════════
@@ -828,6 +969,34 @@ function buildInd(){
     };
     g.appendChild(d);
   }
+}
+
+// ═══════════ 개편 이민 등급 버튼 ═══════════
+function buildGrade(){
+  const g=document.getElementById('grade-grid');
+  if(!g)return;
+  g.setAttribute('aria-label',TX[lang]['t-sec-grade']||'이민 등급');
+  g.innerHTML='';
+  MIGRATION_GRADES.forEach(grade=>{
+    const b=document.createElement('button');
+    b.type='button';
+    b.className='grade-btn'+(selGradeVal===grade?' on':'');
+    b.dataset.grade=grade;
+    b.setAttribute('role','radio');
+    b.setAttribute('aria-checked',selGradeVal===grade?'true':'false');
+    b.textContent=gradeLabel(grade);
+    b.onclick=()=>selectGrade(grade);
+    g.appendChild(b);
+  });
+}
+function selectGrade(grade){
+  if(!MIGRATION_GRADES.includes(grade))return;
+  selGradeVal=grade;
+  document.querySelectorAll('.grade-btn').forEach(b=>{
+    const on=b.dataset.grade===grade;
+    b.classList.toggle('on',on);
+    b.setAttribute('aria-checked',on?'true':'false');
+  });
 }
 
 // ═══════════ UID 카운터 ═══════════
@@ -925,34 +1094,36 @@ function checkPW(){
 }
 document.getElementById('pw-inp').addEventListener('keydown',e=>{if(e.key==='Enter')checkPW();if(e.key==='Escape')closePW();});
 
-// ═══════════ 자동 등급 (관리자 페이지용) ═══════════
-const GRADES=JSON.parse(localStorage.getItem('grade_ranges213')||'null')||
-  {일반:{min:0,max:149},중급:{min:150,max:299},고급:{min:300,max:499},특급:{min:500,max:999}};
-function autoGrade(cpMigr){
-  const v=Number(cpMigr)/1000000; // M 단위로 변환
-  for(const t of['일반','중급','고급','특급']){
-    if(v>=(GRADES[t]?.min??0)&&v<=(GRADES[t]?.max??999))return t;
-  }
-  return '모름';
-}
-
 // ═══════════ 제출 ═══════════
 function save(){
-  var sbtn=document.getElementById("t-submit");if(sbtn&&sbtn.disabled)return;if(sbtn){sbtn.disabled=true;sbtn.style.opacity="0.6";}
   const t=TX[lang];
   if(!pData){alert(t.ERR_NAME);return;}
+  const currentAlliance=document.getElementById('inp-current-alliance').value.trim();
+  const desiredAlliance=selDesiredAllianceVal;
+  if(!currentAlliance){alert(t.ERR_CURRENT_ALLIANCE);return;}
+  if(!DESIRED_ALLIANCES.includes(desiredAlliance)){alert(t.ERR_DESIRED_ALLIANCE);return;}
+  pData={...pData,currentAlliance,desiredAlliance};
+  if(!selGradeVal){alert(t.ERR_GRADE);return;}
   if(!getRaw('cp-migr')){alert(t.ERR_MIGR);return;}
   if(!selIndVal){alert(t.ERR_IND);return;}
   const rec=document.getElementById('recommender').value.trim();
   if(!rec){alert(t.ERR_REC);return;}
+  var sbtn=document.getElementById('t-submit');
+  if(sbtn&&sbtn.disabled)return;
+  if(sbtn){sbtn.disabled=true;sbtn.style.opacity='0.6';}
 
   const entry={
-    id:Date.now(), registeredAt:new Date().toLocaleString('ko-KR'),
+    schemaVersion:2,
+    applicationRound:'2026-09',
+    submissionKey:'migration:'+pData.uid,
+    id:Date.now(), registeredAt:new Date().toLocaleString('ko-KR',{timeZone:'Asia/Seoul'}),
     name:pData.name, uid:pData.uid, fromSid:pData.sid,
+    currentAlliance:pData.currentAlliance,
+    desiredAlliance:pData.desiredAlliance,
+    migrationGrade:selGradeVal,
+    locale:lang,
     mode:selModeVal,
     cpMigr:(()=>{const v=parseFloat(document.getElementById('cp-migr').value)||0;return Math.round(v*1000000);})(),
-    killScore:getRaw('inp-kill'),
-    blackMoney:getRaw('inp-bm'),
     killScore:getRaw('inp-kill'),
     blackMoney:getRaw('inp-bm'),
     apc1:document.getElementById('apc1').value.trim()||'-',
@@ -961,27 +1132,33 @@ function save(){
     activeTime:document.getElementById('time-from').value+' ~ '+document.getElementById('time-to').value,
     industry:selIndVal, squad:selSqVal, recommender:rec, status:'검토중'
   };
-  const db=getDB(); db.push(entry); saveDB(db);
+  const db=getDB();
+  const existing=db.findIndex(r=>String(r.uid||'')===entry.uid);
+  if(existing>=0)db[existing]={...db[existing],...entry};else db.push(entry);
+  saveDB(db);
   if(SHEET_URL){
-    fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(entry)}).catch(()=>{});
+    fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(entry)}).catch(()=>{});
   }
 
   const f=t; const px=TX[lang]['IND_PX']||'산업 ';
   document.getElementById('done-info').innerHTML=
-    '<div class="done-row"><span>'+f.F_NICK+'</span><span>'+entry.name+'</span></div>'+
-    '<div class="done-row"><span>'+f.F_UID+'</span><span>'+entry.uid+'</span></div>'+
-    '<div class="done-row"><span>'+f.F_FROM+'</span><span>#'+entry.fromSid+' → #213</span></div>'+
-    '<div class="done-row"><span>'+f.F_MODE+'</span><span>'+entry.mode+'</span></div>'+
-    '<div class="done-row"><span>'+(f.F_KILL||'짡수')+'</span><span>'+fmtN(entry.killScore)+'</span></div>'+
-    '<div class="done-row"><span>'+(f.F_BM||'블랙머니')+'</span><span>'+(entry.blackMoney?fmtN(entry.blackMoney):'미입력')+'</span></div>'+
-    '<div class="done-row"><span>'+f.F_MIGR+'</span><span>'+parseFloat(document.getElementById('cp-migr').value||'0').toFixed(1)+'M</span></div>'+
-    '<div class="done-row"><span>'+f.F_APC1+'</span><span>'+(entry.apc1||'-')+'</span></div>'+
-    '<div class="done-row"><span>'+f.F_APC2+'</span><span>'+(entry.apc2||'-')+'</span></div>'+
-    '<div class="done-row"><span>'+f.F_APC3+'</span><span>'+(entry.apc3||'-')+'</span></div>'+
-    '<div class="done-row"><span>'+f.F_TIME+'</span><span>'+entry.activeTime+'</span></div>'+
-    '<div class="done-row"><span>'+f.F_IND+'</span><span>'+px+entry.industry+'</span></div>'+
-    '<div class="done-row"><span>'+f.F_SQ+'</span><span>'+entry.squad+'</span></div>'+
-    '<div class="done-row"><span>'+f.F_REC+'</span><span>'+entry.recommender+'</span></div>';
+    '<div class="done-row"><span>'+escHtml(f.F_NICK)+'</span><span>'+escHtml(entry.name)+'</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_UID)+'</span><span>'+escHtml(entry.uid)+'</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_FROM)+'</span><span>#'+escHtml(entry.fromSid)+' → #213</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_CURRENT_ALLIANCE)+'</span><span>'+escHtml(entry.currentAlliance)+'</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_DESIRED_ALLIANCE)+'</span><span>'+escHtml(entry.desiredAlliance)+'</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_GRADE)+'</span><span>'+escHtml(gradeLabel(entry.migrationGrade))+'</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_MODE)+'</span><span>'+escHtml(entry.mode)+'</span></div>'+ 
+    '<div class="done-row"><span>'+(escHtml(f.F_KILL)||'킬수')+'</span><span>'+fmtN(entry.killScore)+'</span></div>'+ 
+    '<div class="done-row"><span>'+(escHtml(f.F_BM)||'블랙머니')+'</span><span>'+(entry.blackMoney?fmtN(entry.blackMoney):'-')+'</span></div>'+ 
+    '<div class="done-row"><span>'+f.F_MIGR+'</span><span>'+parseFloat(document.getElementById('cp-migr').value||'0').toFixed(1)+'M</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_APC1)+'</span><span>'+escHtml(entry.apc1||'-')+'</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_APC2)+'</span><span>'+escHtml(entry.apc2||'-')+'</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_APC3)+'</span><span>'+escHtml(entry.apc3||'-')+'</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_TIME)+'</span><span>'+escHtml(entry.activeTime)+'</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_IND)+'</span><span>'+escHtml(px+entry.industry)+'</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_SQ)+'</span><span>'+escHtml(entry.squad)+'</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_REC)+'</span><span>'+escHtml(entry.recommender)+'</span></div>';
   document.getElementById('form-body').style.display='none';
   document.getElementById('done-screen').classList.add('on');
   window.scrollTo({top:0,behavior:'smooth'});
@@ -996,21 +1173,25 @@ function renderAdmin(){
   var px=TX[lang]['IND_PX']||'산업 ';
   var hdrs=t.ADM_HDR.map(function(h){return '<th>'+h+'</th>';}).join('');
   var rows_html=db.map(function(r){
-    return '<tr>'+
-      '<td><strong>'+(r.name||'-')+'</strong></td>'+
-      '<td style="font-size:10px;color:var(--text3);font-family:monospace">'+(r.uid||'-')+'</td>'+
-      '<td>'+(r.fromSid?'#'+r.fromSid:'-')+'</td>'+
-      '<td>'+(r.mode||'-')+'</td>'+
-      '<td>'+(r.cpMigr?parseFloat(r.cpMigr).toFixed(1)+'M':'-')+'</td>'+
-      '<td>'+(r.killScore?Number(r.killScore).toLocaleString():'-')+'</td>'+
-      '<td>'+(r.apc1||'-')+'</td>'+
-      '<td>'+(r.apc2||'-')+'</td>'+
-      '<td>'+(r.apc3||'-')+'</td>'+
-      '<td>'+(r.activeTime||'-')+'</td>'+
-      '<td>'+(r.industry?px+r.industry:'-')+'</td>'+
-      '<td>'+(r.squad||'-')+'</td>'+
-      '<td>'+(r.recommender||'-')+'</td>'+
-      '<td>'+(r.status||'검토중')+'</td>'+
+    return '<tr>'+ 
+      '<td><strong>'+escHtml(r.name||'-')+'</strong></td>'+ 
+      '<td style="font-size:10px;color:var(--text3);font-family:monospace">'+escHtml(r.uid||'-')+'</td>'+ 
+      '<td>'+(r.fromSid?'#'+escHtml(r.fromSid):'-')+'</td>'+ 
+      '<td>'+escHtml(r.currentAlliance||'-')+'</td>'+ 
+      '<td>'+escHtml(r.desiredAlliance||'-')+'</td>'+ 
+      '<td>'+escHtml(r.mode||'-')+'</td>'+ 
+      '<td>'+escHtml(normalizeGrade(r.migrationGrade))+'</td>'+ 
+      '<td>'+(r.cpMigr?cpMillions(r.cpMigr).toFixed(1)+'M':'-')+'</td>'+ 
+      '<td>'+(r.killScore?Number(r.killScore).toLocaleString():'-')+'</td>'+ 
+      '<td>'+(r.blackMoney?Number(r.blackMoney).toLocaleString():'-')+'</td>'+ 
+      '<td>'+escHtml(r.apc1||'-')+'</td>'+ 
+      '<td>'+escHtml(r.apc2||'-')+'</td>'+ 
+      '<td>'+escHtml(r.apc3||'-')+'</td>'+ 
+      '<td>'+escHtml(r.activeTime||'-')+'</td>'+ 
+      '<td>'+(r.industry?px+r.industry:'-')+'</td>'+ 
+      '<td>'+escHtml(r.squad||'-')+'</td>'+ 
+      '<td>'+escHtml(r.recommender||'-')+'</td>'+ 
+      '<td>'+escHtml(r.status||'검토중')+'</td>'+ 
     '</tr>';
   }).join('');
   el.innerHTML='<div class="admin-wrap"><table class="admin-tbl"><thead><tr>'+hdrs+'</tr></thead><tbody>'+rows_html+'</tbody></table></div>';
@@ -1022,15 +1203,16 @@ function exportExcel(){
   const px=TX[lang]['IND_PX']||'산업 ';
   const rows=db.map((r,i)=>({
     'No':i+1,[t.F_NICK]:r.name,'UID':r.uid||'',[t.F_FROM]:'#'+(r.fromSid||''),
-    [t.F_MODE]:r.mode||'',[t.F_MIGR]:Number(r.cpMigr)||0,
-    '자동등급':r.cpMigr?autoGrade(r.cpMigr):'-',
+    [t.F_CURRENT_ALLIANCE]:r.currentAlliance||'',[t.F_DESIRED_ALLIANCE]:r.desiredAlliance||'',
+    [t.F_MODE]:r.mode||'',[t.F_GRADE]:normalizeGrade(r.migrationGrade),[t.F_MIGR]:cpMillions(r.cpMigr),
+    [t.F_KILL]:Number(r.killScore)||0,[t.F_BM]:Number(r.blackMoney)||0,
     [t.F_APC1]:Number(r.apc1)||0,[t.F_APC2]:Number(r.apc2)||0,[t.F_APC3]:Number(r.apc3)||0,
     [t.F_TIME]:r.activeTime||'',[t.F_IND]:px+(r.industry||''),
     [t.F_SQ]:r.squad||'',[t.F_REC]:r.recommender||'',
     '상태':r.status||'','신청시각':r.registeredAt||''
   }));
   const ws=XLSX.utils.json_to_sheet(rows);
-  ws['!cols']=[4,14,18,7,8,12,8,12,12,12,12,8,8,12,6,17].map(w=>({wch:w}));
+  ws['!cols']=[4,14,18,7,14,14,8,10,12,12,14,12,12,12,14,8,8,12,7,17].map(w=>({wch:w}));
   const wb=XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb,ws,'213 Migration');
   XLSX.writeFile(wb,'213_migration_'+new Date().toISOString().slice(0,10)+'.xlsx');
