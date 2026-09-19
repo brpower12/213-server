@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- DEPLOY_BUILD: 2026.09.17_MIGRATION_FORM_V43 -->
+<!-- DEPLOY_BUILD: 2026.09.19_MIGRATION_FORM_V44 -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -722,7 +722,7 @@ const TX = {
 const MIGRATION_GRADES=['통솔자','특급','고급','중견'];
 const DESIRED_ALLIANCES=['NXT','AST','G','KABZ','VJP'];
 const APPLICATION_ROUND='2026-09';
-let lang='ko', pData=null, selModeVal='혼자', selIndVal=null, selSqVal='파이터', selDesiredAllianceVal='';
+let lang='ko', pData=null, selModeVal='혼자', selIndVal=null, selSqVal='파이터', selDesiredAllianceVal='', lastSubmittedEntry=null;
 const getDB=()=>{try{return JSON.parse(localStorage.getItem('dw213')||'[]')}catch{return[]}};
 const saveDB=d=>localStorage.setItem('dw213',JSON.stringify(d));
 const fmtN=n=>n?Number(n).toLocaleString('ko-KR'):'0';
@@ -766,6 +766,7 @@ function setLang(l){
   });
   buildDesiredAlliance();
   buildInd();
+  if(lastSubmittedEntry&&document.getElementById('done-screen').classList.contains('on'))renderDoneInfo(lastSubmittedEntry);
 }
 
 // ═══════════ 213 희망 연맹 버튼 ═══════════
@@ -883,6 +884,27 @@ function checkPW(){
 document.getElementById('pw-inp').addEventListener('keydown',e=>{if(e.key==='Enter')checkPW();if(e.key==='Escape')closePW();});
 
 // ═══════════ 제출 ═══════════
+function renderDoneInfo(entry){
+  const f=TX[lang],px=f.IND_PX||'';
+  document.getElementById('done-info').innerHTML=
+    '<div class="done-row"><span>'+escHtml(f.F_NICK)+'</span><span>'+escHtml(entry.name)+'</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_UID)+'</span><span>'+escHtml(entry.uid)+'</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_FROM)+'</span><span>#'+escHtml(entry.fromSid)+' → #213</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_CURRENT_ALLIANCE)+'</span><span>'+escHtml(entry.currentAlliance)+'</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_DESIRED_ALLIANCE)+'</span><span>'+escHtml(entry.desiredAlliance)+'</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_MODE)+'</span><span>'+escHtml(modeLabel(entry.mode))+'</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_KILL)+'</span><span>'+fmtN(entry.killScore)+'</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_BM)+'</span><span>'+(entry.blackMoney?fmtN(entry.blackMoney):'-')+'</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_MIGR)+'</span><span>'+cpMillions(entry.cpMigr).toFixed(1)+'M</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_APC1)+'</span><span>'+escHtml(entry.apc1||'-')+'</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_APC2)+'</span><span>'+escHtml(entry.apc2||'-')+'</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_APC3)+'</span><span>'+escHtml(entry.apc3||'-')+'</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_TIME)+'</span><span>'+escHtml(entry.activeTime)+'</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_IND)+'</span><span>'+escHtml(px+entry.industry)+'</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_SQ)+'</span><span>'+escHtml(squadLabel(entry.squad))+'</span></div>'+ 
+    '<div class="done-row"><span>'+escHtml(f.F_REC)+'</span><span>'+escHtml(entry.recommender)+'</span></div>';
+}
+
 function save(){
   const t=TX[lang];
   if(!pData){alert(t.ERR_NAME);return;}
@@ -927,24 +949,8 @@ function save(){
     fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(entry)}).catch(()=>{});
   }
 
-  const f=t; const px=TX[lang]['IND_PX']||'';
-  document.getElementById('done-info').innerHTML=
-    '<div class="done-row"><span>'+escHtml(f.F_NICK)+'</span><span>'+escHtml(entry.name)+'</span></div>'+ 
-    '<div class="done-row"><span>'+escHtml(f.F_UID)+'</span><span>'+escHtml(entry.uid)+'</span></div>'+ 
-    '<div class="done-row"><span>'+escHtml(f.F_FROM)+'</span><span>#'+escHtml(entry.fromSid)+' → #213</span></div>'+ 
-    '<div class="done-row"><span>'+escHtml(f.F_CURRENT_ALLIANCE)+'</span><span>'+escHtml(entry.currentAlliance)+'</span></div>'+ 
-    '<div class="done-row"><span>'+escHtml(f.F_DESIRED_ALLIANCE)+'</span><span>'+escHtml(entry.desiredAlliance)+'</span></div>'+ 
-    '<div class="done-row"><span>'+escHtml(f.F_MODE)+'</span><span>'+escHtml(modeLabel(entry.mode))+'</span></div>'+ 
-    '<div class="done-row"><span>'+escHtml(f.F_KILL)+'</span><span>'+fmtN(entry.killScore)+'</span></div>'+ 
-    '<div class="done-row"><span>'+escHtml(f.F_BM)+'</span><span>'+(entry.blackMoney?fmtN(entry.blackMoney):'-')+'</span></div>'+ 
-    '<div class="done-row"><span>'+f.F_MIGR+'</span><span>'+parseFloat(document.getElementById('cp-migr').value||'0').toFixed(1)+'M</span></div>'+ 
-    '<div class="done-row"><span>'+escHtml(f.F_APC1)+'</span><span>'+escHtml(entry.apc1||'-')+'</span></div>'+ 
-    '<div class="done-row"><span>'+escHtml(f.F_APC2)+'</span><span>'+escHtml(entry.apc2||'-')+'</span></div>'+ 
-    '<div class="done-row"><span>'+escHtml(f.F_APC3)+'</span><span>'+escHtml(entry.apc3||'-')+'</span></div>'+ 
-    '<div class="done-row"><span>'+escHtml(f.F_TIME)+'</span><span>'+escHtml(entry.activeTime)+'</span></div>'+ 
-    '<div class="done-row"><span>'+escHtml(f.F_IND)+'</span><span>'+escHtml(px+entry.industry)+'</span></div>'+ 
-    '<div class="done-row"><span>'+escHtml(f.F_SQ)+'</span><span>'+escHtml(squadLabel(entry.squad))+'</span></div>'+ 
-    '<div class="done-row"><span>'+escHtml(f.F_REC)+'</span><span>'+escHtml(entry.recommender)+'</span></div>';
+  lastSubmittedEntry=entry;
+  renderDoneInfo(entry);
   document.getElementById('form-body').style.display='none';
   document.getElementById('done-screen').classList.add('on');
   window.scrollTo({top:0,behavior:'smooth'});
