@@ -296,19 +296,20 @@ select option{background:var(--bg3)}
         <div>
           <div class="apc-badge" id="t-apc1b"></div>
           <div class="apc-lbl"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="8" width="16" height="9" rx="2"/><circle cx="6" cy="19" r="2"/><circle cx="14" cy="19" r="2"/><path d="M18 11h2a2 2 0 0 1 2 2v2h-4"/><path d="M8 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg><span id="t-apc-cp"></span></div>
-          <input type="text" id="apc1" placeholder="">
+          <input type="text" id="apc1" inputmode="decimal" placeholder="" onblur="normalizeApcInput(this)">
         </div>
         <div>
           <div class="apc-badge" id="t-apc2b"></div>
           <div class="apc-lbl"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="8" width="16" height="9" rx="2"/><circle cx="6" cy="19" r="2"/><circle cx="14" cy="19" r="2"/><path d="M18 11h2a2 2 0 0 1 2 2v2h-4"/><path d="M8 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg><span id="t-apc-cp2"></span></div>
-          <input type="text" id="apc2" placeholder="">
+          <input type="text" id="apc2" inputmode="decimal" placeholder="" onblur="normalizeApcInput(this)">
         </div>
         <div>
           <div class="apc-badge" id="t-apc3b"></div>
           <div class="apc-lbl"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="8" width="16" height="9" rx="2"/><circle cx="6" cy="19" r="2"/><circle cx="14" cy="19" r="2"/><path d="M18 11h2a2 2 0 0 1 2 2v2h-4"/><path d="M8 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg><span id="t-apc-cp3"></span></div>
-          <input type="text" id="apc3" placeholder="">
+          <input type="text" id="apc3" inputmode="decimal" placeholder="" onblur="normalizeApcInput(this)">
         </div>
       </div>
+      <div class="migr-tip" id="t-apc-unit-hint" style="margin-top:10px"></div>
     </div>
 
     <!-- 06 활동시간 -->
@@ -474,7 +475,7 @@ const TX = {
     't-sec3':'이민 전투력',
     't-migr-lbl':'이민 전투력',
     't-migr-tip':'M 단위로 입력해주세요. 예) 182.4M → 182.4 입력',
-    't-sec4':'APC 편대 전투력',
+    't-sec4':'APC 편대 전투력','t-apc-unit-hint':'숫자만 입력하면 7.7 → 7.7G, 900 → 900M, 10 → 10G로 표시됩니다. 999M 다음은 1G입니다. 단위를 직접 입력해도 됩니다.',APC_ERROR:'편대 전투력은 0보다 큰 숫자 또는 M/G 단위로 입력해 주세요.',
     't-apc1b':'1편대','t-apc2b':'2편대','t-apc3b':'3편대',
     't-apc-cp':'전투력','t-apc-cp2':'전투력','t-apc-cp3':'전투력',
     't-sec5':'활동 시간대',
@@ -545,7 +546,7 @@ const TX = {
     't-sec3':'Migration Power',
     't-migr-lbl':'Migration Power',
     't-migr-tip':'Enter the value in millions (M). Example: enter 182.4 for 182.4M.',
-    't-sec4':'APC Squad Power',
+    't-sec4':'APC Squad Power','t-apc-unit-hint':'Numbers without a unit: 7.7 → 7.7G, 900 → 900M, 10 → 10G. Above 999M, values are shown in G. You can also enter M or G.',APC_ERROR:'Enter squad power as a positive number, optionally followed by M or G.',
     't-apc1b':'Squad 1','t-apc2b':'Squad 2','t-apc3b':'Squad 3',
     't-apc-cp':'CP','t-apc-cp2':'CP','t-apc-cp3':'CP',
     't-sec5':'Active Hours',
@@ -616,7 +617,7 @@ const TX = {
     't-sec3':'移転戦闘力',
     't-migr-lbl':'移転戦闘力',
     't-migr-tip':'M単位で入力してください。例）182.4M → 182.4と入力',
-    't-sec4':'APC分隊の戦闘力',
+    't-sec4':'APC分隊の戦闘力','t-apc-unit-hint':'単位なしの場合、7.7 → 7.7G、900 → 900M、10 → 10G と表示します。999M の次は 1G です。M・G を直接入力することもできます。',APC_ERROR:'部隊戦力は正の数値で入力してください。M・G の単位も使用できます。',
     't-apc1b':'第1分隊','t-apc2b':'第2分隊','t-apc3b':'第3分隊',
     't-apc-cp':'戦闘力','t-apc-cp2':'戦闘力','t-apc-cp3':'戦闘力',
     't-sec5':'活動時間帯',
@@ -687,7 +688,7 @@ const TX = {
     't-sec3':'迁移战力',
     't-migr-lbl':'迁移战力',
     't-migr-tip':'请以百万（M）为单位填写。例如：182.4M请输入182.4。',
-    't-sec4':'APC小队战力',
+    't-sec4':'APC小队战力','t-apc-unit-hint':'不带单位时，7.7 → 7.7G、900 → 900M、10 → 10G。超过 999M 后以 G 显示，也可以直接输入 M 或 G。',APC_ERROR:'请输入大于 0 的小队战力，可附加 M 或 G 单位。',
     't-apc1b':'第1小队','t-apc2b':'第2小队','t-apc3b':'第3小队',
     't-apc-cp':'战力','t-apc-cp2':'战力','t-apc-cp3':'战力',
     't-sec5':'活动时间段',
@@ -754,6 +755,15 @@ const squadLabel=value=>valueLabel(SQUAD_KEYS,value);
 const gradeLabel=value=>valueLabel(GRADE_KEYS,normalizeGrade(value));
 const statusLabel=value=>valueLabel(STATUS_KEYS,value);
 function cpMillions(v){const n=Number(String(v??'').replace(/,/g,''));if(!Number.isFinite(n)||n<=0)return 0;return n>1000?n/1000000:n;}
+function normalizeApcPower(value){
+  const raw=String(value??'').trim();if(!raw||raw==='-')return '-';
+  const match=raw.replace(/,/g,'').match(/^(\d+(?:\.\d+)?)\s*([mMgG])?$/);
+  if(!match)throw new Error('APC_POWER');
+  const number=Number(match[1]);if(!Number.isFinite(number)||number<=0)throw new Error('APC_POWER');
+  const millions=number*((match[2]||(number<100?'G':'M')).toUpperCase()==='G'?1000:1);
+  return String(Number((millions>=1000?millions/1000:millions).toFixed(6)))+(millions>=1000?'G':'M');
+}
+function normalizeApcInput(input){try{if(input.value.trim())input.value=normalizeApcPower(input.value);}catch(_error){/* 제출 시 해당 언어로 오류를 안내한다. */}}
 
 // ═══════════ 언어 전환 ═══════════
 function setLang(l){
@@ -933,6 +943,9 @@ function save(){
   if(!selIndVal){alert(t.ERR_IND);return;}
   const rec=document.getElementById('recommender').value.trim();
   if(!rec){alert(t.ERR_REC);return;}
+  let apcValues;
+  try{apcValues=['apc1','apc2','apc3'].map(id=>normalizeApcPower(document.getElementById(id).value));}
+  catch(_error){alert(t.APC_ERROR);return;}
   var sbtn=document.getElementById('t-submit');
   if(sbtn&&sbtn.disabled)return;
   if(sbtn){sbtn.disabled=true;sbtn.style.opacity='0.6';}
@@ -951,9 +964,7 @@ function save(){
     cpMigr:(()=>{const v=parseFloat(document.getElementById('cp-migr').value)||0;return Math.round(v*1000000);})(),
     killScore:getRaw('inp-kill'),
     blackMoney:getRaw('inp-bm'),
-    apc1:document.getElementById('apc1').value.trim()||'-',
-    apc2:document.getElementById('apc2').value.trim()||'-',
-    apc3:document.getElementById('apc3').value.trim()||'-',
+    apc1:apcValues[0],apc2:apcValues[1],apc3:apcValues[2],
     activeTime:document.getElementById('time-from').value+' ~ '+document.getElementById('time-to').value,
     industry:selIndVal, squad:selSqVal, recommender:rec, status:'검토중'
   };
