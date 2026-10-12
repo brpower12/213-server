@@ -2831,7 +2831,8 @@ body.migration-tab-open footer{display:none!important}
 /* ===== V3.67 / 동적 참여 투표 관리, 모바일 내부 탭 ===== */
 .section-head-polls .section-head-icon{color:#f3c957;background:rgba(242,193,78,.09);border-color:rgba(242,193,78,.24)}
 .poll-manager-bar{display:flex;align-items:end;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.poll-manager-select{display:grid;gap:5px;min-width:min(360px,100%);max-width:100%;flex:1}.poll-manager-select>span,.poll-field>span{font-size:.72rem;color:var(--muted);font-weight:800}.poll-manager-select select{width:100%;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.poll-manager-select{display:grid;gap:5px;min-width:min(360px,100%);max-width:100%;flex:1}.poll-manager-select>span,.poll-field>span{font-size:.72rem;color:var(--muted);font-weight:800}.poll-manager-select select{width:100%;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:border-color .18s,background .18s,box-shadow .18s}.poll-manager-select.current-open select{border-color:rgba(61,220,151,.62);background:linear-gradient(180deg,rgba(61,220,151,.11),rgba(17,24,39,.98));box-shadow:0 0 0 2px rgba(61,220,151,.08),0 0 18px rgba(61,220,151,.08)}.poll-manager-select.current-closed select{border-color:rgba(242,193,78,.38)}
+.poll-manager-label{display:flex;align-items:center;gap:7px;min-width:0}.poll-manager-selection-state{display:none;align-items:center;min-height:19px;padding:2px 7px;border:1px solid var(--line);border-radius:999px;font-size:.63rem;font-weight:900;line-height:1}.poll-manager-selection-state.show{display:inline-flex}.poll-manager-selection-state.open{color:#78e3b1;border-color:rgba(61,220,151,.36);background:rgba(61,220,151,.09)}.poll-manager-selection-state.open::before{content:'';width:6px;height:6px;border-radius:50%;background:#3ddc97;box-shadow:0 0 8px rgba(61,220,151,.75)}.poll-manager-selection-state.draft{color:#aeb8c8;background:#202836}.poll-manager-selection-state.closed{color:#f0c65a;border-color:rgba(242,193,78,.30);background:rgba(242,193,78,.07)}.poll-manager-selection-state.archived{color:#9aa6b8;background:#202836}
 .poll-manager-status{margin-left:auto;color:var(--muted);font-size:.75rem;font-weight:750;padding:8px 10px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.018)}
 .poll-mobile-tabs{display:none}
 .poll-workspace{display:grid;grid-template-columns:minmax(420px,.84fr) minmax(620px,1.35fr);gap:14px;align-items:start}
@@ -3759,7 +3760,7 @@ body.mem-modal-open{overflow:hidden}
   </div>
 
   <div class="panel poll-manager-bar">
-    <label class="poll-manager-select"><span>투표 선택</span><select id="pollManagerSelect" onchange="loadPollDetails(this.value)"><option value="">불러오는 중...</option></select></label>
+    <label class="poll-manager-select" id="pollManagerSelectWrap"><span class="poll-manager-label">투표 선택 <b class="poll-manager-selection-state" id="pollManagerSelectionState"></b></span><select id="pollManagerSelect" onchange="loadPollDetails(this.value)"><option value="">불러오는 중...</option></select></label>
     <button class="btn primary" onclick="newParticipationPoll()">＋ 새 투표</button>
     <button class="btn" id="pollDuplicateBtn" onclick="duplicateParticipationPoll()">⧉ 복제</button>
     <button class="btn poll-manager-refresh" onclick="loadPollManager(true)">↻ 새로고침</button>
@@ -8212,14 +8213,36 @@ function participationEffectiveStatus(poll,now=Date.now()){
   return status;
 }
 function participationStatusLabel(status){return ({draft:'초안',open:'진행 중',closed:'마감',archived:'보관'})[status]||status||'초안';}
+function participationPollRecency(poll){
+  for(const value of [poll?.updated_at,poll?.created_at,poll?.closes_at,poll?.opens_at]){const time=new Date(value||0).getTime();if(Number.isFinite(time)&&time>0)return time;}
+  const id=Number(poll?.id);return Number.isFinite(id)?id:0;
+}
+function participationPollGroups(){
+  const groups={open:[],draft:[],past:[]};
+  (participationPolls||[]).forEach(poll=>{const status=participationEffectiveStatus(poll);if(status==='open')groups.open.push(poll);else if(status==='draft')groups.draft.push(poll);else groups.past.push(poll);});
+  groups.open.sort((a,b)=>{const aClose=a?.closes_at?new Date(a.closes_at).getTime():Infinity,bClose=b?.closes_at?new Date(b.closes_at).getTime():Infinity;return aClose-bClose||participationPollRecency(b)-participationPollRecency(a);});
+  groups.draft.sort((a,b)=>participationPollRecency(b)-participationPollRecency(a));
+  groups.past.sort((a,b)=>participationPollRecency(b)-participationPollRecency(a));
+  return groups;
+}
+function participationPollGroupHtml(label,polls){
+  if(!polls.length)return '';
+  return `<optgroup label="${esc(label)}">${polls.map(poll=>{const status=participationEffectiveStatus(poll);return `<option value="${esc(poll.id)}">[${participationStatusLabel(status)}] ${esc(poll.title_ko)}</option>`;}).join('')}</optgroup>`;
+}
+function updatePollManagerSelectionState(){
+  const wrap=$('pollManagerSelectWrap'),state=$('pollManagerSelectionState');if(!wrap||!state)return;
+  wrap.classList.remove('current-open','current-closed');state.className='poll-manager-selection-state';
+  if(!participationCurrent?.id){state.textContent='새 투표';state.classList.add('show','draft');return;}
+  const status=participationEffectiveStatus(participationCurrent);state.textContent=participationStatusLabel(status);state.classList.add('show',status);
+  if(status==='open')wrap.classList.add('current-open');else if(status==='closed'||status==='archived')wrap.classList.add('current-closed');
+}
 function renderParticipationPollNavigation(){
   const select=$('pollManagerSelect');if(!select)return;
   const selected=String(participationCurrent?.id||select.value||'');
-  select.innerHTML='<option value="">＋ 새 투표 작성</option>'+participationPolls.map(poll=>{
-    const status=participationEffectiveStatus(poll);
-    return `<option value="${poll.id}">[${participationStatusLabel(status)}] ${esc(poll.title_ko)}</option>`;
-  }).join('');
+  const groups=participationPollGroups();
+  select.innerHTML='<option value="">＋ 새 투표 작성</option>'+participationPollGroupHtml(`🟢 진행 중 투표 (${groups.open.length})`,groups.open)+participationPollGroupHtml(`✏️ 작성 중 초안 (${groups.draft.length})`,groups.draft)+participationPollGroupHtml(`✅ 마감 / 보관 투표 (${groups.past.length})`,groups.past);
   if([...select.options].some(option=>option.value===selected))select.value=selected;
+  updatePollManagerSelectionState();
 }
 function updatePollManagerStatus(){
   const status=$('pollManagerStatus');if(!status)return;
@@ -8233,7 +8256,7 @@ function refreshParticipationTimeState(){
 }
 function updatePollStatusPill(){
   const status=participationEffectiveStatus(participationCurrent),pill=$('pollStatusPill');
-  if(!pill)return;pill.className='poll-status-pill '+status;pill.textContent=participationStatusLabel(status);
+  if(!pill)return;pill.className='poll-status-pill '+status;pill.textContent=participationStatusLabel(status);updatePollManagerSelectionState();
 }
 function pollLocalDateValue(value){
   if(!value)return '';
@@ -8354,7 +8377,8 @@ async function loadPollManager(force=false){
   participationPolls=data||[];
   renderParticipationPollNavigation();updatePollManagerStatus();
   const remembered=localStorage.getItem('participation_poll_id');
-  const candidate=participationPolls.find(p=>String(p.id)===String(participationCurrent?.id))||participationPolls.find(p=>String(p.id)===String(remembered))||participationPolls[0];
+  const grouped=participationPollGroups();
+  const candidate=participationPolls.find(p=>String(p.id)===String(participationCurrent?.id))||participationPolls.find(p=>String(p.id)===String(remembered))||grouped.open[0]||grouped.draft[0]||grouped.past[0];
   if(candidate)await loadPollDetails(candidate.id);else newParticipationPoll();
   refreshPollBadge();
 }
