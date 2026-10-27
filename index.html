@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head><meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; connect-src 'none'; frame-src 'self' blob:; worker-src blob:; object-src 'none'; base-uri 'none'; form-action 'none'"><script>/* Defense in depth: no transports, cookies or persistent storage in this demo. */
+<head><script>
+window.previewBootError=error=>{
+  const gate=document.getElementById('gate'),app=document.getElementById('appShell'),message=document.getElementById('previewBootMessage');
+  if(gate)gate.style.display='flex';if(app)app.style.display='none';
+  if(message)message.textContent='미리보기 시작 중 오류가 발생했습니다. 비밀번호 입력으로 해결되는 문제가 아닙니다. 다시 열기를 눌러 주세요. ('+String(error?.message||error||'알 수 없는 오류').slice(0,160)+')';
+};
+addEventListener('error',event=>{if(!window.__previewState?.ready)previewBootError(event.error||event.message);});
+addEventListener('unhandledrejection',event=>{if(!window.__previewState?.ready)previewBootError(event.reason);});
+</script><meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; connect-src 'none'; frame-src 'self' blob:; worker-src blob:; object-src 'none'; base-uri 'none'; form-action 'none'"><script>/* Defense in depth: no transports, cookies or persistent storage in this demo. */
 (()=>{
   'use strict';
   window.PREVIEW_ONLY=true;
@@ -36,7 +44,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 
-<title>213 SERVER | 통합 시트</title>
+<title>213 SERVER | 가상 데이터 미리보기</title>
 <!-- Tactical workspace V3.10: public-state preserved + HQ PNG grid readability + 5-cell guides -->
 <meta property="og:title" content="213 SERVER | 통합 시트">
 <meta property="og:description" content="213 서버 운영진 전용 전력 관리 시트">
@@ -3561,50 +3569,13 @@ window.MIGRATION_CONFIG=Object.freeze({applicationRound:'2026-09'});
 <body><aside id="previewRibbon"><strong>테스트 전용 / 모든 내용은 가짜 데이터입니다</strong><span>운영 서버 연결 없음 / 저장되지 않음</span><button id="previewReset" type="button">처음으로</button></aside>
 
 <!-- ============ 비밀번호 게이트 ============ -->
-<div id="gate">
-  <div class="gate-box">
-    <div class="gate-kicker">
-      <span class="gate-kicker-icon">◆</span>
-      <span id="staffRoleText">운영진 전용</span>
-    </div>
-
-    <div class="gate-logo-wrap">
-      <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTQwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZCIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGOUU3QTAiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIwLjQ1IiBzdG9wLWNvbG9yPSIjRUZDOTVFIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0I4ODYyQiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZDIiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkNFRkMwIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0Q5QTkzRSIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPCEtLSDsmZXqtIAgLS0+CiAgPHBhdGggZD0iTTI3IDQ2IEwyOSAyNCBMNDQgMzQgTDYwIDE1IEw3NiAzNCBMOTEgMjQgTDkzIDQ2IFoiIGZpbGw9InVybCgjZ29sZCkiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIxLjIiLz4KICA8Y2lyY2xlIGN4PSIyOSIgY3k9IjIxIiByPSIzLjQiIGZpbGw9InVybCgjZ29sZDIpIiBzdHJva2U9IiM4QTY0MjAiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iMTIiIHI9IjMuOCIgZmlsbD0idXJsKCNnb2xkMikiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPGNpcmNsZSBjeD0iOTEiIGN5PSIyMSIgcj0iMy40IiBmaWxsPSJ1cmwoI2dvbGQyKSIgc3Ryb2tlPSIjOEE2NDIwIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8cmVjdCB4PSIyNyIgeT0iNDgiIHdpZHRoPSI2NiIgaGVpZ2h0PSI2LjUiIHJ4PSIyLjUiIGZpbGw9InVybCgjZ29sZDIpIiBzdHJva2U9IiM4QTY0MjAiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iNTEuMiIgcj0iMiIgZmlsbD0iIzhBNjQyMCIvPgogIDxjaXJjbGUgY3g9IjQyIiBjeT0iNTEuMiIgcj0iMS41IiBmaWxsPSIjOEE2NDIwIi8+CiAgPGNpcmNsZSBjeD0iNzgiIGN5PSI1MS4yIiByPSIxLjUiIGZpbGw9IiM4QTY0MjAiLz4KICA8IS0tIDIxMyAtLT4KICA8dGV4dCB4PSI2MCIgeT0iOTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCAnVGltZXMgTmV3IFJvbWFuJywgc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9InVybCgjZ29sZCkiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIwLjYiPjIxMzwvdGV4dD4KICA8IS0tIFNFUlZFUiAtLT4KICA8dGV4dCB4PSI2MyIgeT0iMTEzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTIuNSIgbGV0dGVyLXNwYWNpbmc9IjUuNSIgZmlsbD0iI0Q5QjQ1QyI+U0VSVkVSPC90ZXh0PgogIDwhLS0g7ZWY64uoIOyepeyLnSAtLT4KICA8cGF0aCBkPSJNMzggMTIyIEw2MCAxMzEgTDgyIDEyMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ1cmwoI2dvbGQpIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iMTMxIiByPSIyLjIiIGZpbGw9IiNFRkM5NUUiLz4KPC9zdmc+Cg==" alt="213 SERVER">
-    </div>
-
-    <h1>213서버 통합 시트</h1>
-    <div class="sub">전력 비교와 운영 데이터를 한곳에서 관리하는<br>213서버 운영진 전용 대시보드입니다.</div>
-
-    <div class="gate-field">
-      <label for="gatePw">접속 비밀번호</label>
-      <div class="gate-input-wrap">
-        <span class="gate-lock" aria-hidden="true">
-          <svg viewBox="0 0 24 24">
-            <path d="M7.5 10V7.5a4.5 4.5 0 0 1 9 0V10"/>
-            <rect x="5" y="10" width="14" height="10" rx="2.5"/>
-            <circle cx="12" cy="15" r="1.2"/>
-          </svg>
-        </span>
-        <input id="gatePw" type="password" placeholder="비밀번호 입력" autocomplete="current-password" aria-label="접속 비밀번호" onkeydown="if(event.key==='Enter')doLogin()">
-      </div>
-    </div>
-
-    <button class="btn primary gate-enter-btn" onclick="doLogin()">
-      <span>입장하기</span>
-      <span class="gate-enter-arrow" aria-hidden="true">→</span>
-    </button>
-
-    <div class="gate-msg" id="gateMsg"></div>
-
-    <div class="gate-security">
-      <span class="gate-security-dot"></span>
-      승인된 운영진만 이용할 수 있습니다
-    </div>
-
-    <div class="gate-credit">Powered by <b>213 NXT / 부앙(Bu-ang)</b></div>
-  </div>
-</div>
-
+<div id="gate"><div class="gate-box">
+<h1>213 SERVER 미리보기</h1>
+<p id="previewBootMessage" role="status">가상 데이터 화면을 여는 중입니다. 비밀번호는 필요하지 않습니다.</p>
+<button type="button" class="btn primary" onclick="location.reload()">다시 열기</button>
+<div id="gateMsg" hidden></div>
+<noscript>미리보기를 보려면 브라우저의 JavaScript 사용을 허용해 주세요.</noscript>
+</div></div>
 <!-- ============ 본 앱 ============ -->
 <div id="appShell">
 <header>
@@ -4430,19 +4401,7 @@ async function saveEditor(){
 }
 
 /* ---------- 게이트 ---------- */
-async function doLogin(){
-  const pw=$('gatePw').value;
-  if(!pw){$('gateMsg').textContent='비밀번호를 입력해주세요.';return;}
-  $('gateMsg').style.color='var(--muted)'; $('gateMsg').textContent='확인 중...';
-  const {error}=await sb.auth.signInWithPassword({email:CONFIG.LOGIN_EMAIL,password:pw});
-  if(error){
-    $('gateMsg').style.color='var(--red)';
-    $('gateMsg').textContent=/Invalid login/i.test(error.message)?'비밀번호가 틀렸습니다.':error.message;
-    return;
-  }
-  $('gatePw').value='';
-  await enterApp();
-}
+function doLogin(){return Promise.resolve();}
 async function doLogout(){ await sb.auth.signOut(); location.reload(); }
 function applyWatermark(){
   const name=getEditor()||'미등록';
@@ -4841,18 +4800,7 @@ window.onerror=function(msg,src,line){
     try{ if(typeof toast==='function') toast('⚠️ 오류: '+msg); }catch(_e){}
   }catch(e){}
 };
-async function init(){
-  if(!CONFIG.SUPABASE_URL.startsWith('https://')){
-    document.querySelector('.gate-box').innerHTML='<div class="emblem">⚠️</div><h1>설정 필요</h1><div class="sub">index.html 상단의 CONFIG에 Supabase URL과 anon key를 붙여넣은 뒤 다시 열어주세요.<br>(설치가이드.md 참고)</div>';
-    return;
-  }
-  sb=window.supabase.createClient(CONFIG.SUPABASE_URL,CONFIG.SUPABASE_ANON_KEY,{
-    auth:{storage:window.sessionStorage,persistSession:true,autoRefreshToken:true}
-  });
-  const {data:{session}}=await sb.auth.getSession();
-  if(session) await enterApp();
-  else setTimeout(()=>$('gatePw').focus(),100);
-}
+function init(){return Promise.resolve();}
 async function loadBase(){
   const [s,a,f,fs]=await Promise.all([
     sb.from('servers').select('*').order('name'),
@@ -9159,6 +9107,5 @@ function exportPollResultsCsv(){
   new ResizeObserver(resize).observe(document.getElementById('previewRibbon'));resize();
   document.getElementById('previewReset').onclick=()=>location.reload();
   window.__previewState.ready=true;
-})();
-</script></body>
+})().catch(window.previewBootError);</script></body>
 </html>
