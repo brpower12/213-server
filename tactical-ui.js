@@ -16,6 +16,15 @@
     .tactical-tool-groups{display:none;flex-shrink:0;gap:5px;padding:7px;background:#111925}
     .tactical-tool-groups button{min-height:44px;min-width:0;border:1px solid #35445c;border-radius:8px;background:#192335;color:#d9e4f4;font-family:inherit;font-weight:700;font-size:13px;line-height:1.4}
     .tactical-tool-groups button[aria-pressed="true"]{border-color:#f2c14e;color:#ffde8a;background:#30291b}
+    .tactical-inspector-heading,.tactical-inspector-backdrop{display:none}
+    @media(max-width:1000px){
+      #btnRight{min-width:108px!important;min-height:44px!important;height:auto!important;padding:8px 10px!important;white-space:nowrap!important;font-size:13px!important;font-weight:750!important;flex:0 0 auto!important}
+      #panelRight .tactical-inspector-heading{display:flex;position:sticky;top:0;z-index:20;align-items:center;justify-content:space-between;gap:8px;min-height:52px;padding:4px 0 10px;margin-bottom:10px;background:#1b232e;border-bottom:1px solid #3a4655}
+      .tactical-inspector-heading strong{font-size:14px;color:#ffdf97}
+      #tacticalInspectorClose{min-width:64px;min-height:44px;padding:8px 12px;border:1px solid #9b7b36;border-radius:8px;background:#30291b;color:#ffdf97;font-family:inherit;font-size:14px;line-height:1.4;font-weight:750;cursor:pointer;white-space:nowrap}
+      #panelRight .right-tabs{position:static!important;margin:0 0 12px!important;padding:0 0 10px!important}
+      .tactical-inspector-backdrop:not([hidden]){display:block;position:absolute;inset:0;z-index:59;border:0;padding:0;background:rgba(4,8,14,.34);cursor:pointer}
+    }
     @media(max-width:720px){
       .tactical-tool-groups{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
       #tools .tool-button[data-ui-hidden="true"]{display:none!important}
@@ -46,6 +55,37 @@
   function filter(){const active=innerHeight<=480?'all':selected;tools.querySelectorAll('.tool-button').forEach(b=>b.dataset.uiHidden=String(active!=='all'&&classify(b)!==active));groups.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.group===active)));}
   addEventListener('resize',filter);
   categories.forEach(([key,label])=>{const b=document.createElement('button');b.type='button';b.dataset.group=key;b.textContent=label;b.onclick=()=>{selected=key;filter();};groups.append(b);});filter();
+  const inspector=document.getElementById('panelRight'),inspectorToggle=document.getElementById('btnRight');
+  if(inspector&&inspectorToggle){
+    const drawerMedia=matchMedia('(max-width:1000px)');
+    const heading=document.createElement('div');heading.className='tactical-inspector-heading';
+    const headingLabel=document.createElement('strong');headingLabel.textContent='현황 / 선택 항목 편집';
+    const close=document.createElement('button');close.id='tacticalInspectorClose';close.type='button';close.textContent='닫기';close.setAttribute('aria-label','편집창 닫기');
+    heading.append(headingLabel,close);inspector.prepend(heading);
+    const backdrop=document.createElement('button');backdrop.type='button';backdrop.className='tactical-inspector-backdrop';backdrop.hidden=true;backdrop.tabIndex=-1;backdrop.setAttribute('aria-label','편집창 닫기');
+    inspector.before(backdrop);inspectorToggle.setAttribute('aria-controls','panelRight');
+    function syncInspectorDrawer(){
+      const open=inspector.classList.contains('open'),shown=!drawerMedia.matches||open;
+      inspectorToggle.textContent=open?'편집창 닫기':'편집창 열기';
+      inspectorToggle.setAttribute('aria-expanded',String(open));inspectorToggle.setAttribute('aria-label',inspectorToggle.textContent);inspectorToggle.title=inspectorToggle.textContent;
+      inspector.setAttribute('aria-hidden',String(!shown));inspector.inert=!shown;backdrop.hidden=!drawerMedia.matches||!open;
+    }
+    function closeInspectorDrawer(){
+      if(!drawerMedia.matches||!inspector.classList.contains('open'))return;
+      inspector.classList.remove('open');syncInspectorDrawer();
+      if(inspectorToggle.getClientRects().length)inspectorToggle.focus({preventScroll:true});
+    }
+    const originalToggle=inspectorToggle.onclick;
+    inspectorToggle.onclick=function(event){
+      const opening=!inspector.classList.contains('open');
+      if(originalToggle)originalToggle.call(this,event);else inspector.classList.toggle('open');
+      syncInspectorDrawer();if(opening&&drawerMedia.matches)close.focus({preventScroll:true});
+    };
+    close.onclick=closeInspectorDrawer;backdrop.onclick=closeInspectorDrawer;
+    document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!event.defaultPrevented&&drawerMedia.matches&&inspector.classList.contains('open')){event.preventDefault();closeInspectorDrawer();}});
+    new MutationObserver(syncInspectorDrawer).observe(inspector,{attributes:true,attributeFilter:['class']});
+    drawerMedia.addEventListener('change',syncInspectorDrawer);syncInspectorDrawer();
+  }
   function render(data={}){
     const policy=window.__tacticalHost?.policy||{};
     const mode=data.viewMode||policy.viewMode,workspace=data.workspaceId??policy.workspaceId;

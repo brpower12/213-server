@@ -71,6 +71,8 @@ body.tactical-tab-open #view-tactical{min-height:0}
 .sheet-shortcuts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
 .sheet-shortcuts .btn{min-height:44px}
 .poll-count-explanation{margin-bottom:12px;padding:12px;border:1px solid #35445c;border-radius:10px;background:#142033;font-size:13px;line-height:1.6;color:#cbd8ed}
+#appShell #pollMobileFilterToggle{min-height:48px!important;font-size:15px!important;font-weight:750;gap:10px;color:#dce7f7}
+#pollMobileFilterToggle .poll-mobile-filter-state{flex:0 0 auto;padding:5px 9px;border:1px solid rgba(242,193,78,.35);border-radius:7px;background:rgba(242,193,78,.07);color:#ffda83;font-size:14px;line-height:1.4}
 .poll-stats{grid-template-columns:repeat(4,minmax(0,1fr))}
 .poll-stats b{color:var(--text)!important}
 .poll-stats .stat-good b{color:var(--green)!important}
@@ -135,15 +137,23 @@ button:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var
  #rankBox .rank-table .sub2{font-size:12px}
  #rankBox[data-extra-columns="true"] .rank-table{min-width:620px!important}
  #rankBox .rank-table .selected-power{min-width:80px!important}
- #subFilterSeg{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
+ #view-subs #subFilterSeg{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px;width:100%;margin:0}
+ #appShell #view-subs #subFilterSeg button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;min-height:64px!important;padding:8px 6px!important;font-size:14px!important;line-height:1.3!important;white-space:nowrap!important}
+ #view-subs #subFilterSeg .sub-filter-count{flex:0 0 auto;min-width:28px;min-height:22px;height:auto;margin:0;padding:2px 8px;font-size:12px;line-height:1.4;font-variant-numeric:tabular-nums;white-space:nowrap}
+ #view-subs .sub-filterbar>.hint{flex:1 0 100%;min-width:0;overflow-wrap:anywhere}
  #subAuditSeg{display:flex!important;flex-wrap:wrap}
  #subAuditSeg[style*="none"]{display:none!important}
  #subAuditSeg button{flex:1 1 110px}
  .sub-scope{min-width:0}
+ #view-subs .sub-scopebar{grid-template-columns:minmax(0,1fr);gap:12px}
+ #view-subs .sub-scope-field,#view-subs .sub-scope-field input,#view-subs .sub-scope-field select{min-width:0;max-width:100%}
+ #view-subs .sub-scope-field>span{font-size:13px;line-height:1.4}
  #subList .where,#subList .when,#subList .sub-audit-meta{font-size:12px!important;line-height:1.5}
  #subList .vals,#subList .sub-audit-name{font-size:14px!important;line-height:1.6}
  #subList .acts{flex-wrap:wrap}
  #subList .acts .btn{flex:1 1 100px}
+ #view-polls .poll-panel-head>div{min-width:0;flex:1}
+ #view-polls .poll-panel-head>.btn{flex:0 0 auto;white-space:nowrap!important}
  .poll-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px}
  .poll-stats span{font-size:12px!important;line-height:1.4}
  .poll-stats b{font-size:18px!important}

@@ -23,7 +23,7 @@
   nav.addEventListener('scroll',syncNav,{passive:true});
   const apply=applyPerms;applyPerms=function(){apply();requestAnimationFrame(syncNav);};
   const toolbar=byId('view-compare').querySelector('.toolbar');
-  const detail=document.createElement('details');detail.id='compareDetails';detail.className='sheet-disclosure';detail.open=true;
+  const detail=document.createElement('details');detail.id='compareDetails';detail.className='sheet-disclosure';
   const summary=document.createElement('summary'),body=document.createElement('div');body.className='sheet-disclosure-body';detail.append(summary,body);
   const basis=byId('basisSeg').closest('.segwrap'),top=byId('topSeg').closest('.segwrap');
   basis.before(detail);body.append(basis,top);

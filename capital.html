@@ -674,6 +674,11 @@ input[type=color]{min-height:44px!important;height:44px!important;flex-basis:44p
 .zone-label-step>span{font-size:12px;color:#aab9cb}
 @media(min-width:1201px){#quickZoneLabelControls{display:none!important}}
 @media(max-width:1200px){#quickZoneLabelControls{order:4;border:1px solid #35445c;border-radius:9px;padding:8px;margin:0;min-height:60px;max-height:none}}
+.capital-map-viewport{position:relative;min-width:0}
+.capital-map-zoom{position:absolute;right:8px;bottom:8px;z-index:8;display:none;align-items:center;gap:3px;padding:4px;border:1px solid #52637c;border-radius:10px;background:#111b2cef;box-shadow:0 3px 12px #0005}
+.capital-map-zoom button{min-width:44px;min-height:44px;border:1px solid #42556f;border-radius:7px;background:#223349;color:#f0f5ff;font:inherit;font-size:22px}
+.capital-map-zoom output{min-width:47px;text-align:center;color:#ffda83;font-size:13px;font-weight:800;font-variant-numeric:tabular-nums}
+@media(max-width:1200px){.capital-map-viewport{order:3}.capital-map-zoom{display:flex}.capital-toolbar-zoom{display:none!important}}
 </style>
 </head>
 <body>
@@ -776,7 +781,7 @@ input[type=color]{min-height:44px!important;height:44px!important;flex-basis:44p
    <div class="stage-tools">
     <select id="quickBattleType" onchange="applyQuickBattleType()" aria-label="전장 선택" style="min-width:140px;max-width:180px;height:38px;min-height:38px"><option value="supreme">최고의 전장</option><option value="capital">수도전</option></select>
     <select id="split" onchange="onSplit()" aria-label="진영 배치 방식" style="min-width:175px;max-width:210px;height:38px;min-height:38px"><option value="lr">아군 왼쪽</option><option value="rl">아군 오른쪽</option><option value="tb">아군 위쪽</option><option value="bt">아군 아래쪽</option><option value="g">아군 ㄱ 배치</option><option value="n">아군 ㄴ 배치</option></select>
-    <button class="tool-small" onclick="zoomView(-1)" aria-label="축소">−</button><span id="zoomLabel" aria-live="polite">100%</span><button class="tool-small" onclick="zoomView(1)" aria-label="확대">+</button>
+    <button class="tool-small capital-toolbar-zoom" onclick="zoomView(-1)" aria-label="축소">−</button><span class="capital-toolbar-zoom" id="zoomLabel" aria-live="polite">100%</span><button class="tool-small capital-toolbar-zoom" onclick="zoomView(1)" aria-label="확대">+</button>
     <button class="tool-small" id="panBtn" onclick="togglePan()" title="지도 빈 곳을 끌면 바로 이동합니다. 이 버튼을 켜면 항목 위에서도 지도만 이동합니다">이동 고정</button>
     <button class="tool-small highlight" id="capitalDetailView" onclick="openBattleView()" title="수도 중심을 크게 보기">수도 중심</button><button class="tool-small" id="capitalOverview" onclick="resetView()" title="전체 지도를 한눈에 보기">전체 보기</button><span class="zoom-hint">휠 확대/축소 / 빈 곳 드래그 이동</span>
    </div>
@@ -847,7 +852,7 @@ input[type=color]{min-height:44px!important;height:44px!important;flex-basis:44p
       <button class="tool-small" onclick="resetAll()" title="현재 전장만 초기화">↺ 전장 초기화</button>
     </div>
   </div>
-  <div id="wrap"><canvas id="cv" width="1400" height="900" aria-label="편집 가능한 수도전 지도"></canvas></div>
+  <div class="capital-map-viewport"><div id="wrap"><canvas id="cv" width="1400" height="900" aria-label="편집 가능한 수도전 지도"></canvas></div><div class="capital-map-zoom" role="group" aria-label="지도 확대와 축소"><button id="capitalMapZoomOut" type="button" onclick="zoomView(-1)" aria-label="지도 축소">−</button><output id="capitalMapZoomValue" aria-label="지도 확대 배율">100%</output><button id="capitalMapZoomIn" type="button" onclick="zoomView(1)" aria-label="지도 확대">+</button></div></div>
   <div class="stage-bottom"><div class="legend"><span class="legend-item"><i class="legend-dot ally"></i> 아군</span><span class="legend-item"><i class="legend-dot enemy"></i> 상대</span><span class="legend-item">수도, 포탑 확대 출력 지원</span></div><span class="orientation">맵 위 휠로 확대/축소 / 3×3 쉘터 배치, 클릭 후 드래그 이동</span></div>
  </section>
  <aside class="right-panel" id="rightTools" aria-label="선택 항목 편집 및 저장"></aside>
@@ -1850,29 +1855,68 @@ window.addEventListener('keydown',e=>{if(e.code==='Space'&&!['INPUT','TEXTAREA',
 window.addEventListener('keyup',e=>{if(e.code==='Space')SPACE_PAN=false;});
 window.addEventListener('blur',()=>{SPACE_PAN=false;});
 let lastTap={t:0,x:0,y:0};
+const capitalTouchPointers=new Map();
+let capitalPinch=null,capitalTouchBefore=null,pendingTouchShelter=null,pendingTouchEdit=false;
+function captureCapitalPointer(id){try{cv.setPointerCapture(id);}catch(_error){}}
+function touchPair(){
+ const [a,b]=[...capitalTouchPointers.values()];if(!a||!b)return null;
+ return{x:(a.x+b.x)/2,y:(a.y+b.y)/2,distance:Math.hypot(a.x-b.x,a.y-b.y)};
+}
+function restoreCapitalTouchEdit(){
+ if(capitalTouchBefore){objs=JSON.parse(JSON.stringify(capitalTouchBefore.objs));sel=capitalTouchBefore.sel;}
+ drag=null;PAN_DRAG=null;pendingTouchShelter=null;pendingTouchEdit=false;PREVIEW_POINT=null;
+ lastTap={t:0,x:0,y:0};$('wrap').classList.remove('panning');draw();
+}
+function startCapitalPinch(){
+ restoreCapitalTouchEdit();const pair=touchPair();if(!pair)return;
+ const rect=cv.getBoundingClientRect();capitalPinch={zoom:ZOOM,distance:Math.max(8,pair.distance),x:(pair.x-rect.left)/rect.width,y:(pair.y-rect.top)/rect.height};
+}
+function moveCapitalPinch(){
+ const pair=touchPair();if(!capitalPinch||!pair)return;
+ setZoom(capitalPinch.zoom*pair.distance/capitalPinch.distance,pair.x,pair.y);
+ const rect=cv.getBoundingClientRect(),wrap=$('wrap');
+ wrap.scrollLeft+=rect.left+capitalPinch.x*rect.width-pair.x;
+ wrap.scrollTop+=rect.top+capitalPinch.y*rect.height-pair.y;rememberMapCenter();
+}
+function clearCapitalTouch(){capitalTouchPointers.clear();capitalPinch=null;capitalTouchBefore=null;pendingTouchShelter=null;pendingTouchEdit=false;}
+window.addEventListener('blur',()=>{if(capitalTouchPointers.size){restoreCapitalTouchEdit();clearCapitalTouch();}});
 cv.addEventListener('pointerdown',e=>{
   e.preventDefault();
+  if(e.pointerType==='touch'){
+    if(!capitalTouchPointers.size)capitalTouchBefore={objs:JSON.parse(JSON.stringify(objs)),sel};
+    capitalTouchPointers.set(e.pointerId,{x:e.clientX,y:e.clientY});captureCapitalPointer(e.pointerId);
+    if(capitalTouchPointers.size>1){startCapitalPinch();return;}
+    if(capitalPinch)return;
+  }
   const{x,y}=pos(e),h=pick(x,y);
   const wrap=$('wrap');const scrollable=wrap.scrollWidth>wrap.clientWidth+2||wrap.scrollHeight>wrap.clientHeight+2;
   const autoPan=scrollable && (PAN||SPACE_PAN||e.button===1||(ACTIVE_TOOL==='select'&&!h));
   if(autoPan){
     if(!h)sel=-1;
     drag=null;PAN_DRAG={x:e.clientX,y:e.clientY,left:$('wrap').scrollLeft,top:$('wrap').scrollTop};
-    cv.setPointerCapture(e.pointerId);$('wrap').classList.add('panning');
+    captureCapitalPointer(e.pointerId);$('wrap').classList.add('panning');
     syncSizeInput();draw();return;
   }
-  if(ACTIVE_TOOL==='shelter'&&!h){placeShelter(x,y);lastTap={t:0,x:0,y:0};return;}
+  if(ACTIVE_TOOL==='shelter'&&!h){
+    if(e.pointerType==='touch'){pendingTouchShelter={pointerId:e.pointerId,x,y,clientX:e.clientX,clientY:e.clientY,moved:false};return;}
+    placeShelter(x,y);lastTap={t:0,x:0,y:0};return;
+  }
   sel=h?h.i:-1;drag=h?{...h,ox:x,oy:y,moved:false,before:cloneState()}:null;
-  if(h)cv.setPointerCapture(e.pointerId);
+  if(h)captureCapitalPointer(e.pointerId);
   syncSizeInput();draw();
   // double-tap detection (works on touch where dblclick doesn't)
   const now=Date.now();
   if(h&&ACTIVE_TOOL==='select'&&now-lastTap.t<400&&Math.hypot(x-lastTap.x,y-lastTap.y)<30){
-    lastTap={t:0,x:0,y:0};drag=null;editSel();return;
+    lastTap={t:0,x:0,y:0};drag=null;if(e.pointerType==='touch')pendingTouchEdit=true;else editSel();return;
   }
   lastTap={t:now,x,y};
 });
 cv.addEventListener('pointermove',e=>{
+  if(e.pointerType==='touch'&&capitalTouchPointers.has(e.pointerId)){
+    capitalTouchPointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(capitalPinch){e.preventDefault();moveCapitalPinch();return;}
+    if(pendingTouchShelter){pendingTouchShelter.moved=pendingTouchShelter.moved||Math.hypot(e.clientX-pendingTouchShelter.clientX,e.clientY-pendingTouchShelter.clientY)>8;return;}
+  }
   if(PAN_DRAG){$('wrap').scrollLeft=PAN_DRAG.left+(PAN_DRAG.x-e.clientX);$('wrap').scrollTop=PAN_DRAG.top+(PAN_DRAG.y-e.clientY);return;}
   if(!drag){if(ACTIVE_TOOL==='shelter'){PREVIEW_POINT=pos(e);draw();}return;}const{x,y}=pos(e),o=objs[drag.i];
   const dx=x-drag.ox,dy=y-drag.oy;drag.ox=x;drag.oy=y;
@@ -1891,8 +1935,23 @@ cv.addEventListener('pointermove',e=>{
   }
   draw();
 });
-cv.addEventListener('pointerup',()=>{PAN_DRAG=null;$('wrap').classList.remove('panning');if(drag&&drag.moved&&SNAP_GRID&&drag.mode==='move'&&objs[drag.i]){const o=objs[drag.i];if(o.t==='shelter')snapShelter(o);else if(['al','pe','text','zone'].includes(o.t)){o.x=Math.max(20,Math.min(W-20,snapPos(o.x)));o.y=Math.max(20,Math.min(H-20,snapPos(o.y)));if(o.t==='text')keepTextInsideMap(o);}}if(drag&&drag.moved&&objs[drag.i]?.t==='text')keepTextInsideMap(objs[drag.i]);if(drag&&drag.moved&&drag.before&&drag.before!==cloneState()){historyStack.push(drag.before);if(historyStack.length>60)historyStack.shift();redoStack=[];updateUndoBtn();saveDraft();}drag=null;});
-cv.addEventListener('pointercancel',()=>{if(drag?.before)loadState(drag.before);PAN_DRAG=null;drag=null;PREVIEW_POINT=null;$('wrap').classList.remove('panning');draw();});
+cv.addEventListener('pointerup',e=>{
+ if(e.pointerType==='touch'){
+  capitalTouchPointers.delete(e.pointerId);
+  if(capitalPinch){if(!capitalTouchPointers.size)clearCapitalTouch();else if(capitalTouchPointers.size>1)startCapitalPinch();return;}
+  if(pendingTouchShelter){const tap=pendingTouchShelter;clearCapitalTouch();if(!tap.moved)placeShelter(tap.x,tap.y);return;}
+  if(pendingTouchEdit){clearCapitalTouch();editSel();return;}
+ }
+ PAN_DRAG=null;$('wrap').classList.remove('panning');if(drag&&drag.moved&&SNAP_GRID&&drag.mode==='move'&&objs[drag.i]){const o=objs[drag.i];if(o.t==='shelter')snapShelter(o);else if(['al','pe','text','zone'].includes(o.t)){o.x=Math.max(20,Math.min(W-20,snapPos(o.x)));o.y=Math.max(20,Math.min(H-20,snapPos(o.y)));if(o.t==='text')keepTextInsideMap(o);}}if(drag&&drag.moved&&objs[drag.i]?.t==='text')keepTextInsideMap(objs[drag.i]);if(drag&&drag.moved&&drag.before&&drag.before!==cloneState()){historyStack.push(drag.before);if(historyStack.length>60)historyStack.shift();redoStack=[];updateUndoBtn();saveDraft();}drag=null;
+ if(e.pointerType==='touch')clearCapitalTouch();
+});
+cv.addEventListener('pointercancel',e=>{
+ if(e.pointerType==='touch'){
+  capitalTouchPointers.delete(e.pointerId);restoreCapitalTouchEdit();
+  if(!capitalTouchPointers.size)clearCapitalTouch();else capitalPinch=capitalPinch||{zoom:ZOOM,distance:8,x:.5,y:.5};return;
+ }
+ if(drag?.before)loadState(drag.before);PAN_DRAG=null;drag=null;PREVIEW_POINT=null;$('wrap').classList.remove('panning');draw();
+});
 cv.addEventListener('pointerleave',()=>{if(!drag&&PREVIEW_POINT){PREVIEW_POINT=null;draw();}});
 cv.addEventListener('dblclick',e=>{e.preventDefault();}); // handled via pointerdown double-tap
 window.addEventListener('keydown',e=>{
@@ -2044,6 +2103,7 @@ function setZoom(z,clientX=null,clientY=null,mode='manual'){
  wrap.classList.toggle('can-pan',canPan);
  if(!canPan){PAN=false;PAN_DRAG=null;wrap.classList.remove('pan-on','panning');$('panBtn')?.classList.remove('active');}
  if($('zoomLabel'))$('zoomLabel').textContent=Math.round(ZOOM*100)+'%';
+ if($('capitalMapZoomValue'))$('capitalMapZoomValue').textContent=Math.round(ZOOM*100)+'%';
  for(const [id,on] of [['capitalDetailView',mode==='detail'],['capitalOverview',mode==='overview']])$(id)?.classList.toggle('active',on);
  rememberMapCenter();draw();
 }
