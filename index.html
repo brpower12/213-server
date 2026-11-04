@@ -3,7 +3,8 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<script src="./migration-config.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>213 SERVER | MIGRATION</title>
 <meta name="description" content="Apply for migration to Server 213.">
 <link rel="canonical" href="https://brpower12.github.io/213-server/">
@@ -32,8 +33,8 @@
 }
 html{-webkit-text-size-adjust:100%;background:var(--bg)}
 body{font-family:'Noto Sans KR','Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-width:280px;min-height:100vh;display:flex;justify-content:center;padding:0 0 calc(5rem + env(safe-area-inset-bottom));overflow-x:hidden;word-break:keep-all}
-body.lang-ja{font-family:'Noto Sans JP','Noto Sans KR','Yu Gothic UI','Hiragino Kaku Gothic ProN',sans-serif}
-body.lang-zh{font-family:'Noto Sans SC','Noto Sans KR','Microsoft YaHei','PingFang SC',sans-serif}
+body.lang-ja{font-family:'Noto Sans JP','Noto Sans KR','Yu Gothic UI','Hiragino Kaku Gothic ProN',sans-serif;word-break:normal}
+body.lang-zh{font-family:'Noto Sans SC','Noto Sans KR','Microsoft YaHei','PingFang SC',sans-serif;word-break:normal}
 .wrap{width:100%;max-width:480px;padding:0 max(1rem,env(safe-area-inset-right)) 0 max(1rem,env(safe-area-inset-left));margin:0 auto}
 
 .lang-bar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));padding:.875rem 0 0;gap:6px}
@@ -399,6 +400,7 @@ select option{background:var(--bg3)}
     </div>
 
     <button class="btn-save" id="t-submit" onclick="save()"></button>
+    <p id="application-send-status" role="alert" hidden style="color:var(--red);font-size:14px;line-height:1.6;overflow-wrap:anywhere"></p>
   </div><!-- /form-body -->
 
   <!-- 완료 -->
@@ -453,7 +455,7 @@ const ADMIN_PW  = '';
 const TX = {
   ko:{
     't-main-title':'213 이민 신청',
-    't-live':'LIVE · 이민 신청 접수 중',
+    't-live':'LIVE / 이민 신청 접수 중',
     't-sub':'다른 서버 → 213서버 합류',
     't-sec1':'플레이어 정보',
     't-sec-alliance':'연맹 정보',
@@ -494,8 +496,8 @@ const TX = {
     't-rec-tip':'이민을 소개해준 213 서버 유저 닉네임, 또는 이민 상담을 해준 분의 닉네임을 입력해주세요.',
     'recommender':'213 서버 유저 닉네임',
     't-submit':'신청서 제출하기',
-    't-done-title':'신청 완료!',
-    't-done-sub':'이민 신청이 접수되었습니다.\n운영진 검토 후 개별 연락드립니다.',
+    't-done-title':'신청 내용 전송',
+    't-done-sub':'신청 내용을 전송했습니다.\n이 화면에서는 서버 저장 결과를 확인할 수 없습니다. 접수 여부는 운영진에게 확인해 주세요.',
     't-admin-btn':'운영진 관리 패널',
     't-admin-total':'총 신청자','t-admin-ppl':'명',
     't-excel':'엑셀 내보내기',
@@ -524,7 +526,7 @@ const TX = {
   },
   en:{
     't-main-title':'213 Migration Application',
-    't-live':'LIVE · Applications Open',
+    't-live':'LIVE / Applications Open',
     't-sub':'Move from Another Server → Server 213',
     't-sec1':'Player Information',
     't-sec-alliance':'Alliance Info',
@@ -565,8 +567,8 @@ const TX = {
     't-rec-tip':'Enter the nickname of the Server 213 player who referred you or assisted with your migration inquiry.',
     'recommender':'Server 213 Player Nickname',
     't-submit':'Submit Application',
-    't-done-title':'Application Submitted!',
-    't-done-sub':'Your migration application has been received.\nOur staff will contact you after review.',
+    't-done-title':'Application Sent',
+    't-done-sub':'Your application has been sent.\nPlease confirm receipt with the staff; this page cannot verify that it was saved.',
     't-admin-btn':'Staff Panel',
     't-admin-total':'Total','t-admin-ppl':' applicants',
     't-excel':'Export Excel',
@@ -595,7 +597,7 @@ const TX = {
   },
   ja:{
     't-main-title':'213サーバー移転申請',
-    't-live':'LIVE · 移転申請受付中',
+    't-live':'LIVE / 移転申請受付中',
     't-sub':'他サーバー → 213サーバーへ移転',
     't-sec1':'プレイヤー情報',
     't-sec-alliance':'連盟情報',
@@ -636,8 +638,8 @@ const TX = {
     't-rec-tip':'213サーバーを紹介してくれた方、または移転相談に対応した方のニックネームを入力してください。',
     'recommender':'213サーバーのニックネーム',
     't-submit':'申請書を提出する',
-    't-done-title':'申請完了！',
-    't-done-sub':'移転申請が受け付けられました。\nスタッフが確認後、個別にご連絡します。',
+    't-done-title':'申請内容を送信しました',
+    't-done-sub':'この画面では保存結果を確認できません。\n受付状況は運営スタッフにご確認ください。',
     't-admin-btn':'運営管理パネル',
     't-admin-total':'申請者合計','t-admin-ppl':'名',
     't-excel':'エクセルに出力',
@@ -666,7 +668,7 @@ const TX = {
   },
   zh:{
     't-main-title':'213服务器迁移申请',
-    't-live':'LIVE · 迁移申请开放中',
+    't-live':'LIVE / 迁移申请开放中',
     't-sub':'从其他服务器迁入213服务器',
     't-sec1':'玩家信息',
     't-sec-alliance':'联盟信息',
@@ -707,8 +709,8 @@ const TX = {
     't-rec-tip':'请输入向您推荐213服务器或为您提供迁移咨询的213服玩家昵称。',
     'recommender':'213服务器玩家昵称',
     't-submit':'提交申请',
-    't-done-title':'申请成功！',
-    't-done-sub':'迁移申请已受理。\n工作人员审核后将单独联系您。',
+    't-done-title':'申请信息已发送',
+    't-done-sub':'本页面无法确认是否保存成功。\n请联系管理人员确认接收情况。',
     't-admin-btn':'运营管理面板',
     't-admin-total':'申请者总计','t-admin-ppl':'人',
     't-excel':'导出Excel',
@@ -738,10 +740,10 @@ const TX = {
 };
 const MIGRATION_GRADES=['통솔자','특급','고급','중견'];
 const DESIRED_ALLIANCES=['NXT','AST','G','KABZ','VJP'];
-const APPLICATION_ROUND='2026-09';
+const APPLICATION_ROUND=window.MIGRATION_CONFIG?.applicationRound||'';
 let lang='ko', pData=null, selModeVal='혼자', selIndVal=null, selSqVal='파이터', selDesiredAllianceVal='', lastSubmittedEntry=null;
-const getDB=()=>{try{return JSON.parse(localStorage.getItem('dw213')||'[]')}catch{return[]}};
-const saveDB=d=>localStorage.setItem('dw213',JSON.stringify(d));
+const getDB=()=>{try{const value=JSON.parse(localStorage.getItem('dw213')||'[]');return Array.isArray(value)?value:[];}catch{return[]}};
+const saveDB=d=>{try{localStorage.setItem('dw213',JSON.stringify(d));return true;}catch{return false;}};
 const fmtN=n=>n?Number(n).toLocaleString('ko-KR'):'0';
 const escHtml=s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const normalizeGrade=v=>MIGRATION_GRADES.includes(String(v||'').trim())?String(v).trim():'미지정';
@@ -931,8 +933,12 @@ function renderDoneInfo(entry){
     '<div class="done-row"><span>'+escHtml(f.F_REC)+'</span><span>'+escHtml(entry.recommender)+'</span></div>';
 }
 
-function save(){
+async function save(){
   const t=TX[lang];
+  if(!/^\d{4}-(0[1-9]|1[0-2])$/.test(APPLICATION_ROUND)){
+    const message={ko:'접수 회차 설정을 불러오지 못했습니다. 새로고침 후 다시 시도해 주세요.',en:'The application round could not be loaded. Please refresh the page and try again.',ja:'受付期間の設定を読み込めませんでした。ページを再読み込みして、もう一度お試しください。',zh:'无法加载本期申请设置。请刷新页面后重试。'};
+    alert(message[lang]||message.ko);return;
+  }
   if(!pData){alert(t.ERR_NAME);return;}
   const currentAlliance=document.getElementById('inp-current-alliance').value.trim();
   const desiredAlliance=selDesiredAllianceVal;
@@ -949,6 +955,7 @@ function save(){
   var sbtn=document.getElementById('t-submit');
   if(sbtn&&sbtn.disabled)return;
   if(sbtn){sbtn.disabled=true;sbtn.style.opacity='0.6';}
+  const sendStatus=document.getElementById('application-send-status');sendStatus.hidden=true;sendStatus.textContent='';
 
   const entry={
     schemaVersion:2,
@@ -972,8 +979,13 @@ function save(){
   const existing=db.findIndex(r=>String(r.submissionKey||'')===entry.submissionKey);
   if(existing>=0)db[existing]={...db[existing],...entry};else db.push(entry);
   saveDB(db);
-  if(SHEET_URL){
-    fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(entry)}).catch(()=>{});
+  try{
+    if(!SHEET_URL)throw new Error('Missing application endpoint');
+    await fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(entry)});
+  }catch(_error){
+    const messages={ko:'신청 내용을 전송하지 못했습니다. 입력 내용은 유지되어 있습니다. 연결을 확인한 뒤 다시 시도해 주세요.',en:'Your application could not be sent. Your entries are still here. Check your connection and try again.',ja:'申請内容を送信できませんでした。入力内容は保持されています。通信状況を確認して、もう一度お試しください。',zh:'申请信息未能发送，填写的内容仍已保留。请检查网络连接后重试。'};
+    sendStatus.textContent=messages[lang]||messages.ko;sendStatus.hidden=false;
+    if(sbtn){sbtn.disabled=false;sbtn.style.opacity='';}return;
   }
 
   lastSubmittedEntry=entry;

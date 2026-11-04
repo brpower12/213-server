@@ -1,0 +1,2097 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="dark">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>213 서버 전략맵 | 최고의 전장 / 수도전</title>
+
+<style>
+:root{--bg:#f1f3f5;--paper:#ffffff;--sand:#f9f7f1;--ink:#1f2937;--sub:#697586;--line:#dfe5e9;--line2:#c7d3da;--teal:#117f7e;--teal2:#e9f6f3;--gold:#a87827;--blue:#3f82cc;--red:#dc6256;--shadow:0 13px 38px rgba(28,44,63,.08)}
+*{box-sizing:border-box}
+html,body,button,input,select,textarea{font-family:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;}
+button,input,select,textarea{font:inherit;letter-spacing:-.01em;}
+body{margin:0;min-height:100%;font-family:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+body{background:linear-gradient(145deg,#eef3f1 0,#f5f4ef 45%,#edf0f5 100%);padding:22px clamp(12px,2.4vw,36px) 34px}
+button,input,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid rgba(17,127,126,.22);outline-offset:2px}
+header{max-width:1640px;margin:0 auto 16px;display:flex;align-items:center;gap:14px;min-height:74px}
+.brand-mark{height:52px;width:52px;flex:0 0 52px;display:grid;place-items:center;color:#fff;font-weight:900;border-radius:15px;background:linear-gradient(145deg,#2c8b86,#176865);box-shadow:0 12px 26px rgba(17,127,126,.2);font-size:23px}
+.brand-copy{min-width:0;flex:1}
+.eyebrow{font-size:11px;font-weight:900;letter-spacing:2px;color:var(--teal);line-height:1.5}
+h1{font-size:clamp(21px,2.2vw,27px);font-weight:850;letter-spacing:-.8px;line-height:1.25;margin:2px 0;white-space:normal;border-radius:7px;outline-offset:4px;display:inline-block}
+h1:focus{outline:2px solid #39a8a3;background:#fff;padding:0 6px}
+.brand-sub{font-size:12px;color:var(--sub);font-weight:600;margin-top:2px}
+.head-status{display:flex;align-items:center;gap:8px;border:1px solid #d9e7e3;background:#fff;border-radius:12px;padding:11px 13px;box-shadow:0 4px 12px rgba(24,50,62,.03);font-size:12px;font-weight:800;color:#28756d;white-space:nowrap}
+.head-status:before{content:'';height:7px;width:7px;border-radius:100%;background:#28ac85}
+.credit{font-size:11px;text-align:right;color:#7f8897;line-height:1.45;white-space:nowrap}.credit b{display:block;color:#465263;font-size:12px}
+.board{max-width:1640px;margin:auto;display:grid;grid-template-columns:300px minmax(0,1fr);gap:16px;align-items:start}
+.bar{display:flex;flex-direction:column;gap:12px;min-width:0;position:sticky;top:12px;align-self:start}
+.grp{background:#fff;border:1px solid var(--line);border-radius:17px;padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px;min-width:0}
+.grp-heading{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.grp .cap{font-size:14px;font-weight:850;letter-spacing:-.3px;color:#293848}
+.grp .cap small{font-weight:750;color:#a3abb3;font-size:11px;margin-right:7px}
+.grp .intro{font-size:11.5px;color:#7e8996;line-height:1.55;margin-top:-4px}
+label.field-label,.miniCap{font-size:11.5px;font-weight:800;color:#526174}
+.row,.toolLine,.toolStack,.mapTools{display:flex;gap:9px;flex-direction:column;min-width:0}
+input[type=text],input[type=number],select,input[type=color]{border:1px solid #dce4e9;background:#fff;color:#293848;border-radius:10px;min-height:40px;padding:9px 10px;min-width:0;box-shadow:0 1px 1px rgba(34,54,69,.02);width:100%}
+input[type=text]::placeholder{color:#a1aab5}
+select{background-image:linear-gradient(45deg,transparent 50%,#829098 50%),linear-gradient(135deg,#829098 50%,transparent 50%);background-position:calc(100% - 17px) 17px,calc(100% - 12px) 17px;background-size:5px 5px;background-repeat:no-repeat;appearance:none;padding-right:29px}
+input[type=color]{cursor:pointer;padding:4px;width:43px;flex:0 0 43px;min-height:40px}
+input[type=range]{width:100%;accent-color:var(--teal);cursor:pointer}
+.field-row{display:flex;align-items:center;gap:8px}.field-row>*{min-width:0}
+.field-row input[type=text]{flex:1}
+.field-row select{width:108px}
+.color-row{display:flex;align-items:center;gap:8px}.color-row select{flex:1}
+.addBtns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+button.act{border:1px solid #dce4e8;border-radius:10px;min-height:42px;background:#f8fafb;color:#344457;font-weight:800;font-size:12px;display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:9px 9px;white-space:nowrap;transition:background .15s,border-color .15s,transform .1s}
+button.act:hover{background:#edf5f5;border-color:#b5d8d3}
+button.act:active{transform:translateY(1px)}
+button.act:disabled{opacity:.42;cursor:not-allowed}
+button.primary,.b-save{background:#167c79!important;color:#fff!important;border-color:#167c79!important}
+button.primary:hover,.b-save:hover{background:#0e6664!important}
+button.warn{color:#b64a45;border-color:#f2d9d6;background:#fff9f8}
+.seg{display:flex;align-items:center;background:#f1f4f5;padding:3px;border-radius:11px;gap:3px}
+.seg button{flex:1;border:0;border-radius:8px;background:transparent;font-weight:850;font-size:12px;padding:8px;color:#71808d;min-height:34px}
+.seg button.on{color:#087b76;background:#fff;box-shadow:0 2px 6px rgba(30,60,75,.11)}
+.miniHint{font-size:11px;color:#7b8795;line-height:1.55}
+.sizeLine{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.step{display:flex;gap:5px;align-items:center}
+.step button{width:36px;height:37px;border:1px solid var(--line);border-radius:9px;background:#f6f9fa;font-size:17px;color:#334155;font-weight:850}
+.step input{width:61px;text-align:center;min-height:37px;padding:6px;flex:0 0 61px}
+.nudge{display:grid;grid-template-columns:repeat(3,42px);grid-template-rows:repeat(3,34px);gap:4px;justify-content:center}
+.nudge button{border:1px solid var(--line);background:#f6f8f9;border-radius:8px;color:#516174;font-size:13px;font-weight:850}
+.nudge .up{grid-column:2;grid-row:1}.nudge .left{grid-column:1;grid-row:2}.nudge .right{grid-column:3;grid-row:2}.nudge .down{grid-column:2;grid-row:3}
+.stepCell{grid-column:2;grid-row:2;background:#eaf5f3;border:1px solid #c8e0dc;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 2px}
+.stepCell input{width:24px;max-width:36px;min-height:0;padding:0;border:0;text-align:right;background:transparent;font-size:13px;color:#117f7e;font-weight:900}
+.stepCell span{font-size:10px;font-weight:800;color:#117f7e;margin-left:2px}
+.stepCell input::-webkit-outer-spin-button,.stepCell input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.selectActions,.fileActions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fileSave{display:grid;grid-template-columns:100px 1fr;gap:8px}
+.selInfo,.saveInfo{background:#f1f7f6;border:1px solid #deebea;border-radius:9px;font-size:11.5px;color:#4b746f;font-weight:750;line-height:1.4;padding:9px 11px;min-height:35px;overflow-wrap:anywhere}
+.selInfo{background:#f9fafb;border-color:#e5ebef;color:#697789}
+.inspector-fields{display:flex;flex-direction:column;gap:7px}.inspector-fields:has(input:disabled){opacity:.55}
+.inspector-colors{display:grid;grid-template-columns:1fr 43px;gap:7px}
+.stage-panel{min-width:0;border:1px solid var(--line);border-radius:17px;background:#fff;padding:14px;box-shadow:var(--shadow)}
+.stage-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.stage-heading{display:flex;align-items:center;gap:11px;min-width:0;flex:1}
+.stage-heading .map-chip{color:#117f7e;border-radius:9px;background:#eaf6f3;display:grid;place-items:center;width:34px;height:34px;font-size:17px}
+.stage-heading b{font-size:14px;font-weight:850;display:block}
+.stage-heading span{font-size:11px;color:#85919e;display:block;margin-top:4px}
+.stage-tools{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.tool-small{height:38px;min-width:38px;border:1px solid var(--line);border-radius:9px;background:#f8fafb;color:#546375;font-weight:800;padding:0 10px;font-size:12px}
+.tool-small.active{background:#eaf6f3;color:#087b76;border-color:#a7d8cd}
+.tool-small:disabled{opacity:.45}
+.tool-small.highlight{background:#f0f8f6;color:#08766f;border-color:#c7e5df}
+#zoomLabel{min-width:46px;text-align:center;font-size:12px;font-weight:850;color:#5c6d7c}
+#wrap{position:relative;width:100%;overflow:hidden;border-radius:14px;background:#b3b09a;border:1px solid #c7d5ce;scrollbar-width:none;max-height:none;min-height:0;overscroll-behavior:contain;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+#cv{display:block;max-width:none;width:100%;height:auto;touch-action:none;cursor:default;user-select:none;-webkit-user-select:none;background:#b9b49e}
+#wrap.pan-on #cv{cursor:grab}#wrap.pan-on.panning #cv{cursor:grabbing}
+.stage-bottom{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 1px 1px;font-size:11px;color:#7e8996;line-height:1.5}
+.legend{display:flex;align-items:center;gap:13px;flex-wrap:wrap;font-weight:750}
+.legend-item{display:flex;align-items:center;gap:6px}.legend-dot{width:9px;height:9px;border-radius:3px}.legend-dot.ally{background:#3f82cc}.legend-dot.enemy{background:#dc6256}
+.orientation{font-weight:700;text-align:right;white-space:normal}
+.grid-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.checkbox-label{display:inline-flex;align-items:center;gap:6px;color:#5d6d7e;font-size:11.5px;font-weight:750;cursor:pointer}
+.checkbox-label input{accent-color:var(--teal);width:15px;height:15px}
+#splitHint{font-size:11px;color:#6e7e8d;line-height:1.5;background:#f4f8f7;padding:10px;border-radius:9px}
+#split{width:100%}
+#appTitle[contenteditable=true]{cursor:text}
+#expSize{width:100%}
+#jsonFile{display:none}
+.dividing{height:1px;background:#edf0f1;margin:1px 0}
+/* Shelter/terrain controls */
+.tile-grid-config{display:flex;flex-direction:column;gap:6px;padding:12px;border:1px solid #dcebe7;background:#f6faf8;border-radius:11px}
+.tile-grid-row{display:flex;align-items:center;gap:11px}.tile-grid-row input{width:90px;flex:0 0 90px}.tile-grid-row span{font-size:12px;font-weight:850;color:#0d7773}
+.shelter-panel{border:1px solid #d8e5df;background:linear-gradient(135deg,#f1f8f4,#eaf4f1);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:9px}
+.shelter-header,.shelter-options{display:flex;align-items:center;justify-content:space-between;gap:10px}.shelter-options select{width:145px}
+.shelter-tag{font-size:10px;color:#188477;font-weight:850;padding:5px 7px;border:1px solid #c4ded6;background:#fff;border-radius:7px}
+.shelter-tool-buttons{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+#shelterBrush.active,.map-mini-tools .tool-small.active,#selectTool.active{background:#147d76!important;color:#fff!important;border-color:#147d76!important}
+.map-mini-tools{display:flex;align-items:center;gap:8px;margin:-3px 0 9px;flex-wrap:wrap}
+#shelterLiveSize{font-size:11px;font-weight:800;color:#71848d;margin-left:auto}
+#wrap.paint-on #cv{cursor:crosshair}
+@media (max-width:1190px){.board{grid-template-columns:280px minmax(0,1fr)}.grp{padding:13px}.stage-top{align-items:flex-start}}
+@media (max-width:830px){body{padding:12px 10px 26px}.board{display:flex;flex-direction:column}.stage-panel{order:1;width:100%;padding:10px}.bar{position:static;order:0;width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.grp{padding:13px}#wrap{max-height:none;min-height:0}.stage-bottom{padding:9px 2px 0}}
+@media (max-width:580px){header{gap:10px;margin-bottom:10px}.brand-mark{height:43px;width:43px;flex-basis:43px;font-size:20px;border-radius:12px}.eyebrow{font-size:9px;letter-spacing:1.2px}h1{font-size:20px}.brand-sub{font-size:10px}.head-status,.credit{display:none}.bar{grid-template-columns:1fr}.stage-top{gap:9px}.stage-heading{flex-basis:100%}.stage-tools{width:100%;justify-content:flex-start;gap:5px}.tool-small{height:36px;min-width:36px;padding:0 8px}.stage-bottom{display:block}.orientation{text-align:left;margin-top:4px;white-space:normal}.legend{gap:12px}button.act{min-height:43px;font-size:12px}#wrap{border-radius:9px}}
+@media (prefers-reduced-motion:reduce){button.act{transition:none}}
+/* V6: always-accessible map command dock; advanced tools remain available below */
+.command-dock{position:sticky;top:8px;z-index:5;display:flex;flex-direction:column;gap:6px;padding:10px 11px;
+ background:rgba(255,255,255,.98);border:1px solid #d8e4e6;border-radius:12px;margin:0 0 9px;
+ box-shadow:0 8px 22px rgba(36,56,72,.10);backdrop-filter:blur(10px)}
+.command-row{display:flex;align-items:center;gap:6px;min-width:0;flex-wrap:wrap}
+.command-row .tool-small{height:34px;min-height:34px;font-size:11px;padding:0 10px;border-radius:8px;white-space:nowrap}
+.dock-caption{color:#647487;font-size:11px;font-weight:850;white-space:nowrap;margin-right:3px}
+.dock-size-label,.dock-live{color:#687b86;font-size:11px;font-weight:750;white-space:nowrap}
+.command-dock select{width:89px;min-height:34px;height:34px;padding:5px 25px 5px 8px;font-size:12px;border-radius:8px}
+.command-dock input[type=text]{width:190px;max-width:100%;height:34px;min-height:34px;padding:5px 9px;font-size:12px;border-radius:8px}
+.command-dock input[type=color]{width:35px;height:34px;min-height:34px;flex:0 0 35px;border-radius:8px}
+.command-modes{border-bottom:1px solid #e9eff1;padding-bottom:6px}
+.command-add{padding:1px 0}
+.command-actions{border-top:1px solid #e9eff1;padding-top:6px}
+.command-selected:not([hidden]){padding:7px 8px;border:1px solid #c8e2dc;background:#f1f9f7;border-radius:9px}
+.command-selected[hidden]{display:none!important}
+.dock-selected-label{min-width:80px;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px;font-weight:850;color:#24736e}
+.command-selected input[type=text]{flex:1;min-width:115px;max-width:260px}
+.command-row .dock-nudge{min-width:31px;width:31px;padding:0}
+.command-row .dock-danger{color:#b84744;border-color:#f1d6d1;background:#fff8f7}
+.command-row .dock-export{color:white;background:#167f77;border-color:#167f77;font-weight:850}
+.command-row .dock-export:hover{background:#0c6760}
+.command-dock .tool-small.active{background:#dff1ee;color:#076d67;border-color:#8dc9be;box-shadow:inset 0 0 0 1px rgba(24,124,114,.15)}
+#wrap #cv{margin-inline:auto}
+.bar{max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+@media(max-width:830px){
+ .board{display:flex;flex-direction:column}
+ .stage-panel{order:0;width:100%}
+ .bar{order:1;position:static;max-height:none;overflow:visible;width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .command-dock{top:4px}
+ .command-row .tool-small{font-size:11px}
+}
+@media(max-width:580px){
+ body{padding:8px 6px 24px}
+ header{min-height:auto}
+ .stage-top{gap:6px;margin-bottom:8px}
+ .stage-heading{display:none}
+ .stage-tools{width:100%;flex-wrap:wrap;gap:5px}
+ .stage-tools #split{flex:1;min-width:155px!important;max-width:none!important}
+ .stage-tools .tool-small{min-width:32px;height:34px;padding:0 8px;font-size:11px}
+ #splitHint{font-size:10px;padding:6px 8px;margin-bottom:5px}
+ .command-dock{padding:7px;gap:5px;margin-bottom:7px;top:3px}
+ .command-row{gap:5px}
+ .command-row .tool-small{min-height:32px;height:32px;padding:0 7px;font-size:10.5px}
+ .command-modes #quickSelect,.command-modes #quickShelter{flex:1}
+ .dock-caption,.dock-live{display:none}
+ .dock-size-label{font-size:10px}
+ .command-dock select{min-height:32px;height:32px;width:74px;padding-left:6px;font-size:11px}
+ .command-add #quickName{flex:1;width:auto;min-width:132px}
+ .command-add .tool-small{flex:1 0 calc(33.333% - 6px)}
+ .command-actions .tool-small{flex:1 0 calc(33.333% - 5px)}
+ .command-selected #quickSelectedLabel{max-width:100%;width:100%}
+ .command-selected input[type=text]{min-width:130px;flex:1}
+ .bar{display:flex;flex-direction:column}
+}
+
+
+.dock-settings{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px;background:#f6faf9;border:1px solid #e0ebe9;border-radius:10px;font-size:11px;color:#526579;font-weight:800}
+.dock-settings[hidden]{display:none!important}
+.dock-settings label{display:flex;align-items:center;gap:5px;white-space:nowrap}
+.dock-settings label input[type=number]{width:62px;min-height:31px;height:31px;padding:4px 6px;font-size:11px}
+.dock-settings label input[type=range]{width:95px}
+.dock-settings label select{width:112px;height:31px;min-height:31px}
+.dock-settings label input[type=checkbox]{accent-color:#167f77}
+.dock-settings>.tool-small{height:32px;font-size:11px}
+@media(max-width:580px){.dock-settings{gap:7px}.dock-settings label{flex:1 0 125px;justify-content:space-between}.dock-settings label input[type=range]{max-width:92px}.dock-settings label select{max-width:112px}}
+
+
+/* V8 — compact mission board: less scrolling, full-width terrain, advanced controls on demand */
+body{padding:8px 9px 14px}
+header{min-height:45px;margin-bottom:7px;gap:9px}
+.brand-mark{width:39px;height:39px;flex:0 0 39px;border-radius:10px;font-size:18px;box-shadow:none}
+.eyebrow{font-size:9px;letter-spacing:1.1px}
+h1{font-size:20px;margin:0;line-height:1.2}
+.stage-heading{display:none}
+.brand-sub{font-size:10px;margin-top:0}
+.head-status{font-size:10px;padding:7px 9px}
+.credit{font-size:10px}
+.board{grid-template-columns:244px minmax(0,1fr);gap:9px;max-width:1680px}
+.bar{gap:7px;top:5px;max-height:calc(100dvh - 12px)}
+.grp{padding:10px;gap:8px;border-radius:10px}
+.grp .cap{font-size:12px}
+.grp .intro,.miniHint{font-size:10px}
+.grp input[type=text],.grp input[type=number],.grp select{min-height:34px;padding:6px 8px;font-size:11px}
+.grp button.act{min-height:34px;padding:6px;font-size:11px}
+.stage-panel{padding:7px;border-radius:11px}
+.stage-top{margin-bottom:5px;gap:5px}
+.stage-heading .map-chip{width:27px;height:27px}
+.stage-heading b{font-size:12px}
+.stage-heading span{font-size:10px;margin-top:1px}
+.stage-tools{gap:4px}
+.stage-tools select{min-height:30px!important;height:30px!important;padding:4px 23px 4px 8px;font-size:11px}
+.stage-tools .tool-small{height:30px;min-width:30px;padding:0 7px;font-size:10.5px}
+#zoomLabel{font-size:10px;min-width:33px}
+#splitHint{font-size:10px;padding:5px 7px;margin-bottom:4px;line-height:1.3}
+.command-dock{position:sticky;top:3px;z-index:5;padding:6px 7px;gap:4px;margin-bottom:5px;border-radius:9px;box-shadow:0 4px 12px rgba(32,47,60,.08)}
+.command-row{gap:4px}
+.command-row .tool-small{height:29px;min-height:29px;padding:0 7px;font-size:10.5px;border-radius:6px}
+.command-dock input[type=text],.command-dock input[type=color],.command-dock select{height:29px;min-height:29px}
+.command-dock input[type=text]{padding:4px 8px}
+.command-dock select{font-size:10.5px}
+.command-dock input[type=color]{width:30px;flex-basis:30px}
+.command-modes{padding-bottom:3px}
+.command-actions{padding-top:3px}
+.command-selected:not([hidden]){padding:4px 5px}
+.dock-settings{padding:6px}
+#wrap{margin:0;line-height:0;background:#b4aa9e}
+#cv{display:block;width:100%;margin:0!important;max-width:none;height:auto}
+.stage-bottom{padding:5px 1px 0;font-size:10px}
+@media(max-width:1100px){.board{grid-template-columns:215px minmax(0,1fr)}}
+@media(max-width:830px){
+ .board{display:flex;flex-direction:column}
+ .stage-panel{order:0}
+ .bar{display:none;order:1;max-height:none;overflow:visible}
+ body.advanced-open .bar{display:flex;position:static;flex-direction:column}
+ header{margin-bottom:5px}
+ .command-dock{top:2px}
+}
+@media(max-width:580px){
+ body{padding:5px 4px 10px}
+ header{min-height:36px;gap:6px}
+ .brand-mark{width:32px;height:32px;flex-basis:32px}
+ h1{font-size:15px}
+ .brand-sub{font-size:9px}
+ .eyebrow{font-size:8px}
+ .stage-panel{padding:5px}
+ .stage-tools{width:100%;gap:4px}
+ .stage-tools #quickBattleType{flex:1;min-width:0!important;max-width:none!important}
+ .stage-tools #split{flex:1;min-width:0!important;max-width:none!important}
+ .stage-top{margin-bottom:3px}
+ #splitHint{padding:4px 5px;margin-bottom:3px;font-size:9px}
+ .command-dock{padding:4px;gap:3px;margin-bottom:4px;top:1px}
+ .command-row{gap:3px}
+ .command-row .tool-small{height:28px;min-height:28px;padding:0 6px;font-size:10px}
+ .command-modes{padding-bottom:3px}
+ .command-add #quickName{min-width:125px;flex:1}
+ .command-add .tool-small{flex:1 0 calc(25% - 4px)}
+ .command-actions .tool-small{flex:1 0 calc(25% - 4px)}
+ .stage-bottom{display:none}
+ .bar{grid-template-columns:1fr}
+}
+/* Keep desktop view controls on a single row; avoid an unnecessary 2nd line. */
+@media(min-width:831px){.stage-top{display:block}.stage-tools{display:flex;width:100%;max-width:100%;flex-wrap:nowrap;justify-content:flex-start;align-items:center}}
+
+/* V10 compact mobile / unified fonts */
+#advancedTools .grp:nth-child(3),#advancedTools .grp:nth-child(4){min-width:0}
+.sizeLine .miniCap{white-space:nowrap}
+@media(max-width:640px){
+  body{padding:6px 4px 12px}
+  .board{gap:8px}
+  .stage-panel{padding:7px}
+  .grp{padding:12px 10px;gap:9px;border-radius:14px}
+  .grp .intro,.miniHint{font-size:10.5px;line-height:1.38}
+  .bar{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;max-height:none;overflow:visible}
+  .bar .grp:nth-child(1),.bar .grp:nth-child(2){grid-column:1/-1}
+  .bar .grp:nth-child(3),.bar .grp:nth-child(4){grid-column:auto}
+  .field-row{gap:6px}
+  .sizeLine{gap:6px;align-items:center}
+  .sizeLine .miniCap{font-size:10.5px;line-height:1.15;max-width:72px;white-space:normal}
+  .step{gap:4px}
+  .step button{width:32px;height:34px;font-size:15px}
+  .step input{width:48px;flex-basis:48px;min-height:34px;padding:4px;font-size:12px}
+  .nudge{grid-template-columns:repeat(3,36px);grid-template-rows:repeat(3,30px);gap:4px}
+  .nudge button{font-size:12px}
+  .stepCell input{width:18px;font-size:11px}
+  .stepCell span{font-size:9px}
+  .fileActions,.selectActions{gap:6px}
+  .fileSave{grid-template-columns:1fr;gap:6px}
+  .fileSave select,.fileSave button{width:100%}
+  button.act{min-height:38px;padding:7px 7px;font-size:11px}
+  .selInfo,.saveInfo{padding:8px 9px;font-size:10.5px}
+  .inspector-colors{grid-template-columns:minmax(0,1fr) 40px}
+  #advancedTools .grp:nth-child(4) .miniHint{display:none}
+}
+@media(max-width:430px){
+  .bar{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
+  .sizeLine{display:grid;grid-template-columns:68px minmax(0,1fr);align-items:center}
+  .sizeLine .step{justify-content:flex-end}
+  .nudge{margin-inline:auto}
+}
+
+
+/* V11 — three-panel tactical operations UI: left planning / main map / right inspector */
+:root{--bg:#0e1520;--paper:#192330;--ink:#e9eff7;--sub:#92a3b7;--line:#304157;--line2:#475a6f;--teal:#20a7a0;--teal2:#193e40;--gold:#e7b74e;--shadow:0 5px 16px rgba(0,0,0,.14)}
+html{background:#0e1520}
+body{background:#0e1520!important;color:#e9eff7!important;padding:7px 8px 11px!important;min-height:100dvh}
+header{max-width:none;margin:0 0 7px;min-height:45px;gap:9px;border:1px solid #29384a;background:#111b28;border-radius:8px;padding:6px 11px}
+.brand-mark{width:32px;height:32px;flex-basis:32px;border-radius:7px;background:linear-gradient(150deg,#c9a14a,#76571c);box-shadow:none;font-size:17px}
+h1{font-size:16px;line-height:1.15;letter-spacing:-.45px;color:#f1f5f9}
+.eyebrow{font-size:9px;letter-spacing:1px;color:#e3bd60;line-height:1.25}
+.brand-sub{font-size:10px;color:#9faec2;margin-top:1px}
+.head-status{background:#18322e;color:#6cdbba;border-color:#2f6557;font-size:10px;padding:7px 9px;border-radius:7px;box-shadow:none}
+.credit{font-size:10px;color:#8193a8}.credit b{font-size:11px;color:#d5bb74}
+.board{display:grid!important;max-width:none!important;grid-template-columns:minmax(195px,220px) minmax(0,1fr) minmax(210px,235px)!important;grid-template-areas:'left main right';gap:7px;align-items:start}
+.bar,.right-panel{display:flex!important;flex-direction:column;gap:7px;min-width:0;max-height:calc(100dvh - 76px);overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#496178 transparent;align-self:start;position:sticky;top:7px}
+.bar{grid-area:left}.right-panel{grid-area:right}
+.grp{background:#172232;color:#e3ebf6;border:1px solid #34435a;border-radius:9px;padding:11px 10px;gap:8px;box-shadow:none}
+.grp-heading{border-bottom:1px solid #28384a;padding-bottom:7px}
+.grp .cap{font-size:12px;color:#e4b65c}.grp .cap small{font-size:9px;color:#758a9f}
+.grp .intro,.miniHint{font-size:10px;line-height:1.44;color:#98a9bb;margin:0}
+label.field-label,.miniCap{font-size:10.5px;color:#b3c3d3;line-height:1.25}
+input[type=text],input[type=number],select{background:#202e40;color:#e6eff8;border:1px solid #3a4e64;min-height:32px;border-radius:6px;padding:6px 8px;font-size:11px;box-shadow:none}
+input[type=text]::placeholder{color:#71859b}
+input[type=color]{border:1px solid #496076;background:#202e40;border-radius:6px;min-height:32px;height:32px}
+input[type=range]{accent-color:#d9ae52;min-height:22px}
+button.act,.tool-small{background:#213044;color:#dce8f6;border:1px solid #3b5068;border-radius:6px;box-shadow:none;font-size:10.5px;font-weight:750;white-space:normal;line-height:1.2}
+button.act{min-height:31px;padding:6px;white-space:normal}
+button.act:hover,.tool-small:hover{background:#30425a;border-color:#60748a}
+button.primary,.b-save{background:#ad7c2c!important;color:#fff9e8!important;border-color:#cda251!important}
+button.warn{background:#35252a;color:#f6a09b;border-color:#73454b}
+.seg{padding:2px;background:#101b2a;border:1px solid #2c4055;border-radius:7px}
+.seg button{font-size:10px;min-height:27px;padding:5px 2px;color:#a3b5c7}
+.seg button.on{background:#263d52;color:#e8c373;box-shadow:none}
+.tile-grid-config,.shelter-panel{padding:8px;gap:6px;border:1px solid #344a53;border-radius:7px;background:#1d323a}
+.shelter-tag{color:#cbd9d4;background:#183c38;border:1px solid #397365}
+.tile-grid-row span{font-size:10px;color:#d2b86c}
+.addBtns,.fileActions,.selectActions{gap:5px}
+.fileSave{grid-template-columns:1fr;gap:6px}
+.sizeLine{gap:5px;flex-wrap:nowrap}
+.sizeLine .miniCap{font-size:9.5px;white-space:nowrap}
+.step{gap:3px}.step button{width:29px;height:30px;border:1px solid #3b5068;border-radius:6px;background:#223044;color:#d6e3f2;font-size:14px}
+.step input{width:44px;flex-basis:44px;min-height:30px;padding:2px;font-size:11px}
+.nudge{grid-template-columns:repeat(3,33px);grid-template-rows:repeat(3,27px);gap:3px;margin:1px auto}
+.nudge button{background:#233247;border:1px solid #3e536a;border-radius:5px;color:#e0e8f3}
+.stepCell{background:#203d3c;border-color:#41776c}
+.stepCell input,.stepCell span{color:#b9dbcf}
+.selInfo,.saveInfo{background:#1f2c3d;color:#9fc2c5;border:1px solid #33485f;border-radius:6px;padding:7px 8px;min-height:28px;font-size:10px;line-height:1.3}
+.inspector-colors{grid-template-columns:minmax(0,1fr) 36px;gap:5px}
+.inspector-fields{gap:5px}
+.inspector-fields:has(input:disabled){opacity:.65}
+.dividing{background:#33465b}
+.stage-panel{grid-area:main;background:#172331;border:1px solid #354559;border-radius:9px;padding:8px;min-width:0;box-shadow:none}
+.stage-top{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:0 0 6px}
+.stage-heading{flex:none;display:flex;align-items:center;gap:6px;min-width:0}
+.stage-heading .map-chip{display:none}
+.stage-heading b{font-size:10px;color:#e5b861;letter-spacing:.4px}
+.stage-heading span{font-size:9px;color:#91a5bb;margin-top:1px}
+.stage-tools{display:flex;flex:1;justify-content:flex-end;gap:4px;min-width:0;flex-wrap:wrap}
+.stage-tools select{width:auto!important;min-width:0!important;max-width:none!important;min-height:28px!important;height:28px!important;font-size:10px;padding:3px 20px 3px 6px}
+.stage-tools .tool-small{height:28px;min-height:28px;padding:0 7px;font-size:10px}
+#zoomLabel{min-width:34px;font-size:10px;color:#c0ccdb}
+#splitHint{background:#1b2b3b;color:#a7bace;border:1px solid #2c4158;border-radius:5px;padding:4px 7px;font-size:10px;line-height:1.25;margin-bottom:5px}
+.command-dock{position:static;top:auto;border:1px solid #304255;background:#152131;box-shadow:none;border-radius:7px;gap:5px;padding:6px;margin-bottom:6px;backdrop-filter:none}
+.command-row{gap:4px;flex-wrap:wrap}
+.command-row .tool-small{font-size:10px;min-height:28px;height:28px;padding:2px 7px;border-radius:5px;white-space:nowrap}
+.command-modes{border:0;padding:0}
+.command-actions{border-top:1px solid #2d4054;padding-top:5px}
+.command-add{display:none}
+.command-selected{display:none!important}
+.dock-caption{font-size:10px;color:#bdccdc}
+.dock-live{font-size:10px;color:#95afc0}
+.command-dock select{width:75px;min-height:28px;height:28px;background:#243449;color:#e7edf5;border-color:#415770;padding:3px 19px 3px 5px;font-size:10px}
+.command-dock .tool-small.active{background:#2d554e;color:#ddfff3;border-color:#4d9e8e}
+.command-row .dock-export{background:#bf9138;color:#fff7e6;border-color:#d1a44d}
+.command-row .dock-export:hover{background:#b47e2b}
+.dock-settings{background:#1a2b3c;border:1px solid #3e5268;color:#c7d3dd;padding:6px;gap:7px}
+.dock-settings label{font-size:10px}
+.dock-settings label input[type=number],.dock-settings label select{font-size:10px;height:29px;min-height:29px;background:#24364a;color:#e5edf4}
+.dock-settings label input[type=range]{width:76px}
+#wrap{border:1px solid #69766b;border-radius:5px;background:#b4aaa0;overflow:hidden;max-height:none}
+#wrap #cv{width:100%!important;margin:0;max-width:100%;height:auto}
+.stage-bottom{padding:7px 1px 0;font-size:9px;line-height:1.2;color:#8da3b6}
+.orientation{font-weight:500}
+.legend{gap:8px}
+/* Key placement tools stay available above the map at desktop widths. */
+@media(min-width:1081px){.command-add{display:flex}.command-selected:not([hidden]){display:flex!important}.command-add input[type=text]{flex:1;min-width:125px;max-width:210px}.command-add .tool-small{flex:0 0 auto}}
+/* Large desktops: keep map controls and both sidebars on one screen. */
+@media(min-width:1500px){.board{grid-template-columns:minmax(215px,245px) minmax(0,1fr) minmax(220px,245px)!important} .grp{padding:12px}}
+/* At tablet widths, show map first. Keep an independent editor below it. */
+@media(max-width:1080px){
+  .board{display:grid!important;grid-template-columns:1fr 1fr!important;grid-template-areas:'main main' 'left right';gap:7px}
+  .stage-panel{grid-area:main}
+  .bar,.right-panel{position:static!important;overflow:visible;max-height:none}
+  .command-add{display:flex}
+  .command-selected:not([hidden]){display:flex!important}
+}
+@media(max-width:650px){
+  body{padding:5px 4px 9px!important}
+  header{padding:5px 7px;margin-bottom:5px}
+  .brand-sub,.credit,.head-status{display:none}
+  h1{font-size:14px}
+  .board{grid-template-columns:1fr!important;grid-template-areas:'main' 'right' 'left';gap:6px}
+  .stage-panel{padding:6px}
+  .stage-heading{display:none}
+  .stage-tools{width:100%;justify-content:flex-start}
+  .stage-tools #quickBattleType{flex:1;min-width:0!important}
+  .stage-tools #split{flex:1;min-width:0!important}
+  .command-dock{padding:5px;gap:4px}
+  .command-row .tool-small{height:28px;min-height:28px;padding:2px 6px;font-size:10px}
+  .command-add{display:flex}
+  .command-selected:not([hidden]){display:flex!important}
+  .command-add #quickName{min-width:100px;flex:1}
+  .command-add .tool-small{flex:1 1 auto}
+  .command-actions .tool-small{flex:1 1 auto}
+  .bar,.right-panel{display:none!important}
+  body.advanced-open .bar,body.advanced-open .right-panel{display:flex!important}
+  .stage-bottom{display:none}
+}
+
+
+/* V14 · Workstation UI refinements */
+:root{--v14-border:#344961;--v14-teal:#25b7a6;--v14-gold:#e3b65b}
+html,body,button,select,input,textarea{font-family:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif!important}
+body{letter-spacing:-.02em}
+.board{gap:9px}
+.grp,.stage-panel{border-color:#30445a;box-shadow:0 3px 14px rgba(0,0,0,.1)}
+.grp{background:#172331}
+.grp-heading .cap{color:#edc979}
+button.act,.tool-small{transition:background .15s ease,border-color .15s ease,transform .1s ease}
+button.act:active,.tool-small:active{transform:translateY(1px)}
+.tool-small:focus-visible,button.act:focus-visible{outline:2px solid #4de6cd;outline-offset:1px}
+.command-modes{display:flex;align-items:center;gap:5px}
+.command-modes #quickSelect{border-color:#49768b}
+.command-modes #quickShelter{border-color:#508477}
+#quickDelete{border:1px solid #8c5559;background:#422d33;color:#ffccc9}
+#quickDelete:disabled{opacity:.38;cursor:not-allowed}
+#quickDelete:not(:disabled):hover{background:#6e323c}
+#zoomLabel{min-width:47px;text-align:center;font-size:11px;color:#f5dc9d;font-variant-numeric:tabular-nums}
+.stage-tools .highlight{background:#294e48;color:#c4fff3;border-color:#458c7e}
+.zoom-hint{display:inline-flex;align-items:center;gap:5px;color:#a7bfd1;font-size:10px;white-space:nowrap;margin-left:4px}
+#wrap{overflow:auto!important;background:radial-gradient(ellipse at center,#223245 0,#141f2f 80%)!important;border:1px solid #394b62;scrollbar-width:thin;scrollbar-color:#5a7184 #1a2736;overscroll-behavior:contain;min-height:0!important}
+#wrap #cv{width:var(--map-width,100%)!important;max-width:none!important;margin:0 auto!important;height:auto;touch-action:none}
+#wrap.pan-on{cursor:grab}#wrap.pan-on.panning{cursor:grabbing}
+.label-actions{display:flex;flex-wrap:wrap;align-items:center;gap:5px;padding:5px 0 1px;border-top:1px solid #263a4f}
+.label-actions span{color:#90a9bf;font-weight:700;font-size:10px;margin-right:3px}
+.label-actions .tool-small{height:27px;min-height:27px;padding:2px 9px;font-size:10px}
+.label-actions .label-off{background:#352c34;border-color:#795e59;color:#dcc0b1}
+.label-actions .label-on{background:#21433e;border-color:#4c8a7e;color:#c3f6e9}
+.selInfo{color:#ddedf4;border-color:#45667e;background:#223247}
+.inspector-guide{display:flex;gap:5px;align-items:flex-start;padding:6px 7px;border:1px solid #3c5c69;background:#1b3439;border-radius:7px;color:#b5d9da;font-size:10px;line-height:1.45}
+.selectActions .warn,#quickDelete{font-weight:800}
+/* Precise, legible directional input: 5 px cannot clip */
+.nudge{display:grid!important;grid-template-columns:35px 66px 35px!important;grid-template-rows:repeat(3,31px)!important;gap:4px!important;width:max-content;max-width:100%;margin:4px auto!important}
+.nudge .stepCell{grid-column:2;min-width:66px;width:66px;height:31px;display:flex;align-items:center;justify-content:center;gap:3px;overflow:visible;padding:0 5px!important;background:#24423f;border-color:#4b8178}
+.nudge .stepCell input[type=number]{box-sizing:border-box!important;width:32px!important;min-width:32px!important;max-width:32px!important;flex:0 0 32px!important;height:25px!important;min-height:25px!important;padding:0 2px!important;font-size:12px!important;color:#e0fff2!important;text-align:center!important;line-height:24px!important}
+.nudge .stepCell span{flex:0 0 auto!important;display:block;font-size:10px!important;color:#b8e8d7;line-height:25px;white-space:nowrap}
+.nudge button{height:31px;min-height:31px}
+.sizeLine .miniCap{min-width:0;white-space:nowrap}
+.step{flex:0 0 auto;min-width:0}
+.step input[type=number]{width:46px;min-width:46px;flex:0 0 46px;text-align:center;padding:1px}
+@media(max-width:1080px){.board{gap:7px}.zoom-hint{display:none}}
+@media(max-width:650px){
+ .stage-tools{gap:4px}
+ .command-dock{padding:7px 6px}
+ .command-modes,.label-actions{gap:4px}
+ .command-modes .tool-small{flex:1 1 auto}
+ .label-actions span{flex:1 0 100%;margin-bottom:1px}
+ .label-actions .tool-small{flex:1 1 0}
+ .stage-tools .tool-small{min-width:30px}
+ .command-add .tool-small{min-width:59px}
+ .right-panel .grp{padding:10px}
+ .nudge{grid-template-columns:35px 66px 35px!important}
+}
+
+
+/* A selected item must NOT shift the canvas under the pointer. */
+#quickInspector{display:flex!important;visibility:visible!important;min-height:37px;max-height:37px;height:37px;overflow:hidden;flex-wrap:nowrap!important;align-items:center!important;gap:4px;margin:0;padding:3px 5px}
+#quickInspector.empty-selection{background:#162333;border-color:#2f4255;opacity:.75}
+#quickInspector.empty-selection input,#quickInspector.empty-selection .dock-nudge,#quickInspector.empty-selection .dock-danger{visibility:hidden}
+#quickInspector .dock-selected-label{flex:0 0 auto;max-width:180px}
+#quickInspector input[type=text]{flex:1 1 auto;min-width:80px;max-width:250px}
+#quickInspector input[type=color]{flex:0 0 30px}
+#quickInspector .dock-nudge{flex:0 0 29px}
+@media(max-width:650px){
+ #quickInspector{height:36px;max-height:36px;min-height:36px}
+ #quickInspector .dock-nudge{display:none!important}
+ #quickInspector .dock-selected-label{max-width:92px;overflow:hidden;text-overflow:ellipsis}
+ #quickInspector input[type=text]{flex:1 1 80px;min-width:0!important}
+ #quickInspector .dock-danger{flex:0 0 auto}
+}
+
+
+/* V15: keep the shelter toolbar readable in the narrow left inspector */
+.shelter-panel{min-width:0;box-sizing:border-box}
+.shelter-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;gap:5px;min-width:0}
+.shelter-header .field-label{flex:0 1 auto;min-width:0;white-space:nowrap;font-size:11px!important;line-height:1.3;letter-spacing:-.04em}
+.shelter-header .shelter-tag{flex:0 0 auto;white-space:nowrap;font-size:9px;padding:3px 5px}
+.shelter-options{gap:5px;min-width:0}
+.shelter-options .field-label{white-space:nowrap;flex:0 0 auto;font-size:10px}
+.shelter-options select{flex:1 1 auto;width:auto;min-width:0;max-width:100%;padding:5px 21px 5px 6px}
+.shelter-tool-buttons{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+.shelter-tool-buttons button{font-size:10px!important;min-width:0;padding:6px 3px!important;white-space:nowrap}
+@media(max-width:1080px){.shelter-header .field-label{font-size:11px!important}}
+
+/* V16: balanced typography and narrow control forms */
+:root{font-synthesis:none}
+body,button,select,input,textarea{font-family:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif}
+.stepCell{min-width:42px;gap:2px;padding:0 5px}
+.stepCell input{width:22px!important;min-width:16px;max-width:27px!important;text-align:center}
+.stepCell span{white-space:nowrap}
+.shelter-panel .shelter-options{min-width:0;flex-wrap:wrap}
+.shelter-panel .shelter-options select{width:min(145px,100%);flex:1 1 105px}
+.shelter-panel .shelter-header{min-width:0;flex-wrap:wrap;row-gap:4px}
+.dock-settings label{min-width:0}
+@media(max-width:1130px){.shelter-tag{font-size:9px}.shelter-panel{padding:9px}}
+
+
+/* V21 quick color swatches — high-contrast, no dropdown scrolling */
+.color-palette,.command-quick-palette{display:flex;gap:5px;flex-wrap:wrap;align-items:center;min-width:0}
+.color-palette{padding:4px 0 6px}
+.command-quick-palette{padding:2px 0 4px!important;border-bottom:1px solid #293f52;gap:5px}
+.palette-swatch{box-sizing:border-box;width:27px;height:27px;min-width:27px;min-height:27px;border-radius:7px;border:2px solid rgba(255,255,255,.33);box-shadow:inset 0 0 0 1px rgba(0,0,0,.19);padding:0;position:relative;cursor:pointer;flex:none}
+.palette-swatch:hover{transform:translateY(-1px);border-color:#f4d188}
+.palette-swatch.active{border-color:#fff;outline:2px solid #dfa94a;outline-offset:1px}
+.palette-swatch:disabled{cursor:not-allowed;opacity:.27;transform:none}
+.palette-swatch.active:after{content:'✓';position:absolute;inset:0;text-align:center;display:grid;place-items:center;color:#fff;font-size:14px;font-weight:900;text-shadow:0 1px 2px #111,0 0 3px #111}
+.color-row{gap:6px;align-items:center}.color-row select[hidden]{display:none!important}
+.palette-custom{display:flex;align-items:center;gap:6px;color:#b9c9d6;font-size:11px;white-space:nowrap;min-width:0}
+.palette-custom input[type=color]{width:46px;min-width:46px;min-height:34px;height:34px;flex:none;padding:3px;border-radius:7px}
+.inspector-colors{display:flex;gap:6px;align-items:center;min-width:0}.inspector-colors select[hidden]{display:none!important}
+.command-quick-palette .palette-swatch{width:23px;height:23px;min-width:23px;min-height:23px;border-radius:6px}
+@media(max-width:650px){.palette-swatch{width:25px;height:25px;min-width:25px;min-height:25px}.command-quick-palette{gap:4px}}
+.command-edit-palette{padding:5px 0!important;border-top:1px solid #2c4257}
+.command-edit-palette[hidden]{display:none!important}
+.command-edit-palette .color-palette{gap:4px;padding:0}
+.command-edit-palette .palette-swatch{width:23px;height:23px;min-width:23px;min-height:23px}
+.palette-edit-label{font-size:10px;color:#9aafc4;font-weight:800;white-space:nowrap}
+/* Drag map immediately on empty terrain when zoomed, with no mode button */
+#wrap.can-pan #cv{cursor:grab}
+#wrap.panning #cv{cursor:grabbing!important}
+#wrap.paint-on #cv{cursor:crosshair}
+
+.capital-base-pick{display:flex;justify-content:space-between;align-items:center;gap:12px;color:#b7c8d7;font-size:11px;font-weight:750;min-width:0}
+.capital-base-pick input[type=color]{width:45px!important;flex:0 0 45px!important;min-height:32px;height:32px;padding:3px;background:#25384a}
+#capitalZoneMode{min-height:36px}
+</style>
+
+<style>
+/* Readable controls and responsive panels for the integrated tool. */
+:root{color-scheme:dark;--gold:#f2c14e;--ink:#edf1f9;--sub:#aab6cb;--line:#35445c}
+html,body,button,select,input,textarea{font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic",sans-serif!important}
+body{padding:10px!important;background:#0b0e14!important;letter-spacing:0;word-break:keep-all}
+header{min-height:54px;background:#141926;border-color:#35445c;flex-wrap:wrap}
+h1{font-size:18px;line-height:1.4;max-width:100%;overflow-wrap:anywhere}
+.capital-embedded .capital-storage-note{display:none}
+.capital-embedded header{min-height:36px;padding:5px 10px;margin-bottom:8px}
+.capital-embedded header .brand-mark,.capital-embedded header .eyebrow,.capital-embedded header .brand-sub,.capital-embedded header .head-status,.capital-embedded header .credit{display:none}
+.capital-embedded header h1{font-size:15px;line-height:1.5}
+.eyebrow,.brand-sub,.credit,.head-status{font-size:12px;line-height:1.5}
+.capital-storage-note{font-size:13px;line-height:1.6;padding:10px 12px;margin-bottom:10px;border:1px solid #35445c;border-radius:10px;background:#142033;color:#cbd8ed}
+.board{gap:10px;grid-template-columns:minmax(210px,240px) minmax(0,1fr) minmax(240px,270px)!important}
+.grp,.stage-panel{background:#141926;border-color:#35445c;border-radius:12px}
+.bar,.right-panel{max-height:calc(100dvh - 140px)}
+.grp{gap:10px;padding:12px}
+.grp .cap{font-size:15px;line-height:1.5;color:#ffde8a}
+.grp .intro,.miniHint,.field-label,.miniCap,.inspector-guide,.selInfo,.saveInfo{font-size:13px!important;line-height:1.5!important}
+.grp .cap small{font-size:12px}
+button.act,.tool-small,.command-row .tool-small,.stage-tools .tool-small,.label-actions .tool-small{min-height:44px;height:auto;font-size:13px;line-height:1.4;padding:8px 10px;white-space:normal}
+input[type=text],input[type=number],select,.stage-tools select,.command-dock select,.dock-settings label select{font-size:14px!important;min-height:44px!important;height:auto!important;border-radius:8px;background-color:#1b2231;color:#edf1f9;color-scheme:dark}
+select option,select optgroup{background:#1b2231;color:#edf1f9}
+input[type=color]{min-height:44px!important;height:44px!important;flex-basis:44px;width:44px}
+.stage-top{display:flex;flex-wrap:wrap}
+.stage-tools{flex-wrap:wrap!important;gap:6px}
+.stage-tools #quickBattleType,.stage-tools #split{flex:1 1 180px;max-width:none!important;min-width:0!important}
+.stage-tools .tool-small{flex:0 0 auto}
+#zoomLabel{font-size:13px}
+.zoom-hint{font-size:12px;white-space:normal}
+#splitHint{font-size:13px;line-height:1.5;padding:8px}
+.command-dock{padding:8px;gap:8px;border-radius:10px}
+.command-row{gap:6px}
+.command-modes .tool-small{flex:1 1 110px}
+.command-modes select{flex:0 1 95px}
+.dock-size-label,.dock-caption,.dock-live,.dock-selected-label{font-size:13px}
+.capital-add-tools{border:1px solid #35445c;border-radius:8px;background:#101621}
+.capital-add-tools>summary{min-height:44px;padding:10px;color:#ffde8a;font-size:13px;cursor:pointer;font-weight:700}
+.command-add{display:flex;padding:8px;gap:6px}
+.command-add input[type=text]{flex:1 1 160px;min-width:0}
+.command-add .tool-small{flex:1 1 90px}
+.command-quick-palette{padding:0 8px 8px}
+#quickInspector{height:54px;min-height:54px;max-height:54px;padding:4px 6px}
+#quickInspector .dock-nudge{flex-basis:38px;padding:6px}
+.command-actions .tool-small{flex:1 1 110px}
+.command-actions .dock-export{background:#ad7c2c;border-color:#cda251;color:#fff9e8}
+.dock-settings{padding:10px;font-size:13px;gap:10px}
+.dock-settings label{font-size:13px;flex-wrap:wrap;white-space:normal}
+.label-actions{width:100%;gap:8px}
+.label-actions span{font-size:13px;width:100%}
+.label-actions .tool-small{flex:1 1 120px}
+.nudge{grid-template-columns:44px 66px 44px!important;grid-template-rows:repeat(3,44px)!important;gap:5px!important}
+.nudge button,.nudge .stepCell{min-height:44px;height:44px}
+.step button{min-width:44px;width:44px;min-height:44px;height:44px}
+.step input[type=number]{width:52px;min-width:52px;flex-basis:52px}
+.seg button{min-height:44px;font-size:13px}
+.sizeLine{flex-wrap:wrap}
+.color-palette button{min-width:32px;min-height:32px}
+.stage-bottom{font-size:12px;line-height:1.5}
+.capital-selected-name{position:fixed;z-index:50;width:max-content;box-sizing:border-box;padding:8px 12px;border:1px solid #f2c14e;border-radius:8px;background:#111925;color:#fff4cf;font-size:14px;line-height:1.5;font-weight:700;white-space:normal;overflow-wrap:anywhere;word-break:normal;overflow:auto;box-shadow:0 3px 12px #0008;user-select:text}
+.capital-selected-name[hidden]{display:none}
+.selInfo{white-space:normal;overflow-wrap:anywhere;word-break:normal}
+@media(min-width:1201px){
+ .capital-add-tools,#quickInspector,#quickEditPaletteRow{display:none!important}
+ .command-actions #quickDelete{display:none}
+ .command-dock{flex-direction:row;flex-wrap:wrap;align-items:center}
+ .command-modes{flex:1 1 500px}
+ .command-actions{flex:0 0 auto;border:0;padding:0}
+ .command-actions .tool-small:not(#dockSettingsBtn){display:none}
+ .dock-settings{flex:1 1 100%}
+}
+@media(max-width:1200px){
+ .board{grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"main" "left" "right"!important}
+ .bar,.right-panel{position:static;max-height:none;overflow:visible;display:none!important}
+ body.advanced-open .bar,body.advanced-open .right-panel{display:flex!important}
+ #quickInspector .dock-nudge{display:none!important}
+ .stage-panel{display:flex;flex-direction:column;gap:8px}
+ .stage-top{order:0;margin:0}
+ #splitHint{order:1;margin:0}
+ .command-dock{display:contents}
+ .command-modes{order:2}
+ #wrap{order:3}
+ #quickInspector{order:4}
+ .capital-add-tools{order:5}
+ .command-actions{order:6}
+ #quickEditPaletteRow{order:7}
+ .dock-settings{order:8}
+ .stage-bottom{order:9}
+}
+@media(max-width:650px){
+ body{padding:8px!important}
+ header{padding:8px}
+ h1{font-size:16px}
+ .brand-sub{font-size:12px}
+ .stage-panel{padding:8px}
+ input[type=text],input[type=number],select,.stage-tools select,.command-dock select{font-size:16px!important}
+ .stage-tools #quickBattleType,.stage-tools #split{flex:1 1 calc(50% - 3px)}
+ .stage-tools .tool-small{flex:1 1 44px;padding:8px 6px}
+ .command-dock{padding:7px;gap:8px}
+ .command-modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ .command-modes .dock-size-label{display:block}
+ .command-modes select{width:100%}
+ .command-modes #quickDelete{grid-column:1/-1}
+ .command-actions .tool-small{flex:1 1 calc(50% - 6px)}
+ .command-add .tool-small{flex:1 1 calc(50% - 6px)}
+ .command-add input[type=text]{flex-basis:calc(100% - 56px);width:0}
+ #quickInspector{display:grid!important;grid-template-columns:minmax(0,1fr) 44px 56px;grid-template-rows:auto 44px;height:auto;min-height:82px;max-height:none;gap:4px;padding:4px}
+ #quickInspector .dock-selected-label{grid-column:1/-1;max-width:100%;font-size:13px;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;word-break:normal;line-height:1.5}
+ #quickInspector input[type=text]{max-width:none;width:100%;min-width:0}
+ #quickInspector input[type=color]{width:44px}
+ #quickInspector .dock-nudge{display:none!important}
+ #quickInspector .dock-danger{padding:8px 4px}
+ .command-modes .dock-live,.command-modes .dock-caption{display:none}
+ .dock-settings label{flex:1 1 100%;justify-content:space-between}
+ .dock-settings label input[type=number]{width:80px}
+ .dock-settings label select{max-width:150px}
+ .capital-storage-note{font-size:13px}
+}
+
+</style>
+</head>
+<body>
+<header>
+ <div class="brand-mark" aria-hidden="true">⚔</div>
+ <div class="brand-copy">
+   <div class="eyebrow">213 SERVER / TACTICAL COMMAND</div>
+   <h1 id="appTitle" contenteditable="true" spellcheck="false" title="눌러서 제목 수정">서버전 / 수도전 전략 배치도</h1>
+   <div class="brand-sub">배치 슬롯과 작전 오브젝트를 한 화면에서 빠르게 편집하고 고화질로 저장합니다.</div>
+ </div>
+ <div class="head-status" id="headStatus">편집 준비</div>
+ <div class="credit">213 SERVER / NXT<b>부앙 (Bu-ang)</b></div>
+</header>
+<aside class="capital-storage-note" role="status">개인 배치 도구 / 이 브라우저에 저장됩니다. 다른 기기로 옮길 때는 배치 백업을 사용하세요.</aside>
+
+<div class="board">
+ <aside class="bar" id="advancedTools" aria-label="전략맵 상세 편집 도구">
+  <div class="grp">
+   <div class="grp-heading"><span class="cap"><small>01</small> 전장 설정</span></div>
+   <div class="intro">전장별 배치를 따로 보관하고 진영 배치와 격자를 설정합니다.</div>
+    <label class="field-label" for="battleType">전장 유형</label>
+    <select id="battleType" onchange="changeBattleType()" aria-label="전장 유형"><option value="supreme">서버전 (최고의 전장)</option><option value="capital">수도전</option></select>
+   <label class="field-label" for="sq">중앙 점령 구역 크기</label>
+   <div class="field-row"><input type="range" id="sq" min="85" max="310" value="165" oninput="onSize()" title="중앙 점령 구역 크기"><span id="sqValue" class="miniCap">165</span></div>
+   <div class="capital-base-pick"><span>수도 정사각형 색상 (불투명)</span><input id="capitalZoneColor" type="color" value="#727f89" aria-label="수도 정사각형 색상" oninput="changeCapitalZoneColor()"></div>
+   <label class="field-label" for="capitalScale">수도 아이콘 크기</label>
+   <div class="field-row"><input type="range" id="capitalScale" min="10" max="140" value="40" oninput="changeCapitalScale()" title="수도 아이콘 표시 크기"><span id="capitalScaleValue" class="miniCap">40%</span></div>
+   <label class="field-label" for="turretScale">포탑 아이콘 크기</label>
+   <div class="field-row"><input type="range" id="turretScale" min="10" max="140" value="25" oninput="changeTurretScale()" title="포탑 아이콘 표시 크기"><span id="turretScaleValue" class="miniCap">25%</span></div>
+   <div class="grid-controls">
+      <label class="checkbox-label"><input type="checkbox" id="showGrid" onchange="toggleGrid()"> 보조 격자</label>
+      <label class="checkbox-label"><input type="checkbox" id="snapGrid" onchange="toggleSnap()"> 격자 맞춤</label>
+
+   </div>
+   <div class="tile-grid-config"><label class="field-label" for="gridCols">1 × 1 기준 격자, 가로 칸 수</label><div class="tile-grid-row"><input id="gridCols" type="number" min="16" max="160" step="4" value="120" inputmode="numeric" onchange="changeGridCols()"><span id="gridSummary">120 × 54칸</span></div><span class="miniHint">정사각형 1칸 기준으로 세로 칸 수가 자동 결정됩니다.</span></div>
+   <div class="dividing"></div>
+   <label class="field-label">지도 표기 언어</label>
+   <div class="seg"><button id="mk" class="on" onclick="setMapLang('ko')">한국어</button><button id="mj" onclick="setMapLang('ja')">日本語</button><button id="me" onclick="setMapLang('en')">English</button></div>
+  </div>
+  <div class="grp">
+    <div class="grp-heading"><span class="cap"><small>02</small> 오브젝트 추가</span></div>
+    <div class="intro">지도 바로 위 빠른 도구로도 배치할 수 있습니다.</div>
+    <input type="text" id="nm" maxlength="60" placeholder="연맹명 / 닉네임 / 메모 입력" aria-label="추가할 오브젝트 이름">
+    <div class="color-row"><select id="col" hidden aria-label="기본 색상 선택">
+      <option value="#4a86f7">블루</option><option value="#2aa8c4">청록</option><option value="#ef5350">레드</option><option value="#e0813e">오렌지</option><option value="#f0c455">골드</option><option value="#8c70be">퍼플</option><option value="#ffffff">화이트</option><option value="#2b2b2b">블랙</option></select>
+      <label class="palette-custom">직접 선택 <input id="customColor" type="color" value="#4a86f7" title="기본 팔레트에 없는 색 직접 선택" aria-label="직접 색상 선택"></label>
+    </div>
+    <div class="color-palette" id="addPalette" role="group" aria-label="추가할 항목 색상 빠른 선택"></div>
+    <div class="addBtns">
+      <button class="act primary" onclick="addAlliance()">🛡 연맹</button>
+      <button class="act" onclick="addPerson()">♟ 유저</button>
+      <button class="act" onclick="addText()">T 텍스트 메모</button>
+      <button class="act" onclick="addArrow()">➤ 화살표</button>
+      <button class="act" onclick="addZone()">▭ 구역 표시</button>
+      <button class="act" onclick="addLine()">╱ 구분선</button>
+    </div>
+    <div class="shelter-panel">
+      <div class="shelter-header"><span class="field-label">유저 슬롯 배치</span><span class="shelter-tag">연속 찍기</span></div>
+      <div class="shelter-options">
+       <label class="field-label" for="shelterSize">배치칸 크기</label>
+       <select id="shelterSize" onchange="changeShelterSize()" aria-label="배치칸 크기"><option value="1">1 × 1칸</option><option value="2">2 × 2칸</option><option value="3" selected>3 × 3칸</option><option value="4">4 × 4칸</option><option value="5">5 × 5칸</option></select>
+      </div>
+      <div class="shelter-tool-buttons">
+       <button class="act shelter-action" id="shelterBrush" onclick="setActiveTool('shelter')">◎ 슬롯 찍기</button>
+       <button class="act" id="selectTool" onclick="setActiveTool('select')">⌖ 선택 / 이동</button>
+      </div>
+      <div class="miniHint" id="toolHint">3×3칸 유저 슬롯을 지도에서 연속 배치하세요. 선택/이동으로 옮기거나 삭제할 수 있습니다.</div>
+    </div>
+  </div>
+  <div class="grp">
+    <div class="grp-heading"><span class="cap"><small>03</small> 선택 항목 편집</span></div>
+    <div id="selInfo" class="selInfo">선택 항목 없음</div>
+    <div class="inspector-fields">
+      <label class="field-label" for="editName">이름 / 내용</label>
+      <input type="text" id="editName" maxlength="80" placeholder="지도의 항목을 선택하세요" disabled onchange="applyInspectorName()">
+      <label class="field-label" for="editColor">색상 변경 (색상칩 클릭)</label>
+      <div class="inspector-colors"><select id="editColorPresets" hidden disabled onchange="selectInspectorColor()" aria-label="선택 항목 색상"><option value="">빠른 색상 선택</option><option value="#4a86f7">파랑</option><option value="#2aa8c4">청록</option><option value="#ef5350">빨강</option><option value="#e0813e">주황</option><option value="#f0c455">노랑</option><option value="#8c70be">보라</option><option value="#ffffff">흰색</option><option value="#2b2b2b">검정</option></select><label class="palette-custom">직접 선택 <input id="editColor" type="color" value="#4a86f7" disabled onchange="applyInspectorColor()" aria-label="선택 항목 색상 직접 변경"></label></div>
+    </div>
+    <div class="color-palette" id="editPalette" role="group" aria-label="선택한 항목 색상 빠른 변경"></div>
+    <div class="sizeLine"><span class="miniCap">크기 / 글자</span><div class="step"><button onclick="bumpSize(-1)" aria-label="크기 줄이기">−</button><input type="number" id="fsz" min="12" max="500" value="32" oninput="applySize()" aria-label="선택 항목 크기"><button onclick="bumpSize(1)" aria-label="크기 키우기">＋</button></div></div>
+    <div class="nudge" aria-label="선택 항목 미세 이동"><button class="up" onclick="moveSel(0,-1)" title="위쪽">▲</button><button class="left" onclick="moveSel(-1,0)" title="왼쪽">◀</button><div class="stepCell" title="이동 및 크기 조절 간격"><input type="number" id="stepSel" min="1" max="50" value="5" aria-label="이동 간격"><span>px</span></div><button class="right" onclick="moveSel(1,0)" title="오른쪽">▶</button><button class="down" onclick="moveSel(0,1)" title="아래쪽">▼</button></div>
+    <div class="inspector-guide">ⓘ 쉘터 또는 이름 클릭 → 오른쪽에서 수정/삭제. Delete 키로 삭제할 수 있고, 잘못 삭제하면 실행 취소하세요.</div>
+    <div class="selectActions"><button class="act" onclick="editSel()">✎ 이름 수정</button><button class="act warn" onclick="delSel()">🗑 삭제</button></div>
+  </div>
+  <div class="grp">
+   <div class="grp-heading"><span class="cap"><small>04</small> 저장 및 내보내기</span></div>
+   <div class="fileActions"><button class="act" id="undoBtn" onclick="undoLast()" disabled>↶ 실행 취소</button><button class="act" id="redoBtn" onclick="redoLast()" disabled>↷ 다시 실행</button></div>
+   <div class="fileActions"><button class="act" onclick="saveJSON()">↓ 배치 백업</button><button class="act" onclick="$('jsonFile').click()">↑ 배치 불러오기</button></div>
+   <input type="file" id="jsonFile" accept=".json,application/json" onchange="loadJSONFile(this)">
+   <div class="fileSave"><select id="expSize" aria-label="PNG 이미지 해상도"><option value="700">기본</option><option value="1400">고화질</option><option value="2800" selected>초고화질 (2800px)</option><option value="4200">원본 3배 (4200px)</option></select><button class="act b-save" onclick="savePNG()">⇩ PNG 이미지 저장</button></div>
+   <div class="fileActions"><button class="act warn" onclick="resetAll()">↺ 현재 전장 초기화</button><button class="act" onclick="resetView()">⊞ 화면 맞춤</button></div>
+   <div id="saveInfo" class="saveInfo">자동저장 확인 중</div>
+   <div class="miniHint">이 브라우저에 저장됩니다. 다른 기기나 운영진에게 전달할 때는 배치 백업 파일을 사용하세요.</div>
+  </div>
+ </aside>
+ <section class="stage-panel" aria-label="수도전 전략 지도">
+  <div class="stage-top">
+   <div class="stage-heading"><div class="map-chip">⌖</div><div><b>213 TACTICAL COMMAND MAP</b><span id="mapCount">배치 항목 0개</span></div></div>
+   <div class="stage-tools">
+    <select id="quickBattleType" onchange="applyQuickBattleType()" aria-label="전장 선택" style="min-width:140px;max-width:180px;height:38px;min-height:38px"><option value="supreme">최고의 전장</option><option value="capital">수도전</option></select>
+    <select id="split" onchange="onSplit()" aria-label="진영 배치 방식" style="min-width:175px;max-width:210px;height:38px;min-height:38px"><option value="lr">아군 왼쪽</option><option value="tb">아군 위쪽</option><option value="g">아군 ㄱ 배치</option><option value="n">아군 ㄴ 배치</option></select>
+    <button class="tool-small" onclick="zoomView(-1)" aria-label="축소">−</button><span id="zoomLabel" aria-live="polite">100%</span><button class="tool-small" onclick="zoomView(1)" aria-label="확대">+</button>
+    <button class="tool-small" id="panBtn" onclick="togglePan()" title="지도 빈 곳을 끌면 바로 이동합니다. 이 버튼을 켜면 항목 위에서도 지도만 이동합니다">이동 고정</button>
+    <button class="tool-small highlight" id="capitalDetailView" onclick="openBattleView()" title="수도 중심을 크게 보기">수도 중심</button><button class="tool-small" id="capitalOverview" onclick="resetView()" title="전체 지도를 한눈에 보기">전체 보기</button><span class="zoom-hint">휠 확대/축소 / 빈 곳 드래그 이동</span>
+   </div>
+  </div>
+  <div id="splitHint" aria-live="polite">좌측 아군, 우측 상대</div>
+<div class="command-dock" id="commandDock" aria-label="지도 바로 편집하기">
+  <div class="command-row command-modes">
+    <span class="dock-caption">편집 도구</span>
+    <button class="tool-small active" id="quickSelect" onclick="setActiveTool('select')" title="유저 슬롯이나 글자를 선택하고 드래그">⌖ 선택/이동</button>
+    <button class="tool-small" id="quickShelter" onclick="setActiveTool('shelter')" title="지도 빈 곳을 클릭하면 유저 쉘터 연속 배치">◎ 쉘터 배치</button><button class="tool-small" id="quickDelete" onclick="delSel()" disabled title="선택 항목 삭제 (Delete 키, 실행 취소 가능)">🗑 선택 삭제</button>
+    <label class="dock-size-label" for="quickShelterSize">칸 크기</label>
+    <select id="quickShelterSize" aria-label="배치 슬롯 크기" onchange="applyQuickShelterSize()">
+      <option value="1">1 × 1</option><option value="2">2 × 2</option><option value="3">3 × 3</option><option value="4">4 × 4</option><option value="5">5 × 5</option>
+    </select>
+    <span id="shelterLiveSize" class="dock-live">3 × 3칸</span>
+  </div>
+  <div class="label-actions" id="capitalLabelActions" aria-label="수도 및 포탑 이름 표시 설정">
+    <span>지도 이름 표시</span>
+    <button class="tool-small label-on" id="toggleCapitalLabel" onclick="toggleMapLabel('cap')" title="수도 글자만 숨기거나 다시 표시">수도 이름 표시</button>
+    <button class="tool-small label-on" id="toggleTurretLabels" onclick="toggleMapLabel('turrets')" title="4개 포탑 이름을 숨기거나 다시 표시">포탑 이름 표시</button>
+  </div>
+  <details class="capital-add-tools"><summary>연맹 / 유저 / 표시 추가</summary><div class="command-row command-add">
+    <input id="quickName" type="text" maxlength="60" placeholder="닉네임 / 연맹 / 메모" aria-label="추가 항목 이름" oninput="syncQuickName()">
+    <input id="quickColor" type="color" value="#4a86f7" aria-label="원하는 색상 직접 선택" oninput="syncQuickColor();syncPaletteState()">
+    <button class="tool-small" onclick="addAlliance()">🛡 연맹</button>
+    <button class="tool-small" onclick="addPerson()">♟ 유저</button>
+    <button class="tool-small" onclick="addText()">T 메모</button>
+    <button class="tool-small" onclick="addArrow()">➤ 화살표</button>
+    <button class="tool-small" onclick="addZone()">▭ 구역</button>
+    <button class="tool-small" onclick="addLine()">╱ 선</button>
+  </div>
+  <div class="command-row command-quick-palette" id="quickPalette" role="group" aria-label="빠른 추가 색상 선택"></div>
+  </details>
+  <div class="command-row command-selected" id="quickInspector">
+    <span id="quickSelectedLabel" class="dock-selected-label">선택 항목 없음</span>
+    <input id="quickEditName" type="text" maxlength="80" aria-label="선택 항목 이름 변경" placeholder="선택 항목 이름" onchange="applyQuickInspectorName()">
+    <input id="quickEditColor" type="color" aria-label="선택 항목 색상 변경" onchange="applyQuickInspectorColor()">
+    <button class="tool-small dock-nudge" onclick="bumpSize(-1)" title="크기 줄이기">−</button>
+    <button class="tool-small dock-nudge" onclick="bumpSize(1)" title="크기 키우기">＋</button>
+    <button class="tool-small dock-nudge" onclick="moveSel(-1,0)" title="왼쪽 이동">◀</button>
+    <button class="tool-small dock-nudge" onclick="moveSel(0,-1)" title="위쪽 이동">▲</button>
+    <button class="tool-small dock-nudge" onclick="moveSel(0,1)" title="아래쪽 이동">▼</button>
+    <button class="tool-small dock-nudge" onclick="moveSel(1,0)" title="오른쪽 이동">▶</button>
+    <button class="tool-small dock-danger" onclick="delSel()">삭제</button>
+  </div>
+  <div class="command-row command-edit-palette" id="quickEditPaletteRow" hidden><span class="palette-edit-label">선택 색상</span><div id="quickEditPalette" class="color-palette" role="group" aria-label="선택 항목 색상 바로 변경"></div></div>
+  <div class="command-row command-actions">
+    <button class="tool-small" id="quickUndo" onclick="undoLast()" title="실행 취소">↶ 실행 취소</button>
+    <button class="tool-small" id="quickRedo" onclick="redoLast()" title="다시 실행">↷ 다시 실행</button>
+    <button class="tool-small" onclick="saveJSON()" title="현재 배치 백업">💾 배치 백업</button>
+    <button class="tool-small" onclick="$('jsonFile').click()" title="배치 JSON 파일 불러오기">📂 배치 열기</button>
+    <button class="tool-small dock-export" onclick="savePNG()" title="선택된 고화질 이미지 저장">⇩ PNG 저장</button>
+    <button class="tool-small" id="dockSettingsBtn" onclick="toggleDockSettings()" title="현재 지도 바로 위에서 설정 변경" aria-expanded="false" aria-controls="dockSettings">⚙ 지도 설정</button>
+    <button class="tool-small" id="advancedBtn" onclick="toggleAdvanced()" title="작업 패널 표시 또는 숨기기" aria-expanded="false" aria-controls="advancedTools">☷ 작업 패널</button>
+    </div>
+    <div class="dock-settings" id="dockSettings" hidden>
+      <label>격자 가로칸 <input id="quickGridCols" type="number" min="16" max="160" step="4" value="120" onchange="applyQuickGridCols()" aria-label="지도 격자 가로칸 수"></label>
+      <label>수도 구역 <input id="quickSQ" type="range" min="85" max="310" value="165" oninput="applyQuickSQ()" aria-label="중앙 점령 구역 크기"></label>
+      <label>수도 색상 <input id="quickCapitalZoneColor" type="color" value="#727f89" aria-label="수도 정사각형 색상" oninput="applyQuickCapitalColor()" style="width:44px;height:31px;min-height:31px;padding:3px;cursor:pointer"></label>
+      <label>수도 크기 <input id="quickCapitalScale" type="range" min="10" max="140" value="40" oninput="applyQuickCapitalScale()" aria-label="수도 아이콘 크기"></label>
+      <label>포탑 크기 <input id="quickTurretScale" type="range" min="10" max="140" value="25" oninput="applyQuickTurretScale()" aria-label="포탑 아이콘 크기"></label>
+      <label class="dock-check"><input type="checkbox" id="quickShowGrid" onchange="applyQuickShowGrid()" checked> 격자 표시</label>
+      <label class="dock-check"><input type="checkbox" id="quickSnapGrid" onchange="applyQuickSnapGrid()" checked> 격자 맞춤</label>
+
+      <label>언어 <select id="quickLang" aria-label="맵 표기 언어" onchange="setMapLang(this.value)"><option value="ko">한국어</option><option value="ja">日本語</option><option value="en">English</option></select></label>
+      <label>PNG 해상도 <select id="quickExpSize" aria-label="PNG 저장 크기" onchange="applyQuickExpSize()"><option value="700">700px</option><option value="1400">1400px</option><option value="2800" selected>2800px</option><option value="4200">4200px</option></select></label>
+      <button class="tool-small" onclick="resetAll()" title="현재 전장만 초기화">↺ 전장 초기화</button>
+    </div>
+  </div>
+  <div id="wrap"><canvas id="cv" width="1400" height="900" aria-label="편집 가능한 수도전 지도"></canvas></div>
+  <div class="stage-bottom"><div class="legend"><span class="legend-item"><i class="legend-dot ally"></i> 아군</span><span class="legend-item"><i class="legend-dot enemy"></i> 상대</span><span class="legend-item">수도, 포탑 확대 출력 지원</span></div><span class="orientation">맵 위 휠로 확대/축소 / 3×3 쉘터 배치, 클릭 후 드래그 이동</span></div>
+ </section>
+ <aside class="right-panel" id="rightTools" aria-label="선택 항목 편집 및 저장"></aside>
+</div>
+
+<script>
+/* roundRect polyfill for older mobile browsers */
+if(!CanvasRenderingContext2D.prototype.roundRect){
+  CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
+    if(typeof r==='number')r={tl:r,tr:r,br:r,bl:r};
+    else r={tl:r[0]||0,tr:r[1]||r[0]||0,br:r[2]||r[0]||0,bl:r[3]||r[1]||r[0]||0};
+    this.moveTo(x+r.tl,y);
+    this.lineTo(x+w-r.tr,y);this.arcTo(x+w,y,x+w,y+r.tr,r.tr);
+    this.lineTo(x+w,y+h-r.br);this.arcTo(x+w,y+h,x+w-r.br,y+h,r.br);
+    this.lineTo(x+r.bl,y+h);this.arcTo(x,y+h,x,y+h-r.bl,r.bl);
+    this.lineTo(x,y+r.tl);this.arcTo(x,y,x+r.tl,y,r.tl);
+    return this;
+  };
+}
+const $=id=>document.getElementById(id);
+/* V11: place editing and export in the right sidebar without recreating controls. */
+(()=>{const cards=Array.from(document.querySelectorAll('#advancedTools > .grp'));const right=document.getElementById('rightTools');if(right&&cards.length===4){right.append(cards[2],cards[3]);}})();
+function syncQuickName(){if($('nm'))$('nm').value=$('quickName').value;}
+const PALETTE_COLORS=[
+ ['#4a86f7','파랑'],['#2aa8c4','청록'],['#28a66b','초록'],['#ef5350','빨강'],
+ ['#e0813e','주황'],['#f0c455','노랑'],['#8c70be','보라'],['#e76fbb','분홍'],
+ ['#657889','회청'],['#9c6d55','갈색'],['#ffffff','흰색'],['#2b2b2b','검정']
+];
+function setAddColor(hex){
+ $('customColor').value=hex;$('quickColor').value=hex;
+ if($('col'))$('col').value=hex;
+ syncPaletteState();draw();
+}
+function setSelectedColor(hex){
+ if(sel<0||!objs[sel])return;
+ $('editColor').value=hex;applyInspectorColor();
+ syncPaletteState();
+}
+function setupPalette(){
+ for(const [id,target] of [['addPalette','add'],['quickPalette','add'],['editPalette','edit'],['quickEditPalette','edit']]){
+  const root=$(id);if(!root)continue;
+  for(const [hex,name] of PALETTE_COLORS){
+   const btn=document.createElement('button');btn.type='button';btn.className='palette-swatch';
+   btn.style.backgroundColor=hex;btn.dataset.hex=hex;btn.title=name+' ('+hex+')';
+   btn.setAttribute('aria-label',name+' 색상 '+(target==='edit'?'적용':'선택'));
+   btn.addEventListener('click',()=>target==='edit'?setSelectedColor(hex):setAddColor(hex));
+   root.appendChild(btn);
+  }
+ }
+ syncPaletteState();
+}
+function syncPaletteState(){
+ const add=$('customColor')?.value?.toLowerCase();
+ const selected=sel>=0?String(objs[sel]?.c||'').toLowerCase():null;
+ for(const id of ['addPalette','quickPalette','editPalette','quickEditPalette']){
+  const root=$(id);if(!root)continue;
+  for(const el of root.children){
+   const edit=id==='editPalette'||id==='quickEditPalette';el.disabled=edit&&!selected;
+   const isCurrent=el.dataset.hex===(edit?selected:add);
+   el.classList.toggle('active',isCurrent);
+   el.setAttribute('aria-pressed',String(isCurrent));
+  }
+ }
+}
+function syncQuickColor(){if($('customColor'))$('customColor').value=$('quickColor').value;syncPaletteState();}
+function applyQuickBattleType(){if($('battleType')){$('battleType').value=$('quickBattleType').value;changeBattleType();}}
+function applyQuickShelterSize(){if($('shelterSize')){$('shelterSize').value=$('quickShelterSize').value;changeShelterSize();}}
+function applyQuickInspectorName(){const i=$('quickEditName');if(!i||i.disabled)return;$('editName').value=i.value;applyInspectorName();}
+function applyQuickInspectorColor(){const i=$('quickEditColor');if(!i||i.disabled)return;$('editColor').value=i.value;applyInspectorColor();}
+function openAdvanced(){const sidebar=document.querySelector('.right-panel')||document.querySelector('.bar');if(sidebar){sidebar.scrollIntoView({behavior:'smooth',block:'start'});}}
+function toggleAdvanced(){document.body.classList.toggle('advanced-open');const b=$('advancedBtn');if(b)b.setAttribute('aria-expanded',String(document.body.classList.contains('advanced-open')));}
+function toggleDockSettings(){
+ const d=$('dockSettings'),b=$('dockSettingsBtn');d.hidden=!d.hidden;b.setAttribute('aria-expanded',String(!d.hidden));
+}
+function applyQuickGridCols(){$('gridCols').value=$('quickGridCols').value;changeGridCols();}
+function applyQuickSQ(){$('sq').value=$('quickSQ').value;onSize();}
+function applyQuickCapitalScale(){$('capitalScale').value=$('quickCapitalScale').value;changeCapitalScale();}
+function applyQuickTurretScale(){$('turretScale').value=$('quickTurretScale').value;changeTurretScale();}
+function applyQuickShowGrid(){$('showGrid').checked=$('quickShowGrid').checked;toggleGrid();}
+function applyQuickSnapGrid(){$('snapGrid').checked=$('quickSnapGrid').checked;toggleSnap();}
+function applyQuickExpSize(){$('expSize').value=$('quickExpSize').value;}
+
+
+/* ---------- map text translation ---------- */
+let MLANG='ko';
+const DICT={
+ '수도':{ja:'首都',en:'Capital'}, '포탑':{ja:'タレット',en:'Turret'},
+ '서버':{ja:'サーバー',en:'Server'}, '아군':{ja:'味方',en:'Ally'},
+ '상대':{ja:'相手',en:'Enemy'}, '적군':{ja:'敵',en:'Enemy'},
+ '메인':{ja:'メイン',en:'Main'}, '본대':{ja:'本隊',en:'Main force'},
+ '공격':{ja:'攻撃',en:'Attack'}, '방어':{ja:'防御',en:'Defend'},
+ '수비':{ja:'守備',en:'Defense'}, '집결':{ja:'集結',en:'Rally'},
+ '진격':{ja:'進撃',en:'Advance'}, '돌격':{ja:'突撃',en:'Charge'},
+ '이동':{ja:'移動',en:'Move'}, '대기':{ja:'待機',en:'Standby'},
+ '지원':{ja:'支援',en:'Support'}, '점령':{ja:'占領',en:'Capture'},
+ '사수':{ja:'死守',en:'Hold'}, '예비':{ja:'予備',en:'Reserve'},
+ '좌측':{ja:'左側',en:'Left'}, '우측':{ja:'右側',en:'Right'},
+ '상단':{ja:'上',en:'Top'}, '하단':{ja:'下',en:'Bottom'},
+ '중앙':{ja:'中央',en:'Center'}, '연맹':{ja:'同盟',en:'Alliance'},
+ '텍스트':{ja:'テキスト',en:'Text'},
+ '서버전':{ja:'サーバー戦',en:'Server War'},
+ '수도전':{ja:'首都戦',en:'Capital War'},
+ '증원':{ja:'増援',en:'Reinforce'},
+ '편대':{ja:'部隊',en:'March'},
+ '고래':{ja:'クジラ',en:'Whale'},
+ '핵고래':{ja:'超重課金者',en:'Super whale'},
+ '고래조':{ja:'クジラ組',en:'Whale team'},
+ '부캐':{ja:'サブアカウント',en:'Sub account'},
+ '프리룰':{ja:'フリールール',en:'Free rule'},
+ '킬데이':{ja:'キルデー',en:'Kill Day'},
+ '휴전':{ja:'停戦',en:'Ceasefire'},
+ '자리배치':{ja:'配置',en:'Positioning'},
+ '자리 배치':{ja:'配置',en:'Positioning'},
+ '자리':{ja:'位置',en:'Position'},
+ '탈환':{ja:'奪還',en:'Retake'},
+ '수비조':{ja:'守備組',en:'Defense team'},
+ '쉘터':{ja:'シェルター',en:'Shelter'},
+ '셸터':{ja:'シェルター',en:'Shelter'},
+ '상대 연맹 공격':{ja:'相手同盟を攻撃',en:'Attack enemy alliance'},
+ '적 연맹 공격':{ja:'敵同盟を攻撃',en:'Attack enemy alliance'},
+ '상대 연맹':{ja:'相手同盟',en:'Enemy alliance'},
+ '포탑 공격':{ja:'タレット攻撃',en:'Attack turret'},
+ '연맹 수비':{ja:'同盟守備',en:'Alliance defense'},
+ '연맹 공격':{ja:'同盟攻撃',en:'Attack alliance'},
+ '공격조':{ja:'攻撃組',en:'Attack team'},
+ '집결조':{ja:'集結組',en:'Rally team'},
+ '지원조':{ja:'支援組',en:'Support team'},
+ '조':{ja:'組',en:' team'},
+ '팀':{ja:'チーム',en:' team'},
+ '부대':{ja:'部隊',en:' unit'},
+ '선봉':{ja:'先鋒',en:'Vanguard'},
+ '전방':{ja:'前方',en:'Front'},
+ '후방':{ja:'後方',en:'Rear'},
+ '지휘':{ja:'指揮',en:'Command'},
+ '구역':{ja:'区域',en:'Zone'},
+ '지역':{ja:'地域',en:'Area'},
+ '담당':{ja:'担当',en:'In charge'},
+ '방향':{ja:'方向',en:'Direction'},
+ '진입':{ja:'進入',en:'Enter'},
+ '철수':{ja:'撤収',en:'Retreat'},
+ '후퇴':{ja:'後退',en:'Fall back'},
+ '출발':{ja:'出発',en:'Depart'},
+ '도착':{ja:'到着',en:'Arrive'},
+ '배치':{ja:'配置',en:'Deploy'},
+ '위치':{ja:'位置',en:'Position'},
+ '방어선':{ja:'防衛線',en:'Defense line'},
+ '정찰':{ja:'偵察',en:'Scout'},
+ '매복':{ja:'待ち伏せ',en:'Ambush'},
+ '요새':{ja:'要塞',en:'Fortress'},
+ '깃발':{ja:'旗',en:'Flag'},
+ '버프':{ja:'バフ',en:'Buff'},
+ '쉴드':{ja:'シールド',en:'Shield'},
+ '텔레포트':{ja:'テレポート',en:'Teleport'},
+ '텔포':{ja:'テレポート',en:'Teleport'},
+ '순간이동':{ja:'瞬間移動',en:'Teleport'},
+ '좌표':{ja:'座標',en:'Coords'},
+ '시간':{ja:'時間',en:'Time'},
+ '오전':{ja:'午前',en:'AM'},
+ '오후':{ja:'午後',en:'PM'},
+};
+function tr(ko,lang){
+  if(lang==='ko'||!ko)return ko;
+  let s=ko;
+  s=s.replace(/(\d+)\s*번\s*포탑/g,(m,n)=>lang==='ja'?`第${n}砲塔`:`Turret ${n}`);
+  s=s.replace(/(\d+)\s*시\s*포탑/g,(m,n)=>lang==='ja'?`${n}時タレット`:`${n} o'clock Turret`);
+  s=s.replace(/(\d+)\s*서버/g,(m,n)=>lang==='ja'?`${n}サーバー`:`Server ${n}`);
+  s=s.replace(/(\d+)\s*집결/g,(m,n)=>lang==='ja'?`${n}集結`:`Rally ${n}`);
+  s=s.replace(/(\d+)\s*증원/g,(m,n)=>lang==='ja'?`${n}増援`:`Reinforce ${n}`);
+  s=s.replace(/(\d+)\s*편대/g,(m,n)=>lang==='ja'?`${n}部隊`:`March ${n}`);
+  s=s.replace(/(\d+)\s*시/g,(m,n)=>lang==='ja'?`${n}時`:`${n} o'clock`);
+  s=s.replace(/(\d+)\s*조/g,(m,n)=>lang==='ja'?`${n}組`:`Team ${n}`);
+  s=s.replace(/(\d+)\s*팀/g,(m,n)=>lang==='ja'?`${n}チーム`:`Team ${n}`);
+  for(const k of Object.keys(DICT).sort((a,b)=>b.length-a.length))
+    s=s.split(k).join(DICT[k][lang]);
+  if(lang==='en'){
+    s=s.replace(/\s+/g,' ').trim();
+    s=s.charAt(0).toUpperCase()+s.slice(1);
+  }
+  return s;
+}
+function setMapLang(l, record=true){
+  if(record)pushHistory();
+  MLANG=l;if($('quickLang'))$('quickLang').value=l;
+  ['mk','mj','me'].forEach(id=>$(id).classList.remove('on'));
+  $({ko:'mk',ja:'mj',en:'me'}[l]).classList.add('on');
+  for(const o of objs)if(o.t==='text')o.text=tr(o.ko??o.text,l);
+  draw();
+  if(record)saveDraft();
+}
+/* ---------- canvas core ---------- */
+const cv=$('cv');let ctx=cv.getContext('2d');
+const W=cv.width,H=cv.height,CX=W/2,CY=H/2;
+let SQ=165,SPLIT='g',objs=[],sel=-1,drag=null,noise=[];
+let SHOW_GRID=true,SNAP_GRID=true,ZOOM=1,PAN=false,PAN_DRAG=null;
+let GRID_COLS=120,LOST_LAND=true,BATTLE_TYPE='supreme',ACTIVE_TOOL='select',SHELTER_SIZE=3,PREVIEW_POINT=null;
+let BOARD_SCENES={}; // 서버전·수도전 배치를 분리해 저장
+let redoStack=[];
+function validGridCols(v){const x=Number(v);return Number.isInteger(x)&&x>=16&&x<=160&&x%4===0?x:null;}
+function validShelterSize(v){const x=Number(v);return Number.isInteger(x)&&x>=1&&x<=5?x:3;}
+function clampIconScale(v,def){const x=Number(v);return Number.isFinite(x)?Math.max(.10,Math.min(1.4,x)):def;}
+function syncStructureUI(){
+ if($('capitalScale'))$('capitalScale').value=Math.round(CAPITAL_ICON_SCALE*100);
+ if($('capitalScaleValue'))$('capitalScaleValue').textContent=Math.round(CAPITAL_ICON_SCALE*100)+'%';
+ if($('quickCapitalScale'))$('quickCapitalScale').value=Math.round(CAPITAL_ICON_SCALE*100);
+ if($('turretScale'))$('turretScale').value=Math.round(TURRET_ICON_SCALE*100);
+ if($('turretScaleValue'))$('turretScaleValue').textContent=Math.round(TURRET_ICON_SCALE*100)+'%';
+ if($('quickTurretScale'))$('quickTurretScale').value=Math.round(TURRET_ICON_SCALE*100);
+}
+function cellSize(){return W/GRID_COLS;}
+function snapShelter(o){const unit=cellSize(),n=validShelterSize(o.footprint),mX=GRID_COLS-n,mY=GRID_COLS*H/W-n;
+  const cx=Math.max(0,Math.min(mX,Math.round((o.x-n*unit/2)/unit)));
+  const cy=Math.max(0,Math.min(mY,Math.round((o.y-n*unit/2)/unit)));
+  o.x=(cx+n/2)*unit;o.y=(cy+n/2)*unit;}
+function syncGridUI(){if($('gridCols'))$('gridCols').value=GRID_COLS;if($('gridSummary'))$('gridSummary').textContent=`${GRID_COLS} × ${Math.round(GRID_COLS*H/W)}칸`;
+ if($('quickGridCols'))$('quickGridCols').value=GRID_COLS;if($('shelterSize'))$('shelterSize').value=SHELTER_SIZE;if($('quickShelterSize'))$('quickShelterSize').value=SHELTER_SIZE;if($('shelterLiveSize'))$('shelterLiveSize').textContent=`슬롯 ${SHELTER_SIZE} × ${SHELTER_SIZE}칸`;}
+function normalizeCapitalMode(m){return ['auto','lr','rl','tb','bt','g','n'].includes(m)?m:'auto';}
+function syncCapitalZoneUI(){
+  if($('capitalZoneMode'))$('capitalZoneMode').value=CAPITAL_ZONE_MODE;
+  if($('quickCapitalZoneMode'))$('quickCapitalZoneMode').value=CAPITAL_ZONE_MODE;
+  if($('capitalZoneColor'))$('capitalZoneColor').value=CAPITAL_ZONE_COLOR;
+  if($('quickCapitalZoneColor'))$('quickCapitalZoneColor').value=CAPITAL_ZONE_COLOR;
+}
+function changeCapitalZoneMode(explicit){
+  const next=normalizeCapitalMode(explicit||$('capitalZoneMode')?.value);
+  if(next===CAPITAL_ZONE_MODE)return;
+  pushHistory();CAPITAL_ZONE_MODE=next;syncCapitalZoneUI();draw();saveDraft();
+}
+function applyQuickCapitalColor(){
+  const quick=$('quickCapitalZoneColor');if(!quick)return;
+  if($('capitalZoneColor'))$('capitalZoneColor').value=quick.value;
+  changeCapitalZoneColor();
+}
+function changeCapitalZoneColor(){
+  const next=$('capitalZoneColor')?.value;
+  if(!/^#[0-9a-fA-F]{6}$/.test(next||'')||next===CAPITAL_ZONE_COLOR)return;
+  pushHistory();CAPITAL_ZONE_COLOR=next;syncCapitalZoneUI();draw();saveDraft();
+}
+function syncTypeUI(){if($('battleType'))$('battleType').value=BATTLE_TYPE;if($('quickBattleType'))$('quickBattleType').value=BATTLE_TYPE;if($('mapModeLabel'))$('mapModeLabel').textContent=BATTLE_TYPE==='supreme'?'최고의 전장':'수도전';}
+function currentBoardSnapshot(){return {objs:JSON.parse(JSON.stringify(objs)),sel,SQ,SPLIT,MLANG,SHOW_GRID,SNAP_GRID,GRID_COLS,LOST_LAND,SHELTER_SIZE,CAPITAL_ICON_SCALE,TURRET_ICON_SCALE,CAPITAL_ZONE_MODE,CAPITAL_ZONE_COLOR};}
+function restoreBoardSnapshot(snapshot){
+ const d=snapshot||{};objs=Array.isArray(d.objs)?JSON.parse(JSON.stringify(d.objs)):DEFAULTS();normalizeObjects();repairOffscreenText(objs);
+ sel=Number.isInteger(d.sel)&&d.sel>=0&&d.sel<objs.length?d.sel:-1;
+ SQ=Math.max(85,Math.min(310,Number(d.SQ)||165));SPLIT=['lr','tb','g','n'].includes(d.SPLIT)?d.SPLIT:'lr';MLANG=['ko','ja','en'].includes(d.MLANG)?d.MLANG:'ko';
+ SHOW_GRID=d.SHOW_GRID===undefined?true:!!d.SHOW_GRID;SNAP_GRID=d.SNAP_GRID===undefined?true:!!d.SNAP_GRID;
+ GRID_COLS=validGridCols(d.GRID_COLS)||120;LOST_LAND=d.LOST_LAND===undefined?true:!!d.LOST_LAND;SHELTER_SIZE=validShelterSize(d.SHELTER_SIZE);CAPITAL_ICON_SCALE=clampIconScale(d.CAPITAL_ICON_SCALE,.40);TURRET_ICON_SCALE=clampIconScale(d.TURRET_ICON_SCALE,.25);CAPITAL_ZONE_MODE=normalizeCapitalMode(d.CAPITAL_ZONE_MODE);CAPITAL_ZONE_COLOR=/^#[0-9a-fA-F]{6}$/.test(d.CAPITAL_ZONE_COLOR||'')?d.CAPITAL_ZONE_COLOR:'#727f89';
+ $('sq').value=SQ;$('sqValue').textContent=SQ;if($('quickSQ'))$('quickSQ').value=SQ;if($('quickLang'))$('quickLang').value=MLANG;$('split').value=SPLIT;syncSplitHint();syncChecks();syncGridUI();
+ ['mk','mj','me'].forEach(id=>$(id).classList.remove('on'));$({ko:'mk',ja:'mj',en:'me'}[MLANG]).classList.add('on');
+ syncStructureUI();syncCapitalZoneUI();
+ PREVIEW_POINT=null;setActiveTool('select');syncSizeInput();
+}
+function changeBattleType(){const target=$('battleType').value;if(target===BATTLE_TYPE)return;
+ pushHistory();BOARD_SCENES[BATTLE_TYPE]=currentBoardSnapshot();BATTLE_TYPE=target;
+ if(!BOARD_SCENES[target]){const prev=objs,oldSel=sel;objs=DEFAULTS();sel=-1;BOARD_SCENES[target]=currentBoardSnapshot();objs=prev;sel=oldSel;}
+ restoreBoardSnapshot(BOARD_SCENES[target]);syncTypeUI();updateMapBg();draw();saveDraft();}
+
+function changeGridCols(){const v=Number($('gridCols').value);if(!Number.isFinite(v)||v<16||v>160){syncGridUI();updateSaveInfo('격자 가로칸은 16~160 사이로 입력해 주세요.');return;}const next=Math.max(16,Math.min(160,Math.round(v/4)*4));
+ if(GRID_COLS!==next){pushHistory();GRID_COLS=next;for(const o of objs)if(o.t==='shelter')snapShelter(o);}
+ syncGridUI();draw();saveDraft();}
+function changeShelterSize(){SHELTER_SIZE=validShelterSize($('shelterSize').value);syncGridUI();saveDraft();draw();}
+function syncToolButtons(){for(const [id,on] of [['shelterBrush',ACTIVE_TOOL==='shelter'],['quickShelter',ACTIVE_TOOL==='shelter'],['selectTool',ACTIVE_TOOL==='select'],['quickSelect',ACTIVE_TOOL==='select']])
+ if($(id))$(id).classList.toggle('active',on);$('wrap')?.classList.toggle('paint-on',ACTIVE_TOOL==='shelter');}
+function setActiveTool(t){ACTIVE_TOOL=t==='shelter'?'shelter':'select';PAN=false;PAN_DRAG=null;$('wrap')?.classList.remove('pan-on','panning');$('panBtn')?.classList.remove('active');PREVIEW_POINT=null;syncToolButtons();draw();}
+
+let CAPITAL_ZONE_MODE='auto',CAPITAL_ZONE_COLOR='#727f89';
+let CAPITAL_ICON_SCALE=0.40;
+let TURRET_ICON_SCALE=0.25;
+let historyStack=[];
+const SAVE_KEY='battle_layout_editor_v28_repaired_regions'; // 구버전 자동불러오기 없음, V27 작업은 보존
+function cloneState(){return JSON.stringify({v:28,objs,sel,SQ,SPLIT,MLANG,SHOW_GRID,SNAP_GRID,GRID_COLS,LOST_LAND,BATTLE_TYPE,SHELTER_SIZE,CAPITAL_ICON_SCALE,TURRET_ICON_SCALE,CAPITAL_ZONE_MODE,CAPITAL_ZONE_COLOR,BOARD_SCENES:{...BOARD_SCENES,[BATTLE_TYPE]:currentBoardSnapshot()},title:($('appTitle')?.textContent||'서버전 / 수도전 전략 배치도')});}
+function validateLayout(d){
+  const types=new Set(['al','pe','ar','text','zone','line','shelter']);
+  function scene(value){
+    if(!value||!Array.isArray(value.objs)||value.objs.length>1200)throw Error('Invalid layout');
+    for(const o of value.objs){
+      if(!o||!types.has(o.t))throw Error('Invalid object');
+      for(const key of (o.t==='ar'||o.t==='line'?['x1','y1','x2','y2']:['x','y']))if(!Number.isFinite(o[key]))throw Error('Invalid coordinate');
+      for(const key of ['rx','ry','scale','sz','footprint'])if(o[key]!==undefined&&!Number.isFinite(o[key]))throw Error('Invalid size');
+      for(const key of ['text','name','ko'])if(o[key]!==undefined&&(typeof o[key]!=='string'||o[key].length>1000))throw Error('Invalid text');
+    }
+  }
+  scene(d);
+  if(d.BOARD_SCENES)for(const key of ['capital','supreme'])if(d.BOARD_SCENES[key])scene(d.BOARD_SCENES[key]);
+}
+function loadState(st){
+  const d=JSON.parse(st);
+  validateLayout(d);
+  if(!d || !Array.isArray(d.objs) || d.objs.length>1200)throw Error('Invalid layout');
+  // Canvas viewport compatibility: V7- 1050px, V8–11 770px, V12–15 630px, V16 900px.
+  const version=Number(d.v)||0;
+  if(version<16){
+    const sourceHeight=version<8?1050:version<12?770:630;
+    const factor=H/sourceHeight;
+    const migrateScene = scene => {
+      if(!scene||typeof scene!=='object')return;
+      if(Array.isArray(scene.objs)){
+        for(const o of scene.objs){if(!o||typeof o!=='object')continue;
+          for(const key of ['y','y1','y2']){
+            if(typeof o[key]==='number'&&Number.isFinite(o[key]))o[key]*=factor;
+          }
+          // Renumber only unchanged former defaults; preserve custom labels.
+          const labels={'c0':['11시 포탑','1번 포탑'],'c1':['1시 포탑','2번 포탑'],
+                        'c2':['5시 포탑','3번 포탑'],'c3':['7시 포탑','4번 포탑']};
+          if(o.t==='text'&&labels[o.tag]&&o.text===labels[o.tag][0]){
+             o.text=labels[o.tag][1];o.ko=o.text;
+          }
+        }
+      }
+      // Preserve relative customization but normalize old oversized icon defaults.
+      scene.CAPITAL_ICON_SCALE=clampIconScale((Number(scene.CAPITAL_ICON_SCALE)||.70)*(.40/.70),.40);
+      scene.TURRET_ICON_SCALE=clampIconScale((Number(scene.TURRET_ICON_SCALE)||.64)*(.25/.64),.25);
+    };
+    migrateScene(d);
+    for(const key of ['capital','supreme'])migrateScene(d.BOARD_SCENES?.[key]);
+  }
+
+  // V18 and earlier used clockwise turret numbering (TL1, TR2, BR3, BL4).
+  // The game uses TL1, BL2, TR3, BR4. Update only recognizable default
+  // labels, keeping user-renamed captions and manually placed objects intact.
+  if(version<19){
+    const wanted={c0:'1번 포탑',c1:'3번 포탑',c2:'4번 포탑',c3:'2번 포탑'};
+    const oldNames={
+      c0:['11시 포탑','1번 포탑'],
+      c1:['1시 포탑','2번 포탑'],
+      c2:['5시 포탑','3번 포탑'],
+      c3:['7시 포탑','4번 포탑']
+    };
+    const fixNames=scene=>{
+      if(!scene||!Array.isArray(scene.objs))return;
+      const language=['ko','ja','en'].includes(scene.MLANG)?scene.MLANG:
+        (['ko','ja','en'].includes(d.MLANG)?d.MLANG:'ko');
+      for(const o of scene.objs){
+        if(!o||o.t!=='text'||!wanted[o.tag])continue;
+        const known=oldNames[o.tag];
+        const matches=v=>typeof v==='string'&&known.some(name=>[name,tr(name,'ja'),tr(name,'en'),name.replace('포탑','Turret')].includes(v));
+        if(matches(o.ko)||matches(o.text)){
+          o.ko=wanted[o.tag];o.text=tr(o.ko,language);
+        }
+      }
+    };
+    fixNames(d);
+    for(const k of ['capital','supreme'])fixNames(d.BOARD_SCENES?.[k]);
+  }
+
+  BOARD_SCENES={};
+  if(d.BOARD_SCENES && typeof d.BOARD_SCENES==='object' && !Array.isArray(d.BOARD_SCENES)){
+    for(const k of ['capital','supreme']){
+      const scene=d.BOARD_SCENES[k];
+      if(scene&&Array.isArray(scene.objs)&&scene.objs.length<=1200&&scene.objs.every(o=>o&&['al','pe','ar','text','zone','line','shelter'].includes(o.t))){repairOffscreenText(scene.objs);BOARD_SCENES[k]=scene;}
+    }
+  }
+  objs=d.objs;
+  for(const o of objs){if(!o||!['al','pe','ar','text','zone','line','shelter'].includes(o.t))throw Error('Invalid object');}
+  normalizeObjects();repairOffscreenText(objs);
+  for(const o of objs){if(o.t==='shelter')o.footprint=validShelterSize(o.footprint);}
+  sel=Number.isInteger(d.sel)&&d.sel>=0&&d.sel<objs.length?d.sel:-1;
+  SQ=Math.max(85,Math.min(310,Number(d.SQ)||165));SPLIT=['lr','tb','g','n'].includes(d.SPLIT)?d.SPLIT:'lr';MLANG=['ko','ja','en'].includes(d.MLANG)?d.MLANG:'ko';
+  SHOW_GRID=d.SHOW_GRID===undefined?true:!!d.SHOW_GRID;SNAP_GRID=d.SNAP_GRID===undefined?true:!!d.SNAP_GRID;
+  GRID_COLS=validGridCols(d.GRID_COLS)||120;LOST_LAND=d.LOST_LAND===undefined?true:!!d.LOST_LAND;BATTLE_TYPE=['capital','supreme'].includes(d.BATTLE_TYPE)?d.BATTLE_TYPE:'supreme';SHELTER_SIZE=validShelterSize(d.SHELTER_SIZE);CAPITAL_ICON_SCALE=clampIconScale(d.CAPITAL_ICON_SCALE,.40);TURRET_ICON_SCALE=clampIconScale(d.TURRET_ICON_SCALE,.25);CAPITAL_ZONE_MODE=normalizeCapitalMode(d.CAPITAL_ZONE_MODE);CAPITAL_ZONE_COLOR=/^#[0-9a-fA-F]{6}$/.test(d.CAPITAL_ZONE_COLOR||'')?d.CAPITAL_ZONE_COLOR:'#727f89';
+  syncChecks();syncToolButtons();syncGridUI();syncStructureUI();
+  $('sq').value=SQ;if($('sqValue'))$('sqValue').textContent=SQ;if($('quickSQ'))$('quickSQ').value=SQ;if($('quickLang'))$('quickLang').value=MLANG;$('split').value=SPLIT;syncSplitHint();syncTypeUI();syncGridUI();syncChecks();
+  syncCapitalZoneUI();
+  if(d.title&&$('appTitle'))$('appTitle').textContent=d.title;
+  ['mk','mj','me'].forEach(id=>$(id).classList.remove('on'));
+  $({ko:'mk',ja:'mj',en:'me'}[MLANG]||'mk').classList.add('on');
+  draw();
+}
+function updateSaveInfo(msg){const t=window.CAPITAL_PREVIEW?'미리보기 임시 보관 / 새로고침하면 초기화됩니다.':msg||'이 브라우저에 자동저장했습니다.';const el=$('saveInfo');if(el)el.textContent=t;const h=$('headStatus');if(h)h.textContent=t;}
+/* 일부 환경(인앱 브라우저, 폰에서 파일 직접 열기 등)은 브라우저 저장소가 막혀 있거나
+   열 때마다 초기화됨 → 감지해서 사용자에게 알리고 파일 저장을 안내 */
+let CAN_STORE=true;
+try{localStorage.setItem('__storetest','1');
+    CAN_STORE=localStorage.getItem('__storetest')==='1';
+    localStorage.removeItem('__storetest');}catch(e){CAN_STORE=false;}
+function saveDraft(){
+  if(!CAN_STORE){updateSaveInfo(loadDraft.failed?'저장된 배치를 읽지 못했습니다. 원본은 보존했습니다. 백업 파일을 확인해 주세요.':'이 브라우저에서 자동저장할 수 없습니다. 배치 백업으로 보관해 주세요.');return;}
+  try{localStorage.setItem(SAVE_KEY,cloneState());updateSaveInfo('자동저장 완료');}
+  catch(e){CAN_STORE=false;updateSaveInfo('⚠ 자동저장 불가 환경 — 💾 배치 저장 사용!');}
+}
+function clearDraft(){try{localStorage.removeItem(SAVE_KEY);}catch(e){}}
+function loadDraft(){
+  if(!CAN_STORE){updateSaveInfo('⚠ 자동저장 불가 환경 — 💾 배치 저장/📂 배치 열기 사용');return false;}
+  try{
+    const st=localStorage.getItem(SAVE_KEY);
+    if(st){loadState(st);updateSaveInfo('이번 버전 작업을 복구했습니다.');return true;}
+  }
+  catch(e){CAN_STORE=false;loadDraft.failed=true;updateSaveInfo('저장된 배치를 읽지 못했습니다. 원본은 보존했습니다. 백업 파일을 확인해 주세요.');}
+  return false;
+}
+/* 종료·화면전환 직전에도 강제 저장 (모바일에서 저장 누락 방지) */
+window.addEventListener('pagehide',()=>{if(CAN_STORE)try{localStorage.setItem(SAVE_KEY,cloneState());}catch(e){}});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&CAN_STORE)try{localStorage.setItem(SAVE_KEY,cloneState());}catch(e){}});
+/* ---------- 배치 파일 저장/열기 (어떤 환경에서도 확실한 백업) ---------- */
+function saveJSON(){
+  const d=new Date(),p=n=>String(n).padStart(2,'0');
+  const name=`배치저장_${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}.json`;
+  const a=document.createElement('a');
+  a.download=name;
+  a.href='data:application/json;charset=utf-8,'+encodeURIComponent(cloneState());
+  a.click();
+  updateSaveInfo('💾 배치 파일 저장됨: '+name);
+}
+function loadJSONFile(inp){
+  const f=inp.files&&inp.files[0];if(!f)return;
+  if(f.size>2*1024*1024){alert('배치 파일은 2MB 이하만 열 수 있습니다.');inp.value='';return;}
+  const r=new FileReader();
+  r.onerror=()=>alert('파일을 읽지 못했습니다. 기존 배치는 유지됩니다.');
+  r.onload=()=>{
+    try{const old=cloneState();loadState(r.result);historyStack.push(old);redoStack=[];updateUndoBtn();saveDraft();updateSaveInfo('📂 배치 파일 불러옴');}
+    catch(e){alert('배치 파일을 읽을 수 없습니다. 이 도구에서 저장한 .json 파일인지 확인해주세요.');}
+  };
+  r.readAsText(f);inp.value='';
+}
+function pushHistory(){historyStack.push(cloneState());if(historyStack.length>60)historyStack.shift();redoStack=[];updateUndoBtn();}
+function updateUndoBtn(){for(const id of ['undoBtn','quickUndo']){const b=$(id);if(b)b.disabled=historyStack.length===0;}for(const id of ['redoBtn','quickRedo']){const r=$(id);if(r)r.disabled=redoStack.length===0;}}
+function undoLast(){if(!historyStack.length)return;redoStack.push(cloneState());loadState(historyStack.pop());updateUndoBtn();saveDraft();}
+function redoLast(){if(!redoStack.length)return;historyStack.push(cloneState());loadState(redoStack.pop());updateUndoBtn();saveDraft();}
+(function(){let s=7;const r=()=>(s=(s*16807)%2147483647)/2147483647;
+ for(let i=0;i<1800;i++)noise.push({x:r()*W,y:r()*H,r:2+r()*6,a:(r()-.5)*26});})();
+const MAP_FONT="'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif";
+const FONT=sz=>`700 ${sz}px ${MAP_FONT}`;
+const corners=()=>[
+  {x:CX-SQ,y:CY-SQ},{x:CX+SQ,y:CY-SQ},{x:CX+SQ,y:CY+SQ},{x:CX-SQ,y:CY+SQ}
+];
+function Tx(text,extra){return Object.assign({t:'text',ko:text,text,sz:28,c:'#dcf5d2'},extra);}
+function DEFAULTS(){const C=corners();return [
+  Tx('수도',{tag:'cap',x:CX,y:CY+70,sz:25,c:'#ffe296'}),
+  Tx('1번 포탑',{tag:'c0',x:C[0].x,y:C[0].y+28,sz:17}),
+  Tx('3번 포탑', {tag:'c1',x:C[1].x,y:C[1].y+28,sz:17}),
+  Tx('4번 포탑', {tag:'c2',x:C[2].x,y:C[2].y+28,sz:17}),
+  Tx('2번 포탑', {tag:'c3',x:C[3].x,y:C[3].y+28,sz:17}),
+];}
+function onSize(record=true){
+  if(record)pushHistory();
+  SQ=Math.max(85,Math.min(310,Number($('sq').value)||165));if($('quickSQ'))$('quickSQ').value=SQ;const C=corners();if($('sqValue'))$('sqValue').textContent=SQ;
+  for(const o of objs){
+    if(o.tag==='c0'){o.x=C[0].x;o.y=C[0].y+28;}
+    if(o.tag==='c1'){o.x=C[1].x;o.y=C[1].y+28;}
+    if(o.tag==='c2'){o.x=C[2].x;o.y=C[2].y+28;}
+    if(o.tag==='c3'){o.x=C[3].x;o.y=C[3].y+28;}
+  }
+  draw();
+  if(record)saveDraft();
+}
+function changeCapitalScale(record=true){
+  const next=clampIconScale((Number($('capitalScale').value)||40)/100,.40);
+  if(record)pushHistory();
+  CAPITAL_ICON_SCALE=next;syncStructureUI();draw();if(record)saveDraft();
+}
+function changeTurretScale(record=true){
+  const next=clampIconScale((Number($('turretScale').value)||25)/100,.25);
+  if(record)pushHistory();
+  TURRET_ICON_SCALE=next;syncStructureUI();draw();if(record)saveDraft();
+}
+/* ㄱ/ㄴ: 고정된 수도 연동 경계를 기준으로 두 진영의 색상만 전환. */
+const SPLIT_HELP={
+  lr:'좌측 아군, 우측 상대',
+  tb:'상단 아군, 하단 상대',
+  g:'아군 ㄱ (상단 우측), 상대 ㄴ (좌측 하단), 수도 회색 독립 구역',
+  n:'아군 ㄴ (좌측 하단), 상대 ㄱ (상단 우측), 수도 회색 독립 구역'
+};
+function syncSplitHint(){
+  const el=$('splitHint');
+  if(el)el.textContent=SPLIT_HELP[SPLIT]||SPLIT_HELP.lr;
+}
+function onSplit(record=true){
+  if(record)pushHistory();
+  SPLIT=$('split').value;
+  // 기존 객체 좌표는 그대로 유지하여 사용자 편집 배치가 손상되지 않도록 함.
+  // 서버 머리글(h1, h2)은 각 구역에서 한눈에 보이는 자리로 이동.
+  const positions={
+    lr:[[250,64],[W-250,64]],
+    tb:[[250,64],[250,H-64]],
+    g:[[W-250,64],[250,H-64]],
+    n:[[250,H-64],[W-250,64]]
+  };
+  const [ally,enemy]=positions[SPLIT]||positions.lr;
+  for(const o of objs){
+    if(o.tag==='h1'){o.x=ally[0];o.y=ally[1];}
+    if(o.tag==='h2'){o.x=enemy[0];o.y=enemy[1];}
+  }
+  syncSplitHint();syncCapitalZoneUI();
+  draw();
+  if(record)saveDraft();
+}
+function txt(x,y,t,fill,sz,maxWidth){
+  ctx.font=FONT(sz);ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.lineWidth=Math.max(3,sz/9);ctx.strokeStyle='rgba(28,20,12,.9)';ctx.lineJoin='round';
+  if(maxWidth){ctx.strokeText(t,x,y,maxWidth);ctx.fillStyle=fill;ctx.fillText(t,x,y,maxWidth);}
+  else{ctx.strokeText(t,x,y);ctx.fillStyle=fill;ctx.fillText(t,x,y);}
+}
+// The ㄱ region (upper/right) and ㄴ region (left/lower) are exact complements.
+// They touch without overlapping and share the capital square's TOP and RIGHT sides.
+// Disjoint fills. An empty central hole is left for the separately-coloured
+// capital square, eliminating colour mixing at the centre or in the L-bands.
+function paintTerritoryRect(x,y,w,h,color){if(w<=0||h<=0)return;ctx.fillStyle=color;ctx.fillRect(x,y,w,h);}
+function paintTerritoryWithCapitalHole(x,y,w,h,color){
+  if(w<=0||h<=0)return;
+  ctx.save();ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();
+  ctx.beginPath();ctx.rect(x,y,w,h);ctx.rect(CX-SQ,CY-SQ,SQ*2,SQ*2);
+  ctx.fillStyle=color;ctx.fill('evenodd');ctx.restore();
+}
+function paintCapitalOwnership(){
+  const x=CX-SQ,y=CY-SQ,a=SQ*2;
+  // Final rule: the entire capital square is a DISTINCT third colour.
+  // No faction tint is painted inside this square.
+  ctx.save();
+  ctx.globalAlpha=1;
+  ctx.fillStyle=CAPITAL_ZONE_COLOR;ctx.fillRect(x,y,a,a);
+  ctx.strokeStyle='rgba(239,218,156,.9)';ctx.lineWidth=2.6;ctx.strokeRect(x,y,a,a);
+  ctx.restore();
+}
+function scenery(){
+  // 지도 전체가 잃어버린 땅: 연한 회갈색 바닥에 아주 약한 질감만 적용
+  // 수도 점령 구역(아래의 정사각형)과 별도의 잃어버린 땅 폴리곤을 혼동하지 않도록 한다.
+  const land=ctx.createLinearGradient(0,0,W,H);
+  land.addColorStop(0,'#b7aea4');land.addColorStop(.55,'#a99f95');land.addColorStop(1,'#bcb3a8');
+  ctx.fillStyle=land;ctx.fillRect(0,0,W,H);
+  for(const n of noise){ctx.fillStyle=`rgba(${102+n.a|0},${95+n.a|0},${86+n.a|0},.07)`;
+    ctx.beginPath();ctx.arc(n.x,n.y,n.r*.85,0,7);ctx.fill();}
+  // 옅은 지형선과 행군로, 특정 게임 지도의 정확한 좌표가 아닌 시각화용 지형
+  ctx.save();ctx.lineCap='round';ctx.strokeStyle='rgba(240,224,198,.10)';ctx.lineWidth=19;
+  ctx.beginPath();ctx.moveTo(0,145);ctx.bezierCurveTo(280,85,465,280,W,180);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(-20,H-180);ctx.bezierCurveTo(370,H-290,810,H-80,W,H-260);ctx.stroke();
+  ctx.strokeStyle='rgba(110,100,90,.09)';ctx.lineWidth=3;
+  for(let i=0;i<7;i++){let y=120+i*128;ctx.beginPath();ctx.moveTo(-40,y);ctx.bezierCurveTo(W*.2,y-30,W*.7,y+54,W+40,y-25);ctx.stroke();}
+  ctx.restore();
+  // Every map pixel outside the capital square gets exactly ONE faction tint.
+  // ㄱ = full-width upper bar + full-height right bar;
+  // ㄴ = full-height left bar + full-width lower bar.
+  ctx.save();
+  const xL=CX-SQ,xR=CX+SQ,yT=CY-SQ,yB=CY+SQ;
+  const ally='rgba(55,133,233,.24)',enemy='rgba(231,94,72,.23)';
+  if(SPLIT==='g'||SPLIT==='n'){
+    // Exact match to the user-drawn ㄱ/ㄴ shapes (shared geometry).
+    // Upper half: boundary at the capital's LEFT edge (xL).
+    // Below that: boundary at the capital's RIGHT edge (xR).
+    // The capital square is painted solid slate AFTER this, as a third territory.
+    // ㄱ = upper-right and entire rightmost strip; ㄴ = left and lower-left.
+    const leftColor=SPLIT==='n'?ally:enemy;
+    const rightColor=SPLIT==='g'?ally:enemy;
+    paintTerritoryRect(0,0,xL,yT,leftColor);
+    paintTerritoryRect(xL,0,W-xL,yT,rightColor);
+    paintTerritoryRect(0,yT,xR,H-yT,leftColor);
+    paintTerritoryRect(xR,yT,W-xR,H-yT,rightColor);
+  }else if(SPLIT==='lr'){
+    paintTerritoryWithCapitalHole(0,0,CX,H,ally);
+    paintTerritoryWithCapitalHole(CX,0,CX,H,enemy);
+  }else{
+    paintTerritoryWithCapitalHole(0,0,W,CY,ally);
+    paintTerritoryWithCapitalHole(0,CY,W,CY,enemy);
+  }
+  ctx.strokeStyle='rgba(255,255,255,.76)';ctx.lineWidth=2.2;
+  ctx.beginPath();
+  if(SPLIT==='g'||SPLIT==='n'){
+    // Only outside square; the square outline handles the intermediate bend.
+    ctx.moveTo(xL,0);ctx.lineTo(xL,yT);
+    ctx.moveTo(xR,yB);ctx.lineTo(xR,H);
+  }else if(SPLIT==='lr'){
+    ctx.moveTo(CX,0);ctx.lineTo(CX,yT);ctx.moveTo(CX,yB);ctx.lineTo(CX,H);
+  }else{
+    ctx.moveTo(0,CY);ctx.lineTo(xL,CY);ctx.moveTo(xR,CY);ctx.lineTo(W,CY);
+  }
+  ctx.stroke();ctx.restore();
+  // 전체 지도가 잃어버린 땅이므로 중앙에 별도 팔각형, 마름모 경계 및 명칭을 그리지 않음.
+  // 정사각 1×1 격자, 출력 이미지에도 벡터 수준의 선명도로 반영
+  if(SHOW_GRID){const d=cellSize();ctx.save();ctx.strokeStyle='rgba(249,252,246,.22)';ctx.lineWidth=1;
+    ctx.beginPath();for(let x=0;x<=W+.01;x+=d){ctx.moveTo(x,0);ctx.lineTo(x,H);}for(let y=0;y<=H+.01;y+=d){ctx.moveTo(0,y);ctx.lineTo(W,y);}ctx.stroke();
+    ctx.lineWidth=2;ctx.strokeStyle='rgba(255,255,249,.14)';ctx.beginPath();for(let x=0;x<=W+.01;x+=d*5){ctx.moveTo(x,0);ctx.lineTo(x,H);}for(let y=0;y<=H+.01;y+=d*5){ctx.moveTo(0,y);ctx.lineTo(W,y);}ctx.stroke();ctx.restore();}
+  // 수도 점령 구역은 네 면이 수평/수직인 정사각형. 포탑은 각 꼭짓점에 배치.
+  paintCapitalOwnership();
+  corners().forEach(drawTurret);drawCapital();
+}
+/* High-detail vector assets: scalable during 3x/4K PNG rendering */
+function polygon(points,fill,stroke='#59616a',line=2){
+ ctx.beginPath();ctx.moveTo(points[0][0],points[0][1]);
+ for(let i=1;i<points.length;i++)ctx.lineTo(points[i][0],points[i][1]);ctx.closePath();
+ ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=line;ctx.stroke();}
+}
+function drawCapital(){
+ ctx.save();ctx.translate(CX,CY+5);ctx.scale(CAPITAL_ICON_SCALE,CAPITAL_ICON_SCALE);
+ // Diffuse contact shadow; separate from the field boundaries.
+ ctx.fillStyle='rgba(29,32,35,.22)';ctx.beginPath();ctx.ellipse(2,87,135,30,0,0,Math.PI*2);ctx.fill();
+ // Formal raised compound, layered stone plinth with isometric geometry.
+ polygon([[-141,49],[-69,22],[103,20],[141,48],[141,70],[-141,70]],'#777c77','#373f45',3);
+ polygon([[-141,49],[-69,14],[100,14],[141,49],[75,77],[-86,77]],'#929c9d','#444b51',3);
+ polygon([[-120,42],[-61,20],[90,20],[125,42],[69,60],[-66,60]],'#c2c5bc','#87918c',2);
+ ctx.fillStyle='rgba(234,202,116,.34)';ctx.fillRect(-42,36,83,20);
+ // Symmetrical lateral buildings and copper blue roofs.
+ for(const side of [-1,1]){
+  ctx.save();ctx.translate(side*81,4);
+  polygon([[-45,0],[21,-16],[48,-4],[48,49],[-45,49]],'#dfd7c6','#69737d',2.5);
+  polygon([[-45,0],[-8,-33],[38,-29],[48,-4],[18,7]],'#2b9bb3','#1e617d',3);
+  polygon([[-45,0],[-8,-33],[38,-29],[12,-7]],'#66d3dc',null);
+  ctx.strokeStyle='rgba(255,255,255,.58)';ctx.lineWidth=2.2;ctx.beginPath();ctx.moveTo(-36,-1);ctx.lineTo(-6,-23);ctx.lineTo(32,-21);ctx.stroke();
+  ctx.fillStyle='#b7b9b3';for(const k of [-27,-6,15,34]){ctx.fillRect(k,14,9,26);ctx.strokeStyle='#6b7680';ctx.strokeRect(k,14,9,26);}
+  ctx.fillStyle='#315f8c';for(const k of [-25,-4,17,36])ctx.fillRect(k,19,5,17);
+  ctx.restore();
+ }
+ // Center white stone basilica/rotunda with radial pillar details.
+ polygon([[-56,-24],[-38,-57],[43,-57],[57,-24],[57,55],[-57,55]],'#dce3e4','#5c6c74',3);
+ ctx.fillStyle='#f7f6ec';ctx.fillRect(-44,-25,88,72);
+ for(const px of [-38,-19,0,19,38]){
+  ctx.fillStyle='#c7ced0';ctx.fillRect(px-5,-31,10,83);
+  ctx.fillStyle='#e5edf0';ctx.fillRect(px-5,-30,5,72);
+  ctx.strokeStyle='#778890';ctx.lineWidth=1.3;ctx.strokeRect(px-5,-31,10,83);
+ }
+ // Drum and glass teal-blue dome, avoid childish triangular castle roof.
+ ctx.fillStyle='#596975';ctx.strokeStyle='#475962';ctx.lineWidth=2.5;
+ ctx.beginPath();ctx.ellipse(0,-58,52,17,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+ ctx.fillStyle='#e6ddc7';ctx.fillRect(-40,-77,80,20);
+ for(const px of [-27,-10,8,25]){ctx.fillStyle='#8eacb7';ctx.fillRect(px,-75,9,12);}
+ ctx.fillStyle='#c4d6d4';ctx.strokeStyle='#507782';ctx.lineWidth=3;
+ ctx.beginPath();ctx.ellipse(0,-79,48,17,0,Math.PI,Math.PI*2);ctx.lineTo(-48,-74);ctx.quadraticCurveTo(-42,-130,-5,-140);ctx.quadraticCurveTo(26,-144,44,-98);ctx.lineTo(48,-79);ctx.closePath();ctx.fill();ctx.stroke();
+ const dome=ctx.createLinearGradient(-43,-145,55,-72);dome.addColorStop(0,'#86d3de');dome.addColorStop(.48,'#319fb9');dome.addColorStop(1,'#1b657f');
+ ctx.fillStyle=dome;ctx.strokeStyle='#2d6578';ctx.lineWidth=3;
+ ctx.beginPath();ctx.moveTo(-45,-80);ctx.bezierCurveTo(-45,-105,-19,-137,0,-138);ctx.bezierCurveTo(22,-138,45,-107,45,-80);ctx.quadraticCurveTo(0,-61,-45,-80);ctx.fill();ctx.stroke();
+ for(const off of [-24,-12,12,24]){ctx.strokeStyle='rgba(228,251,249,.36)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(off*.9,-85);ctx.quadraticCurveTo(off*.9,-116,0,-137);ctx.stroke();}
+ // Flag turret and command pennant.
+ ctx.fillStyle='#c9b99f';ctx.strokeStyle='#5e6b70';ctx.lineWidth=2;
+ ctx.beginPath();ctx.roundRect(-9,-151,18,18,5);ctx.fill();ctx.stroke();
+ ctx.strokeStyle='#52606a';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,-153);ctx.lineTo(0,-182);ctx.stroke();
+ polygon([[1,-181],[26,-176],[20,-161],[1,-167]],'#f3f2e2','#a3503f',1.2);
+ ctx.strokeStyle='#cf5553';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(7,-180);ctx.lineTo(9,-169);ctx.moveTo(14,-178);ctx.lineTo(16,-165);ctx.stroke();
+ // Ornamental bright entry and central fountain.
+ const warm=ctx.createLinearGradient(0,13,0,51);warm.addColorStop(0,'#fff5b0');warm.addColorStop(1,'#e99b24');
+ ctx.fillStyle=warm;ctx.strokeStyle='#7a6552';ctx.lineWidth=2;
+ ctx.beginPath();ctx.roundRect(-14,15,28,37,[13,13,3,3]);ctx.fill();ctx.stroke();
+ ctx.fillStyle='rgba(255,248,177,.3)';ctx.fillRect(-18,46,36,12);
+ polygon([[-26,53],[26,53],[42,61],[-42,61]],'#b8bfc1','#67727a',2);
+ for(let i=0;i<4;i++)polygon([[-27-i*4,61+i*4],[27+i*4,61+i*4],[29+i*4,65+i*4],[-29-i*4,65+i*4]],'#cbd4d2','#7a8589',1);
+ // Accent lanterns and building banners.
+ for(const side of [-1,1]){
+  const bx=side*118;
+  ctx.strokeStyle='#636d70';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(bx,-2);ctx.lineTo(bx,40);ctx.stroke();
+  polygon([[bx,-1],[bx+side*21,4],[bx,17]],'#3274ac','#eac15d',1.5);
+  ctx.fillStyle='#eec85a';ctx.beginPath();ctx.arc(bx,43,3.2,0,Math.PI*2);ctx.fill();
+ }
+ ctx.restore();
+}
+function drawTurret(t){
+ ctx.save();ctx.translate(t.x,t.y+3);ctx.scale(TURRET_ICON_SCALE,TURRET_ICON_SCALE);
+ ctx.fillStyle='rgba(22,30,28,.23)';ctx.beginPath();ctx.ellipse(5,49,71,17,0,0,Math.PI*2);ctx.fill();
+ // Layered octagonal base with blue/steel armor segments.
+ polygon([[-60,24],[-33,8],[36,8],[62,26],[62,38],[31,57],[-31,57],[-60,39]],'#484e4d','#2b3436',3);
+ polygon([[-60,20],[-33,2],[36,2],[62,21],[31,44],[-31,44]],'#83948f','#3e484b',3);
+ polygon([[-49,19],[-28,6],[31,6],[49,20],[26,34],[-25,34]],'#344d60','#1e323d',2);
+ for(const off of [-30,-11,11,30]){
+  ctx.fillStyle='#1c6085';ctx.strokeStyle='#e0ae55';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.roundRect(off-7,25,14,16,3);ctx.fill();ctx.stroke();
+ }
+ // Gimbal platform, moss green armor & rivets.
+ ctx.fillStyle='#334333';ctx.strokeStyle='#202d29';ctx.lineWidth=3;
+ ctx.beginPath();ctx.ellipse(0,13,38,20,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+ const green=ctx.createLinearGradient(-35,-55,35,25);
+ green.addColorStop(0,'#c1cd6f');green.addColorStop(.35,'#688e3d');green.addColorStop(.75,'#345a32');green.addColorStop(1,'#263a2c');
+ ctx.fillStyle=green;ctx.strokeStyle='#24362d';ctx.lineWidth=3;
+ polygon([[-31,-8],[-21,-31],[13,-40],[36,-16],[25,12],[-22,14]],green,'#29382a',3);
+ ctx.fillStyle='#b2b961';ctx.strokeStyle='#405234';ctx.lineWidth=1.5;
+ polygon([[-29,-12],[-19,-28],[-3,-34],[-11,2],[-25,4]],'#a2ad5c','#496840',1);
+ for(const px of [-24,-9,13,27]){ctx.fillStyle='#e1c16c';ctx.beginPath();ctx.arc(px,5,2.3,0,Math.PI*2);ctx.fill();}
+ // Turret breach with twin mounting joints.
+ ctx.fillStyle='#3f5037';ctx.strokeStyle='#242e27';ctx.lineWidth=3;
+ ctx.beginPath();ctx.ellipse(-6,-23,23,22,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+ ctx.fillStyle='#c2c579';ctx.beginPath();ctx.arc(-6,-23,9,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle='#293e37';ctx.beginPath();ctx.arc(-6,-23,4,0,Math.PI*2);ctx.fill();
+ // Heavy barrel angled toward upper-right, metallic olive with bright muzzle.
+ ctx.save();ctx.translate(5,-31);ctx.rotate(-.35);
+ const pipe=ctx.createLinearGradient(0,-14,0,14);pipe.addColorStop(0,'#b7c478');pipe.addColorStop(.35,'#6e8d54');pipe.addColorStop(.85,'#26392f');pipe.addColorStop(1,'#1c2d27');
+ ctx.fillStyle=pipe;ctx.strokeStyle='#29372e';ctx.lineWidth=3;
+ ctx.beginPath();ctx.roundRect(-8,-13,82,26,7);ctx.fill();ctx.stroke();
+ ctx.fillStyle='#d1be67';ctx.fillRect(32,-14,7,28);ctx.fillRect(58,-14,6,28);
+ ctx.fillStyle='#2b3434';ctx.strokeStyle='#b4c0ae';ctx.lineWidth=3;
+ ctx.beginPath();ctx.ellipse(77,0,13,14,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+ ctx.fillStyle='#121b1b';ctx.beginPath();ctx.ellipse(79,0,6.5,8,0,0,Math.PI*2);ctx.fill();
+ ctx.restore();
+ // brass armored hatch and bolt detail
+ ctx.fillStyle='#acaa66';ctx.strokeStyle='#35442f';ctx.lineWidth=2;
+ ctx.beginPath();ctx.roundRect(-20,-42,15,8,3);ctx.fill();ctx.stroke();
+ ctx.fillStyle='#e2cb79';ctx.beginPath();ctx.arc(-12,-39,2,0,Math.PI*2);ctx.fill();
+ ctx.restore();
+}
+function handles(o){
+  const s=objScale(o);
+  return [
+    {m:'e', x:o.x+o.rx*s, y:o.y},
+    {m:'s', x:o.x,        y:o.y+o.ry*s},
+    {m:'se',x:o.x+o.rx*s*0.7071, y:o.y+o.ry*s*0.7071},
+  ];
+}
+function hexA(h,a){const n=parseInt(h.slice(1),16);
+  return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`;}
+function objScale(o){return Math.max(.4,Math.min(3,Number(o.scale)||1));}
+function objectSizeValue(o){return o?.t==='text' ? Math.round(Number(o.sz)||32) : o?.t==='shelter'?validShelterSize(o.footprint)*100 : Math.round(objScale(o)*100);}
+function textVisibleWidth(o){
+  ctx.save();ctx.font=FONT(Math.max(12,Math.min(120,Number(o.sz)||32)));
+  const width=Math.min(W-64,ctx.measureText(String(o.text||o.ko||'')).width);
+  ctx.restore();return Math.max(20,width);
+}
+function keepTextInsideMap(o,restore=false){
+  if(!o||o.t!=='text')return;
+  const font=Math.max(12,Math.min(120,Number(o.sz)||32));
+  const half=textVisibleWidth(o)/2+12;
+  const mx=Math.min(W/2-8,Math.max(24,half));
+  const my=Math.max(26,font*.92+8);
+  // Restoring an old hidden item brings it to a comfortably visible position.
+  if(restore&&(o.y<0||o.y>H))o.y=o.y<0?Math.max(my,H*.16):Math.min(H-my,H*.84);
+  o.x=Math.min(W-mx,Math.max(mx,Number.isFinite(Number(o.x))?Number(o.x):W/2));
+  o.y=Math.min(H-my,Math.max(my,Number.isFinite(Number(o.y))?Number(o.y):H*.16));
+}
+function repairOffscreenText(arr){
+  if(!Array.isArray(arr))return;
+  for(const o of arr){if(o?.t==='text'&&!o.hidden){
+    const half=textVisibleWidth(o)/2+12;
+    const fs=Math.max(12,Math.min(120,Number(o.sz)||32));
+    const edgeX=Math.min(W/2-8,Math.max(24,half)),edgeY=Math.max(26,fs*.92+8);
+    if(!Number.isFinite(Number(o.x))||!Number.isFinite(Number(o.y)) ||
+       Number(o.x)<edgeX||Number(o.x)>W-edgeX||Number(o.y)<edgeY||Number(o.y)>H-edgeY){keepTextInsideMap(o,true);}
+  }}
+}
+function normalizeObjects(){
+  for(const o of objs){
+    if((o.t==='al'||o.t==='pe'||o.t==='ar'||o.t==='zone'||o.t==='line')&&!Number.isFinite(Number(o.scale)))o.scale=1;
+  }
+}
+function wrapName(t,maxW,sz){
+  ctx.font=FONT(sz);
+  if(ctx.measureText(t).width<=maxW)return[t];
+  const lines=[];let cur='';
+  for(const ch of String(t)){
+    if(cur&&ctx.measureText(cur+ch).width>maxW){lines.push(cur);cur=ch===' '?'':ch;}
+    else cur+=ch;
+  }
+  if(cur)lines.push(cur);
+  return lines.slice(0,3);
+}
+/* Shelter labels may extend outside their grid footprint; keep the full name. */
+const capitalShelterLabelBounds=new WeakMap();
+function drawShelterName(o,on=false,ghost=false){
+ const name=String(o.name||'').trim();if(!name||o.hidden)return;
+ const n=validShelterSize(o.footprint),wh=n*cellSize();
+ // Keep names readable when the map is reduced on a phone. PNG uses map units.
+ const screenScale=ctx===cv.getContext('2d')?cv.getBoundingClientRect().width/W:1;
+ const unit=1/Math.max(.25,screenScale),fs=(on?14:13)*unit;
+ const padding=6*unit,lineHeight=fs*1.25,maxTextWidth=Math.min(W-padding*4,200*unit);
+ ctx.save();if(ghost)ctx.globalAlpha=.62;
+ ctx.font=FONT(fs);ctx.textAlign='center';ctx.textBaseline='middle';
+ const lines=[];let line='';
+ for(const ch of name){
+  if(ch==='\n'){lines.push(line);line='';continue;}
+  if(line&&ctx.measureText(line+ch).width>maxTextWidth){lines.push(line);line=ch;}
+  else line+=ch;
+ }
+ if(line)lines.push(line);
+ const width=Math.max(...lines.map(s=>ctx.measureText(s).width))+padding*2;
+ const height=lines.length*lineHeight+padding;
+ const x=Math.max(2,Math.min(W-width-2,o.x-width/2));
+ const ring=Math.min(wh*.22,n===1?18:24);
+ const y=Math.max(2,Math.min(H-height-2,o.y-wh*.1+ring+4*unit));
+ if(!ghost&&ctx===cv.getContext('2d'))capitalShelterLabelBounds.set(o,{x,y,width,height});
+ ctx.fillStyle=on?'rgba(17,25,37,.97)':'rgba(25,27,29,.93)';
+ ctx.strokeStyle=on?'#ffcf54':'rgba(255,255,255,.30)';ctx.lineWidth=unit;
+ ctx.beginPath();ctx.roundRect(x,y,width,height,4*unit);ctx.fill();ctx.stroke();
+ ctx.fillStyle=on?'#fff4cf':'#fff';
+ lines.forEach((text,i)=>ctx.fillText(text,x+width/2,y+padding/2+lineHeight*(i+.5)));
+ ctx.restore();
+}
+function drawShelterNames(){
+ objs.forEach((o,i)=>{if(o.t==='shelter'&&i!==sel)drawShelterName(o);});
+ if(objs[sel]?.t==='shelter')drawShelterName(objs[sel],true);
+}
+function pickShelterName(x,y){
+ const contains=i=>{
+  const o=objs[i],r=o&&!o.hidden?capitalShelterLabelBounds.get(o):null;
+  return r&&x>=r.x&&x<=r.x+r.width&&y>=r.y&&y<=r.y+r.height;
+ };
+ if(contains(sel))return {i:sel,mode:'move'};
+ for(let i=objs.length-1;i>=0;i--)if(contains(i))return {i,mode:'move'};
+ return null;
+}
+
+function drawShelter(o,on=false,ghost=false){
+  const n=validShelterSize(o.footprint),a=cellSize(),wh=n*a,x=o.x-wh/2,y=o.y-wh/2;
+  const color=/^#[0-9a-fA-F]{6}$/.test(o.c||'')?o.c:'#3f7f83';
+  const squareFill=hexA(color,n===1?.22:.15);
+  const squareStroke=hexA(color,.55);
+  const ringColor=n===1?'#d7b45a':'#d7b45a';
+  const iconFill=color;
+  const label=String(o.name||'').trim();
+  ctx.save();
+  if(ghost){ctx.globalAlpha=.62;ctx.setLineDash([7,5]);}
+  ctx.fillStyle='rgba(0,0,0,.08)';ctx.fillRect(x+2,y+3,wh,wh);
+  ctx.fillStyle=squareFill;ctx.fillRect(x,y,wh,wh);
+  ctx.strokeStyle=squareStroke;ctx.lineWidth=1.5;ctx.strokeRect(x+.75,y+.75,wh-1.5,wh-1.5);
+  if(n>1){
+    ctx.strokeStyle='rgba(0,0,0,.07)';ctx.lineWidth=1;
+    for(let i=1;i<n;i++){ctx.beginPath();ctx.moveTo(x+i*a,y);ctx.lineTo(x+i*a,y+wh);ctx.stroke();ctx.beginPath();ctx.moveTo(x,y+i*a);ctx.lineTo(x+wh,y+i*a);ctx.stroke();}
+  }
+  const cx=o.x, cy=o.y-wh*.1;
+  const ring=Math.min(wh*.22, n===1?18:24);
+  ctx.fillStyle='rgba(0,0,0,.10)';ctx.beginPath();ctx.ellipse(cx,cy+ring*1.18,ring*.98,ring*.44,0,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle=iconFill;ctx.strokeStyle=ringColor;ctx.lineWidth=Math.max(2,ring*.16);
+  ctx.beginPath();ctx.arc(cx,cy,ring,0,Math.PI*2);ctx.fill();ctx.stroke();
+  ctx.strokeStyle='#fff';ctx.lineWidth=Math.max(2,ring*.16);ctx.lineCap='round';ctx.lineJoin='round';
+  ctx.beginPath();ctx.arc(cx,cy-ring*.28,ring*.22,0,Math.PI*2);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(cx,cy-ring*.02);ctx.lineTo(cx,cy+ring*.48);ctx.moveTo(cx-ring*.42,cy+ring*.22);ctx.lineTo(cx+ring*.42,cy+ring*.22);ctx.stroke();
+  if(ghost)drawShelterName(o,false,true);
+  if(on&&!ghost){ctx.strokeStyle='#ffcf54';ctx.lineWidth=2.5;ctx.setLineDash([8,4]);ctx.strokeRect(x-4,y-4,wh+8,wh+8);ctx.setLineDash([]);}
+  ctx.restore();
+}
+function drawObj(o,i){
+  if(o.hidden)return;
+  const on=i===sel;
+  if(o.t==='al'){
+    const s=objScale(o), rx=o.rx*s, ry=o.ry*s;
+    if(on){ctx.setLineDash([8,6]);ctx.strokeStyle='rgba(255,240,150,.98)';ctx.lineWidth=6;
+      ctx.beginPath();ctx.ellipse(o.x,o.y,rx+10,ry+10,0,0,7);ctx.stroke();ctx.setLineDash([]);}
+    ctx.fillStyle=hexA(o.c,.38);
+    ctx.beginPath();ctx.ellipse(o.x,o.y,rx,ry,0,0,7);ctx.fill();
+    ctx.strokeStyle='#fff';ctx.lineWidth=4;ctx.stroke();
+    ctx.strokeStyle=hexA(o.c,.9);ctx.lineWidth=2;
+    ctx.beginPath();ctx.ellipse(o.x,o.y,Math.max(4,rx-5),Math.max(4,ry-5),0,0,7);ctx.stroke();
+    const nsz=Math.max(16,Math.min(42,ry*.42));
+    const fsz=o.main?nsz+4:nsz;
+    const lines=wrapName(o.name,rx*1.72,fsz);
+    const lh=fsz*1.06, total=(lines.length-1)*lh;
+    const baseY=o.y-(o.main?10:0)-total/2;
+    lines.forEach((ln,k)=>txt(o.x,baseY+k*lh,ln,'#fff',fsz));
+    if(o.main)txt(o.x,baseY+total+nsz+8,tr('메인',MLANG),'#ffe68c',nsz*.62);
+    if(on){ctx.fillStyle='#fff';ctx.strokeStyle='#333';ctx.lineWidth=2;
+      for(const h of handles(o)){ctx.beginPath();ctx.rect(h.x-11,h.y-11,22,22);ctx.fill();ctx.stroke();}}
+  }else if(o.t==='pe'){
+    const s=objScale(o);
+    if(on){ctx.fillStyle='rgba(255,255,180,.4)';ctx.beginPath();ctx.arc(o.x,o.y,44*s,0,7);ctx.fill();}
+    ctx.fillStyle=o.c;ctx.strokeStyle='#fff';ctx.lineWidth=Math.max(2,3*s);
+    ctx.beginPath();ctx.arc(o.x,o.y-16*s,11*s,0,7);ctx.fill();ctx.stroke();
+    ctx.beginPath();ctx.moveTo(o.x-14*s,o.y+20*s);
+    ctx.quadraticCurveTo(o.x-14*s,o.y-4*s,o.x,o.y-4*s);
+    ctx.quadraticCurveTo(o.x+14*s,o.y-4*s,o.x+14*s,o.y+20*s);ctx.closePath();ctx.fill();ctx.stroke();
+    txt(o.x,o.y+40*s,o.name,'#fff',Math.max(12,(o.nsz||20)*s));
+  }else if(o.t==='shelter'){
+    drawShelter(o,on);
+  }else if(o.t==='zone'){
+    const s=objScale(o),rw=o.rx*s,rh=o.ry*s;
+    ctx.save();ctx.fillStyle=hexA(o.c,.19);ctx.strokeStyle=on?'#fff':o.c;ctx.lineWidth=on?7:4;ctx.setLineDash(on?[13,8]:[11,7]);
+    ctx.beginPath();ctx.roundRect(o.x-rw,o.y-rh,2*rw,2*rh,Math.min(22,Math.min(rw,rh)/4));ctx.fill();ctx.stroke();ctx.setLineDash([]);
+    if(o.name)txt(o.x,o.y,o.name,'#ffffff',Math.max(19,Math.min(40,23*s)));
+    ctx.restore();
+    if(on){ctx.fillStyle='#fff';ctx.strokeStyle='#333';ctx.lineWidth=2;ctx.fillRect(o.x+rw-10,o.y+rh-10,20,20);ctx.strokeRect(o.x+rw-10,o.y+rh-10,20,20);}
+  }else if(o.t==='line'){
+    const sc=objScale(o);ctx.save();ctx.strokeStyle=o.c;ctx.lineWidth=(on?8:5)*sc;ctx.lineCap='round';ctx.setLineDash([12*sc,8*sc]);
+    ctx.beginPath();ctx.moveTo(o.x1,o.y1);ctx.lineTo(o.x2,o.y2);ctx.stroke();ctx.restore();
+    if(on){ctx.fillStyle='#fff';ctx.strokeStyle='#333';ctx.lineWidth=2;for(const [hx,hy] of [[o.x1,o.y1],[o.x2,o.y2]]){ctx.beginPath();ctx.arc(hx,hy,12,0,7);ctx.fill();ctx.stroke();}}
+  }else if(o.t==='ar'){
+    const s=objScale(o), hw=(on?11:9)*s;
+    ctx.strokeStyle=o.c;ctx.fillStyle=o.c;ctx.lineWidth=hw;ctx.lineCap='round';
+    const ang=Math.atan2(o.y2-o.y1,o.x2-o.x1),hl=26*s;
+    ctx.beginPath();ctx.moveTo(o.x1,o.y1);
+    ctx.lineTo(o.x2-hl*.6*Math.cos(ang),o.y2-hl*.6*Math.sin(ang));ctx.stroke();
+    ctx.beginPath();ctx.moveTo(o.x2,o.y2);
+    ctx.lineTo(o.x2-hl*Math.cos(ang-.45),o.y2-hl*Math.sin(ang-.45));
+    ctx.lineTo(o.x2-hl*Math.cos(ang+.45),o.y2-hl*Math.sin(ang+.45));ctx.closePath();ctx.fill();
+    if(on){ctx.fillStyle='#fff';ctx.strokeStyle='#333';ctx.lineWidth=2;
+      for(const[hx,hy]of[[o.x1,o.y1],[o.x2,o.y2]]){ctx.beginPath();ctx.arc(hx,hy,12,0,7);ctx.fill();ctx.stroke();}}
+  }else if(o.t==='text'){
+    ctx.font=FONT(o.sz);
+    const w=textVisibleWidth(o);
+    if(o.bg){ctx.fillStyle=o.bg;ctx.strokeStyle='#fff';ctx.lineWidth=3;
+      ctx.beginPath();ctx.roundRect(o.x-w/2-20,o.y-o.sz*.78,w+40,o.sz*1.56,14);ctx.fill();ctx.stroke();}
+    if(on){ctx.strokeStyle='rgba(255,255,120,.98)';ctx.lineWidth=4;ctx.setLineDash([8,5]);
+      ctx.strokeRect(o.x-w/2-8,o.y-o.sz*.7,w+16,o.sz*1.4);ctx.setLineDash([]);}
+    txt(o.x,o.y,o.text,o.c,o.sz,W-64);
+  }
+}
+function isMapLabel(o,group){return o&&o.t==='text'&&(group==='cap'?o.tag==='cap':/^c[0-3]$/.test(o.tag||''));}
+function toggleMapLabel(group){
+ const matched=objs.filter(o=>isMapLabel(o,group));
+ if(!matched.length){updateSaveInfo('해당 이름이 삭제되어 있습니다. 실행 취소 또는 지도 초기화로 복구할 수 있습니다.');return;}
+ pushHistory();const hide=matched.some(o=>!o.hidden);
+ matched.forEach(o=>{o.hidden=hide;});
+ if(sel>=0&&objs[sel]?.hidden)sel=-1;
+ draw();saveDraft();
+}
+function updateMapLabelUI(){
+ for(const [group,id,name] of [['cap','toggleCapitalLabel','수도'],['turrets','toggleTurretLabels','포탑']]){
+  const b=$(id);if(!b)continue;const a=objs.filter(o=>isMapLabel(o,group));const on=a.some(o=>!o.hidden);
+  b.disabled=a.length===0;b.classList.toggle('label-on',on);b.classList.toggle('label-off',!on);
+  b.textContent=a.length===0?`${name} 이름 삭제됨`:`${name} 이름 ${on?'표시':'숨김'}`;
+  b.setAttribute('aria-pressed',String(on));
+ }
+}
+/* A selected shelter's full name belongs to the viewport, not its tiny grid cell. */
+let capitalSelectedNameNode;
+function updateCapitalSelectedName(){
+ if(!capitalSelectedNameNode){
+  capitalSelectedNameNode=document.createElement('div');
+  capitalSelectedNameNode.id='capitalSelectedName';capitalSelectedNameNode.className='capital-selected-name';
+  capitalSelectedNameNode.setAttribute('role','status');document.body.append(capitalSelectedNameNode);
+ }
+ const label=capitalSelectedNameNode,o=sel>=0?objs[sel]:null,wrap=$('wrap');
+ label.hidden=true;
+ if(!o||o.t!=='shelter'||!String(o.name||'').trim())return;
+ const r=wrap.getBoundingClientRect(),c=cv.getBoundingClientRect();
+ const left=Math.max(8,r.left+wrap.clientLeft+6),right=Math.min(innerWidth-8,r.left+wrap.clientLeft+wrap.clientWidth-6);
+ const top=Math.max(8,r.top+wrap.clientTop+6),bottom=Math.min(innerHeight-8,r.top+wrap.clientTop+wrap.clientHeight-6);
+ const x=c.left+o.x/W*c.width,y=c.top+o.y/H*c.height,half=validShelterSize(o.footprint)*cellSize()/H*c.height/2;
+ if(right-left<60||bottom-top<50||x+half<left||x-half>right||y+half<top||y-half>bottom)return;
+ label.textContent=o.name;label.style.maxWidth=Math.min(320,right-left)+'px';
+ label.style.maxHeight=Math.max(40,(bottom-top)*.5)+'px';label.hidden=false;
+ const box=label.getBoundingClientRect();
+ label.style.left=Math.max(left,Math.min(right-box.width,x-box.width/2))+'px';
+ const preferred=y-half-box.height-8;
+ label.style.top=Math.max(top,Math.min(bottom-box.height,preferred>=top?preferred:y+half+8))+'px';
+}
+window.addEventListener('scroll',updateCapitalSelectedName,{passive:true});
+$('wrap').addEventListener('scroll',updateCapitalSelectedName,{passive:true});
+
+function selectedName(){if(sel<0||!objs[sel])return '선택 항목 없음';const o=objs[sel];if(o.t==='shelter')return '선택: 유저 슬롯 - '+(o.name||'빈 슬롯')+` (${validShelterSize(o.footprint)} × ${validShelterSize(o.footprint)}칸)`;if(o.t==='al')return '선택: 연맹 - '+o.name;if(o.t==='pe')return '선택: 유저 - '+o.name;if(o.t==='ar')return '선택: 화살표';if(o.t==='zone')return '선택: 구역 - '+(o.name||'구역');if(o.t==='line')return '선택: 구분선';if(o.t==='text')return '선택: 텍스트 - '+o.text;return '선택 항목';}
+function updateSelInfo(){updateCapitalSelectedName();const el=$('selInfo');if(el)el.textContent=selectedName();
+  if($('mapCount'))$('mapCount').textContent=`${BATTLE_TYPE==='supreme'?'최고의 전장':'수도전'} / 배치 ${objs.length}개 / 슬롯 ${objs.filter(o=>o.t==='shelter').length}개`;
+  const o=sel>=0?objs[sel]:null, editable=o&&['al','pe','text','zone','shelter'].includes(o.t);
+  const v=o?(o.text??o.name??''):'';
+  if($('editName')){if(document.activeElement!==$('editName'))$('editName').value=v;$('editName').disabled=!editable;}
+  if($('editColor')){if(o&&/^#[0-9a-fA-F]{6}$/.test(o.c||''))$('editColor').value=o.c;$('editColor').disabled=!o;}
+  if($('editColorPresets'))$('editColorPresets').disabled=!o;
+  const dock=$('quickInspector');if(dock){dock.hidden=false;dock.classList.toggle('empty-selection',!o);}const deleteButton=$('quickDelete');if(deleteButton)deleteButton.disabled=!o;
+  if($('quickEditPaletteRow'))$('quickEditPaletteRow').hidden=!o;
+  updateMapLabelUI();syncPaletteState();
+  if(o){
+    if($('quickSelectedLabel'))$('quickSelectedLabel').textContent=selectedName().replace(/^선택: /,'');
+    const qname=$('quickEditName'),qcolor=$('quickEditColor');
+    if(qname){qname.disabled=!editable;if(document.activeElement!==qname)qname.value=v;}
+    if(qcolor){qcolor.disabled=!/^#[0-9a-fA-F]{6}$/.test(o.c||'');if(!qcolor.disabled&&document.activeElement!==qcolor)qcolor.value=o.c;}
+  }else{
+    if($('quickSelectedLabel'))$('quickSelectedLabel').textContent='선택한 항목 없음';
+    if($('quickEditName')){$('quickEditName').value='';$('quickEditName').disabled=true;}
+    if($('quickEditColor'))$('quickEditColor').disabled=true;
+  }
+}
+function draw(){scenery();objs.forEach(drawObj);drawShelterNames();if(PREVIEW_POINT&&ACTIVE_TOOL==='shelter'&&!PAN){const n=SHELTER_SIZE,d=cellSize(),g={t:'shelter',x:PREVIEW_POINT.x,y:PREVIEW_POINT.y,footprint:n,c:col(),name:val()||'새 슬롯'};snapShelter(g);drawShelter(g,false,true);}updateSelInfo();}
+/* ---------- interaction ---------- */
+function hitText(o,x,y){
+  const w=textVisibleWidth(o);
+  return Math.abs(x-o.x)<w/2+22&&Math.abs(y-o.y)<o.sz*.8+10;}
+function distSeg(px,py,x1,y1,x2,y2){const l2=(x2-x1)**2+(y2-y1)**2;
+  if(!l2)return Math.hypot(px-x1,py-y1);
+  let t=((px-x1)*(x2-x1)+(py-y1)*(y2-y1))/l2;t=Math.max(0,Math.min(1,t));
+  return Math.hypot(px-(x1+t*(x2-x1)),py-(y1+t*(y2-y1)));}
+function pick(x,y){
+  const nameHit=pickShelterName(x,y);if(nameHit)return nameHit;
+  if(sel>=0&&objs[sel]&&objs[sel].t==='al'){
+    for(const h of handles(objs[sel]))
+      if(Math.abs(x-h.x)<20&&Math.abs(y-h.y)<20)return{i:sel,mode:h.m};
+  }
+  for(let i=objs.length-1;i>=0;i--){const o=objs[i];if(o.hidden)continue;
+    if(o.t==='al'){
+      const s=objScale(o);
+      if(((x-o.x)/(o.rx*s))**2+((y-o.y)/(o.ry*s))**2<=1.08)return{i,mode:'move'};}
+    else if(o.t==='pe'){const s=objScale(o);if((x-o.x)**2+(y-o.y)**2<(44*s)**2)return{i,mode:'move'};}
+    else if(o.t==='shelter'){const size=validShelterSize(o.footprint)*cellSize();if(Math.abs(x-o.x)<=size/2&&Math.abs(y-o.y)<=size/2)return{i,mode:'move'};}
+    else if(o.t==='zone'){const sc=objScale(o);if(Math.abs(x-o.x-o.rx*sc)<25&&Math.abs(y-o.y-o.ry*sc)<25)return{i,mode:'se'};if(Math.abs(x-o.x)<=o.rx*sc&&Math.abs(y-o.y)<=o.ry*sc)return{i,mode:'move'};}
+    else if(o.t==='line'||o.t==='ar'){
+      const s=objScale(o);
+      if(Math.hypot(x-o.x1,y-o.y1)<22*s)return{i,mode:'p1'};
+      if(Math.hypot(x-o.x2,y-o.y2)<22*s)return{i,mode:'p2'};
+      if(distSeg(x,y,o.x1,o.y1,o.x2,o.y2)<16*s)return{i,mode:'move'};}
+    else if(o.t==='text'){if(hitText(o,x,y))return{i,mode:'move'};}}
+  return null;
+}
+function pos(e){const r=cv.getBoundingClientRect();
+  return{x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height};}
+function syncSizeInput(){
+  if(sel>=0&&objs[sel])$('fsz').value=objectSizeValue(objs[sel]);
+}
+let SPACE_PAN=false;
+window.addEventListener('keydown',e=>{if(e.code==='Space'&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName)&&!document.activeElement?.isContentEditable){SPACE_PAN=true;e.preventDefault();}});
+window.addEventListener('keyup',e=>{if(e.code==='Space')SPACE_PAN=false;});
+window.addEventListener('blur',()=>{SPACE_PAN=false;});
+let lastTap={t:0,x:0,y:0};
+cv.addEventListener('pointerdown',e=>{
+  e.preventDefault();
+  const{x,y}=pos(e),h=pick(x,y);
+  const wrap=$('wrap');const scrollable=wrap.scrollWidth>wrap.clientWidth+2||wrap.scrollHeight>wrap.clientHeight+2;
+  const autoPan=scrollable && (PAN||SPACE_PAN||e.button===1||(ACTIVE_TOOL==='select'&&!h));
+  if(autoPan){
+    if(!h)sel=-1;
+    drag=null;PAN_DRAG={x:e.clientX,y:e.clientY,left:$('wrap').scrollLeft,top:$('wrap').scrollTop};
+    cv.setPointerCapture(e.pointerId);$('wrap').classList.add('panning');
+    syncSizeInput();draw();return;
+  }
+  if(ACTIVE_TOOL==='shelter'&&!h){placeShelter(x,y);lastTap={t:0,x:0,y:0};return;}
+  sel=h?h.i:-1;drag=h?{...h,ox:x,oy:y,moved:false,before:cloneState()}:null;
+  if(h)cv.setPointerCapture(e.pointerId);
+  syncSizeInput();draw();
+  // double-tap detection (works on touch where dblclick doesn't)
+  const now=Date.now();
+  if(h&&ACTIVE_TOOL==='select'&&now-lastTap.t<400&&Math.hypot(x-lastTap.x,y-lastTap.y)<30){
+    lastTap={t:0,x:0,y:0};drag=null;editSel();return;
+  }
+  lastTap={t:now,x,y};
+});
+cv.addEventListener('pointermove',e=>{
+  if(PAN_DRAG){$('wrap').scrollLeft=PAN_DRAG.left+(PAN_DRAG.x-e.clientX);$('wrap').scrollTop=PAN_DRAG.top+(PAN_DRAG.y-e.clientY);return;}
+  if(!drag){if(ACTIVE_TOOL==='shelter'){PREVIEW_POINT=pos(e);draw();}return;}const{x,y}=pos(e),o=objs[drag.i];
+  const dx=x-drag.ox,dy=y-drag.oy;drag.ox=x;drag.oy=y;
+  if(Math.abs(dx)+Math.abs(dy)>0)drag.moved=true;
+  if(o.t==='ar'||o.t==='line'){
+    if(drag.mode==='p1'){o.x1=x;o.y1=y;}
+    else if(drag.mode==='p2'){o.x2=x;o.y2=y;}
+    else{o.x1+=dx;o.y1+=dy;o.x2+=dx;o.y2+=dy;}
+  }else if((o.t==='al'||o.t==='zone')&&drag.mode!=='move'){
+    const s=objScale(o);
+    if(o.t==='zone'){o.rx=Math.max(30,Math.abs(x-o.x)/s);o.ry=Math.max(30,Math.abs(y-o.y)/s);}
+    else {if(drag.mode==='e'||drag.mode==='se')o.rx=Math.max(34,Math.abs(x-o.x)/(s*(drag.mode==='se'?0.7071:1)));if(drag.mode==='s'||drag.mode==='se')o.ry=Math.max(26,Math.abs(y-o.y)/(s*(drag.mode==='se'?0.7071:1)));}
+  }else{
+    o.x=Math.max(20,Math.min(W-20,o.x+dx));o.y=Math.max(20,Math.min(H-20,o.y+dy));
+    if(o.tag&&o.tag[0]==='c')delete o.tag;
+  }
+  draw();
+});
+cv.addEventListener('pointerup',()=>{PAN_DRAG=null;$('wrap').classList.remove('panning');if(drag&&drag.moved&&SNAP_GRID&&drag.mode==='move'&&objs[drag.i]){const o=objs[drag.i];if(o.t==='shelter')snapShelter(o);else if(['al','pe','text','zone'].includes(o.t)){o.x=Math.max(20,Math.min(W-20,snapPos(o.x)));o.y=Math.max(20,Math.min(H-20,snapPos(o.y)));if(o.t==='text')keepTextInsideMap(o);}}if(drag&&drag.moved&&objs[drag.i]?.t==='text')keepTextInsideMap(objs[drag.i]);if(drag&&drag.moved&&drag.before&&drag.before!==cloneState()){historyStack.push(drag.before);if(historyStack.length>60)historyStack.shift();redoStack=[];updateUndoBtn();saveDraft();}drag=null;});
+cv.addEventListener('pointercancel',()=>{if(drag?.before)loadState(drag.before);PAN_DRAG=null;drag=null;PREVIEW_POINT=null;$('wrap').classList.remove('panning');draw();});
+cv.addEventListener('pointerleave',()=>{if(!drag&&PREVIEW_POINT){PREVIEW_POINT=null;draw();}});
+cv.addEventListener('dblclick',e=>{e.preventDefault();}); // handled via pointerdown double-tap
+window.addEventListener('keydown',e=>{
+ const tag=document.activeElement?.tagName||'';
+ const isEditing=['INPUT','TEXTAREA','SELECT'].includes(tag)||document.activeElement?.isContentEditable;
+ if(e.key==='Escape'&&!isEditing){sel=-1;setActiveTool('select');draw();}
+ if((e.key==='Delete'||e.key==='Backspace')&&sel>=0&&!isEditing){delSel();e.preventDefault();}
+ if(!isEditing&&(e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){
+   e.preventDefault();if(e.shiftKey)redoLast();else undoLast();
+ }
+});
+/* ---------- toolbar actions ---------- */
+const val=()=>$('nm').value.trim();
+const col=()=>$('customColor').value;
+const clr=()=>{$('nm').value='';if($('quickName'))$('quickName').value='';};
+$('col').addEventListener('change',()=>{$('customColor').value=$('col').value;if($('quickGridCols'))$('quickGridCols').value=GRID_COLS;if($('quickColor'))$('quickColor').value=$('col').value;});
+$('nm').addEventListener('input',()=>{if($('quickName'))$('quickName').value=$('nm').value;});
+$('customColor').addEventListener('input',()=>{if($('quickColor'))$('quickColor').value=$('customColor').value;syncPaletteState();});
+function placeShelter(x,y){
+  const n=SHELTER_SIZE;const index=objs.filter(o=>o.t==='shelter').length+1;
+  const o={t:'shelter',name:val()||`슬롯 ${index}`,x,y,footprint:n,c:col(),scale:1};snapShelter(o);
+  // 겹침 경고: 이미 있는 쉘터와 완전히 동일한 셀에는 추가하지 않음
+  if(objs.some(v=>v.t==='shelter'&&Math.abs(v.x-o.x)<(validShelterSize(v.footprint)+n)*cellSize()/2-.1&&Math.abs(v.y-o.y)<(validShelterSize(v.footprint)+n)*cellSize()/2-.1)){
+    if($('toolHint'))$('toolHint').textContent='다른 쉘터와 겹칩니다. 빈 3×3 공간을 눌러주세요.';
+    updateSaveInfo('쉘터 겹침 방지: 다른 빈 공간에 배치하세요.');return;
+  }
+  pushHistory();objs.push(o);sel=objs.length-1;PREVIEW_POINT=null;syncSizeInput();draw();saveDraft();
+  if($('toolHint'))$('toolHint').textContent=`슬롯 ${index} 배치됨 / 지도 빈 칸을 계속 누르면 추가됩니다. 배치한 슬롯은 드래그할 수 있습니다.`;
+}
+function addAlliance(){pushHistory();objs.push({t:'al',name:val()||'연맹',x:W*.25,y:H*.29,rx:96,ry:70,c:col(),scale:1});sel=objs.length-1;clr();syncSizeInput();draw();saveDraft();}
+function addPerson(){pushHistory();objs.push({t:'pe',name:val()||'ID',x:W*.72,y:H*.68,c:col(),scale:1});sel=objs.length-1;clr();syncSizeInput();draw();saveDraft();}
+function addArrow(){pushHistory();objs.push({t:'ar',x1:W*.32,y1:H*.28,x2:W*.59,y2:H*.36,c:col(),scale:1});sel=objs.length-1;syncSizeInput();draw();saveDraft();}
+function addZone(){pushHistory();objs.push({t:'zone',name:val()||'작전 구역',x:W*.25,y:H*.73,rx:120,ry:70,c:col(),scale:1});sel=objs.length-1;clr();syncSizeInput();draw();saveDraft();}
+function addLine(){pushHistory();objs.push({t:'line',x1:W*.30,y1:H*.81,x2:W*.66,y2:H*.81,c:col(),scale:1});sel=objs.length-1;syncSizeInput();draw();saveDraft();}
+function addText(){
+  const v=val()||'텍스트',sz=Math.max(12,Math.min(120,+$('fsz').value||32));
+  const custom=objs.filter(o=>o.t==='text'&&!o.tag).length;
+  const candidates=[[.50,.16],[.26,.16],[.74,.16],[.50,.82],[.26,.82],[.74,.82]];
+  const [rx,ry]=candidates[custom%candidates.length];
+  const o={t:'text',ko:v,text:tr(v,MLANG),x:W*rx,y:H*ry,sz,c:col()};
+  keepTextInsideMap(o);
+  pushHistory();objs.push(o);sel=objs.length-1;clr();syncSizeInput();draw();saveDraft();
+}
+function editSel(){
+  if(sel<0)return;
+  const before=cloneState();
+  const o=objs[sel];
+  if(o.t==='text'){
+    const v=prompt('텍스트 수정:',o.text);
+    if(v!==null&&v.trim()){o.text=v.trim();o.ko=v.trim();keepTextInsideMap(o);}
+  }else if(o.t==='al'||o.t==='pe'||o.t==='zone'||o.t==='shelter'){
+    const v=prompt('이름/ID 수정:',o.name);
+    if(v!==null&&v.trim())o.name=v.trim();
+  }
+  if(before!==cloneState()){historyStack.push(before);if(historyStack.length>60)historyStack.shift();redoStack=[];updateUndoBtn();saveDraft();}
+  draw();
+}
+function applySize(){
+  if(sel<0||!objs[sel])return;
+  const o=objs[sel];
+  if(o.t==='shelter'){const n=Math.max(1,Math.min(5,Math.round((+$('fsz').value||300)/100)));if(o.footprint!==n){pushHistory();o.footprint=n;snapShelter(o);draw();saveDraft();}return;}
+  if(o.t==='text'){
+    const v=Math.max(12,Math.min(120,+$('fsz').value||32));
+    $('fsz').value=v;
+    if(o.sz!==v){pushHistory();o.sz=v;keepTextInsideMap(o);draw();saveDraft();}
+  }else if(o.t==='al'||o.t==='pe'||o.t==='ar'||o.t==='line'||o.t==='zone'){
+    const v=Math.max(40,Math.min(300,+$('fsz').value||100));
+    $('fsz').value=v;
+    const ns=v/100;
+    if(Math.abs(objScale(o)-ns)>.001){pushHistory();o.scale=ns;draw();saveDraft();}
+  }
+}
+function bumpSize(dir){
+  if(sel<0||!objs[sel])return;
+  const o=objs[sel],base=objectSizeValue(o);
+  $('fsz').value=o.t==='shelter'?Math.max(100,Math.min(500,base+dir*100)):(+$('fsz').value||base)+dir*stepVal();
+  applySize();
+}
+function stepVal(){return Math.max(1,Math.min(50,+($('stepSel')?.value)||5));}
+/* px 숫자 자릿수에 맞춰 입력폭 조절 → 숫자+px 묶음이 항상 셀 정중앙 */
+function syncStepWidth(){const i=$('stepSel');if(i)i.style.width=Math.max(1,String(i.value||'5').length)+'ch';}
+$('stepSel')?.addEventListener('input',syncStepWidth);
+syncStepWidth();
+function moveSel(ux,uy){
+  if(sel<0||!objs[sel])return;
+  const o=objs[sel],st=o.t==='shelter'&&SNAP_GRID?cellSize():stepVal(),dx=ux*st,dy=uy*st;
+  pushHistory();
+  if(o.t==='ar'||o.t==='line'){
+    o.x1=Math.max(20,Math.min(W-20,o.x1+dx));o.y1=Math.max(20,Math.min(H-20,o.y1+dy));
+    o.x2=Math.max(20,Math.min(W-20,o.x2+dx));o.y2=Math.max(20,Math.min(H-20,o.y2+dy));
+  }else{
+    o.x=Math.max(20,Math.min(W-20,o.x+dx));o.y=Math.max(20,Math.min(H-20,o.y+dy));
+    if(o.t==='shelter'&&SNAP_GRID)snapShelter(o);if(o.t==='text')keepTextInsideMap(o);
+    if(o.tag&&o.tag[0]==='c')delete o.tag;
+  }
+  draw();
+  saveDraft();
+}
+function delSel(){
+ if(sel<0||!objs[sel])return;
+ const o=objs[sel];const name=(o.name||o.text||'항목').slice(0,30);
+ pushHistory();objs.splice(sel,1);sel=-1;PREVIEW_POINT=null;drag=null;
+ draw();saveDraft();updateSaveInfo(`삭제됨: ${name} / 실행 취소로 복구 가능`);
+}
+function resetAll(){if(confirm('현재 전장 배치만 초기화할까요? 다른 전장 배치는 유지됩니다.')){
+ pushHistory();objs=DEFAULTS();sel=-1;onSize(false);onSplit(false);setMapLang(MLANG,false);draw();saveDraft();}}
+
+function applyInspectorName(){if(sel<0||!objs[sel])return;const o=objs[sel],v=$('editName').value.trim().slice(0,80);if(!v)return;
+ if(o.t==='text'){if(o.text===v)return;pushHistory();o.ko=v;o.text=v;keepTextInsideMap(o);}
+ else if(['al','pe','zone','shelter'].includes(o.t)){if(o.name===v)return;pushHistory();o.name=v;}
+ draw();saveDraft();}
+function selectInspectorColor(){const v=$('editColorPresets').value;if(!v)return;$('editColor').value=v;applyInspectorColor();}
+function applyInspectorColor(){if(sel<0||!objs[sel])return;const o=objs[sel],v=$('editColor').value;if(o.c===v)return;pushHistory();o.c=v;draw();saveDraft();syncPaletteState();}
+function syncChecks(){if($('showGrid'))$('showGrid').checked=SHOW_GRID;if($('quickShowGrid'))$('quickShowGrid').checked=SHOW_GRID;if($('snapGrid'))$('snapGrid').checked=SNAP_GRID;if($('quickSnapGrid'))$('quickSnapGrid').checked=SNAP_GRID;if($('lostLand'))$('lostLand').checked=LOST_LAND;if($('quickLostLand'))$('quickLostLand').checked=LOST_LAND;}
+function toggleGrid(){pushHistory();SHOW_GRID=$('showGrid').checked;if($('quickShowGrid'))$('quickShowGrid').checked=SHOW_GRID;draw();saveDraft();}
+function toggleSnap(){pushHistory();SNAP_GRID=$('snapGrid').checked;if($('quickSnapGrid'))$('quickSnapGrid').checked=SNAP_GRID;draw();saveDraft();}
+function snapPos(v){return SNAP_GRID?Math.round(v/cellSize())*cellSize():v;}
+/* Camera changes affect the viewport, never stored map coordinates. */
+const MIN_ZOOM=.05,MAX_ZOOM=3;
+let CAPITAL_VIEW_MODE='detail',capitalViewCenter={x:.5,y:.5},capitalResizeFrame=0;
+function viewportMapHeight(){
+ const top=$('wrap').getBoundingClientRect().top+window.scrollY;
+ return Math.max(210,window.innerHeight-Math.max(0,top)-16);
+}
+function rememberMapCenter(){
+ const wrap=$('wrap'),r=wrap.getBoundingClientRect(),c=cv.getBoundingClientRect();
+ if(!c.width||!c.height||!wrap.clientWidth)return;
+ capitalViewCenter={x:Math.max(0,Math.min(1,(r.left+wrap.clientLeft+wrap.clientWidth/2-c.left)/c.width)),y:Math.max(0,Math.min(1,(r.top+wrap.clientTop+wrap.clientHeight/2-c.top)/c.height))};
+}
+function centerMapAt(point){
+ const wrap=$('wrap'),r=wrap.getBoundingClientRect(),c=cv.getBoundingClientRect();
+ wrap.scrollLeft+=c.left+point.x*c.width-(r.left+wrap.clientLeft+wrap.clientWidth/2);
+ wrap.scrollTop+=c.top+point.y*c.height-(r.top+wrap.clientTop+wrap.clientHeight/2);
+ rememberMapCenter();
+}
+function setZoom(z,clientX=null,clientY=null,mode='manual'){
+ const wrap=$('wrap');if(wrap.clientWidth<2||!Number.isFinite(z))return;
+ const wr=wrap.getBoundingClientRect(),old=cv.getBoundingClientRect();
+ const ax=clientX===null?wr.left+wrap.clientLeft+wrap.clientWidth/2:clientX;
+ const ay=clientY===null?wr.top+wrap.clientTop+wrap.clientHeight/2:clientY;
+ const fx=old.width?Math.max(0,Math.min(1,(ax-old.left)/old.width)):.5;
+ const fy=old.height?Math.max(0,Math.min(1,(ay-old.top)/old.height)):.5;
+ ZOOM=Math.max(MIN_ZOOM,Math.min(MAX_ZOOM,Math.round(z*100)/100));CAPITAL_VIEW_MODE=mode;
+ wrap.style.setProperty('--map-width',(wrap.clientWidth*ZOOM)+'px');
+ wrap.style.height=viewportMapHeight()+'px';
+ const next=cv.getBoundingClientRect();
+ wrap.scrollLeft+=next.left+fx*next.width-ax;wrap.scrollTop+=next.top+fy*next.height-ay;
+ const canPan=wrap.scrollWidth>wrap.clientWidth+2||wrap.scrollHeight>wrap.clientHeight+2;
+ wrap.classList.toggle('can-pan',canPan);
+ if(!canPan){PAN=false;PAN_DRAG=null;wrap.classList.remove('pan-on','panning');$('panBtn')?.classList.remove('active');}
+ if($('zoomLabel'))$('zoomLabel').textContent=Math.round(ZOOM*100)+'%';
+ for(const [id,on] of [['capitalDetailView',mode==='detail'],['capitalOverview',mode==='overview']])$(id)?.classList.toggle('active',on);
+ rememberMapCenter();draw();
+}
+function zoomView(dir){setZoom(ZOOM+dir*.15);}
+function detailZoom(){return Math.max(1,Math.ceil(viewportMapHeight()/($('wrap').clientWidth*H/W)*100)/100);}
+function openBattleView(){
+ setZoom(detailZoom(),null,null,'detail');centerMapAt({x:.5,y:.5});
+}
+function resetView(){
+ const wrap=$('wrap');if(wrap.clientWidth<2)return;
+ const fit=Math.min(1,(viewportMapHeight()-wrap.clientTop*2)/(wrap.clientWidth*H/W));
+ setZoom(Math.floor(fit*100)/100,null,null,'overview');centerMapAt({x:.5,y:.5});
+}
+function togglePan(){
+ const wrap=$('wrap');
+ if(wrap.scrollWidth<=wrap.clientWidth+2&&wrap.scrollHeight<=wrap.clientHeight+2){updateSaveInfo('지도를 확대하면 이동할 수 있습니다.');return;}
+ PAN=!PAN;wrap.classList.toggle('pan-on',PAN);$('panBtn').classList.toggle('active',PAN);
+}
+function resizeMapViewport(){
+ const wrap=$('wrap');if(wrap.clientWidth<2)return;
+ const point={...capitalViewCenter},mode=CAPITAL_VIEW_MODE;
+ if(mode==='overview')resetView();
+ else{setZoom(mode==='detail'?detailZoom():ZOOM,null,null,mode);centerMapAt(point);}
+}
+function queueMapResize(){cancelAnimationFrame(capitalResizeFrame);capitalResizeFrame=requestAnimationFrame(resizeMapViewport);}
+$('wrap').addEventListener('scroll',rememberMapCenter,{passive:true});
+$('wrap').addEventListener('wheel',e=>{
+ if(!e.ctrlKey&&!e.metaKey&&!e.altKey){e.preventDefault();setZoom(ZOOM*(e.deltaY<0?1.11:1/1.11),e.clientX,e.clientY);}
+},{passive:false});
+window.addEventListener('resize',queueMapResize);
+
+window.CapitalBattleBoard=Object.freeze({
+ getState:()=>cloneState(),
+ loadState:(json)=>{const before=cloneState();loadState(typeof json==='string'?json:JSON.stringify(json));historyStack.push(before);if(historyStack.length>60)historyStack.shift();redoStack=[];updateUndoBtn();saveDraft();},
+ exportPNG:()=>savePNG(),
+ version:'28.1'
+});
+/* creator credit sealed into exported pixels — do not remove:
+   removing it misattributes the author's work */
+const _sg=[50,49,51,32,83,69,82,86,69,82,32,47,32,78,88,84,32,47,32,48512,50521,32,40,66,117,45,97,110,103,41];
+function stampSig(g,w){
+  const k=w/1400,h=H*k;
+  g.save();g.textAlign='right';g.textBaseline='bottom';g.lineJoin='round';
+  // Place a quiet author credit at the bottom edge, away from tactical labels.
+  g.font=`700 ${11*k}px 'Noto Sans KR',sans-serif`;
+  g.lineWidth=2*k;g.strokeStyle='rgba(23,29,37,.8)';
+  const t=String.fromCharCode(..._sg);
+  g.strokeText(t,w-12*k,h-10*k);
+  g.fillStyle='rgba(240,205,145,.9)';g.fillText(t,w-12*k,h-10*k);
+  g.restore();
+}
+async function savePNG(){
+  const width=Number($('expSize').value)||2800,height=Math.round(width*H/W);
+  if(width>4200)return;
+  const c2=document.createElement('canvas');c2.width=width;c2.height=height;
+  const renderCtx=c2.getContext('2d',{alpha:false});if(!renderCtx){updateSaveInfo('이미지 생성에 실패했습니다.');return;}
+  try{
+    if(document.fonts?.ready)await document.fonts.ready;
+    const previous=ctx,selected=sel,oldPreview=PREVIEW_POINT;
+    try{ctx=renderCtx;sel=-1;PREVIEW_POINT=null;ctx.scale(width/W,height/H);scenery();objs.forEach(drawObj);drawShelterNames();}
+    finally{ctx=previous;sel=selected;PREVIEW_POINT=oldPreview;draw();}
+    renderCtx.setTransform(1,0,0,1,0,0);stampSig(renderCtx,width);
+    const blob=await new Promise(resolve=>c2.toBlob(resolve,'image/png'));
+    if(!blob){updateSaveInfo('PNG 생성 실패. 해상도를 낮춰 다시 시도하세요.');return;}
+    const url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;a.download=`213_${BATTLE_TYPE==='capital'?'수도전':'최고의전장'}_전략맵_${width}px.png`;document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),30000);updateSaveInfo(`고화질 PNG 저장: ${width} × ${height}px`);
+  }catch(e){updateSaveInfo('PNG 생성 중 오류가 발생했습니다. 낮은 해상도로 다시 저장해 보세요.');console.error(e);}
+}
+function updateMapBg(){if($('wrap'))$('wrap').style.background='#b7aea4';}
+// First V27 open: blank map with capital and four turrets. Old versions are
+// NOT imported automatically. Subsequent V27 edits are restored normally.
+if(!loadDraft()){
+  objs=DEFAULTS();sel=-1;BOARD_SCENES={};normalizeObjects();
+  $('split').value=SPLIT;syncSplitHint();draw();saveDraft();
+}
+updateUndoBtn();
+$('customColor').value=$('col').value;if($('quickColor'))$('quickColor').value=$('customColor').value;if($('quickLang'))$('quickLang').value=MLANG;if($('quickSQ'))$('quickSQ').value=SQ;syncCapitalZoneUI();$('split').value=SPLIT;syncSplitHint();if($('quickExpSize'))$('quickExpSize').value=$('expSize').value;syncChecks();syncGridUI();syncTypeUI();syncToolButtons();updateMapBg();openBattleView();
+setupPalette();$('appTitle').addEventListener('input',()=>saveDraft());
+$('dockSettings').prepend($('capitalLabelActions'));
+document.querySelector('.command-actions').append($('quickDelete'));
+let capitalResizeWidth=0;
+new ResizeObserver(entries=>{const width=entries[0].contentRect.width;if(width>0&&Math.abs(width-capitalResizeWidth)>1){capitalResizeWidth=width;queueMapResize();}}).observe($('wrap'));
+const capitalToolbarObserver=new ResizeObserver(queueMapResize);
+for(const node of [document.querySelector('header'),document.querySelector('.stage-top'),$('commandDock'),$('splitHint')])if(node)capitalToolbarObserver.observe(node);
+</script>
+</body>
+</html>
