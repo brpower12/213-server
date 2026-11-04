@@ -20,21 +20,29 @@
 .sheet-disclosure-body{padding:10px 12px;min-width:0}
 .sheet-disclosure[hidden]{display:none}
 .sheet-disclosure-action{margin-left:auto;color:var(--gold);font-size:13px;white-space:nowrap}
-.strategy-tool-switch{position:absolute;inset:0 0 auto;z-index:4;display:flex;gap:8px;flex-wrap:wrap;padding:8px;background:#101621;border-bottom:1px solid #35445c}
+.strategy-tool-switch{position:absolute;inset:0 0 auto;z-index:4;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:8px;background:#101621;border-bottom:1px solid #35445c}
+.strategy-tool-tabs{display:flex;align-items:center;gap:8px;min-width:0}
+.strategy-viewport-actions{display:flex;align-items:center;justify-content:flex-end;gap:12px;margin-left:auto;padding-left:16px;border-left:1px solid #35445c;min-width:0}
 .strategy-tool-switch button,.capital-tool-status button{min-height:44px;padding:8px 14px;border:1px solid #35445c;border-radius:9px;background:#1b2231;color:#d9e4f4;font-family:inherit;font-size:14px;font-weight:700;line-height:1.4;cursor:pointer}
 .strategy-tool-switch button[aria-selected="true"]{border-color:#f2c14e;background:#30291b;color:#ffde8a}
+.strategy-tool-switch .strategy-fullscreen-toggle{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:132px;flex:0 0 auto;border-color:#ffda7d;background:linear-gradient(145deg,#f9d06a,#e9b747);color:#241b09;box-shadow:0 2px 10px #e9b74726;font-weight:850}
+.strategy-tool-switch .strategy-fullscreen-toggle:hover{border-color:#ffe8ae;background:#ffdc80}
+.strategy-tool-switch .strategy-fullscreen-toggle[aria-pressed="true"]{border-color:#f2c14e;background:#493819;color:#ffe3a1}
+.strategy-fullscreen-icon{width:19px;height:19px;flex:0 0 19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.strategy-tool-switch button:focus-visible{outline:2px solid #98c8ff;outline-offset:3px}
 #view-tactical>.tactical-frame-wrap{top:var(--strategy-switch-height,61px)}
 .capital-tool-panel{position:absolute;inset:var(--strategy-switch-height,61px) 0 0;display:grid;grid-template-rows:minmax(0,1fr);background:#0b0e14}
 .capital-tool-panel[hidden],.tactical-frame-wrap[hidden]{display:none!important}
-.capital-host-note{align-self:center;font-size:13px;line-height:1.5;margin:0;padding:4px 8px;color:#cbd8ed}
+.capital-host-note{align-self:center;font-size:13px;line-height:1.5;margin:0;min-width:0;color:#cbd8ed}
 .capital-host-note[hidden]{display:none}
 #capitalFrame{width:100%;height:100%;border:0;min-width:0;background:#0b0e14}
-body.strategy-fullscreen #view-tactical{position:fixed!important;inset:0!important;height:100dvh!important;min-height:0!important;z-index:11000}
+body.strategy-fullscreen #view-tactical{position:fixed!important;inset:0!important;height:100vh!important;height:100dvh!important;min-height:0!important;z-index:11000}
+body.strategy-fullscreen .strategy-tool-switch{padding-top:max(8px,env(safe-area-inset-top));padding-left:max(8px,env(safe-area-inset-left));padding-right:max(8px,env(safe-area-inset-right))}
 body.tactical-tab-open #view-tactical{min-height:0}
 .strategy-fullscreen-toggle{white-space:nowrap!important}
 .capital-tool-status{position:absolute;inset:0;display:grid;place-content:center;gap:12px;padding:24px;background:#0b0e14;color:#cbd8ed;font-size:14px;line-height:1.6}
 .capital-tool-status[hidden]{display:none}
-@media(max-width:640px){.strategy-tool-switch{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.6fr) auto;gap:6px}.strategy-tool-switch button{min-width:0;padding:8px 6px;font-size:13px}.capital-host-note{grid-column:1/-1;padding:0;font-size:12px}}
+@media(max-width:640px){.strategy-tool-switch{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}.strategy-tool-tabs{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.6fr);gap:6px}.strategy-tool-switch button{min-width:0;padding:8px 6px;font-size:13px}.strategy-viewport-actions{width:100%;margin:0;padding:8px 0 0;border-left:0;border-top:1px solid #35445c;justify-content:space-between;gap:8px}.strategy-tool-switch .strategy-fullscreen-toggle{min-width:124px;padding:8px 12px}.capital-host-note{font-size:12px;line-height:1.4}.capital-host-note[hidden]+.strategy-fullscreen-toggle{width:100%}}
 @media(max-height:650px) and (max-width:1000px){
  body.tactical-tab-open:not(.strategy-fullscreen){overflow-y:auto}
  body.tactical-tab-open:not(.strategy-fullscreen) #view-tactical{min-height:360px}

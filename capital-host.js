@@ -3,14 +3,19 @@
   'use strict';
   const view=document.getElementById('view-tactical');if(!view)return;
   const season=view.querySelector('.tactical-frame-wrap');
-  const controls=document.createElement('div');controls.className='strategy-tool-switch';controls.setAttribute('role','tablist');controls.setAttribute('aria-label','전략 도구 선택');
-  controls.innerHTML='<button type="button" role="tab" data-strategy-tool="season" aria-selected="true">전략맵</button><button type="button" role="tab" data-strategy-tool="capital" aria-selected="false">수도전 / 최고의 전장</button>';
-  const expand=document.createElement('button');expand.type='button';expand.className='strategy-fullscreen-toggle';expand.textContent='화면 확대';expand.setAttribute('aria-pressed','false');controls.append(expand);
-  function setStrategyFullscreen(on){document.body.classList.toggle('strategy-fullscreen',on);expand.textContent=on?'화면 복귀':'화면 확대';expand.setAttribute('aria-pressed',String(on));requestAnimationFrame(syncTacticalViewport);}
+  const controls=document.createElement('div');controls.className='strategy-tool-switch';controls.setAttribute('role','group');controls.setAttribute('aria-label','전략 지도 도구');
+  const tabs=document.createElement('div');tabs.className='strategy-tool-tabs';tabs.setAttribute('role','tablist');tabs.setAttribute('aria-label','전략 도구 선택');
+  tabs.innerHTML='<button type="button" role="tab" data-strategy-tool="season" aria-selected="true">전략맵</button><button type="button" role="tab" data-strategy-tool="capital" aria-selected="false">수도전 / 최고의 전장</button>';
+  const actions=document.createElement('div');actions.className='strategy-viewport-actions';actions.setAttribute('role','group');actions.setAttribute('aria-label','화면 보기');
+  const expand=document.createElement('button');expand.type='button';expand.className='strategy-fullscreen-toggle';expand.setAttribute('aria-pressed','false');
+  expand.innerHTML='<svg class="strategy-fullscreen-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg><span>화면 확대</span>';
+  const expandLabel=expand.querySelector('span'),expandIcon=expand.querySelector('path');actions.append(expand);controls.append(tabs,actions);
+  function setStrategyFullscreen(on){document.body.classList.toggle('strategy-fullscreen',on);expandLabel.textContent=on?'화면 복귀':'화면 확대';expandIcon.setAttribute('d',on?'M3 8h5V3m8 0v5h5M8 21v-5H3m18 0h-5v5':'M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5');expand.setAttribute('aria-pressed',String(on));expand.title=on?'원래 화면으로 돌아가기 (Esc)':'지도를 넓은 화면으로 보기';requestAnimationFrame(syncTacticalViewport);}
+  expand.title='지도를 넓은 화면으로 보기';
   expand.onclick=()=>{if(authorized())setStrategyFullscreen(!document.body.classList.contains('strategy-fullscreen'));};
   addEventListener('keydown',event=>{if(event.key==='Escape')setStrategyFullscreen(false);});
   const panel=document.createElement('div');panel.className='capital-tool-panel';panel.hidden=true;
-  const notice=document.createElement('p');notice.className='capital-host-note';notice.textContent=window.PREVIEW_ONLY?'가상 데이터 / 임시 작업':'개인 작업 / 이 브라우저에 저장';notice.title='운영진별 개인 배치입니다. 다른 기기나 운영진에게는 배치 백업 파일로 전달하세요.';notice.hidden=true;controls.append(notice);
+  const notice=document.createElement('p');notice.className='capital-host-note';notice.textContent=window.PREVIEW_ONLY?'가상 데이터 / 임시 작업':'개인 작업 / 이 브라우저에 저장';notice.title='운영진별 개인 배치입니다. 다른 기기나 운영진에게는 배치 백업 파일로 전달하세요.';notice.hidden=true;actions.prepend(notice);
   const frame=document.createElement('iframe');frame.id='capitalFrame';frame.title='213 수도전과 최고의 전장 배치 도구';frame.name='capitalFrame';frame.setAttribute('sandbox','allow-scripts allow-downloads allow-modals');frame.referrerPolicy='no-referrer';
   const status=document.createElement('div');status.className='capital-tool-status';status.hidden=true;status.setAttribute('role','status');
   panel.append(frame,status);view.prepend(controls);view.append(panel);
@@ -49,7 +54,7 @@
     try{
       if(!source){
         if(typeof window.__previewCapitalHTML==='string')source=window.__previewCapitalHTML;
-        else{const response=await fetch('./capital.html',{credentials:'same-origin'});if(!response.ok)throw Error('HTTP '+response.status);source=await response.text();}
+        else{const response=await fetch('./capital.html',{credentials:'same-origin',cache:'no-cache'});if(!response.ok)throw Error('HTTP '+response.status);source=await response.text();}
         if(!source.includes('window.CapitalBattleBoard='))throw Error('Invalid capital tool');
       }
       if(request!==epoch||!authorized()||currentOwner!==getEditor())return;

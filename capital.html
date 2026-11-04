@@ -547,7 +547,8 @@ body,button,select,input,textarea{font-family:'Noto Sans KR','Apple SD Gothic Ne
 <style>
 /* Readable controls and responsive panels for the integrated tool. */
 :root{color-scheme:dark;--gold:#f2c14e;--ink:#edf1f9;--sub:#aab6cb;--line:#35445c}
-html,body,button,select,input,textarea{font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic",sans-serif!important}
+:root{--ui-font:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;}
+html,body,button,select,input,textarea{font-family:var(--ui-font)!important}
 body{padding:10px!important;background:#0b0e14!important;letter-spacing:0;word-break:keep-all}
 header{min-height:54px;background:#141926;border-color:#35445c;flex-wrap:wrap}
 h1{font-size:18px;line-height:1.4;max-width:100%;overflow-wrap:anywhere}
@@ -663,6 +664,16 @@ input[type=color]{min-height:44px!important;height:44px!important;flex-basis:44p
  .capital-storage-note{font-size:13px}
 }
 
+
+/* Zone captions keep their own size when the region rectangle is resized. */
+.zone-label-controls{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:8px;color:#c8d7e9;font-size:13px}
+#zoneLabelControls[hidden],#quickZoneLabelControls[hidden]{display:none!important}
+.zone-label-step{display:flex;align-items:center;gap:6px;min-width:0}
+.zone-label-step button{min-width:44px;min-height:44px;border:1px solid #465b73;border-radius:8px;background:#213044;color:#e6eff8;font:inherit;font-size:18px}
+.zone-label-step input[type=number]{width:64px;min-width:64px;min-height:44px;text-align:center;padding:4px;font-size:16px!important}
+.zone-label-step>span{font-size:12px;color:#aab9cb}
+@media(min-width:1201px){#quickZoneLabelControls{display:none!important}}
+@media(max-width:1200px){#quickZoneLabelControls{order:4;border:1px solid #35445c;border-radius:9px;padding:8px;margin:0;min-height:60px;max-height:none}}
 </style>
 </head>
 <body>
@@ -743,6 +754,7 @@ input[type=color]{min-height:44px!important;height:44px!important;flex-basis:44p
     </div>
     <div class="color-palette" id="editPalette" role="group" aria-label="선택한 항목 색상 빠른 변경"></div>
     <div class="sizeLine"><span class="miniCap">크기 / 글자</span><div class="step"><button onclick="bumpSize(-1)" aria-label="크기 줄이기">−</button><input type="number" id="fsz" min="12" max="500" value="32" oninput="applySize()" aria-label="선택 항목 크기"><button onclick="bumpSize(1)" aria-label="크기 키우기">＋</button></div></div>
+    <div class="zone-label-controls" id="zoneLabelControls" hidden><label for="zoneLabelSize">구역 글자 크기</label><div class="zone-label-step"><button type="button" onclick="bumpZoneLabelSize(-1)" aria-label="구역 글자 크기 줄이기">−</button><input type="number" id="zoneLabelSize" min="12" max="120" step="1" inputmode="numeric" aria-label="구역 글자 크기" onchange="applyZoneLabelSize(this)"><span>px</span><button type="button" onclick="bumpZoneLabelSize(1)" aria-label="구역 글자 크기 키우기">＋</button></div></div>
     <div class="nudge" aria-label="선택 항목 미세 이동"><button class="up" onclick="moveSel(0,-1)" title="위쪽">▲</button><button class="left" onclick="moveSel(-1,0)" title="왼쪽">◀</button><div class="stepCell" title="이동 및 크기 조절 간격"><input type="number" id="stepSel" min="1" max="50" value="5" aria-label="이동 간격"><span>px</span></div><button class="right" onclick="moveSel(1,0)" title="오른쪽">▶</button><button class="down" onclick="moveSel(0,1)" title="아래쪽">▼</button></div>
     <div class="inspector-guide">ⓘ 쉘터 또는 이름 클릭 → 오른쪽에서 수정/삭제. Delete 키로 삭제할 수 있고, 잘못 삭제하면 실행 취소하세요.</div>
     <div class="selectActions"><button class="act" onclick="editSel()">✎ 이름 수정</button><button class="act warn" onclick="delSel()">🗑 삭제</button></div>
@@ -763,7 +775,7 @@ input[type=color]{min-height:44px!important;height:44px!important;flex-basis:44p
    <div class="stage-heading"><div class="map-chip">⌖</div><div><b>213 TACTICAL COMMAND MAP</b><span id="mapCount">배치 항목 0개</span></div></div>
    <div class="stage-tools">
     <select id="quickBattleType" onchange="applyQuickBattleType()" aria-label="전장 선택" style="min-width:140px;max-width:180px;height:38px;min-height:38px"><option value="supreme">최고의 전장</option><option value="capital">수도전</option></select>
-    <select id="split" onchange="onSplit()" aria-label="진영 배치 방식" style="min-width:175px;max-width:210px;height:38px;min-height:38px"><option value="lr">아군 왼쪽</option><option value="tb">아군 위쪽</option><option value="g">아군 ㄱ 배치</option><option value="n">아군 ㄴ 배치</option></select>
+    <select id="split" onchange="onSplit()" aria-label="진영 배치 방식" style="min-width:175px;max-width:210px;height:38px;min-height:38px"><option value="lr">아군 왼쪽</option><option value="rl">아군 오른쪽</option><option value="tb">아군 위쪽</option><option value="bt">아군 아래쪽</option><option value="g">아군 ㄱ 배치</option><option value="n">아군 ㄴ 배치</option></select>
     <button class="tool-small" onclick="zoomView(-1)" aria-label="축소">−</button><span id="zoomLabel" aria-live="polite">100%</span><button class="tool-small" onclick="zoomView(1)" aria-label="확대">+</button>
     <button class="tool-small" id="panBtn" onclick="togglePan()" title="지도 빈 곳을 끌면 바로 이동합니다. 이 버튼을 켜면 항목 위에서도 지도만 이동합니다">이동 고정</button>
     <button class="tool-small highlight" id="capitalDetailView" onclick="openBattleView()" title="수도 중심을 크게 보기">수도 중심</button><button class="tool-small" id="capitalOverview" onclick="resetView()" title="전체 지도를 한눈에 보기">전체 보기</button><span class="zoom-hint">휠 확대/축소 / 빈 곳 드래그 이동</span>
@@ -810,6 +822,7 @@ input[type=color]{min-height:44px!important;height:44px!important;flex-basis:44p
     <button class="tool-small dock-nudge" onclick="moveSel(1,0)" title="오른쪽 이동">▶</button>
     <button class="tool-small dock-danger" onclick="delSel()">삭제</button>
   </div>
+  <div class="command-row zone-label-controls" id="quickZoneLabelControls" hidden><label for="quickZoneLabelSize">구역 글자 크기</label><div class="zone-label-step"><button type="button" onclick="bumpZoneLabelSize(-1)" aria-label="구역 글자 크기 줄이기">−</button><input type="number" id="quickZoneLabelSize" min="12" max="120" step="1" inputmode="numeric" aria-label="구역 글자 크기" onchange="applyZoneLabelSize(this)"><span>px</span><button type="button" onclick="bumpZoneLabelSize(1)" aria-label="구역 글자 크기 키우기">＋</button></div></div>
   <div class="command-row command-edit-palette" id="quickEditPaletteRow" hidden><span class="palette-edit-label">선택 색상</span><div id="quickEditPalette" class="color-palette" role="group" aria-label="선택 항목 색상 바로 변경"></div></div>
   <div class="command-row command-actions">
     <button class="tool-small" id="quickUndo" onclick="undoLast()" title="실행 취소">↶ 실행 취소</button>
@@ -1077,7 +1090,7 @@ function currentBoardSnapshot(){return {objs:JSON.parse(JSON.stringify(objs)),se
 function restoreBoardSnapshot(snapshot){
  const d=snapshot||{};objs=Array.isArray(d.objs)?JSON.parse(JSON.stringify(d.objs)):DEFAULTS();normalizeObjects();repairOffscreenText(objs);
  sel=Number.isInteger(d.sel)&&d.sel>=0&&d.sel<objs.length?d.sel:-1;
- SQ=Math.max(85,Math.min(310,Number(d.SQ)||165));SPLIT=['lr','tb','g','n'].includes(d.SPLIT)?d.SPLIT:'lr';MLANG=['ko','ja','en'].includes(d.MLANG)?d.MLANG:'ko';
+ SQ=Math.max(85,Math.min(310,Number(d.SQ)||165));SPLIT=['lr','rl','tb','bt','g','n'].includes(d.SPLIT)?d.SPLIT:'lr';MLANG=['ko','ja','en'].includes(d.MLANG)?d.MLANG:'ko';
  SHOW_GRID=d.SHOW_GRID===undefined?true:!!d.SHOW_GRID;SNAP_GRID=d.SNAP_GRID===undefined?true:!!d.SNAP_GRID;
  GRID_COLS=validGridCols(d.GRID_COLS)||120;LOST_LAND=d.LOST_LAND===undefined?true:!!d.LOST_LAND;SHELTER_SIZE=validShelterSize(d.SHELTER_SIZE);CAPITAL_ICON_SCALE=clampIconScale(d.CAPITAL_ICON_SCALE,.40);TURRET_ICON_SCALE=clampIconScale(d.TURRET_ICON_SCALE,.25);CAPITAL_ZONE_MODE=normalizeCapitalMode(d.CAPITAL_ZONE_MODE);CAPITAL_ZONE_COLOR=/^#[0-9a-fA-F]{6}$/.test(d.CAPITAL_ZONE_COLOR||'')?d.CAPITAL_ZONE_COLOR:'#727f89';
  $('sq').value=SQ;$('sqValue').textContent=SQ;if($('quickSQ'))$('quickSQ').value=SQ;if($('quickLang'))$('quickLang').value=MLANG;$('split').value=SPLIT;syncSplitHint();syncChecks();syncGridUI();
@@ -1111,7 +1124,8 @@ function validateLayout(d){
     for(const o of value.objs){
       if(!o||!types.has(o.t))throw Error('Invalid object');
       for(const key of (o.t==='ar'||o.t==='line'?['x1','y1','x2','y2']:['x','y']))if(!Number.isFinite(o[key]))throw Error('Invalid coordinate');
-      for(const key of ['rx','ry','scale','sz','footprint'])if(o[key]!==undefined&&!Number.isFinite(o[key]))throw Error('Invalid size');
+      for(const key of ['rx','ry','scale','sz','footprint','labelSize'])if(o[key]!==undefined&&!Number.isFinite(o[key]))throw Error('Invalid size');
+      if(o.labelSize!==undefined&&(!Number.isFinite(o.labelSize)||o.labelSize<12||o.labelSize>120))throw Error('Invalid zone label size');
       for(const key of ['text','name','ko'])if(o[key]!==undefined&&(typeof o[key]!=='string'||o[key].length>1000))throw Error('Invalid text');
     }
   }
@@ -1190,7 +1204,7 @@ function loadState(st){
   normalizeObjects();repairOffscreenText(objs);
   for(const o of objs){if(o.t==='shelter')o.footprint=validShelterSize(o.footprint);}
   sel=Number.isInteger(d.sel)&&d.sel>=0&&d.sel<objs.length?d.sel:-1;
-  SQ=Math.max(85,Math.min(310,Number(d.SQ)||165));SPLIT=['lr','tb','g','n'].includes(d.SPLIT)?d.SPLIT:'lr';MLANG=['ko','ja','en'].includes(d.MLANG)?d.MLANG:'ko';
+  SQ=Math.max(85,Math.min(310,Number(d.SQ)||165));SPLIT=['lr','rl','tb','bt','g','n'].includes(d.SPLIT)?d.SPLIT:'lr';MLANG=['ko','ja','en'].includes(d.MLANG)?d.MLANG:'ko';
   SHOW_GRID=d.SHOW_GRID===undefined?true:!!d.SHOW_GRID;SNAP_GRID=d.SNAP_GRID===undefined?true:!!d.SNAP_GRID;
   GRID_COLS=validGridCols(d.GRID_COLS)||120;LOST_LAND=d.LOST_LAND===undefined?true:!!d.LOST_LAND;BATTLE_TYPE=['capital','supreme'].includes(d.BATTLE_TYPE)?d.BATTLE_TYPE:'supreme';SHELTER_SIZE=validShelterSize(d.SHELTER_SIZE);CAPITAL_ICON_SCALE=clampIconScale(d.CAPITAL_ICON_SCALE,.40);TURRET_ICON_SCALE=clampIconScale(d.TURRET_ICON_SCALE,.25);CAPITAL_ZONE_MODE=normalizeCapitalMode(d.CAPITAL_ZONE_MODE);CAPITAL_ZONE_COLOR=/^#[0-9a-fA-F]{6}$/.test(d.CAPITAL_ZONE_COLOR||'')?d.CAPITAL_ZONE_COLOR:'#727f89';
   syncChecks();syncToolButtons();syncGridUI();syncStructureUI();
@@ -1226,15 +1240,15 @@ function loadDraft(){
 /* 종료·화면전환 직전에도 강제 저장 (모바일에서 저장 누락 방지) */
 window.addEventListener('pagehide',()=>{if(CAN_STORE)try{localStorage.setItem(SAVE_KEY,cloneState());}catch(e){}});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&CAN_STORE)try{localStorage.setItem(SAVE_KEY,cloneState());}catch(e){}});
-/* ---------- 배치 파일 저장/열기 (어떤 환경에서도 확실한 백업) ---------- */
+/* ---------- 배치 파일 저장/열기 ---------- */
 function saveJSON(){
   const d=new Date(),p=n=>String(n).padStart(2,'0');
   const name=`배치저장_${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}.json`;
   const a=document.createElement('a');
   a.download=name;
   a.href='data:application/json;charset=utf-8,'+encodeURIComponent(cloneState());
-  a.click();
-  updateSaveInfo('💾 배치 파일 저장됨: '+name);
+  document.body.appendChild(a);a.click();a.remove();
+  updateSaveInfo('배치 파일 다운로드 요청: '+name+' / 파일 앱이나 다운로드 목록을 확인해 주세요.');
 }
 function loadJSONFile(inp){
   const f=inp.files&&inp.files[0];if(!f)return;
@@ -1253,7 +1267,7 @@ function undoLast(){if(!historyStack.length)return;redoStack.push(cloneState());
 function redoLast(){if(!redoStack.length)return;historyStack.push(cloneState());loadState(redoStack.pop());updateUndoBtn();saveDraft();}
 (function(){let s=7;const r=()=>(s=(s*16807)%2147483647)/2147483647;
  for(let i=0;i<1800;i++)noise.push({x:r()*W,y:r()*H,r:2+r()*6,a:(r()-.5)*26});})();
-const MAP_FONT="'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif";
+const MAP_FONT='"Pretendard Variable",Pretendard,"Noto Sans KR","Malgun Gothic","Segoe UI",Arial,sans-serif';
 const FONT=sz=>`700 ${sz}px ${MAP_FONT}`;
 const corners=()=>[
   {x:CX-SQ,y:CY-SQ},{x:CX+SQ,y:CY-SQ},{x:CX+SQ,y:CY+SQ},{x:CX-SQ,y:CY+SQ}
@@ -1291,7 +1305,9 @@ function changeTurretScale(record=true){
 /* ㄱ/ㄴ: 고정된 수도 연동 경계를 기준으로 두 진영의 색상만 전환. */
 const SPLIT_HELP={
   lr:'좌측 아군, 우측 상대',
+  rl:'우측 아군, 좌측 상대',
   tb:'상단 아군, 하단 상대',
+  bt:'하단 아군, 상단 상대',
   g:'아군 ㄱ (상단 우측), 상대 ㄴ (좌측 하단), 수도 회색 독립 구역',
   n:'아군 ㄴ (좌측 하단), 상대 ㄱ (상단 우측), 수도 회색 독립 구역'
 };
@@ -1306,7 +1322,9 @@ function onSplit(record=true){
   // 서버 머리글(h1, h2)은 각 구역에서 한눈에 보이는 자리로 이동.
   const positions={
     lr:[[250,64],[W-250,64]],
+    rl:[[W-250,64],[250,64]],
     tb:[[250,64],[250,H-64]],
+    bt:[[250,H-64],[250,64]],
     g:[[W-250,64],[250,H-64]],
     n:[[250,H-64],[W-250,64]]
   };
@@ -1379,12 +1397,12 @@ function scenery(){
     paintTerritoryRect(xL,0,W-xL,yT,rightColor);
     paintTerritoryRect(0,yT,xR,H-yT,leftColor);
     paintTerritoryRect(xR,yT,W-xR,H-yT,rightColor);
-  }else if(SPLIT==='lr'){
-    paintTerritoryWithCapitalHole(0,0,CX,H,ally);
-    paintTerritoryWithCapitalHole(CX,0,CX,H,enemy);
+  }else if(SPLIT==='lr'||SPLIT==='rl'){
+    paintTerritoryWithCapitalHole(0,0,CX,H,SPLIT==='lr'?ally:enemy);
+    paintTerritoryWithCapitalHole(CX,0,CX,H,SPLIT==='rl'?ally:enemy);
   }else{
-    paintTerritoryWithCapitalHole(0,0,W,CY,ally);
-    paintTerritoryWithCapitalHole(0,CY,W,CY,enemy);
+    paintTerritoryWithCapitalHole(0,0,W,CY,SPLIT==='tb'?ally:enemy);
+    paintTerritoryWithCapitalHole(0,CY,W,CY,SPLIT==='bt'?ally:enemy);
   }
   ctx.strokeStyle='rgba(255,255,255,.76)';ctx.lineWidth=2.2;
   ctx.beginPath();
@@ -1392,7 +1410,7 @@ function scenery(){
     // Only outside square; the square outline handles the intermediate bend.
     ctx.moveTo(xL,0);ctx.lineTo(xL,yT);
     ctx.moveTo(xR,yB);ctx.lineTo(xR,H);
-  }else if(SPLIT==='lr'){
+  }else if(SPLIT==='lr'||SPLIT==='rl'){
     ctx.moveTo(CX,0);ctx.lineTo(CX,yT);ctx.moveTo(CX,yB);ctx.lineTo(CX,H);
   }else{
     ctx.moveTo(0,CY);ctx.lineTo(xL,CY);ctx.moveTo(xR,CY);ctx.lineTo(W,CY);
@@ -1527,6 +1545,25 @@ function handles(o){
 function hexA(h,a){const n=parseInt(h.slice(1),16);
   return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`;}
 function objScale(o){return Math.max(.4,Math.min(3,Number(o.scale)||1));}
+function zoneLabelFontSize(o){return Number.isFinite(o?.labelSize)?Math.max(12,Math.min(120,o.labelSize)):Math.max(19,Math.min(40,23*objScale(o)));}
+function syncZoneLabelUI(){
+ const zone=sel>=0&&objs[sel]?.t==='zone'?objs[sel]:null;
+ for(const [rowId,inputId] of [['zoneLabelControls','zoneLabelSize'],['quickZoneLabelControls','quickZoneLabelSize']]){
+  const row=$(rowId),input=$(inputId);row.hidden=!zone;input.disabled=!zone;
+  if(zone&&document.activeElement!==input)input.value=Math.round(zoneLabelFontSize(zone));
+ }
+}
+function applyZoneLabelSize(source){
+ if(sel<0||objs[sel]?.t!=='zone')return;
+ const raw=typeof source==='number'?source:source?.value;
+ if(raw===undefined||String(raw).trim()===''||!Number.isFinite(Number(raw))){syncZoneLabelUI();updateSaveInfo('구역 글자 크기를 12~120px로 입력해 주세요.');return;}
+ const next=Math.max(12,Math.min(120,Math.round(Number(raw)))),o=objs[sel];
+ if(source&&typeof source==='object')source.value=next;
+ if(o.labelSize===next)return;
+ pushHistory();o.labelSize=next;draw();saveDraft();
+}
+function bumpZoneLabelSize(direction){if(sel>=0&&objs[sel]?.t==='zone')applyZoneLabelSize(zoneLabelFontSize(objs[sel])+direction*2);}
+
 function objectSizeValue(o){return o?.t==='text' ? Math.round(Number(o.sz)||32) : o?.t==='shelter'?validShelterSize(o.footprint)*100 : Math.round(objScale(o)*100);}
 function textVisibleWidth(o){
   ctx.save();ctx.font=FONT(Math.max(12,Math.min(120,Number(o.sz)||32)));
@@ -1680,7 +1717,7 @@ function drawObj(o,i){
     const s=objScale(o),rw=o.rx*s,rh=o.ry*s;
     ctx.save();ctx.fillStyle=hexA(o.c,.19);ctx.strokeStyle=on?'#fff':o.c;ctx.lineWidth=on?7:4;ctx.setLineDash(on?[13,8]:[11,7]);
     ctx.beginPath();ctx.roundRect(o.x-rw,o.y-rh,2*rw,2*rh,Math.min(22,Math.min(rw,rh)/4));ctx.fill();ctx.stroke();ctx.setLineDash([]);
-    if(o.name)txt(o.x,o.y,o.name,'#ffffff',Math.max(19,Math.min(40,23*s)));
+    if(o.name)txt(o.x,o.y,o.name,'#ffffff',zoneLabelFontSize(o));
     ctx.restore();
     if(on){ctx.fillStyle='#fff';ctx.strokeStyle='#333';ctx.lineWidth=2;ctx.fillRect(o.x+rw-10,o.y+rh-10,20,20);ctx.strokeRect(o.x+rw-10,o.y+rh-10,20,20);}
   }else if(o.t==='line'){
@@ -1752,7 +1789,7 @@ window.addEventListener('scroll',updateCapitalSelectedName,{passive:true});
 $('wrap').addEventListener('scroll',updateCapitalSelectedName,{passive:true});
 
 function selectedName(){if(sel<0||!objs[sel])return '선택 항목 없음';const o=objs[sel];if(o.t==='shelter')return '선택: 유저 슬롯 - '+(o.name||'빈 슬롯')+` (${validShelterSize(o.footprint)} × ${validShelterSize(o.footprint)}칸)`;if(o.t==='al')return '선택: 연맹 - '+o.name;if(o.t==='pe')return '선택: 유저 - '+o.name;if(o.t==='ar')return '선택: 화살표';if(o.t==='zone')return '선택: 구역 - '+(o.name||'구역');if(o.t==='line')return '선택: 구분선';if(o.t==='text')return '선택: 텍스트 - '+o.text;return '선택 항목';}
-function updateSelInfo(){updateCapitalSelectedName();const el=$('selInfo');if(el)el.textContent=selectedName();
+function updateSelInfo(){updateCapitalSelectedName();syncZoneLabelUI();const el=$('selInfo');if(el)el.textContent=selectedName();
   if($('mapCount'))$('mapCount').textContent=`${BATTLE_TYPE==='supreme'?'최고의 전장':'수도전'} / 배치 ${objs.length}개 / 슬롯 ${objs.filter(o=>o.t==='shelter').length}개`;
   const o=sel>=0?objs[sel]:null, editable=o&&['al','pe','text','zone','shelter'].includes(o.t);
   const v=o?(o.text??o.name??''):'';
@@ -2051,7 +2088,7 @@ function stampSig(g,w){
   const k=w/1400,h=H*k;
   g.save();g.textAlign='right';g.textBaseline='bottom';g.lineJoin='round';
   // Place a quiet author credit at the bottom edge, away from tactical labels.
-  g.font=`700 ${11*k}px 'Noto Sans KR',sans-serif`;
+  g.font=`700 ${11*k}px ${MAP_FONT}`;
   g.lineWidth=2*k;g.strokeStyle='rgba(23,29,37,.8)';
   const t=String.fromCharCode(..._sg);
   g.strokeText(t,w-12*k,h-10*k);
@@ -2073,7 +2110,7 @@ async function savePNG(){
     if(!blob){updateSaveInfo('PNG 생성 실패. 해상도를 낮춰 다시 시도하세요.');return;}
     const url=URL.createObjectURL(blob),a=document.createElement('a');
     a.href=url;a.download=`213_${BATTLE_TYPE==='capital'?'수도전':'최고의전장'}_전략맵_${width}px.png`;document.body.appendChild(a);a.click();a.remove();
-    setTimeout(()=>URL.revokeObjectURL(url),30000);updateSaveInfo(`고화질 PNG 저장: ${width} × ${height}px`);
+    setTimeout(()=>URL.revokeObjectURL(url),30000);updateSaveInfo(`PNG 다운로드 요청: ${width} × ${height}px / 파일 앱이나 다운로드 목록을 확인해 주세요.`);
   }catch(e){updateSaveInfo('PNG 생성 중 오류가 발생했습니다. 낮은 해상도로 다시 저장해 보세요.');console.error(e);}
 }
 function updateMapBg(){if($('wrap'))$('wrap').style.background='#b7aea4';}
