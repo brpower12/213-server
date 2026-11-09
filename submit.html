@@ -1472,7 +1472,7 @@ function setupUserInputValidation(){
   }
 }
 function focusPageHeading(page){
-  const target=page==='home'?document.querySelector('#homeView .service-card'):$(({power:'tTitle',powerDone:'tDone',vote:'vTitle',voteDone:'vDoneTitle'})[page]);
+  const target=$(({home:'hTitle',power:'tTitle',powerDone:'tDone',vote:'vTitle',voteDone:'vDoneTitle'})[page]);
   if(!target||target.closest('[hidden]'))return;
   if(!target.matches('button,a,input,select,textarea,[tabindex]'))target.tabIndex=-1;
   try{target.focus({preventScroll:true});}catch(_error){target.focus();}
