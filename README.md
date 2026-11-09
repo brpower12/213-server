@@ -8,4 +8,4 @@ The assigned-destination UI is a prototype. `assignedAlliance` is a provisional,
 
 See `release-audit.html` for tested scope and remaining operating-environment checks.
 
-Submit-page review: open `submit-preview.html` for the isolated power/vote form and `submit-review.html` for its tested scope. This demo uses synthetic data and RAM-only RPCs; it has no operating endpoints, keys or persistent storage. The production update is pending user approval.
+Submit-page review: open `submit-preview.html` for the isolated power/vote form and `submit-review.html` for its tested scope. This demo uses synthetic data and RAM-only RPCs; it has no operating endpoints, keys or persistent storage. Production main remains unchanged while explicit final push approval is pending. Optional kills and the existing sheet acceptance path are covered by fake-service tests. Actual iPhone/Kakao and operating RPC saves remain unverified.

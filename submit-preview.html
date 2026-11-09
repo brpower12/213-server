@@ -401,6 +401,9 @@ textarea:focus{border-color:var(--ours);box-shadow:0 0 0 3px rgba(78,155,255,.18
 
 
 /* Submission form readability and touch controls. */
+::placeholder{color:#98a7bd;opacity:1}
+.poll-select-meta small{font-size:12px;line-height:1.5;color:#9baac1}
+.poll-device-status{font-size:12px;line-height:1.35}
 .langbar button{min-width:44px;min-height:44px;padding:8px 6px;font-size:12px;line-height:1.25}
 .view-back{min-height:46px;font-size:13px}
 .vote-home-btn{min-height:48px}
@@ -875,8 +878,8 @@ function setLang(l){
   $('tS3').textContent=t.s3; $('fS3').placeholder=t.s3Ph;
   $('tS4').textContent=t.s4; $('fS4').placeholder=t.s4Ph;
   $('tKills').textContent=t.kills; $('fKills').placeholder=t.killsPh;
-  ['tOpt2','tOpt3','tOpt5'].forEach(id=>{$(id).innerHTML='<b style="color:var(--gold)">*</b>';});
-  $('tOpt4').textContent=t.opt;
+  ['tOpt2','tOpt3'].forEach(id=>{$(id).innerHTML='<b style="color:var(--gold)">*</b>';});
+  ['tOpt4','tOpt5'].forEach(id=>{$(id).textContent=t.opt;});
   $('submitBtn').textContent=submitting?t.submitting:t.submit;
   $('tDone').textContent=t.done;
   $('againBtn').textContent=t.again;
@@ -953,7 +956,7 @@ function refreshPreview(inputId,previewId){
   const raw=input.value.trim();
   if(!raw){preview.textContent='';preview.classList.remove('bad');syncPowerUnitButtons();return;}
   if(inputId==='fKills'){
-    const kills=parseKills(raw),valid=Number.isSafeInteger(kills)&&kills>0;
+    const kills=parseKills(raw),valid=Number.isSafeInteger(kills)&&kills>=0;
     preview.textContent=valid?t.preview(kills.toLocaleString(pollLocale())):t.errKills;
     preview.classList.toggle('bad',!valid);return;
   }
@@ -1197,7 +1200,7 @@ async function loadOpenPolls(keepSelection=false){
     if(requestId!==publicPollLoadSeq||lang!==requestedLang)return;
     if(error)throw error;
     const nextPolls=typeof data==='string'?JSON.parse(data):data;
-    if(!Array.isArray(nextPolls)||!nextPolls.every(poll=>poll&&typeof poll==='object'&&!Array.isArray(poll)&&poll.id!=null&&(!Object.prototype.hasOwnProperty.call(poll,'options')||Array.isArray(poll.options))))throw new Error('Invalid poll response');
+    if(!Array.isArray(nextPolls)||!nextPolls.every(poll=>poll&&typeof poll==='object'&&!Array.isArray(poll)&&poll.id!=null&&(poll.options==null||Array.isArray(poll.options))))throw new Error('Invalid poll response');
     const keepPoll=keepSelection?selectedPublicPollId:oldPoll;
     const keepOption=keepSelection?(document.querySelector('input[name="publicPollOption"]:checked')?.value||oldOption):oldOption;
     publicPolls=nextPolls;
@@ -1357,11 +1360,11 @@ async function doSubmit(){
     powers.push(value);
   }
   const kills=parseKills($('fKills').value);
-  if(!Number.isSafeInteger(kills)||kills<=0){showFieldError('fKills',t.errKills,'formMsg');return;}
+  if(kills!==null&&(!Number.isSafeInteger(kills)||kills<0)){showFieldError('fKills',t.errKills,'formMsg');return;}
   const troopText=$('fTroop').selectedOptions[0]?.textContent||troop;
   const lines=[t.alliance+': '+alliance.toUpperCase(),t.nick+': '+nickname,t.troop+': '+troopText,t.shelter+': '+industry];
   powers.forEach((value,index)=>{if(value!==null)lines.push(t.squadWord[index]+': '+fmtG(value));});
-  lines.push(t.kills+': '+kills.toLocaleString(pollLocale()));
+  if(kills!==null)lines.push(t.kills+': '+kills.toLocaleString(pollLocale()));
   if(!confirm(t.confirmQ+'\n\n'+lines.join('\n')))return;
   submitting=true;setPowerInputsBusy(true);$('submitBtn').disabled=true;$('submitBtn').textContent=t.submitting;
   $('formMsg').style.color='var(--muted)';$('formMsg').textContent=t.submitting;
@@ -1373,7 +1376,7 @@ async function doSubmit(){
     });
   }catch(_error){requestFailed=true;}
   finally{
-    submitting=false;setPowerInputsBusy(false);$('submitBtn').disabled=false;$('submitBtn').textContent=(I18N[lang]||I18N.ko).submit;
+    submitting=false;setPowerInputsBusy(false);$('submitBtn').disabled=!submissionServiceReady();$('submitBtn').textContent=(I18N[lang]||I18N.ko).submit;
   }
   const current=I18N[lang]||I18N.ko;
   if(requestFailed||response?.error){showFieldError('',current.submitUnconfirmed,'formMsg');return;}
@@ -1493,7 +1496,7 @@ function clearFieldErrors(containerId){
   container.querySelectorAll('[data-error-field]').forEach(summary=>{summary.textContent='';delete summary.dataset.errorField;});
 }
 function setupFormAccessibility(){
-  const requiredIds=new Set(['fAlliance','fNick','fTroop','fShelter','fS1','fS2','fS3','fKills','vAllianceInput','vNickInput','vTroopInput','vIndustryInput','vSquad1Input']);
+  const requiredIds=new Set(['fAlliance','fNick','fTroop','fShelter','fS1','fS2','fS3','vAllianceInput','vNickInput','vTroopInput','vIndustryInput','vSquad1Input']);
   document.querySelectorAll('.field').forEach(field=>{
     const label=field.querySelector('label'),control=field.querySelector('input,select,textarea');
     if(!control?.id)return;
@@ -1611,7 +1614,7 @@ function renderPowerDoneSummary(){
   const troopIndex=TROOP_CANON.indexOf(receipt.troop);
   const details=[[t.troop,t.troops[troopIndex]||receipt.troop],[t.shelter,receipt.industry]];
   receipt.powers.forEach((value,index)=>{if(value!==null)details.push([t.squadWord[index],fmtG(value)]);});
-  details.push([t.kills,receipt.kills.toLocaleString(pollLocale())]);
+  if(receipt.kills!==null)details.push([t.kills,receipt.kills.toLocaleString(pollLocale())]);
   $('doneSummary').innerHTML='<b>'+escapeHtml(receipt.alliance)+' / '+escapeHtml(receipt.nickname)+'</b>'+
     '<dl class="power-receipt">'+details.map(([label,value])=>'<div class="power-receipt-row"><dt>'+escapeHtml(label)+'</dt><dd>'+escapeHtml(value)+'</dd></div>').join('')+'</dl><p>'+t.doneTail+'</p>';
 }
@@ -1733,7 +1736,7 @@ function setupPowerDraft(){
 }
 
 
-Object.entries({"ko":{"powerUnitRequired":"전투력 단위를 선택해 주세요. 예: 99M / 6.22G","powerUnitLabel":"전투력 단위","powerUseG":"G 단위 적용","powerUseM":"M 단위 적용","badNum":"숫자와 G/M 단위를 확인해 주세요. 예: 100M / 6.22G","errKills":"킬수를 정확한 양의 정수로 입력해 주세요. 예: 27,066,265","submitUnconfirmed":"제출 결과를 확인하지 못했습니다. 입력 내용은 유지했습니다. 다시 제출하기 전에 운영진에게 접수 여부를 확인해 주세요."},"en":{"powerUnitRequired":"Choose G or M for this value, for example 99M or 6.22G.","powerUnitLabel":"Combat power unit","powerUseG":"Use G units","powerUseM":"Use M units","badNum":"Check the number and its G/M unit, for example 100M or 6.22G.","errKills":"Enter a valid positive whole-number kill count, for example 27,066,265.","submitUnconfirmed":"We could not confirm whether your submission was saved. Your entries are still here. Please check with staff before submitting again."},"ja":{"powerUnitRequired":"この値にはGまたはMを付けてください。例：99M / 6.22G","powerUnitLabel":"戦闘力の単位","powerUseG":"単位をGにする","powerUseM":"単位をMにする","badNum":"数値とG/Mの単位をご確認ください。例：100M / 6.22G","errKills":"キル数は正の整数で入力してください。例：27,066,265","submitUnconfirmed":"送信結果を確認できませんでした。入力内容は残っています。再送信する前に運営側へ受付状況をご確認ください。"},"zh":{"powerUnitRequired":"请选择G或M作为单位。例如：99M / 6.22G。","powerUnitLabel":"战力单位","powerUseG":"使用G单位","powerUseM":"使用M单位","badNum":"请检查数值及G/M单位。例如：100M / 6.22G。","errKills":"请输入有效的正整数击杀数。例如：27,066,265。","submitUnconfirmed":"无法确认是否提交成功，已保留填写内容。再次提交前，请先向管理员确认是否已收到。"}}).forEach(([locale,values])=>Object.assign(I18N[locale],values));
+Object.entries({"ko":{"powerUnitRequired":"전투력 단위를 선택해 주세요. 예: 99M / 6.22G","powerUnitLabel":"전투력 단위","powerUseG":"G 단위 적용","powerUseM":"M 단위 적용","badNum":"숫자와 G/M 단위를 확인해 주세요. 예: 100M / 6.22G","errKills":"킬수는 0 이상의 정수로 입력해 주세요. 예: 27,066,265","submitUnconfirmed":"제출 결과를 확인하지 못했습니다. 입력 내용은 유지했습니다. 다시 제출하기 전에 운영진에게 접수 여부를 확인해 주세요."},"en":{"powerUnitRequired":"Choose G or M for this value, for example 99M or 6.22G.","powerUnitLabel":"Combat power unit","powerUseG":"Use G units","powerUseM":"Use M units","badNum":"Check the number and its G/M unit, for example 100M or 6.22G.","errKills":"Enter a whole-number kill count of 0 or more, for example 27,066,265.","submitUnconfirmed":"We could not confirm whether your submission was saved. Your entries are still here. Please check with staff before submitting again."},"ja":{"powerUnitRequired":"この値にはGまたはMを付けてください。例：99M / 6.22G","powerUnitLabel":"戦闘力の単位","powerUseG":"単位をGにする","powerUseM":"単位をMにする","badNum":"数値とG/Mの単位をご確認ください。例：100M / 6.22G","errKills":"キル数は0以上の整数で入力してください。例：27,066,265","submitUnconfirmed":"送信結果を確認できませんでした。入力内容は残っています。再送信する前に運営側へ受付状況をご確認ください。"},"zh":{"powerUnitRequired":"请选择G或M作为单位。例如：99M / 6.22G。","powerUnitLabel":"战力单位","powerUseG":"使用G单位","powerUseM":"使用M单位","badNum":"请检查数值及G/M单位。例如：100M / 6.22G。","errKills":"击杀数请输入大于或等于0的整数。例如：27,066,265。","submitUnconfirmed":"无法确认是否提交成功，已保留填写内容。再次提交前，请先向管理员确认是否已收到。"}}).forEach(([locale,values])=>Object.assign(I18N[locale],values));
 
 Object.entries({"ko":{"serviceUnavailable":"연결에 필요한 파일을 불러오지 못했습니다. 인터넷 연결을 확인한 뒤 다시 시도해 주세요.","retry":"다시 시도","draftRestored":"이 기기에 임시 저장한 입력을 불러왔습니다. 최신 전투력인지 확인해 주세요.","draftSaved":"입력 내용이 이 기기에 임시 저장됩니다. 제출된 상태를 의미하지는 않습니다.","draftSavedAt":"저장 시간:","draftClear":"전투력 입력 지우기","done":"제출이 완료되었습니다"},"en":{"serviceUnavailable":"A file needed to connect could not be loaded. Check your internet connection and try again.","retry":"Try again","draftRestored":"Your draft from this device has been restored. Check that these power values are still current.","draftSaved":"Your entries are saved temporarily on this device. This does not mean they have been submitted.","draftSavedAt":"Saved:","draftClear":"Clear power entries","done":"Submission Complete"},"ja":{"serviceUnavailable":"接続に必要なファイルを読み込めませんでした。通信状態を確認して、もう一度お試しください。","retry":"再試行","draftRestored":"この端末に一時保存した入力を復元しました。現在の戦闘力と一致するかご確認ください。","draftSaved":"入力内容はこの端末に一時保存されます。提出が完了したことを示すものではありません。","draftSavedAt":"保存日時：","draftClear":"戦闘力の入力を消去","done":"提出が完了しました"},"zh":{"serviceUnavailable":"无法加载连接所需的文件。请检查网络连接后重试。","retry":"重试","draftRestored":"已恢复此设备暂存的内容，请确认战力是否仍为最新数值。","draftSaved":"填写内容会暂存在此设备上，不代表已经提交。","draftSavedAt":"保存时间：","draftClear":"清空战力输入","done":"提交成功"}}).forEach(([locale,values])=>Object.assign(I18N[locale],values));
 
