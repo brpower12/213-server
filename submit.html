@@ -350,6 +350,62 @@ textarea:focus{border-color:var(--ours);box-shadow:0 0 0 3px rgba(78,155,255,.18
 @media(max-width:420px){.langbar button{min-height:40px}}
 @media(hover:none){.service-card:hover,.choice-item:hover,.poll-select-card:hover,.btn:hover{transform:none}}
 
+
+/* Submission form readability and touch controls. */
+::placeholder{color:#98a7bd;opacity:1}
+.poll-select-meta small{font-size:12px;line-height:1.5;color:#9baac1}
+.poll-device-status{font-size:12px;line-height:1.35}
+.langbar button{min-width:44px;min-height:44px;padding:8px 6px;font-size:12px;line-height:1.25}
+.view-back{min-height:46px;font-size:13px}
+.vote-home-btn{min-height:48px}
+.field label{font-size:13px;color:#b3bfd2;line-height:1.45}
+.field label .opt{color:#98a7bd}
+.required-note{font-size:12px;color:#a2afc3;line-height:1.5}
+.privacy-note{font-size:12px;color:#9bc2b1;line-height:1.5;margin-bottom:16px}
+.preview{font-size:13px;line-height:1.45;min-height:19px}
+.service-copy span,.poll-head p,.poll-deadline{font-size:13px}
+.poll-progress-count,.poll-device-note,.vote-followup-device-note,.vote-followup-message,.poll-submitted-notice-copy small,.vote-receipt-proof,.poll-update-note{font-size:12px;line-height:1.55}
+.poll-device-note,.vote-followup-device-note,.poll-update-note{color:#9baac1}
+.poll-status-toggle,.poll-status-check-btn{min-height:46px;font-size:13px}
+.poll-status-message{font-size:13px;line-height:1.5}
+.credit{color:#97a7be;font-size:12px}.copyright-note{font-size:12px;color:#8c9bb2}
+select{color-scheme:dark}select option,select optgroup{background:#1c222e;color:#edf1f9}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.choice-item:focus-within{outline:2px solid var(--ours);outline-offset:3px}
+.field-error{margin-top:6px;font-size:13px;line-height:1.5;color:#ff9e9e;overflow-wrap:anywhere}
+.field-error[hidden],.connection-status[hidden],.draft-notice[hidden]{display:none!important}
+input[aria-invalid="true"],select[aria-invalid="true"],textarea[aria-invalid="true"]{border-color:#ff8181;box-shadow:0 0 0 2px rgba(255,107,107,.13)}
+.choice-list[aria-invalid="true"]{outline:2px solid #ff8181;outline-offset:4px;border-radius:12px}
+.power-input-row{display:grid;grid-template-columns:minmax(0,1fr) 92px;align-items:center;gap:6px;min-width:0}
+.power-input-row>input{min-width:0;padding-left:10px;padding-right:10px}
+.power-unit-buttons{display:grid;grid-template-columns:repeat(2,44px);gap:4px;min-width:0}
+.power-unit-button{display:flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;padding:8px 2px;border:1px solid #43516b;border-radius:9px;background:#182232;color:#bcc9df;font-size:14px;font-weight:800;line-height:1.2}
+.power-unit-button:hover{border-color:#6c8bb8;color:#f2f6ff}
+.power-unit-button[aria-pressed="true"]{border-color:#d9b14d;background:rgba(242,193,78,.12);color:#ffe09a}
+.connection-status{display:grid;gap:10px;min-width:0;margin:0 0 16px;padding:12px;border:1px solid #865650;border-radius:11px;background:#2a1e25;color:#ffb7ac;font-size:13px;line-height:1.55}
+.connection-status button{min-height:44px;padding:8px 12px;border:1px solid #886653;border-radius:8px;background:#342627;color:#ffe1cb;font:inherit;font-weight:750}
+.draft-notice{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0;margin:0 0 16px;padding:10px 12px;border:1px solid #48566b;border-radius:10px;background:#192334;font-size:13px;line-height:1.5;color:#c3d3e9}
+.draft-notice>span{min-width:0;overflow-wrap:anywhere}.draft-clear{flex:0 0 auto;min-height:44px;max-width:48%;padding:7px 9px;border:1px solid #526781;border-radius:8px;background:#203048;color:#dfebfc;font:inherit;font-weight:750;white-space:normal}
+.power-receipt{margin:16px 0;padding:14px;border:1px solid rgba(61,220,151,.28);border-radius:12px;background:rgba(61,220,151,.045);text-align:left}
+.power-receipt-row{display:grid;grid-template-columns:minmax(82px,.9fr) minmax(0,1.1fr);align-items:start;gap:10px;padding:9px 0;border-top:1px solid #2b3a42}
+.power-receipt-row:first-child{padding-top:0;border-top:0}.power-receipt-row:last-child{padding-bottom:0}
+.power-receipt-row dt{color:#afc1c6;font-size:13px;line-height:1.5}.power-receipt-row dd{margin:0;min-width:0;color:#eef5f6;font-size:14px;font-weight:700;line-height:1.5;overflow-wrap:anywhere;white-space:normal}
+#doneSummary{font-variant-numeric:tabular-nums}
+@media(max-width:640px){
+  input,select,textarea{font-size:16px}
+  .box{padding-top:20px}
+  .langbar{margin-bottom:12px}
+  .langbar button{min-height:44px;font-size:12px}
+  .view-back{margin-bottom:10px}
+  #formView>img{height:60px!important;margin:0 auto 8px!important}
+  #tSub{margin-top:7px;margin-bottom:10px;font-size:13px;line-height:1.5}
+  .row2.power-row2{grid-template-columns:1fr}
+  .privacy-note{margin-bottom:14px}
+  .poll-progress-count{font-size:12px}
+}
+@media(max-width:360px){.official-badge{font-size:11px}.privacy-note{font-size:12px}.power-receipt{padding:11px}.power-receipt-row{grid-template-columns:minmax(76px,.95fr) minmax(0,1.05fr);gap:8px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}button,.btn,.service-card,.choice-item,.poll-select-card{transition:none!important}.btn:hover,.service-card:hover,.choice-item:hover,.poll-select-card:hover{transform:none!important}}
+
 </style>
 </head>
 <body data-page="home">
@@ -364,6 +420,7 @@ textarea:focus{border-color:var(--ours);box-shadow:0 0 0 3px rgba(78,155,255,.18
   </div>
 
   <!-- 제출 항목 선택 -->
+  <section id="connectionStatus" class="connection-status" hidden role="status" aria-live="polite"><p id="connectionMessage"></p><button id="connectionRetry" type="button" onclick="retrySubmissionService()"></button></section>
   <div id="homeView" class="page-view">
     <img class="home-logo" src="data:image/png;base64,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" alt="" aria-hidden="true">
     <h1 class="sr-only" id="hTitle"></h1>
@@ -408,6 +465,7 @@ textarea:focus{border-color:var(--ours);box-shadow:0 0 0 3px rgba(78,155,255,.18
       <div class="field"><label><span id="tShelter"></span> <b>*</b></label>
         <input id="fShelter" inputmode="numeric" maxlength="4" enterkeyhint="next"></div>
     </div>
+<aside id="powerDraftNotice" class="draft-notice" hidden role="status"><span id="powerDraftMessage"></span><button id="powerDraftClear" class="draft-clear" type="button" onclick="discardPowerDraft()"></button></aside>
     <div class="sechd" style="margin-top:22px"><span id="tSec2"></span></div>
     <div class="field"><label><span id="tS1"></span> <b>*</b></label>
       <input id="fS1" inputmode="decimal" maxlength="16" enterkeyhint="next">
@@ -439,7 +497,8 @@ textarea:focus{border-color:var(--ours);box-shadow:0 0 0 3px rgba(78,155,255,.18
     <button class="view-back" type="button" onclick="showHome()">← <span id="voteBackText"></span></button>
     <h1 id="vTitle"></h1>
     <div class="sub" id="vSub"></div>
-    <div id="pollLoading" class="poll-empty"></div>
+    <div id="pollLoading" class="poll-empty" role="status" aria-live="polite"></div>
+    <button id="pollRetryBtn" type="button" class="view-back poll-retry" hidden onclick="retryPublicPolls()"></button>
     <div id="pollForm" hidden>
       <div class="poll-picker" id="pollSelectWrap" hidden>
         <div class="poll-status-check">
@@ -770,13 +829,16 @@ function setLang(l){
   $('tS3').textContent=t.s3; $('fS3').placeholder=t.s3Ph;
   $('tS4').textContent=t.s4; $('fS4').placeholder=t.s4Ph;
   $('tKills').textContent=t.kills; $('fKills').placeholder=t.killsPh;
-  ['tOpt2','tOpt3','tOpt5'].forEach(id=>{$(id).innerHTML='<b style="color:var(--gold)">*</b>';});
-  $('tOpt4').textContent=t.opt;
-  $('submitBtn').textContent=t.submit;
+  ['tOpt2','tOpt3'].forEach(id=>{$(id).innerHTML='<b style="color:var(--gold)">*</b>';});
+  ['tOpt4','tOpt5'].forEach(id=>{$(id).textContent=t.opt;});
+  $('submitBtn').textContent=submitting?t.submitting:t.submit;
   $('tDone').textContent=t.done;
   $('againBtn').textContent=t.again;
   ['fS1','fS2','fS3','fS4','fKills'].forEach((id,i)=>refreshPreview(id,'pS'+(i+1)));
   applyHubLanguage();
+  clearFieldErrors('formView');clearFieldErrors('voteView');
+  renderPowerDoneSummary();syncPowerUnitButtons();renderPowerDraftNotice();renderConnectionStatus();syncVoteBusyState();
+  document.querySelectorAll('#guideImgs img').forEach(image=>image.alt=t.guide);
   if(sb&&currentPage.startsWith('vote')) loadOpenPolls(true);
 }
 
@@ -817,76 +879,77 @@ function applyHubLanguage(){
   updateVotePreview();
 }
 
-/* 전투력 해석: "6.22g"→6220M, "6220"→6220M, "6.22"→6220M, "850m"→850M */
-function parsePower(t){
-  if(t==null) return null;
-  t=normalizeNumericText(t).trim().toLowerCase().replace(/,/g,'').replace(/\s/g,'').replace(/억/g,'');
-  if(t==='') return null;
-  const m=t.match(/^([0-9]*\.?[0-9]+)(g|m)?$/);
-  if(!m) return NaN;
-  let v=parseFloat(m[1]);
-  if(m[2]==='g') v*=1000;
-  else if(m[2]==='m'){}
-  else if(v<100) v*=1000;
-  return v;
+/* 전투력 해석: "6.22G"→6220M, "850m"→850M. 단위 없는 100 이상은 M, 100 미만은 G/M 확인. */
+function parsePower(value){
+  const parts=powerInputParts(value);
+  if(parts===null)return null;
+  if(!parts||(!parts.unit&&parts.number<100))return NaN;
+  const power=parts.unit==='G'?Number(parts.amount+'e3'):parts.number;
+  return Number.isFinite(power)&&power>0&&power<=Number.MAX_SAFE_INTEGER?power:NaN;
 }
-function parseKills(t){
-  if(t==null) return null;
-  t=normalizeNumericText(t).trim().replace(/,/g,'').replace(/\s/g,'');
-  if(t==='') return null;
-  if(!/^[0-9]+$/.test(t)) return NaN;
-  return +t;
+function parseKills(value){
+  if(value==null)return null;
+  const raw=normalizeNumericText(value).trim().replace(/\s/g,'');
+  if(!raw)return null;
+  if(!/^(?:\d{1,3}(?:,\d{3})+|\d+)$/.test(raw))return NaN;
+  const number=Number(raw.replace(/,/g,''));
+  return Number.isSafeInteger(number)&&number>=0?number:NaN;
 }
-function fmtG(m){ if(m==null||isNaN(m)) return ''; if(Math.abs(m)>=1000) return (m/1000).toFixed(2).replace(/\.?0+$/,'')+'G'; return (+m.toFixed(1))+'M'; }
-function refreshPreview(inp,prev){
-  const raw=$(inp).value.trim(), el=$(prev), t=I18N[lang];
-  if(!raw){el.textContent='';el.classList.remove('bad');return;}
-  if(inp==='fKills'){
-    const k=parseKills(raw);
-    if(k==null||isNaN(k)||k<=0){el.textContent=t.errKills;el.classList.add('bad');}
-    else{el.textContent=t.preview(k.toLocaleString());el.classList.remove('bad');}
-    return;
+function fmtG(value){
+  if(value==null||value==='')return '';
+  const number=Number(value);
+  if(!Number.isFinite(number))return '';
+  return Math.abs(number)>=1000?shiftPowerDecimal(number,-3)+'G':shiftPowerDecimal(number,0)+'M';
+}
+function refreshPreview(inputId,previewId){
+  const input=$(inputId),preview=$(previewId),t=I18N[lang]||I18N.ko;
+  if(!input||!preview)return;
+  const raw=input.value.trim();
+  if(!raw){preview.textContent='';preview.classList.remove('bad');syncPowerUnitButtons();return;}
+  if(inputId==='fKills'){
+    const kills=parseKills(raw),valid=Number.isSafeInteger(kills)&&kills>=0;
+    preview.textContent=valid?t.preview(kills.toLocaleString(pollLocale())):t.errKills;
+    preview.classList.toggle('bad',!valid);return;
   }
-  const v=parsePower(raw);
-  if(v==null||isNaN(v)||v<=0){el.textContent=t.badNum;el.classList.add('bad');}
-  else{el.textContent=t.preview(fmtG(v));el.classList.remove('bad');}
+  const value=parsePower(raw),valid=Number.isFinite(value)&&value>0;
+  preview.textContent=valid?t.preview(fmtG(value)):powerValidationMessage(raw,t.badNum);
+  preview.classList.toggle('bad',!valid);syncPowerUnitButtons();
 }
 ['fS1','fS2','fS3','fS4','fKills'].forEach((id,i)=>$(id).addEventListener('input',()=>refreshPreview(id,'pS'+(i+1))));
 
 function setPage(page){
   const ids={home:'homeView',power:'formView',powerDone:'doneView',vote:'voteView',voteDone:'voteDoneView'};
-  Object.entries(ids).forEach(([key,id])=>{
-    const element=$(id),active=key===page;
-    element.hidden=!active;
-    element.style.display=active?'block':'none';
-  });
-  currentPage=page;
-  document.body.dataset.page=page;
+  Object.entries(ids).forEach(([key,id])=>{const element=$(id),active=key===page;element.hidden=!active;element.style.display=active?'block':'none';});
+  currentPage=page;document.body.dataset.page=page;
   const ht=HUB_I18N[lang]||HUB_I18N.ko;
-  const title=page==='home'?ht.browserTitle:page.startsWith('vote')?ht.voteTitle:I18N[lang].title;
-  document.title='213 SERVER | '+title;
-  window.scrollTo({top:0,behavior:'smooth'});
+  document.title='213 SERVER | '+(page==='home'?ht.browserTitle:page.startsWith('vote')?ht.voteTitle:I18N[lang].title);
+  const reduced=window.matchMedia?.('(prefers-reduced-motion:reduce)').matches;
+  window.scrollTo({top:0,behavior:reduced?'auto':'smooth'});focusPageHeading(page);
 }
 function showHome(){setPage('home');}
-function showPowerForm(){setPage('power');$('formMsg').textContent='';}
+function showPowerForm(){setPage('power');clearFieldErrors('formView');$('formMsg').textContent='';ensureSubmissionService();renderPowerDraftNotice();}
 function showForm(){showPowerForm();}
-function showVoteForm(){
-  setPage('vote');
-  $('voteMsg').textContent='';
-  loadOpenPolls(true);
-}
+function showVoteForm(){setPage('vote');clearFieldErrors('voteView');$('voteMsg').textContent='';loadOpenPolls(true);}
 
 function pollLocale(){return ({ko:'ko-KR',en:'en-US',ja:'ja-JP',zh:'zh-CN'})[lang]||'ko-KR';}
 function voteReceiptKey(pollId){return 'vote_receipt_'+String(pollId||'');}
-function readVoteReceipt(pollId){
-  try{
-    const receipt=JSON.parse(readSubmitPreference(voteReceiptKey(pollId))||'null');
-    return receipt&&String(receipt.pollId)===String(pollId)&&receipt.savedAt?receipt:null;
-  }catch(error){return null;}
+function readVoteReceipt(pollId,identity){
+  const player=currentVoteReceiptIdentity(identity);
+  if(!player.complete)return null;
+  if(voteReceiptMatches(latestVoteReceipt,pollId,player))return latestVoteReceipt;
+  for(const key of [identityVoteReceiptKey(pollId,player),voteReceiptKey(pollId)]){
+    try{
+      const receipt=JSON.parse(readSubmitPreference(key)||'null');
+      if(voteReceiptMatches(receipt,pollId,player))return receipt;
+    }catch(_error){}
+  }
+  return null;
 }
 function saveVoteReceipt(receipt){
-  latestVoteReceipt=receipt;
-  try{writeSubmitPreference(voteReceiptKey(receipt.pollId),JSON.stringify(receipt));}catch(error){}
+  const player=currentVoteReceiptIdentity(receipt);
+  if(!voteReceiptMatches(receipt,receipt?.pollId,player))return;
+  latestVoteReceipt={...receipt};
+  writeSubmitPreference(identityVoteReceiptKey(receipt.pollId,player),JSON.stringify(latestVoteReceipt));
 }
 function normalizeVoteLookup(value){return String(value??'').normalize('NFKC').trim().toLowerCase().replace(/\s+/g,'');}
 function voteLookupKey(alliance,nickname){return normalizeVoteLookup(alliance)+'|'+normalizeVoteLookup(nickname);}
@@ -905,7 +968,8 @@ function parseVoteStatusPayload(data){
 }
 function pollSubmissionState(poll){
   const pollId=String(poll?.id??'');
-  if(voteStatusState.loaded)return voteStatusState.completedIds.has(pollId)?'submitted':'pending';
+  if(!pollId)return 'unknown';
+  if(hasCurrentVoteStatus())return voteStatusState.completedIds.has(pollId)?'submitted':'pending';
   return readVoteReceipt(pollId)?'submitted':'unknown';
 }
 function voteStatusLabel(state,t=HUB_I18N[lang]||HUB_I18N.ko){
@@ -922,9 +986,12 @@ function setVoteStatusMessage(message,bad=false){
 function renderPollSelector(currentPoll){
   const wrap=$('pollSelectWrap'),list=$('vPollSelectList');if(!wrap||!list)return;
   const t=HUB_I18N[lang]||HUB_I18N.ko,data=voteProgressData();
-  wrap.hidden=data.total<=1;
+  wrap.hidden=!currentPoll;
+  const pickerHead=$('vPollSelectLabel')?.closest('.poll-picker-top');
+  if(pickerHead)pickerHead.hidden=data.total<=1;
+  list.hidden=data.total<=1;
   $('vPollProgress').textContent=`${data.completed}/${data.total} ${t.completedCount}`;
-  $('vPollStatusNote').textContent=voteStatusState.loaded?t.statusNoteServer:t.statusNoteUnknown;
+  $('vPollStatusNote').textContent=hasCurrentVoteStatus()?(voteStatusState.error?t.statusNoteCached:t.statusNoteServer):t.statusNoteUnknown;
   list.innerHTML=data.total>1?data.polls.map(row=>{
     const active=String(row.id)===String(currentPoll?.id),state=pollSubmissionState(row),status=voteStatusLabel(state,t);
     return `<button class="poll-select-card ${state}${active?' active':''}" type="button" data-poll-id="${escapeHtml(row.id)}" aria-label="${escapeHtml(row.title+' / '+status)}" aria-pressed="${active?'true':'false'}" onclick="selectPublicPoll(this.dataset.pollId)"><span class="poll-select-copy"><b>${escapeHtml(row.title)}</b><span class="poll-select-meta"><small>${escapeHtml(formatPollDeadline(row.closes_at))}</small><span class="poll-device-status ${state}">${escapeHtml(status)}</span></span></span><span class="poll-select-mark" aria-hidden="true">✓</span></button>`;
@@ -934,17 +1001,17 @@ function renderVoteDoneFollowup(){
   const wrap=$('voteFollowup');if(!wrap)return;
   const data=voteProgressData();
   if(!latestVoteReceipt||!data.total){wrap.hidden=true;return;}
-  const t=HUB_I18N[lang]||HUB_I18N.ko,currentId=String(latestVoteReceipt.pollId||'');
+  const t=HUB_I18N[lang]||HUB_I18N.ko,currentId=String(latestVoteReceipt.pollId||''),known=hasCurrentVoteStatus();
   wrap.hidden=false;$('vFollowupTitle').textContent=t.followupTitle;
   $('vFollowupProgress').textContent=`${data.completed}/${data.total} ${t.completedCount}`;
-  $('vFollowupMessage').textContent=voteStatusState.loaded?(data.pending?t.followupRemaining(data.pending):t.followupAllDone):t.followupUnknown;
+  $('vFollowupMessage').textContent=known?(data.pending?t.followupRemaining(data.pending):t.followupAllDone):t.followupUnknown;
   $('vFollowupList').innerHTML=data.polls.map(row=>{
     const state=pollSubmissionState(row),status=voteStatusLabel(state,t),current=String(row.id)===currentId;
     return `<button class="vote-followup-card ${state}${current?' current':''}" type="button" data-poll-id="${escapeHtml(row.id)}" aria-label="${escapeHtml(row.title+' / '+status)}" onclick="openVotePoll(this.dataset.pollId)"><span class="vote-followup-card-copy"><b>${escapeHtml(row.title)}</b><span class="poll-select-meta"><small>${escapeHtml(formatPollDeadline(row.closes_at))}</small><span class="poll-device-status ${state}">${escapeHtml(status)}</span></span></span><span class="vote-followup-card-arrow" aria-hidden="true">›</span></button>`;
   }).join('');
   const next=nextUnsubmittedPoll();
   $('voteContinueBtn').hidden=!next;$('voteContinueBtn').textContent=t.continueNext;
-  $('vFollowupNote').textContent=voteStatusState.loaded?t.followupServerNote:t.followupUnknownNote;
+  $('vFollowupNote').textContent=known?(voteStatusState.error?t.statusNoteCached:t.followupServerNote):t.followupUnknownNote;
 }
 function renderVoteStatusViews(){
   const current=publicPolls.find(row=>String(row.id)===String(selectedPublicPollId));
@@ -960,45 +1027,55 @@ function toggleVoteStatusCheck(){
   }
 }
 async function checkVoteStatus(){
+  if(voteSubmitting)return;
   const t=HUB_I18N[lang]||HUB_I18N.ko;
+  if(!ensureSubmissionService())return;
   const alliance=$('vStatusAllianceInput').value.trim(),nickname=$('vStatusNickInput').value.trim();
-  if(!alliance||!nickname){setVoteStatusMessage(t.statusNeedInput,true);return;}
+  if(!alliance||!nickname){showFieldError(!alliance?'vStatusAllianceInput':'vStatusNickInput',t.statusNeedInput,'voteStatusMsg');return;}
+  if(alliance.length>30||nickname.length>60){showFieldError(alliance.length>30?'vStatusAllianceInput':'vStatusNickInput',I18N[lang].errLong,'voteStatusMsg');return;}
   $('vAllianceInput').value=alliance;$('vNickInput').value=nickname;
   writeSubmitPreference('vote_vAllianceInput',alliance);writeSubmitPreference('vote_vNickInput',nickname);
+  handleVoteIdentityChange();
   await refreshVoteStatusFromServer(alliance,nickname,{quiet:false,force:true});
 }
 async function refreshVoteStatusFromServer(alliance,nickname,{quiet=false,force=false}={}){
-  const t=HUB_I18N[lang]||HUB_I18N.ko,key=voteLookupKey(alliance,nickname);
-  if(!sb||!normalizeVoteLookup(alliance)||!normalizeVoteLookup(nickname))return false;
-  if(!force&&voteStatusState.loaded&&voteStatusState.identity===key){renderVoteStatusViews();return true;}
+  const player=currentVoteReceiptIdentity({alliance,nickname}),key=player.key;
+  if(!sb||!player.complete)return false;
+  if(!force&&hasCurrentVoteStatus()&&voteStatusState.identity===key&&!voteStatusState.error){renderVoteStatusViews();return true;}
   const requestId=++voteStatusRequestSeq;
-  voteStatusState={...voteStatusState,loading:true,identity:key,error:false};
-  $('voteStatusCheckBtn').disabled=true;$('voteStatusCheckBtn').textContent=t.statusChecking;
-  if(!quiet)setVoteStatusMessage(t.statusChecking,false);
+  const prior=voteStatusState.identity===key&&voteStatusState.loaded?{...voteStatusState,completedIds:new Set(voteStatusState.completedIds)}:null;
+  voteStatusState=prior?{...prior,loading:true,error:false}:{loaded:false,loading:true,identity:key,completedIds:new Set(),error:false};
+  $('voteStatusCheckBtn').disabled=true;$('voteStatusCheckBtn').textContent=(HUB_I18N[lang]||HUB_I18N.ko).statusChecking;
+  if(!quiet)setVoteStatusMessage((HUB_I18N[lang]||HUB_I18N.ko).statusChecking,false);
   try{
     const {data,error}=await sb.rpc('get_participation_submission_status',{p_alliance:alliance,p_nickname:nickname});
+    if(requestId!==voteStatusRequestSeq||currentVoteReceiptIdentity().key!==key)return false;
     if(error)throw error;
-    if(requestId!==voteStatusRequestSeq)return false;
     voteStatusState={loaded:true,loading:false,identity:key,completedIds:parseVoteStatusPayload(data),error:false};
-    setVoteStatusMessage(t.statusChecked,false);renderVoteStatusViews();return true;
-  }catch(error){
-    if(requestId!==voteStatusRequestSeq)return false;
-    voteStatusState={loaded:false,loading:false,identity:key,completedIds:new Set(),error:true};
-    if(!quiet)setVoteStatusMessage(t.statusError,true);
+    setVoteStatusMessage((HUB_I18N[lang]||HUB_I18N.ko).statusChecked,false);renderVoteStatusViews();return true;
+  }catch(_error){
+    if(requestId!==voteStatusRequestSeq||currentVoteReceiptIdentity().key!==key)return false;
+    voteStatusState=prior?{...prior,loading:false,error:true}:{loaded:false,loading:false,identity:key,completedIds:new Set(),error:true};
+    if(!quiet)setVoteStatusMessage((HUB_I18N[lang]||HUB_I18N.ko).statusError,true);
     renderVoteStatusViews();return false;
   }finally{
-    if(requestId===voteStatusRequestSeq){$('voteStatusCheckBtn').disabled=false;$('voteStatusCheckBtn').textContent=t.statusCheck;}
+    if(requestId===voteStatusRequestSeq){$('voteStatusCheckBtn').disabled=voteSubmitting;$('voteStatusCheckBtn').textContent=(HUB_I18N[lang]||HUB_I18N.ko).statusCheck;}
   }
 }
 function handleVoteIdentityChange(){
   const key=voteLookupKey($('vAllianceInput').value,$('vNickInput').value);
   if(voteStatusState.identity&&key!==voteStatusState.identity){
-    voteStatusRequestSeq++;voteStatusState={loaded:false,loading:false,identity:'',completedIds:new Set(),error:false};setVoteStatusMessage('',false);renderVoteStatusViews();
+    voteStatusRequestSeq++;
+    voteStatusState={loaded:false,loading:false,identity:'',completedIds:new Set(),error:false};
+    setVoteStatusMessage('',false);
+    $('voteStatusCheckBtn').textContent=(HUB_I18N[lang]||HUB_I18N.ko).statusCheck;
   }
+  renderVoteStatusViews();syncVoteBusyState();
 }
 function nextUnsubmittedPoll(){
-  const currentId=String(latestVoteReceipt?.pollId||'');
-  return activePublicPolls().find(poll=>String(poll.id)!==currentId&&(voteStatusState.loaded?pollSubmissionState(poll)==='pending':pollSubmissionState(poll)==='unknown'))||null;
+  const identity=currentVoteReceiptIdentity();
+  const currentId=voteReceiptMatches(latestVoteReceipt,latestVoteReceipt?.pollId,identity)?String(latestVoteReceipt.pollId):'';
+  return activePublicPolls().find(poll=>String(poll.id)!==currentId&&pollSubmissionState(poll)!=='submitted')||null;
 }
 function openVotePoll(pollId){
   const poll=publicPolls.find(row=>String(row.id)===String(pollId));if(!poll){showVoteForm();return;}
@@ -1056,27 +1133,38 @@ function parsePollPayload(data){
 let publicPollLoadSeq=0;
 async function loadOpenPolls(keepSelection=false){
   const requestId=++publicPollLoadSeq,requestedLang=lang;
-  const t=HUB_I18N[lang]||HUB_I18N.ko;
-  if(!sb){$('pollLoading').hidden=false;$('pollLoading').textContent=t.loading;return;}
+  const t=HUB_I18N[lang]||HUB_I18N.ko,retry=$('pollRetryBtn');
+  if(retry)retry.hidden=true;
+  if(!ensureSubmissionService()){
+    $('pollLoading').hidden=false;$('pollLoading').textContent=I18N[lang].scriptFail;
+    if(!publicPolls.length)$('pollForm').hidden=true;
+    if(retry)retry.hidden=false;
+    return;
+  }
   const oldPoll=keepSelection?selectedPublicPollId:null;
   const oldOption=document.querySelector('input[name="publicPollOption"]:checked')?.value||null;
-  $('pollLoading').hidden=false;$('pollLoading').textContent=t.loading;$('pollForm').hidden=true;
+  const cached=publicPolls.some(poll=>String(poll.id)===String(selectedPublicPollId));
+  $('pollLoading').hidden=false;$('pollLoading').textContent=t.loading;
+  if(!cached)$('pollForm').hidden=true;
   try{
     const {data,error}=await sb.rpc('get_open_participation_polls',{p_lang:lang});
     if(requestId!==publicPollLoadSeq||lang!==requestedLang)return;
     if(error)throw error;
+    const nextPolls=typeof data==='string'?JSON.parse(data):data;
+    if(!Array.isArray(nextPolls)||!nextPolls.every(poll=>poll&&typeof poll==='object'&&!Array.isArray(poll)&&poll.id!=null&&(poll.options==null||Array.isArray(poll.options))))throw new Error('Invalid poll response');
     const keepPoll=keepSelection?selectedPublicPollId:oldPoll;
     const keepOption=keepSelection?(document.querySelector('input[name="publicPollOption"]:checked')?.value||oldOption):oldOption;
-    publicPolls=parsePollPayload(data);
-    selectedPublicPollId=publicPolls.some(p=>String(p.id)===String(keepPoll))?keepPoll:(publicPolls[0]?.id||null);
+    publicPolls=nextPolls;
+    selectedPublicPollId=publicPolls.some(poll=>String(poll.id)===String(keepPoll))?keepPoll:(publicPolls[0]?.id||null);
     renderPublicPoll(keepOption);
-    const alliance=$('vAllianceInput').value.trim(),nickname=$('vNickInput').value.trim(),key=voteLookupKey(alliance,nickname);
-    if(alliance&&nickname&&(!voteStatusState.loaded||voteStatusState.identity!==key)&&!(voteStatusState.error&&voteStatusState.identity===key))refreshVoteStatusFromServer(alliance,nickname,{quiet:true});
-  }catch(error){
+    const identity=currentVoteReceiptIdentity();
+    if(identity.complete&&(!hasCurrentVoteStatus()||voteStatusState.identity!==identity.key)&&!(voteStatusState.error&&voteStatusState.identity===identity.key))refreshVoteStatusFromServer(identity.alliance,identity.nickname,{quiet:true});
+  }catch(_error){
     if(requestId!==publicPollLoadSeq||lang!==requestedLang)return;
-    publicPolls=[];selectedPublicPollId=null;
     $('pollLoading').hidden=false;
-    $('pollLoading').textContent=t.networkErr+': '+(error?.message||String(error));
+    $('pollLoading').textContent=(HUB_I18N[lang]||HUB_I18N.ko).voteLoadFailed;
+    if(!publicPolls.length)$('pollForm').hidden=true;
+    if(retry)retry.hidden=false;
   }
 }
 function selectPublicPoll(value){
@@ -1108,7 +1196,7 @@ function renderPublicPoll(preserveOptionId=null){
   }).join('');
   const targets=Array.isArray(poll.target_alliances)?poll.target_alliances:[];
   if(targets.length===1&&!$('vAllianceInput').value.trim())$('vAllianceInput').value=targets[0];
-  renderVoteDoneReceipt();renderVoteDoneFollowup();
+  renderVoteDoneReceipt();renderVoteDoneFollowup();syncVoteBusyState();
 }
 function syncPublicChoice(){
   document.querySelectorAll('.choice-item').forEach(label=>label.classList.toggle('selected',!!label.querySelector('input:checked')));
@@ -1124,28 +1212,36 @@ function updateVotePreview(){
 }
 async function doVoteSubmit(){
   if(voteSubmitting)return;
+  clearFieldErrors('voteView');
+  if(!ensureSubmissionService())return;
   const t=HUB_I18N[lang]||HUB_I18N.ko;
   const poll=publicPolls.find(row=>String(row.id)===String(selectedPublicPollId));
   const optionId=document.querySelector('input[name="publicPollOption"]:checked')?.value;
   const alliance=$('vAllianceInput').value.trim(),nickname=$('vNickInput').value.trim(),troop=$('vTroopInput').value;
   const industryText=normalizeNumericText($('vIndustryInput').value).trim().replace(/\s/g,'');
   const squad1=parsePower($('vSquad1Input').value),note=$('vNoteInput').value.trim();
-  const fail=message=>{$('voteMsg').style.color='var(--red)';$('voteMsg').textContent=message;};
-  if(!poll||!activePublicPolls().some(row=>String(row.id)===String(poll.id))){fail(t.pollClosed);return;}
-  if(!optionId){fail(t.chooseOption);return;}
-  if(!alliance){fail(t.errAlliance);return;}
-  if(!nickname){fail(t.errNick);return;}
-  if(!troop){fail(t.errTroop);return;}
-  if(!/^[0-9]{1,4}$/.test(industryText)||Number(industryText)<=0){fail(t.errIndustry);return;}
-  if(squad1==null||Number.isNaN(squad1)||squad1<=0){fail(t.errPower);return;}
+  const fail=(message,inputId)=>{
+    if(voteSubmitting){voteSubmitting=false;syncVoteBusyState();}
+    if(inputId)showFieldError(inputId,message,'voteMsg');
+    else{$('voteMsg').style.color='var(--red)';$('voteMsg').textContent=message;}
+  };
+  if(!poll||!activePublicPolls().some(row=>String(row.id)===String(poll.id))){fail(t.pollClosed,'publicPollOptions');return;}
+  if(!optionId){fail(t.chooseOption,'publicPollOptions');return;}
+  if(!alliance){fail(t.errAlliance,'vAllianceInput');return;}
+  if(!nickname){fail(t.errNick,'vNickInput');return;}
+  if(!TROOP_CANON.includes(troop)){fail(t.errTroop,'vTroopInput');return;}
+  if(!/^[0-9]{1,4}$/.test(industryText)||Number(industryText)<=0){fail(t.errIndustry,'vIndustryInput');return;}
+  if(squad1==null||!Number.isFinite(squad1)||squad1<=0){fail(t.errPower,'vSquad1Input');return;}
+  if(alliance.length>30||nickname.length>60||note.length>300){fail(I18N[lang].errLong,alliance.length>30?'vAllianceInput':nickname.length>60?'vNickInput':'vNoteInput');return;}
   const option=(poll.options||[]).find(row=>String(row.id)===String(optionId));
-  if(!option){fail(t.badOption);return;}
+  if(!option){fail(t.badOption,'publicPollOptions');return;}
   const optionLabel=localizePollOptionLabel(option);
   const troopText=$('vTroopInput').selectedOptions[0]?.textContent||troop;
   const lines=[poll.title,optionLabel,t.alliance+': '+alliance.toUpperCase(),t.nick+': '+nickname,t.troop+': '+troopText,t.industry+': '+industryText,t.squad1+': '+fmtG(squad1)];
   if(note)lines.push(t.note+': '+note);
   if(!confirm(t.confirm+'\n\n'+lines.join('\n')))return;
-  voteSubmitting=true;$('voteSubmitBtn').disabled=true;$('voteSubmitBtn').textContent=t.submitting;
+  const capturedKey=voteLookupKey(alliance,nickname),capturedPollId=String(poll.id);
+  voteSubmitting=true;syncVoteBusyState();
   $('voteMsg').style.color='var(--muted)';$('voteMsg').textContent=t.submitting;
   try{
     const {data,error}=await sb.rpc('submit_participation_vote',{
@@ -1153,21 +1249,26 @@ async function doVoteSubmit(){
       p_industry:Number(industryText),p_squad1:squad1,p_note:note||null
     });
     if(error)throw error;
-    const errors={poll_not_found:t.pollClosed,poll_closed:t.pollClosed,bad_option:t.badOption,no_alliance:t.errAlliance,no_nickname:t.errNick,bad_troop:t.errTroop,bad_industry:t.errIndustry,bad_power:t.errPower,alliance_not_target:t.notTarget,too_long:I18N[lang].errLong};
-    if(data!=='ok'){fail(errors[data]||('Error: '+data));return;}
-    ['vAllianceInput','vNickInput','vTroopInput','vIndustryInput'].forEach(id=>writeSubmitPreference('vote_'+id,$(id).value));
-    saveVoteReceipt({pollId:String(poll.id),optionId:String(optionId),pollTitle:poll.title||t.pollTitle,optionLabel,optionCategory:option?.category||'',alliance:alliance.toUpperCase(),nickname,savedAt:new Date().toISOString()});
-    const lookupKey=voteLookupKey(alliance,nickname);
-    if(voteStatusState.loaded&&voteStatusState.identity===lookupKey){
-      const completedIds=new Set(voteStatusState.completedIds);completedIds.add(String(poll.id));voteStatusState={...voteStatusState,completedIds};
+    const live=HUB_I18N[lang]||HUB_I18N.ko;
+    const errors={poll_not_found:[live.pollClosed,'publicPollOptions'],poll_closed:[live.pollClosed,'publicPollOptions'],bad_option:[live.badOption,'publicPollOptions'],no_alliance:[live.errAlliance,'vAllianceInput'],no_nickname:[live.errNick,'vNickInput'],bad_troop:[live.errTroop,'vTroopInput'],bad_industry:[live.errIndustry,'vIndustryInput'],bad_power:[live.errPower,'vSquad1Input'],alliance_not_target:[live.notTarget,'vAllianceInput'],too_long:[I18N[lang].errLong,'vNoteInput']};
+    if(data!=='ok'){const known=errors[data];fail(known?known[0]:live.voteSaveUnconfirmed,known?.[1]);return;}
+    const receipt={pollId:capturedPollId,optionId:String(optionId),pollTitle:poll.title||t.pollTitle,optionLabel,optionCategory:option?.category||'',alliance:alliance.toUpperCase(),nickname,savedAt:new Date().toISOString()};
+    saveVoteReceipt(receipt);
+    const sameIdentity=currentVoteReceiptIdentity().key===capturedKey;
+    if(sameIdentity){
+      ['vAllianceInput','vNickInput','vTroopInput','vIndustryInput'].forEach(id=>writeSubmitPreference('vote_'+id,$(id).value));
+      if(voteStatusState.loaded&&voteStatusState.identity===capturedKey){
+        const completedIds=new Set(voteStatusState.completedIds);completedIds.add(capturedPollId);voteStatusState={...voteStatusState,completedIds};
+      }
     }
-    renderVoteDoneReceipt();
-    $('voteDoneSummary').textContent=t.doneTail;
-    setPage('voteDone');
-    renderVoteDoneFollowup();
-    await refreshVoteStatusFromServer(alliance,nickname,{quiet:true,force:true});
-  }catch(error){fail(t.networkErr+': '+(error?.message||String(error)));}
-  finally{voteSubmitting=false;$('voteSubmitBtn').disabled=false;$('voteSubmitBtn').textContent=t.submit;}
+    if(currentPage==='vote'&&sameIdentity&&String(selectedPublicPollId)===capturedPollId){
+      renderVoteDoneReceipt();$('voteDoneSummary').textContent=live.doneTail;setPage('voteDone');renderVoteDoneFollowup();
+      await refreshVoteStatusFromServer(alliance,nickname,{quiet:true,force:true});
+    }else{
+      $('voteMsg').style.color='var(--green)';$('voteMsg').textContent=live.voteSavedElsewhere;renderVoteStatusViews();
+    }
+  }catch(_error){fail((HUB_I18N[lang]||HUB_I18N.ko).voteSaveUnconfirmed);}
+  finally{voteSubmitting=false;syncVoteBusyState();}
 }
 
 $('vSquad1Input').addEventListener('input',updateVotePreview);
@@ -1188,134 +1289,62 @@ $('vSquad1Input').addEventListener('input',updateVotePreview);
 
 
 async function doSubmit(){
-  if(submitting) return;
-
-  const t=I18N[lang];
-  const alliance=$('fAlliance').value.trim();
-  const nick=$('fNick').value.trim();
-
-  const showError=message=>{
-    $('formMsg').style.color='var(--red)';
-    $('formMsg').textContent=message;
-  };
-
-  if(!alliance){showError(t.errAlliance);return;}
-  if(!nick){showError(t.errNick);return;}
-
-  const troopValue=$('fTroop').value;
-  if(!troopValue){showError(t.errTroop);return;}
-
-  const shelter=normalizeNumericText($('fShelter').value)
-    .trim()
-    .replace(/\s/g,'');
-  if(!/^[0-9]{1,4}$/.test(shelter)||Number(shelter)<=0){
-    showError(t.errShelter);
-    return;
+  if(submitting)return;
+  if(!ensureSubmissionService())return;
+  clearFieldErrors('formView');
+  const t=I18N[lang]||I18N.ko,alliance=$('fAlliance').value.trim(),nickname=$('fNick').value.trim();
+  if(!alliance){showFieldError('fAlliance',t.errAlliance,'formMsg');return;}
+  if(!nickname){showFieldError('fNick',t.errNick,'formMsg');return;}
+  const troop=$('fTroop').value;
+  if(!troop){showFieldError('fTroop',t.errTroop,'formMsg');return;}
+  const industry=normalizeNumericText($('fShelter').value).trim().replace(/\s/g,'');
+  if(!/^[0-9]{1,4}$/.test(industry)||Number(industry)<=0){showFieldError('fShelter',t.errShelter,'formMsg');return;}
+  const powers=[];
+  for(let index=1;index<=4;index++){
+    const id='fS'+index,raw=$(id).value.trim();
+    if(index===4&&!raw){powers.push(null);continue;}
+    const value=parsePower(raw);
+    if(!Number.isFinite(value)||value<=0){
+      const fallback=index===1?t.errS1:raw?t.badNum:t.errS234;
+      showFieldError(id,powerValidationMessage(raw,fallback),'formMsg');return;
+    }
+    powers.push(value);
   }
-  $('fShelter').value=shelter;
-
-  const s1=parsePower($('fS1').value);
-  if(s1==null||isNaN(s1)||s1<=0){showError(t.errS1);return;}
-
-  const req=id=>{
-    const v=parsePower($(id).value);
-    return (v==null||isNaN(v)||v<=0)?null:v;
-  };
-
-  const s2=req('fS2');
-  const s3=req('fS3');
-  if(s2===null||s3===null){showError(t.errS234);return;}
-
-  let s4=null;
-  if($('fS4').value.trim()!==''){
-    s4=req('fS4');
-    if(s4===null){showError(t.badNum);return;}
-  }
-
   const kills=parseKills($('fKills').value);
-  if(kills==null||isNaN(kills)||kills<=0){
-    showError(t.errKills);
-    return;
-  }
-
-  const troopText=$('fTroop').selectedOptions[0]?.textContent||'';
-
-  const confirmLines=[
-    t.alliance+': '+alliance.toUpperCase(),
-    t.nick+': '+nick
-  ];
-  confirmLines.push(t.troop+': '+troopText);
-  confirmLines.push(t.shelter+': '+shelter);
-
-  [[0,s1],[1,s2],[2,s3],[3,s4]]
-    .filter(([,v])=>v)
-    .forEach(([i,v])=>confirmLines.push(t.squadWord[i]+': '+fmtG(v)));
-  confirmLines.push(t.kills+': '+kills.toLocaleString());
-
-  if(!confirm(t.confirmQ+'\n\n'+confirmLines.join('\n'))) return;
-
-  submitting=true;
-  $('submitBtn').disabled=true;
-  $('formMsg').style.color='var(--muted)';
-  $('formMsg').textContent=t.submitting;
-
+  if(kills!==null&&(!Number.isSafeInteger(kills)||kills<0)){showFieldError('fKills',t.errKills,'formMsg');return;}
+  const troopText=$('fTroop').selectedOptions[0]?.textContent||troop;
+  const lines=[t.alliance+': '+alliance.toUpperCase(),t.nick+': '+nickname,t.troop+': '+troopText,t.shelter+': '+industry];
+  powers.forEach((value,index)=>{if(value!==null)lines.push(t.squadWord[index]+': '+fmtG(value));});
+  if(kills!==null)lines.push(t.kills+': '+kills.toLocaleString(pollLocale()));
+  if(!confirm(t.confirmQ+'\n\n'+lines.join('\n')))return;
+  submitting=true;setPowerInputsBusy(true);$('submitBtn').disabled=true;$('submitBtn').textContent=t.submitting;
+  $('formMsg').style.color='var(--muted)';$('formMsg').textContent=t.submitting;
+  let response=null,requestFailed=false;
   try{
-    const {data,error}=await sb.rpc('submit_power',{
-      p_server:'213',
-      p_alliance:alliance,
-      p_nickname:nick,
-      p_troop:troopValue,
-      p_shelter:shelter,
-      p_s1:s1,
-      p_s2:s2,
-      p_s3:s3,
-      p_s4:s4,
-      p_kills:kills
+    response=await sb.rpc('submit_power',{
+      p_server:'213',p_alliance:alliance,p_nickname:nickname,p_troop:troop,p_shelter:industry,
+      p_s1:powers[0],p_s2:powers[1],p_s3:powers[2],p_s4:powers[3],p_kills:kills
     });
-
-    if(error){
-      showError(t.networkErr+': '+error.message);
-      return;
-    }
-
-    if(data!=='ok'){
-      const msgs={
-        no_nickname:t.errNick,
-        no_alliance:t.errAlliance,
-        no_troop:t.errTroop,
-        no_shelter:t.errShelter,
-        bad_shelter:t.errShelter,
-        too_long:t.errLong,
-        bad_power:t.errS1
-      };
-      showError(msgs[data]||('Error: '+data));
-      return;
-    }
-
-    ['fAlliance','fNick','fTroop','fShelter'].forEach(
-      id=>writeSubmitPreference('sub_'+id,$(id).value)
-    );
-
-    const summaryParts=[[0,s1],[1,s2],[2,s3],[3,s4]]
-      .filter(([,v])=>v)
-      .map(([i,v])=>t.squadWord[i]+' '+fmtG(v))
-      .concat([t.kills+' '+kills.toLocaleString()])
-      .join(' / ');
-
-    $('doneSummary').innerHTML=
-      `<b>${escapeHtml(alliance.toUpperCase())} / ${escapeHtml(nick)}</b><br>`+
-      `${escapeHtml(summaryParts)}<br><br>${t.doneTail}`;
-
-    ['fS1','fS2','fS3','fS4','fKills'].forEach(id=>{$(id).value='';});
-    ['pS1','pS2','pS3','pS4','pS5'].forEach(id=>{$(id).textContent='';});
-
-    setPage('powerDone');
-  }catch(error){
-    showError(t.networkErr+': '+(error?.message||String(error)));
-  }finally{
-    submitting=false;
-    $('submitBtn').disabled=false;
+  }catch(_error){requestFailed=true;}
+  finally{
+    submitting=false;setPowerInputsBusy(false);$('submitBtn').disabled=!submissionServiceReady();$('submitBtn').textContent=(I18N[lang]||I18N.ko).submit;
   }
+  const current=I18N[lang]||I18N.ko;
+  if(requestFailed||response?.error){showFieldError('',current.submitUnconfirmed,'formMsg');return;}
+  if(response?.data!=='ok'){
+    const errors={no_nickname:['fNick',current.errNick],no_alliance:['fAlliance',current.errAlliance],no_troop:['fTroop',current.errTroop],no_shelter:['fShelter',current.errShelter],bad_shelter:['fShelter',current.errShelter],too_long:['',current.errLong],bad_power:['fS1',current.errS1]};
+    const error=Object.prototype.hasOwnProperty.call(errors,response?.data)?errors[response.data]:['',current.submitUnconfirmed];
+    showFieldError(error[0],error[1],'formMsg');return;
+  }
+  latestPowerReceipt={alliance:alliance.toUpperCase(),nickname,troop,industry,powers:powers.slice(),kills};
+  ['fAlliance','fNick','fTroop','fShelter'].forEach(id=>writeSubmitPreference('sub_'+id,$(id).value));
+  renderPowerDoneSummary();
+  ['fS1','fS2','fS3','fS4','fKills'].forEach(id=>{$(id).value='';});
+  ['pS1','pS2','pS3','pS4','pS5'].forEach(id=>{$(id).textContent='';$(id).classList.remove('bad');});
+  syncPowerUnitButtons();
+  if(typeof clearPowerDraft==='function')clearPowerDraft();
+  $('formMsg').textContent='';
+  if(currentPage==='power'||currentPage==='powerDone')setPage('powerDone');
 }
 
 async function loadGuideImgs(){
@@ -1357,28 +1386,315 @@ window.onerror=function(msg,src,line){
   }catch(e){}
 };
 function init(){
-  const saved=readSubmitPreference('sub_lang');
-  const nav=(navigator.language||'ko').slice(0,2);
+  const saved=readSubmitPreference('sub_lang'),nav=(navigator.language||'ko').slice(0,2);
   setLang(saved||({'en':'en','ja':'ja','zh':'zh'}[nav]||'ko'));
-  if(!CONFIG.SUPABASE_URL.startsWith('https://')){
-    document.querySelector('.box').innerHTML='<h1>⚠️ 설정 필요</h1><div class="sub">submit.html 상단의 CONFIG에 Supabase URL과 anon key를 붙여넣어주세요.</div>';
-    return;
-  }
-  if(!window.supabase){
-    var el=document.getElementById('gateMsg')||document.getElementById('formMsg');
-    if(el){el.style.color='#FF6B6B';el.textContent=(I18N[lang]||I18N.ko).scriptFail;}
-    return;
-  }
-  sb=window.supabase.createClient(CONFIG.SUPABASE_URL,CONFIG.SUPABASE_ANON_KEY);
-  ['fAlliance','fNick','fTroop','fShelter'].forEach(id=>{const v=readSubmitPreference('sub_'+id);if(v)$(id).value=v;});
-  ['vAllianceInput','vNickInput','vTroopInput','vIndustryInput'].forEach(id=>{const v=readSubmitPreference('vote_'+id);if(v)$(id).value=v;});
+  ['fAlliance','fNick','fTroop','fShelter'].forEach(id=>{const value=readSubmitPreference('sub_'+id);if(value)$(id).value=value;});
+  ['vAllianceInput','vNickInput','vTroopInput','vIndustryInput'].forEach(id=>{const value=readSubmitPreference('vote_'+id);if(value)$(id).value=value;});
   if(!$('vAllianceInput').value&&$('fAlliance').value)$('vAllianceInput').value=$('fAlliance').value;
   if(!$('vNickInput').value&&$('fNick').value)$('vNickInput').value=$('fNick').value;
   if(!$('vTroopInput').value&&$('fTroop').value)$('vTroopInput').value=$('fTroop').value;
   if(!$('vIndustryInput').value&&$('fShelter').value)$('vIndustryInput').value=$('fShelter').value;
-  loadGuideImgs();
-  showHome();
+  restorePowerDraft();syncPowerUnitButtons();
+  try{
+    if(!CONFIG.SUPABASE_URL.startsWith('https://')||typeof window.supabase?.createClient!=='function')throw new Error('Service unavailable');
+    sb=window.supabase.createClient(CONFIG.SUPABASE_URL,CONFIG.SUPABASE_ANON_KEY);
+    if(!sb||typeof sb.rpc!=='function')throw new Error('Service unavailable');
+    submissionServiceState='ready';
+  }catch(_error){sb=null;submissionServiceState='unavailable';}
+  showHome();renderConnectionStatus();
+  if(submissionServiceReady())loadGuideImgs();
 }
+
+/* Keep field labels, previews and validation messages connected. */
+function submitDescriptionIds(control){
+  return String(control.getAttribute('aria-describedby')||'').split(/\s+/).filter(Boolean);
+}
+function describeSubmitControl(control,id){
+  const ids=new Set(submitDescriptionIds(control));ids.add(id);control.setAttribute('aria-describedby',[...ids].join(' '));
+}
+function clearSubmitFieldError(control){
+  if(!control?.id)return;
+  const errorId=control.id+'Error',error=$(errorId);
+  control.removeAttribute('aria-invalid');control.closest('.field')?.classList.remove('field-invalid');
+  if(error){error.textContent='';error.hidden=true;}
+  const ids=submitDescriptionIds(control).filter(id=>id!==errorId);
+  if(ids.length)control.setAttribute('aria-describedby',ids.join(' '));else control.removeAttribute('aria-describedby');
+  document.querySelectorAll('[data-error-field]').forEach(summary=>{
+    if(summary.dataset.errorField===control.id){summary.textContent='';delete summary.dataset.errorField;}
+  });
+}
+function showFieldError(inputId,message,summaryId){
+  const control=$(inputId),summary=$(summaryId||'formMsg');
+  if(summary){summary.style.color='var(--red)';summary.textContent=String(message||'');summary.dataset.errorField=inputId;}
+  if(!control)return;
+  const id=inputId+'Error';let error=$(id);
+  if(!error){
+    error=document.createElement('div');error.id=id;error.className='field-error';error.setAttribute('role','alert');
+    const field=control.closest('.field');
+    if(field)field.appendChild(error);else control.insertAdjacentElement('afterend',error);
+  }
+  error.hidden=false;error.textContent=String(message||'');
+  control.setAttribute('aria-invalid','true');control.closest('.field')?.classList.add('field-invalid');describeSubmitControl(control,id);
+  if(!control.matches('input,select,textarea,button,a,[tabindex]'))control.tabIndex=-1;
+  try{control.focus({preventScroll:true});}catch(_error){control.focus();}
+  const reduced=window.matchMedia?.('(prefers-reduced-motion:reduce)').matches;
+  control.scrollIntoView({behavior:reduced?'auto':'smooth',block:'center',inline:'nearest'});
+}
+function clearFieldErrors(containerId){
+  const container=$(containerId);if(!container)return;
+  container.querySelectorAll('[aria-invalid="true"]').forEach(clearSubmitFieldError);
+  container.querySelectorAll('.field-error').forEach(error=>{error.textContent='';error.hidden=true;});
+  container.querySelectorAll('[data-error-field]').forEach(summary=>{summary.textContent='';delete summary.dataset.errorField;});
+}
+function setupFormAccessibility(){
+  const requiredIds=new Set(['fAlliance','fNick','fTroop','fShelter','fS1','fS2','fS3','vAllianceInput','vNickInput','vTroopInput','vIndustryInput','vSquad1Input']);
+  document.querySelectorAll('.field').forEach(field=>{
+    const label=field.querySelector('label'),control=field.querySelector('input,select,textarea');
+    if(!control?.id)return;
+    if(label)label.htmlFor=control.id;
+    if(requiredIds.has(control.id))control.setAttribute('aria-required','true');
+    field.querySelectorAll('.preview[id]').forEach(preview=>describeSubmitControl(control,preview.id));
+  });
+  const choices=$('publicPollOptions');
+  if(choices){choices.setAttribute('role','radiogroup');choices.setAttribute('aria-labelledby','vSecChoice');choices.setAttribute('aria-required','true');}
+}
+function setupUserInputValidation(){
+  document.querySelectorAll('.field input,.field select,.field textarea').forEach(control=>{
+    if(control.dataset.validationBound==='true')return;
+    control.dataset.validationBound='true';
+    control.addEventListener('input',()=>clearSubmitFieldError(control));
+    control.addEventListener('change',()=>clearSubmitFieldError(control));
+  });
+  const choices=$('publicPollOptions');
+  if(choices&&choices.dataset.validationBound!=='true'){
+    choices.dataset.validationBound='true';choices.addEventListener('change',()=>clearSubmitFieldError(choices));
+  }
+}
+function focusPageHeading(page){
+  const target=page==='home'?document.querySelector('#homeView .service-card'):$(({power:'tTitle',powerDone:'tDone',vote:'vTitle',voteDone:'vDoneTitle'})[page]);
+  if(!target||target.closest('[hidden]'))return;
+  if(!target.matches('button,a,input,select,textarea,[tabindex]'))target.tabIndex=-1;
+  try{target.focus({preventScroll:true});}catch(_error){target.focus();}
+}
+
+
+let latestPowerReceipt=null;
+let powerBusyControls=null;
+const POWER_UNIT_INPUT_IDS=['fS1','fS2','fS3','fS4','vSquad1Input'];
+
+function powerInputParts(value){
+  if(value==null)return null;
+  const raw=normalizeNumericText(value).trim();
+  if(!raw)return null;
+  const match=raw.match(/^((?:(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?|\.\d+))\s*([gm])?$/i);
+  if(!match)return false;
+  const amount=match[1].replace(/,/g,''),number=Number(amount);
+  return Number.isFinite(number)?{amount,number,unit:(match[2]||'').toUpperCase()}:false;
+}
+function powerInputNeedsUnit(value){
+  const parts=powerInputParts(value);
+  return Boolean(parts&&!parts.unit&&parts.number>0&&parts.number<100);
+}
+function powerValidationMessage(raw,fallback){
+  return powerInputNeedsUnit(raw)?(I18N[lang]||I18N.ko).powerUnitRequired:fallback;
+}
+function shiftPowerDecimal(value,shift){
+  const match=String(value).match(/^(-?)(\d+)(?:\.(\d*))?(?:e([+-]?\d+))?$/i);
+  if(!match)return '';
+  const sign=match[1],digits=match[2]+(match[3]||''),point=match[2].length+Number(match[4]||0)+shift;
+  let integer,fraction;
+  if(point<=0){integer='0';fraction='0'.repeat(-point)+digits;}
+  else if(point>=digits.length){integer=digits+'0'.repeat(point-digits.length);fraction='';}
+  else{integer=digits.slice(0,point);fraction=digits.slice(point);}
+  integer=integer.replace(/^0+(?=\d)/,'');fraction=fraction.replace(/0+$/,'');
+  return sign+integer+(fraction?'.'+fraction:'');
+}
+function setupPowerUnitButtons(){
+  POWER_UNIT_INPUT_IDS.forEach(id=>{
+    const input=$(id);if(!input||document.getElementById(id+'Units'))return;
+    input.closest('.row2')?.classList.add('power-row2');
+    const row=document.createElement('div');row.className='power-input-row';
+    input.before(row);row.appendChild(input);
+    const group=document.createElement('div');group.className='power-unit-buttons';group.id=id+'Units';group.setAttribute('role','group');
+    ['G','M'].forEach(unit=>{
+      const button=document.createElement('button');button.type='button';button.className='power-unit-button';button.dataset.unit=unit;button.textContent=unit;
+      button.addEventListener('click',()=>applyPowerUnit(id,unit));group.appendChild(button);
+    });
+    row.appendChild(group);
+    input.addEventListener('input',syncPowerUnitButtons);
+  });
+  syncPowerUnitButtons();
+}
+function syncPowerUnitButtons(){
+  const t=I18N[lang]||I18N.ko;
+  POWER_UNIT_INPUT_IDS.forEach(id=>{
+    const input=$(id),group=$(id+'Units');if(!input||!group)return;
+    const parts=powerInputParts(input.value),unit=parts?(parts.unit||((parts.number>=100)?'M':'')):'';
+    const label=input.labels?.[0]?.textContent?.replace(/\s+/g,' ').trim()||input.id;
+    group.setAttribute('aria-label',label+' / '+t.powerUnitLabel);
+    group.querySelectorAll('button').forEach(button=>{
+      const selected=button.dataset.unit===unit;
+      button.setAttribute('aria-pressed',String(selected));button.classList.toggle('active',selected);
+      button.setAttribute('aria-label',label+' / '+(button.dataset.unit==='G'?t.powerUseG:t.powerUseM));
+    });
+  });
+}
+function applyPowerUnit(inputId,unit){
+  const input=$(inputId);if(!input||input.disabled||!['G','M'].includes(unit))return;
+  const raw=normalizeNumericText(input.value).trim();
+  input.focus({preventScroll:true});if(!raw)return;
+  const amount=raw.replace(/\s*[gm]\s*$/i,'').trim();
+  input.value=amount+unit;
+  try{input.setSelectionRange(amount.length,amount.length);}catch(_error){}
+  input.dispatchEvent(new Event('input',{bubbles:true}));
+}
+function setPowerInputsBusy(busy){
+  if(busy){
+    if(powerBusyControls)return;
+    powerBusyControls=new Map();
+    document.querySelectorAll('#formView input,#formView select,#formView .power-unit-button').forEach(control=>{
+      powerBusyControls.set(control,control.disabled);control.disabled=true;
+    });
+  }else{
+    powerBusyControls?.forEach((disabled,control)=>{control.disabled=disabled;});powerBusyControls=null;
+  }
+}
+function renderPowerDoneSummary(){
+  const receipt=latestPowerReceipt;if(!receipt)return;
+  const t=I18N[lang]||I18N.ko;
+  const troopIndex=TROOP_CANON.indexOf(receipt.troop);
+  const details=[[t.troop,t.troops[troopIndex]||receipt.troop],[t.shelter,receipt.industry]];
+  receipt.powers.forEach((value,index)=>{if(value!==null)details.push([t.squadWord[index],fmtG(value)]);});
+  if(receipt.kills!==null)details.push([t.kills,receipt.kills.toLocaleString(pollLocale())]);
+  $('doneSummary').innerHTML='<b>'+escapeHtml(receipt.alliance)+' / '+escapeHtml(receipt.nickname)+'</b>'+
+    '<dl class="power-receipt">'+details.map(([label,value])=>'<div class="power-receipt-row"><dt>'+escapeHtml(label)+'</dt><dd>'+escapeHtml(value)+'</dd></div>').join('')+'</dl><p>'+t.doneTail+'</p>';
+}
+
+
+function currentVoteReceiptIdentity(identity){
+  const source=identity&&typeof identity==='object'?identity:{alliance:$('vAllianceInput')?.value||'',nickname:$('vNickInput')?.value||''};
+  const alliance=String(source.alliance??'').trim(),nickname=String(source.nickname??'').trim();
+  return {alliance,nickname,key:voteLookupKey(alliance,nickname),complete:Boolean(normalizeVoteLookup(alliance)&&normalizeVoteLookup(nickname))};
+}
+function identityVoteReceiptKey(pollId,identity){
+  return 'vote_receipt_v2_'+encodeURIComponent(String(pollId||''))+'_'+encodeURIComponent(currentVoteReceiptIdentity(identity).key);
+}
+function voteReceiptMatches(receipt,pollId,identity){
+  return Boolean(identity.complete&&receipt&&String(receipt.pollId)===String(pollId)&&
+    receipt.savedAt&&!Number.isNaN(new Date(receipt.savedAt).getTime())&&
+    voteLookupKey(receipt.alliance,receipt.nickname)===identity.key);
+}
+function hasCurrentVoteStatus(){
+  const identity=currentVoteReceiptIdentity();
+  return Boolean(identity.complete&&voteStatusState.loaded&&voteStatusState.identity===identity.key);
+}
+function syncVoteBusyState(){
+  ['vAllianceInput','vNickInput','vTroopInput','vIndustryInput','vSquad1Input','vNoteInput','vStatusAllianceInput','vStatusNickInput','voteStatusToggle'].forEach(id=>{if($(id))$(id).disabled=voteSubmitting;});
+  document.querySelectorAll('#publicPollOptions input, #vSquad1Input + .power-unit-buttons button, #voteView .power-unit-button').forEach(input=>input.disabled=voteSubmitting);
+  if($('voteStatusCheckBtn'))$('voteStatusCheckBtn').disabled=voteSubmitting||voteStatusState.loading;
+  if($('voteSubmitBtn')){
+    const serviceMissing=typeof submissionServiceReady==='function'?!submissionServiceReady():!sb;
+    $('voteSubmitBtn').disabled=voteSubmitting||serviceMissing;
+    $('voteSubmitBtn').setAttribute('aria-busy',String(voteSubmitting));
+    $('voteSubmitBtn').textContent=(HUB_I18N[lang]||HUB_I18N.ko)[voteSubmitting?'submitting':'submit'];
+  }
+}
+
+
+let submissionServiceState='initializing';
+let submissionRuntimeFailed=false;
+const POWER_DRAFT_KEY='213_power_draft_v1';
+const POWER_DRAFT_TTL=24*60*60*1000;
+const POWER_DRAFT_FIELDS=['fS1','fS2','fS3','fS4','fKills'];
+let currentPowerDraft=null;
+
+function submissionServiceReady(){return !submissionRuntimeFailed&&Boolean(sb&&typeof sb.rpc==='function');}
+function renderConnectionStatus(){
+  const panel=$('connectionStatus'),message=$('connectionMessage'),button=$('connectionRetry');
+  const t=I18N[lang]||I18N.ko,failed=submissionRuntimeFailed||submissionServiceState==='unavailable';
+  if(panel)panel.hidden=!failed;
+  if(message)message.textContent=submissionRuntimeFailed?t.runtimeErr:t.serviceUnavailable;
+  if(button)button.textContent=t.retry;
+  document.querySelectorAll('#homeView .service-card').forEach(control=>control.disabled=failed);
+  $('submitBtn').disabled=submitting||failed;$('submitBtn').textContent=submitting?t.submitting:t.submit;
+  const vt=HUB_I18N[lang]||HUB_I18N.ko;
+  $('voteSubmitBtn').disabled=voteSubmitting||failed;$('voteSubmitBtn').textContent=voteSubmitting?vt.submitting:vt.submit;
+  if($('pollRetryBtn'))$('pollRetryBtn').textContent=t.retry;
+}
+function ensureSubmissionService(){
+  const ready=submissionServiceReady();
+  submissionServiceState=ready?'ready':'unavailable';renderConnectionStatus();return ready;
+}
+function retrySubmissionService(){
+  if(submissionServiceReady()){
+    submissionServiceState='ready';renderConnectionStatus();
+    if(currentPage==='vote')loadOpenPolls(true);
+    return;
+  }
+  savePowerDraft();window.location.reload();
+}
+function retryPublicPolls(){
+  if(submissionServiceReady())return loadOpenPolls(true);
+  retrySubmissionService();
+}
+function handleSubmissionRuntimeError(){
+  submissionRuntimeFailed=true;submissionServiceState='unavailable';renderConnectionStatus();return false;
+}
+function removeSubmitPreference(key){try{window.localStorage.removeItem(key);return true;}catch(_error){return false;}}
+function powerDraftIdentity(){return {alliance:String($('fAlliance').value||'').normalize('NFKC').trim().toUpperCase(),nickname:String($('fNick').value||'').normalize('NFKC').trim()};}
+function samePowerDraftIdentity(a,b){return Boolean(a&&b&&a.alliance===b.alliance&&a.nickname===b.nickname);}
+function renderPowerDraftNotice(){
+  const panel=$('powerDraftNotice');if(!panel)return;
+  const t=I18N[lang]||I18N.ko,draft=currentPowerDraft;
+  panel.hidden=!draft||!samePowerDraftIdentity(draft.identity,powerDraftIdentity());
+  $('powerDraftClear').textContent=t.draftClear;
+  if(panel.hidden)return;
+  const locale=({ko:'ko-KR',en:'en-US',ja:'ja-JP',zh:'zh-CN'})[lang]||'ko-KR';
+  const time=new Intl.DateTimeFormat(locale,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(draft.savedAt));
+  $('powerDraftMessage').textContent=(draft.restored?t.draftRestored:t.draftSaved)+' '+t.draftSavedAt+' '+time;
+}
+function savePowerDraft(){
+  const identity=powerDraftIdentity();
+  if(!identity.alliance||!identity.nickname)return false;
+  const fields=Object.fromEntries(POWER_DRAFT_FIELDS.map(id=>[id,$(id).value.slice(0,id==='fKills'?20:16)]));
+  if(!Object.values(fields).some(value=>value.trim())){clearPowerDraft();return false;}
+  const draft={version:1,savedAt:Date.now(),identity,fields};
+  if(!writeSubmitPreference(POWER_DRAFT_KEY,JSON.stringify(draft)))return false;
+  currentPowerDraft={...draft,restored:Boolean(currentPowerDraft?.restored&&samePowerDraftIdentity(currentPowerDraft.identity,identity))};
+  renderPowerDraftNotice();return true;
+}
+function restorePowerDraft(){
+  let draft;try{draft=JSON.parse(readSubmitPreference(POWER_DRAFT_KEY)||'null');}catch(_error){removeSubmitPreference(POWER_DRAFT_KEY);return false;}
+  if(!draft)return false;
+  const age=Date.now()-Number(draft.savedAt);
+  if(draft.version!==1||!Number.isFinite(age)||age<0||age>POWER_DRAFT_TTL||!draft.fields||typeof draft.fields!=='object'||!draft.identity){removeSubmitPreference(POWER_DRAFT_KEY);return false;}
+  if(!samePowerDraftIdentity(draft.identity,powerDraftIdentity()))return false;
+  if(POWER_DRAFT_FIELDS.some(id=>$(id).value.trim()))return false;
+  POWER_DRAFT_FIELDS.forEach((id,index)=>{
+    const value=draft.fields[id];$(id).value=typeof value==='string'?value.slice(0,id==='fKills'?20:16):'';refreshPreview(id,'pS'+(index+1));
+  });
+  currentPowerDraft={...draft,restored:true};syncPowerUnitButtons();renderPowerDraftNotice();return true;
+}
+function clearPowerDraft(){removeSubmitPreference(POWER_DRAFT_KEY);currentPowerDraft=null;renderPowerDraftNotice();}
+function discardPowerDraft(){
+  if(submitting)return;
+  clearPowerDraft();POWER_DRAFT_FIELDS.forEach((id,index)=>{$(id).value='';refreshPreview(id,'pS'+(index+1));});
+  syncPowerUnitButtons();clearFieldErrors('formView');$('fS1').focus({preventScroll:true});
+}
+function setupPowerDraft(){
+  POWER_DRAFT_FIELDS.forEach(id=>$(id).addEventListener('input',savePowerDraft));
+  ['fAlliance','fNick'].forEach(id=>$(id).addEventListener('input',renderPowerDraftNotice));
+}
+
+
+Object.entries({"ko":{"powerUnitRequired":"전투력 단위를 선택해 주세요. 예: 99M / 6.22G","powerUnitLabel":"전투력 단위","powerUseG":"G 단위 적용","powerUseM":"M 단위 적용","badNum":"숫자와 G/M 단위를 확인해 주세요. 예: 100M / 6.22G","errKills":"킬수는 0 이상의 정수로 입력해 주세요. 예: 27,066,265","submitUnconfirmed":"제출 결과를 확인하지 못했습니다. 입력 내용은 유지했습니다. 다시 제출하기 전에 운영진에게 접수 여부를 확인해 주세요."},"en":{"powerUnitRequired":"Choose G or M for this value, for example 99M or 6.22G.","powerUnitLabel":"Combat power unit","powerUseG":"Use G units","powerUseM":"Use M units","badNum":"Check the number and its G/M unit, for example 100M or 6.22G.","errKills":"Enter a whole-number kill count of 0 or more, for example 27,066,265.","submitUnconfirmed":"We could not confirm whether your submission was saved. Your entries are still here. Please check with staff before submitting again."},"ja":{"powerUnitRequired":"この値にはGまたはMを付けてください。例：99M / 6.22G","powerUnitLabel":"戦闘力の単位","powerUseG":"単位をGにする","powerUseM":"単位をMにする","badNum":"数値とG/Mの単位をご確認ください。例：100M / 6.22G","errKills":"キル数は0以上の整数で入力してください。例：27,066,265","submitUnconfirmed":"送信結果を確認できませんでした。入力内容は残っています。再送信する前に運営側へ受付状況をご確認ください。"},"zh":{"powerUnitRequired":"请选择G或M作为单位。例如：99M / 6.22G。","powerUnitLabel":"战力单位","powerUseG":"使用G单位","powerUseM":"使用M单位","badNum":"请检查数值及G/M单位。例如：100M / 6.22G。","errKills":"击杀数请输入大于或等于0的整数。例如：27,066,265。","submitUnconfirmed":"无法确认是否提交成功，已保留填写内容。再次提交前，请先向管理员确认是否已收到。"}}).forEach(([locale,values])=>Object.assign(I18N[locale],values));
+
+Object.entries({"ko":{"serviceUnavailable":"연결에 필요한 파일을 불러오지 못했습니다. 인터넷 연결을 확인한 뒤 다시 시도해 주세요.","retry":"다시 시도","draftRestored":"이 기기에 임시 저장한 입력을 불러왔습니다. 최신 전투력인지 확인해 주세요.","draftSaved":"입력 내용이 이 기기에 임시 저장됩니다. 제출된 상태를 의미하지는 않습니다.","draftSavedAt":"저장 시간:","draftClear":"전투력 입력 지우기","done":"제출이 완료되었습니다"},"en":{"serviceUnavailable":"A file needed to connect could not be loaded. Check your internet connection and try again.","retry":"Try again","draftRestored":"Your draft from this device has been restored. Check that these power values are still current.","draftSaved":"Your entries are saved temporarily on this device. This does not mean they have been submitted.","draftSavedAt":"Saved:","draftClear":"Clear power entries","done":"Submission Complete"},"ja":{"serviceUnavailable":"接続に必要なファイルを読み込めませんでした。通信状態を確認して、もう一度お試しください。","retry":"再試行","draftRestored":"この端末に一時保存した入力を復元しました。現在の戦闘力と一致するかご確認ください。","draftSaved":"入力内容はこの端末に一時保存されます。提出が完了したことを示すものではありません。","draftSavedAt":"保存日時：","draftClear":"戦闘力の入力を消去","done":"提出が完了しました"},"zh":{"serviceUnavailable":"无法加载连接所需的文件。请检查网络连接后重试。","retry":"重试","draftRestored":"已恢复此设备暂存的内容，请确认战力是否仍为最新数值。","draftSaved":"填写内容会暂存在此设备上，不代表已经提交。","draftSavedAt":"保存时间：","draftClear":"清空战力输入","done":"提交成功"}}).forEach(([locale,values])=>Object.assign(I18N[locale],values));
+
+Object.entries({"ko":{"voteLoadFailed":"투표 목록을 새로 불러오지 못했습니다. 이전 목록이 있으면 그대로 표시합니다. 다시 시도해 주세요.","voteSaveUnconfirmed":"제출 결과를 확인하지 못했습니다. 다시 제출하기 전에 내 투표 완료 여부를 확인해 주세요.","voteSavedElsewhere":"선택했던 투표의 응답을 저장했습니다. 입력한 연맹과 닉네임으로 완료 여부를 확인할 수 있습니다.","statusNoteCached":"마지막으로 확인한 상태입니다. 최신 상태는 다시 조회해 주세요."},"en":{"voteLoadFailed":"The survey list could not be refreshed. Any previously loaded surveys remain available. Please try again.","voteSaveUnconfirmed":"We could not confirm whether your response was saved. Check your survey status before submitting again.","voteSavedElsewhere":"Your response to the previous survey was saved. You can check its status with the alliance and nickname you entered.","statusNoteCached":"Showing the last confirmed status. Check again for the latest information."},"ja":{"voteLoadFailed":"投票一覧を更新できませんでした。読み込み済みの一覧がある場合は、そのまま表示しています。もう一度お試しください。","voteSaveUnconfirmed":"回答の保存結果を確認できませんでした。再提出する前に、自分の回答状況を確認してください。","voteSavedElsewhere":"先ほど選択した投票への回答を保存しました。入力した同盟名とニックネームで回答状況を確認できます。","statusNoteCached":"最後に確認した状況を表示しています。最新の状況は再度確認してください。"},"zh":{"voteLoadFailed":"无法刷新调查列表。如有之前加载的调查，会继续显示。请重试。","voteSaveUnconfirmed":"无法确认回答是否已保存。请先查看提交状态，再决定是否重新提交。","voteSavedElsewhere":"已保存之前所选调查的回答。您可以使用填写的联盟和昵称查询提交状态。","statusNoteCached":"显示上次确认的状态。请重新查询最新状态。"}}).forEach(([locale,values])=>Object.assign(HUB_I18N[locale],values));
+
+setupPowerUnitButtons();setupFormAccessibility();setupUserInputValidation();setupPowerDraft();
+window.onerror=handleSubmissionRuntimeError;
 init();
 </script>
 </body>
