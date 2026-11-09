@@ -1,0 +1,1747 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"><script>/* Defense in depth: no transports, cookies or persistent storage in this demo. */
+(()=>{
+  'use strict';
+  window.PREVIEW_ONLY=true;
+  window.__previewBlockedRequests=[];
+  const blocked=kind=>{window.__previewBlockedRequests.push(kind);return new Error('테스트 화면에서는 외부 연결과 저장을 사용하지 않습니다.');};
+  Object.defineProperty(window,'fetch',{value:async()=>{throw blocked('fetch');},writable:false,configurable:false});
+  XMLHttpRequest.prototype.open=function(){throw blocked('XMLHttpRequest');};
+  window.WebSocket=class{constructor(){throw blocked('WebSocket');}};
+  window.EventSource=class{constructor(){throw blocked('EventSource');}};
+  try{Object.defineProperty(navigator,'sendBeacon',{value:()=>{blocked('sendBeacon');return false;}});}catch(_){}
+  function memoryStorage(){
+    const map=new Map();
+    return {get length(){return map.size;},getItem:k=>map.has(String(k))?map.get(String(k)):null,
+      setItem:(k,v)=>map.set(String(k),String(v)),removeItem:k=>map.delete(String(k)),
+      clear:()=>map.clear(),key:i=>[...map.keys()][i]??null};
+  }
+  for(const name of ['localStorage','sessionStorage'])Object.defineProperty(window,name,{value:memoryStorage()});
+  try{Object.defineProperty(document,'cookie',{get:()=>'',set:()=>{}});}catch(_){}
+  window.open=()=>null;
+  const prompt=window.prompt.bind(window);
+  window.prompt=(message,value)=>/PIN|비밀번호/.test(String(message))?'0000':prompt(message,value);
+  document.addEventListener('submit',e=>e.preventDefault(),true);
+  document.addEventListener('click',event=>{
+    const a=event.target.closest?.('a[href]');
+    if(a&&!/^(#|blob:)/.test(a.getAttribute('href')||''))event.preventDefault();
+  },true);
+})();
+
+
+(()=>{
+  const saved=new Map();
+  const state={calls:[],powerSubmissions:[],votes:[],failNext:false};
+  window.__submitPreview=state;
+  const names={ko:['가상 서버전 참여 조사','가상 이벤트 참여 조사','미리보기용 투표입니다. 실제 운영 자료와 연결되지 않습니다.'],en:['Sample Server Battle Survey','Sample Event Survey','Preview survey only. It is not connected to operating data.'],ja:['サンプルのサーバー戦参加投票','サンプルのイベント参加投票','プレビュー用の投票です。運営データには接続していません。'],zh:['示例服务器战参与调查','示例活动参与调查','此调查仅供预览，未连接实际运营数据。']};
+  const identity=(alliance,nickname)=>String(alliance||'').normalize('NFKC').trim().toLowerCase().replace(/\s+/g,'')+'|'+String(nickname||'').normalize('NFKC').trim().toLowerCase().replace(/\s+/g,'');
+  const mockPolls=locale=>[1,2].map(id=>({id,status:'open',title:(names[locale]||names.ko)[id-1],description:(names[locale]||names.ko)[2],closes_at:new Date(Date.now()+(id+1)*86400000).toISOString(),target_alliances:['NXT'],options:[{id:id*10+1,label:'참여',category:'attend',color:'#3DDC97'},{id:id*10+2,label:'부분 참여',category:'partial',color:'#F2C14E'},{id:id*10+3,label:'미참여',category:'absent',color:'#FF6B6B'}]}));
+  window.supabase={createClient:()=>({rpc:async(name,args={})=>{
+    state.calls.push({name,args:JSON.parse(JSON.stringify(args))});
+    await new Promise(resolve=>setTimeout(resolve,100));
+    if(name==='get_submit_guide')return {data:'{"images":[]}',error:null};
+    if(name==='get_open_participation_polls')return {data:mockPolls(args.p_lang),error:null};
+    if(name==='get_participation_submission_status')return {data:[...(saved.get(identity(args.p_alliance,args.p_nickname))||new Set())].map(poll_id=>({poll_id})),error:null};
+    if(name==='submit_power'||name==='submit_participation_vote'){
+      if(state.failNext){state.failNext=false;return {data:null,error:{message:'Simulated preview failure'}};}
+      if(name==='submit_power')state.powerSubmissions.push(JSON.parse(JSON.stringify(args)));
+      else{state.votes.push(JSON.parse(JSON.stringify(args)));const key=identity(args.p_alliance,args.p_nickname),polls=saved.get(key)||new Set();polls.add(args.p_poll_id);saved.set(key,polls);}
+      return {data:'ok',error:null};
+    }
+    return {data:null,error:{message:'Unsupported preview action'}};
+  }})};
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="referrer" content="no-referrer">
+
+<meta name="theme-color" content="#0E1117">
+<meta name="author" content="213 NXT / 부앙(Bu-ang)">
+<meta name="copyright" content="© 213 NXT / 부앙(Bu-ang)">
+
+<title>213 SERVER | 전투력 / 투표</title>
+<meta property="og:title" content="213 SERVER | 전투력 / 투표">
+<meta property="og:description" content="전투력을 등록하거나 진행 중인 투표에 참여할 수 있습니다.">
+<meta property="og:type" content="website">
+
+
+
+<script>
+/* ============================================================
+   ★★★ 여기만 수정하면 됩니다 ★★★
+   index.html에 넣은 것과 같은 URL/키를 붙여넣으세요.
+   ============================================================ */
+const CONFIG={SUPABASE_URL:"https://preview.invalid",SUPABASE_ANON_KEY:"preview-key"};
+</script>
+
+<style>
+:root{
+  --bg:#0E1117; --panel:#161B24; --panel2:#1C222E; --line:#28303F;
+  --text:#E9EDF5; --muted:#8A94A8; --dim:#5B6478;
+  --ours:#4E9BFF; --gold:#F2C14E; --green:#3DDC97; --red:#FF6B6B;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:15px;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{background:radial-gradient(800px 420px at 20% -8%, rgba(78,155,255,.10), transparent 60%),radial-gradient(600px 340px at 85% -6%, rgba(242,193,78,.07), transparent 55%),var(--bg);color:var(--text);font-family:"Pretendard Variable",Pretendard,-apple-system,"Hiragino Sans","Microsoft YaHei",sans-serif;min-height:100vh;min-height:100dvh;width:100%;overflow-x:hidden;display:flex;align-items:flex-start;justify-content:center;padding:max(20px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(48px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+html[lang="en"] body{font-family:"Pretendard Variable","SF Pro Text","Segoe UI",Arial,sans-serif}
+html[lang="ja"] body{font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,"Pretendard Variable",sans-serif}
+html[lang="zh-CN"] body{font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC","Pretendard Variable",sans-serif}
+button{font-family:inherit;cursor:pointer;touch-action:manipulation}
+input,select{font-family:inherit;background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:11px;padding:13px 14px;font-size:1.02rem;outline:none;width:100%;transition:border-color .12s,box-shadow .12s}
+input:focus,select:focus{border-color:var(--ours);box-shadow:0 0 0 3px rgba(78,155,255,.18)}
+option{background:#1C222E;color:#E9EDF5}
+::placeholder{color:var(--dim)}
+.box{width:100%;max-width:460px;background:linear-gradient(180deg,rgba(242,193,78,.045),transparent 26%),var(--panel);border:1px solid #2E3648;border-radius:22px;padding:30px 26px 32px;box-shadow:0 14px 40px rgba(0,0,0,.5),0 0 0 1px rgba(242,193,78,.07);position:relative;overflow:hidden}
+.box::before{content:'';position:absolute;top:0;left:12%;right:12%;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.7}
+.langbar{display:flex;justify-content:center;gap:4px;margin-bottom:18px;background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:3px;width:fit-content;margin-left:auto;margin-right:auto}
+.langbar button{background:none;border:none;color:var(--muted);font-size:.82rem;font-weight:700;padding:7px 13px;border-radius:999px;transition:color .12s}
+.langbar button:hover{color:var(--text)}
+.langbar button.active{background:var(--panel);color:var(--text)}
+h1{font-size:1.5rem;font-weight:900;letter-spacing:-.03em;text-align:center;background:linear-gradient(180deg,#FFF 30%,#BFD4F5);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 0 28px rgba(84,163,255,.25)}
+.sechd{display:flex;align-items:center;gap:10px;margin:4px 0 14px;color:var(--ours);font-size:.78rem;font-weight:800;letter-spacing:.08em}
+.sechd::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(84,163,255,.35),transparent)}
+input:hover,select:hover{border-color:#39445C}
+.sub{color:var(--muted);font-size:.88rem;margin:9px 0 22px;line-height:1.6;text-align:center}
+.field{margin-bottom:15px}
+.field label{display:block;font-size:.8rem;font-weight:800;color:var(--muted);margin-bottom:6px;letter-spacing:.01em}
+.field label b{color:var(--gold)}
+.field label span.opt{color:var(--dim);font-weight:400}
+.row2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.row2>*{min-width:0}
+.preview{font-size:.8rem;color:var(--green);min-height:17px;margin-top:5px;font-weight:600;font-variant-numeric:tabular-nums}
+.preview.bad{color:var(--red)}
+.btn{width:100%;background:linear-gradient(180deg,#6CB2FF,#3E8EF0);border:1px solid #3E8EF0;color:#06101F;border-radius:13px;padding:16px;font-size:1.1rem;font-weight:800;margin-top:12px;box-shadow:0 5px 18px rgba(78,155,255,.32);transition:transform .12s,box-shadow .12s}
+.btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(78,155,255,.42)}
+.btn:active{transform:translateY(0)}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--line) 20%,var(--line) 80%,transparent);margin:20px 0 17px}
+.btn.ghost{background:var(--panel2);border-color:var(--line);color:var(--text)}
+.msg{font-size:.84rem;color:var(--red);min-height:20px;margin-top:9px;text-align:center;line-height:1.4}
+.credit{margin-top:22px;color:var(--dim);font-size:.75rem;text-align:center}
+.credit b{color:var(--muted)}
+.done-icon{font-size:3.6rem;text-align:center;margin:14px 0 10px}
+#doneView{display:none}
+.guide-sec{margin:0 0 18px}
+.guide-sec h3{font-size:.85rem;color:var(--muted);font-weight:700;margin-bottom:8px}
+.guide-sec img{display:block;margin:0 auto 10px;border-radius:10px;border:1px solid var(--line);max-width:100%;cursor:zoom-in}
+@media(max-width:640px){
+  input,select,textarea{font-size:16px}
+  .box{padding:24px 18px 28px;border-radius:18px}
+  h1{font-size:1.35rem}
+}
+
+/* 최종 보완 */
+.required-note{
+  margin:-10px 0 20px;
+  color:var(--dim);
+  font-size:.74rem;
+  text-align:center;
+}
+.required-note b{color:var(--gold)}
+.btn:disabled{
+  cursor:not-allowed;
+  opacity:.68;
+  transform:none;
+  box-shadow:none;
+}
+.msg:empty{margin-top:0;min-height:0}
+.langbar button{white-space:nowrap}
+@media(max-width:420px){
+  body{padding-left:max(10px,env(safe-area-inset-left));padding-right:max(10px,env(safe-area-inset-right))}
+  .box{padding:22px 14px 26px}
+  .langbar{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    width:100%;
+    gap:2px;
+  }
+  .langbar button{
+    min-width:0;
+    padding:7px 3px;
+    font-size:.72rem;
+  }
+  .row2{grid-template-columns:1fr}
+}
+
+
+/* ============================================================
+   공식 제출 페이지 브랜딩 / 가독성 / 복제 억제 표시
+   ============================================================ */
+body{
+  position:relative;
+  background:
+    radial-gradient(820px 430px at 16% -8%,rgba(78,155,255,.12),transparent 60%),
+    radial-gradient(650px 360px at 88% -8%,rgba(242,193,78,.09),transparent 58%),
+    linear-gradient(180deg,#0d1118,#0b0f15 72%,#090d13);
+}
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:.12;
+  background-image:
+    linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.014) 1px,transparent 1px);
+  background-size:42px 42px;
+  mask-image:linear-gradient(to bottom,rgba(0,0,0,.65),transparent 86%);
+}
+.box{
+  isolation:isolate;
+  border-color:#344057;
+  background:
+    radial-gradient(420px 180px at 50% 0%,rgba(242,193,78,.065),transparent 72%),
+    linear-gradient(180deg,rgba(255,255,255,.018),transparent 32%),
+    var(--panel);
+  box-shadow:
+    0 20px 58px rgba(0,0,0,.55),
+    0 0 0 1px rgba(242,193,78,.055),
+    inset 0 1px 0 rgba(255,255,255,.025);
+}
+.owner-watermark{
+  position:absolute;
+  right:-18px;
+  bottom:106px;
+  z-index:-1;
+  color:rgba(255,255,255,.025);
+  font-size:1rem;
+  font-weight:900;
+  letter-spacing:.16em;
+  transform:rotate(-18deg);
+  user-select:none;
+  pointer-events:none;
+  white-space:nowrap;
+}
+.official-badge{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  width:max-content;
+  max-width:100%;
+  margin:0 auto 11px;
+  padding:5px 11px;
+  border:1px solid rgba(242,193,78,.28);
+  border-radius:999px;
+  color:#d9b75e;
+  background:rgba(242,193,78,.045);
+  font-size:.68rem;
+  letter-spacing:.045em;
+  white-space:nowrap;
+}
+.official-mark{
+  display:inline-block;
+  width:6px;
+  height:6px;
+  flex:0 0 6px;
+  border-radius:1px;
+  background:var(--gold);
+  box-shadow:0 0 8px rgba(242,193,78,.45);
+  transform:rotate(45deg);
+}
+.official-badge b{font-weight:900}
+.official-badge em{
+  color:#8793a8;
+  font-style:normal;
+  font-weight:750;
+}
+.langbar{
+  margin-bottom:16px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+}
+.langbar button{
+  min-height:32px;
+  transition:color .12s,background .12s,box-shadow .12s;
+}
+.langbar button.active{
+  color:#f7f9fc;
+  background:linear-gradient(180deg,#202838,#171d29);
+  box-shadow:0 3px 10px rgba(0,0,0,.22);
+}
+h1{
+  font-size:1.56rem;
+}
+.sub{
+  margin-bottom:14px;
+}
+.required-note{
+  margin:-2px 0 8px;
+}
+.privacy-note{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  min-height:27px;
+  margin:0 auto 22px;
+  padding:5px 10px;
+  width:max-content;
+  max-width:100%;
+  border:1px solid rgba(61,220,151,.16);
+  border-radius:999px;
+  color:#78a896;
+  background:rgba(61,220,151,.035);
+  font-size:.71rem;
+  text-align:center;
+}
+.privacy-note::before{
+  content:'●';
+  color:var(--green);
+  font-size:.5rem;
+  text-shadow:0 0 8px rgba(61,220,151,.45);
+}
+.sechd{
+  margin-top:8px;
+  font-size:.8rem;
+}
+.field{
+  position:relative;
+  min-width:0;
+}
+.field label,h1,h2,.msg{overflow-wrap:anywhere;word-break:break-word}
+.field:focus-within label{
+  color:#b8c7dc;
+}
+.field:focus-within label b{
+  text-shadow:0 0 8px rgba(242,193,78,.35);
+}
+input,select{
+  min-height:48px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.012),transparent),
+    var(--panel2);
+}
+input:focus,select:focus{
+  background:#1b2230;
+}
+.preview{
+  padding-left:2px;
+}
+.btn{
+  min-height:52px;
+  background:linear-gradient(180deg,#6db7ff,#3f8eea);
+  box-shadow:
+    0 8px 22px rgba(78,155,255,.30),
+    inset 0 1px 0 rgba(255,255,255,.28);
+}
+.btn:hover{
+  box-shadow:
+    0 11px 27px rgba(78,155,255,.38),
+    inset 0 1px 0 rgba(255,255,255,.30);
+}
+.credit{
+  padding-top:17px;
+  border-top:1px solid rgba(255,255,255,.055);
+  line-height:1.55;
+}
+.copyright-note{
+  display:block;
+  margin-top:4px;
+  color:#4d586c;
+  font-size:.68rem;
+}
+@media(max-width:360px){
+  .official-badge{font-size:.62rem;padding-left:8px;padding-right:8px}
+  h1{font-size:1.36rem}
+  .privacy-note{font-size:.66rem;padding-left:7px;padding-right:7px}
+}
+@media(max-width:300px){
+  body{padding-left:max(6px,env(safe-area-inset-left));padding-right:max(6px,env(safe-area-inset-right))}
+  .box{padding-left:11px;padding-right:11px}
+  .official-badge em{display:none}
+  .langbar button{font-size:.66rem}
+}
+
+/* 참여 투표 / 제출 항목 선택 */
+.page-view[hidden]{display:none!important}
+body[data-page="home"] .official-badge{display:none}
+body[data-page="home"] .langbar{margin-bottom:12px}
+.brand-logo{height:80px;display:block;margin:0 auto 12px;filter:drop-shadow(0 6px 18px rgba(242,193,78,.35))}
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.home-logo{display:block;width:145px;height:auto;margin:0 auto 17px;object-fit:contain;filter:drop-shadow(0 9px 24px rgba(0,0,0,.28))}
+.home-prompt{margin:0 0 21px;color:#aeb7c8;font-size:.9rem;font-weight:650;line-height:1.6;letter-spacing:-.015em}
+.service-grid{display:grid;gap:12px;margin-top:22px}
+.service-card{width:100%;display:grid;grid-template-columns:48px minmax(0,1fr) 22px;align-items:center;gap:13px;padding:17px 16px;border:1px solid #344057;border-radius:15px;background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.012));color:var(--text);text-align:left;transition:transform .14s,border-color .14s,background .14s;box-shadow:0 8px 22px rgba(0,0,0,.17)}
+.service-card:hover{transform:translateY(-1px);border-color:rgba(78,155,255,.62);background:linear-gradient(145deg,rgba(78,155,255,.09),rgba(255,255,255,.018))}
+.service-card.vote:hover{border-color:rgba(242,193,78,.62);background:linear-gradient(145deg,rgba(242,193,78,.09),rgba(255,255,255,.018))}
+.service-icon{display:grid;place-items:center;width:48px;height:48px;border-radius:13px;background:rgba(78,155,255,.12);border:1px solid rgba(78,155,255,.25);font-size:1.45rem}
+.service-card.vote .service-icon{background:rgba(242,193,78,.11);border-color:rgba(242,193,78,.27)}
+.service-copy{min-width:0}.service-copy b{display:block;font-size:1.02rem;margin-bottom:4px;font-weight:850;letter-spacing:-.025em;overflow-wrap:anywhere}.service-copy span{display:block;color:var(--muted);font-size:.78rem;line-height:1.45;letter-spacing:-.012em;overflow-wrap:anywhere}
+html[lang="en"] .home-prompt,html[lang="en"] .service-copy b,html[lang="en"] .service-copy span{letter-spacing:-.01em}
+html[lang="ja"] .home-prompt,html[lang="ja"] .service-copy b,html[lang="ja"] .service-copy span,html[lang="zh-CN"] .home-prompt,html[lang="zh-CN"] .service-copy b,html[lang="zh-CN"] .service-copy span{letter-spacing:0}
+.service-arrow{color:var(--dim);font-size:1.25rem;text-align:center}
+.view-back{display:flex;align-items:center;justify-content:center;gap:6px;width:max-content;min-height:42px;margin:0 0 15px;padding:9px 13px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);color:var(--muted);font-size:.82rem;font-weight:800;transition:transform .12s,border-color .12s,box-shadow .12s,background .12s}
+.view-back:hover{color:var(--text);border-color:#3b475d}
+.vote-home-btn{width:100%;min-height:48px;margin:10px 0 0;padding:12px 14px;border-color:#34445e;background:linear-gradient(180deg,#222c3d,#192230);color:var(--text);font-size:.9rem;box-shadow:0 5px 18px rgba(78,155,255,.18),inset 0 1px 0 rgba(255,255,255,.025)}
+.vote-home-btn:hover{border-color:#4b6487;background:linear-gradient(180deg,#273449,#1c2737);box-shadow:0 8px 24px rgba(78,155,255,.25);transform:translateY(-1px)}
+.vote-home-btn:active{transform:translateY(0);box-shadow:0 3px 12px rgba(78,155,255,.16)}
+.poll-head{padding:14px 15px;margin:0 0 17px;border:1px solid rgba(242,193,78,.22);border-radius:13px;background:linear-gradient(145deg,rgba(242,193,78,.07),rgba(255,255,255,.015))}
+.poll-head h2{font-size:1.08rem;line-height:1.35;margin-bottom:5px}.poll-head p{color:var(--muted);font-size:.8rem;line-height:1.5;white-space:pre-line}.poll-deadline{display:block;margin-top:8px;color:#d8b75d;font-size:.73rem;font-weight:750}
+.poll-picker{margin:0 0 16px}.poll-picker-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 6px}.poll-picker-label{display:block;min-width:0;color:var(--muted);font-size:.76rem;font-weight:850}.poll-progress-count{flex:0 0 auto;padding:4px 8px;border:1px solid rgba(78,155,255,.24);border-radius:999px;background:rgba(78,155,255,.06);color:#9dc9ff;font-size:.65rem;font-weight:850}.poll-device-note{margin:0 0 9px;color:var(--dim);font-size:.65rem;line-height:1.4;overflow-wrap:anywhere}.poll-status-check{margin:0 0 10px}.poll-status-toggle{display:flex;align-items:center;justify-content:center;width:100%;min-height:42px;padding:9px 11px;border:1px solid #334158;border-radius:10px;background:#182131;color:#b9c8da;font-size:.75rem;font-weight:850}.poll-status-toggle[aria-expanded="true"]{border-color:rgba(78,155,255,.42);color:#dcecff;background:rgba(78,155,255,.07)}.poll-status-form{display:grid;gap:7px;margin-top:7px;padding:9px;border:1px solid #2d394d;border-radius:10px;background:#101722}.poll-status-form[hidden]{display:none!important}.poll-status-fields{display:grid;grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr);gap:7px}.poll-status-fields input{min-width:0;min-height:43px;padding:9px 10px;font-size:16px}.poll-status-check-btn{min-height:43px!important;margin:0!important;padding:10px!important;font-size:.82rem!important}.poll-status-message{min-height:0;color:var(--muted);font-size:.67rem;line-height:1.4;text-align:center;overflow-wrap:anywhere}.poll-status-message.bad{color:var(--red)}.poll-select-list{display:grid;gap:8px}.poll-select-card{display:grid;grid-template-columns:minmax(0,1fr) 26px;align-items:center;gap:10px;width:100%;min-height:58px;padding:11px 12px;border:1px solid #344057;border-radius:12px;background:linear-gradient(145deg,rgba(255,255,255,.03),rgba(255,255,255,.012));color:var(--text);text-align:left;transition:transform .12s,border-color .12s,background .12s,box-shadow .12s}.poll-select-card.submitted:not(.active){border-color:rgba(61,220,151,.26);background:linear-gradient(145deg,rgba(61,220,151,.045),rgba(255,255,255,.012))}.poll-select-copy{min-width:0}.poll-select-copy b{display:block;font-size:.84rem;line-height:1.4;overflow-wrap:anywhere;word-break:break-word}.poll-select-meta{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:5px 8px;margin-top:5px}.poll-select-meta small{min-width:0;color:var(--dim);font-size:.68rem;line-height:1.35}.poll-device-status{flex:0 0 auto;padding:3px 6px;border-radius:999px;font-size:.61rem;font-weight:900;line-height:1.2}.poll-device-status.submitted{color:#7be1b1;background:rgba(61,220,151,.1)}.poll-device-status.pending{color:#f0c969;background:rgba(242,193,78,.09)}.poll-device-status.unknown{color:#9ba7ba;background:#252d3a}.poll-select-mark{display:grid;place-items:center;width:24px;height:24px;border:1px solid #3b465b;border-radius:50%;color:transparent;font-size:.75rem;font-weight:900}.poll-select-card.active{border-color:rgba(242,193,78,.58);background:linear-gradient(145deg,rgba(242,193,78,.10),rgba(255,255,255,.018));box-shadow:0 5px 18px rgba(242,193,78,.10)}.poll-select-card.active .poll-select-mark{border-color:rgba(242,193,78,.62);background:rgba(242,193,78,.14);color:var(--gold)}.poll-select-card:hover{transform:translateY(-1px);border-color:rgba(242,193,78,.5)}
+.choice-list{display:grid;gap:9px;margin-bottom:18px}
+.choice-item{position:relative;display:flex;align-items:flex-start;gap:11px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);cursor:pointer;transition:border-color .12s,background .12s,transform .12s}
+.choice-item:hover{transform:translateY(-1px);border-color:#46536b}.choice-item.selected{border-color:var(--choice,#4E9BFF);background:color-mix(in srgb,var(--choice,#4E9BFF) 12%,var(--panel2));box-shadow:0 0 0 2px color-mix(in srgb,var(--choice,#4E9BFF) 20%,transparent)}
+.choice-item input{position:absolute;opacity:0;pointer-events:none}.choice-dot{width:18px;height:18px;flex:0 0 18px;margin-top:1px;border-radius:50%;border:2px solid #566177;box-shadow:inset 0 0 0 4px var(--panel2)}
+.choice-item.selected .choice-dot{border-color:var(--choice,#4E9BFF);background:var(--choice,#4E9BFF)}
+.choice-label{min-width:0;font-size:.9rem;line-height:1.45;font-weight:750;overflow-wrap:anywhere;word-break:break-word}
+.poll-empty{padding:22px 14px;text-align:center;border:1px dashed #39445a;border-radius:13px;color:var(--muted);line-height:1.55}
+textarea{font-family:inherit;background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:11px;padding:13px 14px;font-size:1.02rem;outline:none;width:100%;min-height:82px;resize:vertical;transition:border-color .12s,box-shadow .12s}
+textarea:focus{border-color:var(--ours);box-shadow:0 0 0 3px rgba(78,155,255,.18)}
+.poll-update-note{margin:-3px 0 10px;color:var(--dim);font-size:.72rem;line-height:1.45;text-align:center}
+.vote-done-choice{display:inline-block;margin:10px 0;padding:7px 11px;border:1px solid rgba(61,220,151,.25);border-radius:999px;color:#8ce7bd;background:rgba(61,220,151,.055);font-size:.79rem;font-weight:800}
+.poll-submitted-notice{display:grid;grid-template-columns:30px minmax(0,1fr);align-items:center;gap:9px;margin:-4px 0 14px;padding:10px 11px;border:1px solid rgba(61,220,151,.28);border-radius:11px;background:rgba(61,220,151,.065);color:#cbeedd}.poll-submitted-notice[hidden]{display:none!important}.poll-submitted-notice-mark{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:rgba(61,220,151,.15);color:#71e3ad;font-size:.9rem;font-weight:950}.poll-submitted-notice-copy{min-width:0}.poll-submitted-notice-copy b{display:block;font-size:.78rem;line-height:1.35}.poll-submitted-notice-copy small{display:block;margin-top:3px;color:#82a99a;font-size:.68rem;line-height:1.4;overflow-wrap:anywhere}
+.vote-receipt{margin:16px 0 10px;padding:14px;border:1px solid rgba(61,220,151,.32);border-radius:14px;background:linear-gradient(145deg,rgba(61,220,151,.085),rgba(255,255,255,.014));box-shadow:0 8px 24px rgba(0,0,0,.16)}.vote-receipt-status{display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:12px;color:#88e8bb;font-size:.88rem;font-weight:900;text-align:center}.vote-receipt-status-mark{display:grid;place-items:center;width:23px;height:23px;border-radius:50%;background:#3ddc97;color:#07140e;font-size:.76rem}.vote-receipt-details{display:grid;gap:7px}.vote-receipt-row{display:grid;grid-template-columns:78px minmax(0,1fr);align-items:start;gap:9px;padding-top:7px;border-top:1px solid rgba(255,255,255,.055)}.vote-receipt-row:first-child{padding-top:0;border-top:0}.vote-receipt-row dt{color:#80908d;font-size:.7rem;font-weight:800}.vote-receipt-row dd{min-width:0;color:#e8f4ee;font-size:.78rem;font-weight:750;line-height:1.4;overflow-wrap:anywhere}.vote-receipt-proof{margin:12px 0 0;color:#83aa9a;font-size:.71rem;line-height:1.5;text-align:center}.vote-done-tail{margin:10px 0 0!important;font-size:.76rem!important}
+.vote-followup{margin:15px 0 2px;padding:12px;border:1px solid #303b50;border-radius:14px;background:rgba(255,255,255,.018)}.vote-followup[hidden]{display:none!important}.vote-followup-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px}.vote-followup-head h2{min-width:0;font-size:.88rem;line-height:1.35;color:#dce8f8}.vote-followup-message{margin:0 0 9px;color:var(--muted);font-size:.7rem;line-height:1.45;overflow-wrap:anywhere}.vote-followup-list{display:grid;gap:6px}.vote-followup-card{display:grid;grid-template-columns:minmax(0,1fr) 18px;align-items:center;gap:7px;width:100%;min-height:52px;padding:9px 10px;border:1px solid #303b50;border-radius:10px;background:#171f2d;color:var(--text);text-align:left}.vote-followup-card.submitted{border-color:rgba(61,220,151,.23);background:rgba(61,220,151,.035)}.vote-followup-card.current{box-shadow:inset 3px 0 0 rgba(242,193,78,.72)}.vote-followup-card-copy{min-width:0}.vote-followup-card-copy b{display:block;font-size:.75rem;line-height:1.4;overflow-wrap:anywhere;word-break:break-word}.vote-followup-card-arrow{color:#75839a;font-size:1rem;text-align:center}.vote-followup-card:hover{border-color:#49607f}.vote-continue-btn{min-height:48px!important;margin-top:10px!important;font-size:.9rem!important}.vote-continue-btn[hidden]{display:none!important}.vote-followup-device-note{display:block;margin:9px 1px 0;color:var(--dim);font-size:.62rem;line-height:1.4;text-align:center;overflow-wrap:anywhere}
+@media(max-width:420px){.home-logo{width:132px;margin-bottom:14px}.service-card{grid-template-columns:42px minmax(0,1fr) 18px;padding:14px 12px}.service-icon{width:42px;height:42px}.choice-item{padding:12px}.poll-picker-top,.vote-followup-head{align-items:flex-start}.poll-progress-count{font-size:.61rem}.poll-status-fields{grid-template-columns:1fr}.vote-followup{padding:10px}.sub,.poll-head p,.poll-empty,.poll-update-note,.credit{overflow-wrap:anywhere;word-break:break-word}}
+@media(max-width:420px){.langbar button{min-height:40px}}
+@media(hover:none){.service-card:hover,.choice-item:hover,.poll-select-card:hover,.btn:hover{transform:none}}
+
+
+/* Submission form readability and touch controls. */
+.langbar button{min-width:44px;min-height:44px;padding:8px 6px;font-size:12px;line-height:1.25}
+.view-back{min-height:46px;font-size:13px}
+.vote-home-btn{min-height:48px}
+.field label{font-size:13px;color:#b3bfd2;line-height:1.45}
+.field label .opt{color:#98a7bd}
+.required-note{font-size:12px;color:#a2afc3;line-height:1.5}
+.privacy-note{font-size:12px;color:#9bc2b1;line-height:1.5;margin-bottom:16px}
+.preview{font-size:13px;line-height:1.45;min-height:19px}
+.service-copy span,.poll-head p,.poll-deadline{font-size:13px}
+.poll-progress-count,.poll-device-note,.vote-followup-device-note,.vote-followup-message,.poll-submitted-notice-copy small,.vote-receipt-proof,.poll-update-note{font-size:12px;line-height:1.55}
+.poll-device-note,.vote-followup-device-note,.poll-update-note{color:#9baac1}
+.poll-status-toggle,.poll-status-check-btn{min-height:46px;font-size:13px}
+.poll-status-message{font-size:13px;line-height:1.5}
+.credit{color:#97a7be;font-size:12px}.copyright-note{font-size:12px;color:#8c9bb2}
+select{color-scheme:dark}select option,select optgroup{background:#1c222e;color:#edf1f9}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.choice-item:focus-within{outline:2px solid var(--ours);outline-offset:3px}
+.field-error{margin-top:6px;font-size:13px;line-height:1.5;color:#ff9e9e;overflow-wrap:anywhere}
+.field-error[hidden],.connection-status[hidden],.draft-notice[hidden]{display:none!important}
+input[aria-invalid="true"],select[aria-invalid="true"],textarea[aria-invalid="true"]{border-color:#ff8181;box-shadow:0 0 0 2px rgba(255,107,107,.13)}
+.choice-list[aria-invalid="true"]{outline:2px solid #ff8181;outline-offset:4px;border-radius:12px}
+.power-input-row{display:grid;grid-template-columns:minmax(0,1fr) 92px;align-items:center;gap:6px;min-width:0}
+.power-input-row>input{min-width:0;padding-left:10px;padding-right:10px}
+.power-unit-buttons{display:grid;grid-template-columns:repeat(2,44px);gap:4px;min-width:0}
+.power-unit-button{display:flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;padding:8px 2px;border:1px solid #43516b;border-radius:9px;background:#182232;color:#bcc9df;font-size:14px;font-weight:800;line-height:1.2}
+.power-unit-button:hover{border-color:#6c8bb8;color:#f2f6ff}
+.power-unit-button[aria-pressed="true"]{border-color:#d9b14d;background:rgba(242,193,78,.12);color:#ffe09a}
+.connection-status{display:grid;gap:10px;min-width:0;margin:0 0 16px;padding:12px;border:1px solid #865650;border-radius:11px;background:#2a1e25;color:#ffb7ac;font-size:13px;line-height:1.55}
+.connection-status button{min-height:44px;padding:8px 12px;border:1px solid #886653;border-radius:8px;background:#342627;color:#ffe1cb;font:inherit;font-weight:750}
+.draft-notice{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0;margin:0 0 16px;padding:10px 12px;border:1px solid #48566b;border-radius:10px;background:#192334;font-size:13px;line-height:1.5;color:#c3d3e9}
+.draft-notice>span{min-width:0;overflow-wrap:anywhere}.draft-clear{flex:0 0 auto;min-height:44px;max-width:48%;padding:7px 9px;border:1px solid #526781;border-radius:8px;background:#203048;color:#dfebfc;font:inherit;font-weight:750;white-space:normal}
+.power-receipt{margin:16px 0;padding:14px;border:1px solid rgba(61,220,151,.28);border-radius:12px;background:rgba(61,220,151,.045);text-align:left}
+.power-receipt-row{display:grid;grid-template-columns:minmax(82px,.9fr) minmax(0,1.1fr);align-items:start;gap:10px;padding:9px 0;border-top:1px solid #2b3a42}
+.power-receipt-row:first-child{padding-top:0;border-top:0}.power-receipt-row:last-child{padding-bottom:0}
+.power-receipt-row dt{color:#afc1c6;font-size:13px;line-height:1.5}.power-receipt-row dd{margin:0;min-width:0;color:#eef5f6;font-size:14px;font-weight:700;line-height:1.5;overflow-wrap:anywhere;white-space:normal}
+#doneSummary{font-variant-numeric:tabular-nums}
+@media(max-width:640px){
+  input,select,textarea{font-size:16px}
+  .box{padding-top:20px}
+  .langbar{margin-bottom:12px}
+  .langbar button{min-height:44px;font-size:12px}
+  .view-back{margin-bottom:10px}
+  #formView>img{height:60px!important;margin:0 auto 8px!important}
+  #tSub{margin-top:7px;margin-bottom:10px;font-size:13px;line-height:1.5}
+  .row2.power-row2{grid-template-columns:1fr}
+  .privacy-note{margin-bottom:14px}
+  .poll-progress-count{font-size:12px}
+}
+@media(max-width:360px){.official-badge{font-size:11px}.privacy-note{font-size:12px}.power-receipt{padding:11px}.power-receipt-row{grid-template-columns:minmax(76px,.95fr) minmax(0,1.05fr);gap:8px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}button,.btn,.service-card,.choice-item,.poll-select-card{transition:none!important}.btn:hover,.service-card:hover,.choice-item:hover,.poll-select-card:hover{transform:none!important}}
+
+</style>
+<style>body{display:block}.box{margin:0 auto}.submit-preview-banner{max-width:940px;margin:0 auto 16px;padding:12px;border:1px solid #f5d26c;border-radius:10px;background:#edc14d;color:#211b0c;font:14px/1.55 sans-serif;overflow-wrap:anywhere}.submit-preview-banner strong{display:block}.submit-preview-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.submit-preview-actions button{min-height:44px;padding:8px 12px;border:1px solid #6f5422;border-radius:8px;background:#302611;color:#ffe9ae;font:inherit;font-weight:700}.submit-preview-banner small{display:block;margin-top:6px;font-size:12px}#submitPreviewStatus{font-weight:700}</style></head>
+<body data-page="home"><aside class="submit-preview-banner"><strong>테스트 전용 / 실제 서버와 연결되지 않습니다</strong><span>임의의 이름과 전투력으로 화면을 확인하세요. 제출은 가짜 데이터로 처리합니다.</span><div class="submit-preview-actions"><button type="button" onclick="location.reload()">처음으로 / 초기화</button><button type="button" onclick="window.__submitPreview.failNext=true;document.getElementById('submitPreviewStatus').textContent='다음 제출에서 저장 실패 안내를 확인할 수 있습니다.'">저장 실패 예시</button></div><small>미리보기는 새로고침하면 모든 입력과 기록이 초기화됩니다. 운영 페이지의 임시 저장은 이 기기에서 최대 24시간 유지됩니다.</small><small id="submitPreviewStatus" role="status"></small></aside>
+<div class="box" data-owner="213-NXT-BUANG" data-project="213-server-power-submit">
+  <div class="owner-watermark" aria-hidden="true">213 NXT / BU-ANG</div>
+  <div class="official-badge"><span class="official-mark" aria-hidden="true"></span><b>213 SERVER</b><em>OFFICIAL FORM</em></div>
+  <div class="langbar" id="langbar">
+    <button data-l="ko" onclick="setLang('ko')">한국어</button>
+    <button data-l="en" onclick="setLang('en')">English</button>
+    <button data-l="ja" onclick="setLang('ja')">日本語</button>
+    <button data-l="zh" onclick="setLang('zh')">中文</button>
+  </div>
+
+  <!-- 제출 항목 선택 -->
+  <section id="connectionStatus" class="connection-status" hidden role="status" aria-live="polite"><p id="connectionMessage"></p><button id="connectionRetry" type="button" onclick="retrySubmissionService()"></button></section>
+  <div id="homeView" class="page-view">
+    <img class="home-logo" src="data:image/png;base64,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" alt="" aria-hidden="true">
+    <h1 class="sr-only" id="hTitle"></h1>
+    <div class="sub home-prompt" id="hSub"></div>
+    <div class="service-grid">
+      <button class="service-card" type="button" onclick="showPowerForm()">
+        <span class="service-icon" aria-hidden="true">⚔️</span>
+        <span class="service-copy"><b id="hPowerTitle"></b><span id="hPowerDesc"></span></span>
+        <span class="service-arrow" aria-hidden="true">›</span>
+      </button>
+      <button class="service-card vote" type="button" onclick="showVoteForm()">
+        <span class="service-icon" aria-hidden="true">🗳️</span>
+        <span class="service-copy"><b id="hVoteTitle"></b><span id="hVoteDesc"></span></span>
+        <span class="service-arrow" aria-hidden="true">›</span>
+      </button>
+    </div>
+    <div class="credit">Powered by <b>213 NXT / 부앙(Bu-ang)</b><span class="copyright-note">© 2026 / UI 및 소스 무단 복제 금지</span></div>
+  </div>
+
+  <!-- 제출 폼 -->
+  <div id="formView" class="page-view" hidden>
+    <button class="view-back" type="button" onclick="showHome()">← <span id="powerBackText"></span></button>
+    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTQwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZCIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGOUU3QTAiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIwLjQ1IiBzdG9wLWNvbG9yPSIjRUZDOTVFIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0I4ODYyQiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZDIiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkNFRkMwIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0Q5QTkzRSIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPCEtLSDsmZXqtIAgLS0+CiAgPHBhdGggZD0iTTI3IDQ2IEwyOSAyNCBMNDQgMzQgTDYwIDE1IEw3NiAzNCBMOTEgMjQgTDkzIDQ2IFoiIGZpbGw9InVybCgjZ29sZCkiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIxLjIiLz4KICA8Y2lyY2xlIGN4PSIyOSIgY3k9IjIxIiByPSIzLjQiIGZpbGw9InVybCgjZ29sZDIpIiBzdHJva2U9IiM4QTY0MjAiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iMTIiIHI9IjMuOCIgZmlsbD0idXJsKCNnb2xkMikiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPGNpcmNsZSBjeD0iOTEiIGN5PSIyMSIgcj0iMy40IiBmaWxsPSJ1cmwoI2dvbGQyKSIgc3Ryb2tlPSIjOEE2NDIwIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8cmVjdCB4PSIyNyIgeT0iNDgiIHdpZHRoPSI2NiIgaGVpZ2h0PSI2LjUiIHJ4PSIyLjUiIGZpbGw9InVybCgjZ29sZDIpIiBzdHJva2U9IiM4QTY0MjAiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iNTEuMiIgcj0iMiIgZmlsbD0iIzhBNjQyMCIvPgogIDxjaXJjbGUgY3g9IjQyIiBjeT0iNTEuMiIgcj0iMS41IiBmaWxsPSIjOEE2NDIwIi8+CiAgPGNpcmNsZSBjeD0iNzgiIGN5PSI1MS4yIiByPSIxLjUiIGZpbGw9IiM4QTY0MjAiLz4KICA8IS0tIDIxMyAtLT4KICA8dGV4dCB4PSI2MCIgeT0iOTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCAnVGltZXMgTmV3IFJvbWFuJywgc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9InVybCgjZ29sZCkiIHN0cm9rZT0iIzhBNjQyMCIgc3Ryb2tlLXdpZHRoPSIwLjYiPjIxMzwvdGV4dD4KICA8IS0tIFNFUlZFUiAtLT4KICA8dGV4dCB4PSI2MyIgeT0iMTEzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTIuNSIgbGV0dGVyLXNwYWNpbmc9IjUuNSIgZmlsbD0iI0Q5QjQ1QyI+U0VSVkVSPC90ZXh0PgogIDwhLS0g7ZWY64uoIOyepeyLnSAtLT4KICA8cGF0aCBkPSJNMzggMTIyIEw2MCAxMzEgTDgyIDEyMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ1cmwoI2dvbGQpIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iMTMxIiByPSIyLjIiIGZpbGw9IiNFRkM5NUUiLz4KPC9zdmc+Cg==" alt="213 SERVER" style="height:80px;display:block;margin:0 auto 12px;filter:drop-shadow(0 6px 18px rgba(242,193,78,.35))">
+    <h1 id="tTitle"></h1>
+    <div class="sub" id="tSub"></div>
+    <div class="required-note" id="tRequired"></div>
+    <div class="privacy-note" id="tPrivacy"></div>
+
+    <div class="guide-sec" id="guideSec" style="display:none">
+      <h3 id="tGuide"></h3>
+      <div id="guideImgs"></div>
+    </div>
+
+    <div class="sechd"><span id="tSec1"></span></div>
+    <div class="field"><label><span id="tAlliance"></span> <b>*</b></label>
+      <input id="fAlliance" maxlength="20" autocomplete="organization" enterkeyhint="next"></div>
+    <div class="field"><label><span id="tNick"></span> <b>*</b></label>
+      <input id="fNick" maxlength="40" autocomplete="nickname" enterkeyhint="next"></div>
+    <div class="row2">
+      <div class="field"><label><span id="tTroop"></span> <b>*</b></label>
+        <select id="fTroop"></select></div>
+      <div class="field"><label><span id="tShelter"></span> <b>*</b></label>
+        <input id="fShelter" inputmode="numeric" maxlength="4" enterkeyhint="next"></div>
+    </div>
+<aside id="powerDraftNotice" class="draft-notice" hidden role="status"><span id="powerDraftMessage"></span><button id="powerDraftClear" class="draft-clear" type="button" onclick="discardPowerDraft()"></button></aside>
+    <div class="sechd" style="margin-top:22px"><span id="tSec2"></span></div>
+    <div class="field"><label><span id="tS1"></span> <b>*</b></label>
+      <input id="fS1" inputmode="decimal" maxlength="16" enterkeyhint="next">
+      <div class="preview" id="pS1"></div></div>
+    <div class="row2">
+      <div class="field"><label><span id="tS2"></span> <span class="opt" id="tOpt2"></span></label><input id="fS2" inputmode="decimal" maxlength="16" enterkeyhint="next"><div class="preview" id="pS2"></div></div>
+      <div class="field"><label><span id="tS3"></span> <span class="opt" id="tOpt3"></span></label><input id="fS3" inputmode="decimal" maxlength="16" enterkeyhint="next"><div class="preview" id="pS3"></div></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label><span id="tS4"></span> <span class="opt" id="tOpt4"></span></label><input id="fS4" inputmode="decimal" maxlength="16" enterkeyhint="next"><div class="preview" id="pS4"></div></div>
+      <div class="field"><label><span id="tKills"></span> <span class="opt" id="tOpt5"></span></label><input id="fKills" inputmode="numeric" maxlength="20" enterkeyhint="done"><div class="preview" id="pS5"></div></div>
+    </div>
+    <button class="btn" type="button" id="submitBtn" onclick="doSubmit()"></button>
+    <div class="msg" id="formMsg" role="status" aria-live="polite"></div>
+    <div class="credit">Powered by <b>213 NXT / 부앙(Bu-ang)</b><span class="copyright-note">© 2026 / UI 및 소스 무단 복제 금지</span></div>
+  </div>
+
+  <!-- 완료 -->
+  <div id="doneView" class="page-view" hidden>
+    <div class="done-icon">✅</div>
+    <h1 id="tDone"></h1>
+    <div class="sub" id="doneSummary" aria-live="polite"></div>
+    <button class="btn ghost" type="button" id="againBtn" onclick="showForm()"></button>
+    <div class="credit">Powered by <b>213 NXT / 부앙(Bu-ang)</b><span class="copyright-note">© 2026 / UI 및 소스 무단 복제 금지</span></div>
+  </div>
+
+  <!-- 참여 투표 -->
+  <div id="voteView" class="page-view" hidden>
+    <button class="view-back" type="button" onclick="showHome()">← <span id="voteBackText"></span></button>
+    <h1 id="vTitle"></h1>
+    <div class="sub" id="vSub"></div>
+    <div id="pollLoading" class="poll-empty" role="status" aria-live="polite"></div>
+    <button id="pollRetryBtn" type="button" class="view-back poll-retry" hidden onclick="retryPublicPolls()"></button>
+    <div id="pollForm" hidden>
+      <div class="poll-picker" id="pollSelectWrap" hidden>
+        <div class="poll-status-check">
+          <button class="poll-status-toggle" id="voteStatusToggle" type="button" aria-expanded="false" onclick="toggleVoteStatusCheck()"><span id="vStatusToggleText"></span></button>
+          <div class="poll-status-form" id="voteStatusForm" hidden>
+            <div class="poll-status-fields"><input id="vStatusAllianceInput" maxlength="30" autocomplete="organization"><input id="vStatusNickInput" maxlength="60" autocomplete="nickname"></div>
+            <button class="btn poll-status-check-btn" id="voteStatusCheckBtn" type="button" onclick="checkVoteStatus()"></button>
+            <div class="poll-status-message" id="voteStatusMsg" role="status" aria-live="polite"></div>
+          </div>
+        </div>
+        <div class="poll-picker-top"><span class="poll-picker-label" id="vPollSelectLabel"></span><span class="poll-progress-count" id="vPollProgress"></span></div>
+        <p class="poll-device-note" id="vPollStatusNote"></p>
+        <div class="poll-select-list" id="vPollSelectList"></div>
+      </div>
+      <div class="poll-head"><h2 id="publicPollTitle"></h2><p id="publicPollDescription"></p><span class="poll-deadline" id="publicPollDeadline"></span></div>
+      <div class="poll-submitted-notice" id="voteReceiptNotice" hidden><span class="poll-submitted-notice-mark">✓</span><span class="poll-submitted-notice-copy"><b id="voteReceiptNoticeTitle"></b><small id="voteReceiptNoticeText"></small></span></div>
+      <div class="sechd"><span id="vSecChoice"></span></div>
+      <div class="choice-list" id="publicPollOptions"></div>
+      <div class="sechd"><span id="vSecInfo"></span></div>
+      <div class="field"><label><span id="vAlliance"></span> <b>*</b></label><input id="vAllianceInput" maxlength="30" autocomplete="organization" enterkeyhint="next"></div>
+      <div class="field"><label><span id="vNick"></span> <b>*</b></label><input id="vNickInput" maxlength="60" autocomplete="nickname" enterkeyhint="next"></div>
+      <div class="row2">
+        <div class="field"><label><span id="vTroop"></span> <b>*</b></label><select id="vTroopInput"></select></div>
+        <div class="field"><label><span id="vIndustry"></span> <b>*</b></label><input id="vIndustryInput" inputmode="numeric" maxlength="4" enterkeyhint="next"></div>
+      </div>
+      <div class="field"><label><span id="vSquad1"></span> <b>*</b></label><input id="vSquad1Input" inputmode="decimal" maxlength="16" enterkeyhint="next"><div class="preview" id="vPowerPreview"></div></div>
+      <div class="field"><label><span id="vNote"></span> <span class="opt" id="vOptional"></span></label><textarea id="vNoteInput" maxlength="300"></textarea></div>
+      <div class="poll-update-note" id="vUpdateNote"></div>
+      <button class="btn" type="button" id="voteSubmitBtn" onclick="doVoteSubmit()"></button>
+      <div class="msg" id="voteMsg" role="status" aria-live="polite"></div>
+    </div>
+    <div class="credit">Powered by <b>213 NXT / 부앙(Bu-ang)</b><span class="copyright-note">© 2026 / UI 및 소스 무단 복제 금지</span></div>
+  </div>
+
+  <!-- 참여 투표 완료 -->
+  <div id="voteDoneView" class="page-view" hidden>
+    <div class="done-icon">✅</div>
+    <h1 id="vDoneTitle"></h1>
+    <div class="vote-receipt" id="voteReceipt" aria-live="polite">
+      <div class="vote-receipt-status"><span class="vote-receipt-status-mark">✓</span><span id="vDoneSaved"></span></div>
+      <dl class="vote-receipt-details">
+        <div class="vote-receipt-row"><dt id="vDonePollLabel"></dt><dd id="vDonePollValue">-</dd></div>
+        <div class="vote-receipt-row"><dt id="vDoneChoiceLabel"></dt><dd id="vDoneChoiceValue">-</dd></div>
+        <div class="vote-receipt-row"><dt id="vDonePlayerLabel"></dt><dd id="vDonePlayerValue">-</dd></div>
+        <div class="vote-receipt-row"><dt id="vDoneTimeLabel"></dt><dd id="vDoneTimeValue">-</dd></div>
+      </dl>
+      <p class="vote-receipt-proof" id="vDoneProof"></p>
+    </div>
+    <div class="sub vote-done-tail" id="voteDoneSummary"></div>
+    <section class="vote-followup" id="voteFollowup" hidden>
+      <div class="vote-followup-head"><h2 id="vFollowupTitle"></h2><span class="poll-progress-count" id="vFollowupProgress"></span></div>
+      <p class="vote-followup-message" id="vFollowupMessage"></p>
+      <div class="vote-followup-list" id="vFollowupList"></div>
+      <button class="btn vote-continue-btn" id="voteContinueBtn" type="button" onclick="continueNextVote()"></button>
+      <small class="vote-followup-device-note" id="vFollowupNote"></small>
+    </section>
+    <button class="btn ghost" type="button" id="voteAgainBtn" onclick="editLatestSubmittedVote()"></button>
+    <button class="view-back vote-home-btn" type="button" onclick="showHome()">← <span id="voteDoneHome"></span></button>
+    <div class="credit">Powered by <b>213 NXT / 부앙(Bu-ang)</b><span class="copyright-note">© 2026 / UI 및 소스 무단 복제 금지</span></div>
+  </div>
+</div>
+
+<script>
+let sb=null, lang='ko', submitting=false, voteSubmitting=false;
+let publicPolls=[], selectedPublicPollId=null, currentPage='home';
+let latestVoteReceipt=null;
+let voteStatusRequestSeq=0;
+let voteStatusState={loaded:false,loading:false,identity:'',completedIds:new Set(),error:false};
+const BUILD_SIGNATURE='213-NXT-BUANG::SUBMIT-HUB-POLL::2026.09.14-V3.71';
+const $=id=>document.getElementById(id);
+
+function normalizeNumericText(value){
+  return String(value??'')
+    .replace(/[０-９]/g,ch=>String.fromCharCode(ch.charCodeAt(0)-0xFEE0))
+    .replace(/[．。]/g,'.')
+    .replace(/，/g,',')
+    .replace(/[Ｇｇ]/g,'g')
+    .replace(/[Ｍｍ]/g,'m');
+}
+function escapeHtml(value){
+  return String(value??'').replace(/[&<>"']/g,ch=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  })[ch]);
+}
+function safeGuideUrl(value){
+  try{
+    const url=new URL(String(value));
+    return url.protocol==='https:' ? url.href : null;
+  }catch(e){
+    return null;
+  }
+}
+
+
+const I18N={
+ko:{
+  title:'전투력 제출',
+  sub:'현재 전투력을 입력해 주세요.<br>운영진 확인 후 통합 시트에 반영됩니다.',
+  guide:'📸 입력 예시',
+  alliance:'연맹', alliancePh:'예: NXT, AST',
+  nick:'게임 닉네임', nickPh:'게임 내 닉네임을 정확히 입력',
+  troop:'주병종', troops:['슈터','파이터','라이더'],
+  shelter:'산업 레벨', shelterPh:'예: 4, 7, 10',
+  s1:'1편대 전투력', s1Ph:'예: 6.22G',
+  s2:'2편대', s2Ph:'예: 4.5G', s3:'3편대', s3Ph:'예: 2.1G', s4:'4편대', s4Ph:'예: 1.5G',
+  sec1:'기본 정보', sec2:'전투력', opt:'(선택)', kills:'킬수', killsPh:'예: 27,066,265', errS234:'2편대와 3편대 전투력을 입력해 주세요.', errKills:'킬수를 입력해 주세요. (예: 27,066,265)',
+  submit:'전투력 제출', submitting:'제출 중...',
+  preview:v=>'→ '+v+' 로 기록됩니다',
+  badNum:'⚠ 숫자를 확인해 주세요 (예: 6.22G 또는 6220)',
+  errAlliance:'연맹을 입력해 주세요.', errNick:'닉네임을 입력해 주세요.', errTroop:'주병종을 선택해 주세요.', errShelter:'산업 레벨을 숫자로 입력해 주세요. (예: 4, 7, 10)',
+  errS1:'1편대 전투력을 확인해 주세요. (예: 6.22G 또는 6220)', errS:'편대 전투력 값을 확인해 주세요.',
+  done:'✅ 제출이 완료되었습니다', doneTail:'운영진 확인 후 반영됩니다.<br>수고하셨습니다 ⚔️',
+  again:'다시 제출하기', errLong:'입력이 너무 깁니다.', squadWord:['1편대','2편대','3편대','4편대'],
+  confirmQ:'아래 내용으로 제출할까요?', required:'<b>*</b> 표시는 필수 입력 항목입니다.', privacy:'제출 정보는 213서버 운영 목적으로만 사용됩니다.', networkErr:'제출 중 오류가 발생했습니다', scriptFail:'필수 스크립트를 불러오지 못했습니다. 인터넷 연결을 확인한 뒤 새로고침해 주세요.', runtimeErr:'화면 처리 중 오류가 발생했습니다.'
+},
+en:{
+  title:'Combat Power Submission',
+  sub:'Enter your current combat power.<br>It will be added to the server sheet after staff review.',
+  guide:'📸 Example',
+  alliance:'Alliance', alliancePh:'e.g. NXT, AST',
+  nick:'In-game Nickname', nickPh:'Enter your exact in-game nickname',
+  troop:'Main Troop Type', troops:['Shooter','Fighter','Rider'],
+  shelter:'Industry Level', shelterPh:'e.g. 4, 7, 10',
+  s1:'Squad 1 Combat Power', s1Ph:'e.g. 6.22G',
+  s2:'Squad 2 Combat Power', s2Ph:'e.g. 4.5G', s3:'Squad 3 Combat Power', s3Ph:'e.g. 2.1G', s4:'Squad 4 Combat Power', s4Ph:'e.g. 1.5G',
+  sec1:'Basic Info', sec2:'Combat Power', opt:'(optional)', kills:'Kills', killsPh:'e.g. 27,066,265', errS234:'Please enter Squad 2 and Squad 3 power.', errKills:'Please enter your kill count. (e.g. 27,066,265)',
+  submit:'Submit Combat Power', submitting:'Submitting...',
+  preview:v=>'→ Will be recorded as '+v,
+  badNum:'⚠ Please check the number (e.g. 6.22G or 6220)',
+  errAlliance:'Please enter your alliance.', errNick:'Please enter your nickname.', errTroop:'Please select your main troop type.', errShelter:'Please enter your industry level as a number. (e.g. 4, 7, 10)',
+  errS1:'Please check your Squad 1 power. (e.g. 6.22G or 6220)', errS:'Please check the squad power values.',
+  done:'✅ Submission Complete', doneTail:'Staff will review and add it to the server sheet.<br>Thank you, Commander! ⚔️',
+  again:'Submit Again', errLong:'Input is too long.', squadWord:['Squad 1','Squad 2','Squad 3','Squad 4'],
+  confirmQ:'Submit the information below?', required:'Fields marked with <b>*</b> are required.', privacy:'Submitted information is used only for 213 Server operations.', networkErr:'An error occurred while submitting', scriptFail:'A required script could not be loaded. Check your internet connection and refresh the page.', runtimeErr:'An error occurred while displaying the page.'
+},
+ja:{
+  title:'戦闘力の提出',
+  sub:'現在の戦闘力を入力してください。<br>運営側で確認後、統合シートに反映します。',
+  guide:'📸 入力例',
+  alliance:'同盟', alliancePh:'例: NXT, AST',
+  nick:'ゲーム内ニックネーム', nickPh:'ゲーム内ニックネームを正確に入力',
+  troop:'主力兵種', troops:['シューター','ファイター','ライダー'],
+  shelter:'産業レベル', shelterPh:'例: 4, 7, 10',
+  s1:'第1部隊戦力', s1Ph:'例: 6.22G',
+  s2:'第2部隊戦力', s2Ph:'例: 4.5G', s3:'第3部隊戦力', s3Ph:'例: 2.1G', s4:'第4部隊戦力', s4Ph:'例: 1.5G',
+  sec1:'基本情報', sec2:'戦闘力', opt:'（任意）', kills:'キル数', killsPh:'例: 27,066,265', errS234:'第2・第3部隊も入力してください。', errKills:'キル数を入力してください。（例: 27,066,265）',
+  submit:'戦闘力を提出', submitting:'提出中...',
+  preview:v=>'→ '+v+' として記録されます',
+  badNum:'⚠ 数値をご確認ください（例: 6.22G または 6220）',
+  errAlliance:'同盟を入力してください。', errNick:'ニックネームを入力してください。', errTroop:'主力兵種を選択してください。', errShelter:'産業レベルを数字で入力してください。（例：4、7、10）',
+  errS1:'第1部隊の戦闘力をご確認ください。（例: 6.22G または 6220）', errS:'部隊の戦闘力をご確認ください。',
+  done:'✅ 提出が完了しました', doneTail:'運営側で確認後、統合シートに反映します。<br>お疲れさまでした ⚔️',
+  again:'もう一度提出する', errLong:'入力内容が長すぎます。', squadWord:['第1部隊','第2部隊','第3部隊','第4部隊'],
+  confirmQ:'以下の内容で提出しますか？', required:'<b>*</b> は必須入力項目です。', privacy:'提出情報は213サーバーの運営目的にのみ使用されます。', networkErr:'提出中にエラーが発生しました', scriptFail:'必要なスクリプトを読み込めませんでした。通信状態を確認して再読み込みしてください。', runtimeErr:'画面の処理中にエラーが発生しました。'
+},
+zh:{
+  title:'战力提交',
+  sub:'请输入当前战力。<br>管理员审核后将录入服务器统计表。',
+  guide:'📸 填写示例',
+  alliance:'联盟', alliancePh:'例：NXT, AST',
+  nick:'游戏昵称', nickPh:'请准确输入游戏内昵称',
+  troop:'主兵种', troops:['射手','战士','骑手'],
+  shelter:'产业等级', shelterPh:'例：4, 7, 10',
+  s1:'第1编队战力', s1Ph:'例：6.22G',
+  s2:'第2编队战力', s2Ph:'例：4.5G', s3:'第3编队战力', s3Ph:'例：2.1G', s4:'第4编队战力', s4Ph:'例：1.5G',
+  sec1:'基本信息', sec2:'战力', opt:'（选填）', kills:'击杀数', killsPh:'例：27,066,265', errS234:'请填写第2、第3编队战力。', errKills:'请输入击杀数。（例：27,066,265）',
+  submit:'提交战力', submitting:'提交中...',
+  preview:v=>'→ 将记录为 '+v,
+  badNum:'⚠ 请检查数值（例：6.22G 或 6220）',
+  errAlliance:'请输入联盟。', errNick:'请输入昵称。', errTroop:'请选择主兵种。', errShelter:'请输入数字形式的产业等级。（例：4、7、10）',
+  errS1:'请检查第1编队战力。（例：6.22G 或 6220）', errS:'请检查编队战力数值。',
+  done:'✅ 提交成功', doneTail:'管理员审核后将录入服务器统计表。<br>辛苦了 ⚔️',
+  again:'再次提交', errLong:'输入内容过长。', squadWord:['第1编队','第2编队','第3编队','第4编队'],
+  confirmQ:'确认提交以下内容吗？', required:'标有 <b>*</b> 的项目为必填项。', privacy:'提交的信息仅用于213服务器运营。', networkErr:'提交时发生错误', scriptFail:'无法加载必要脚本。请检查网络连接后刷新页面。', runtimeErr:'页面处理时发生错误。'
+}};
+
+const HUB_I18N={
+ko:{
+  hubTitle:'213 SERVER',browserTitle:'전투력 / 투표',hubSub:'입력할 항목을 선택해 주세요.',
+  powerTitle:'전투력 제출',powerDesc:'현재 편대 전투력을 입력하고 운영진 검토를 요청합니다.',
+  voteTitle:'참여 투표',voteDesc:'진행 중인 이벤트의 참여 가능 여부를 제출합니다.',back:'처음으로',
+  pollTitle:'참여 투표',pollSub:'진행 중인 투표를 선택하고 참여 정보를 입력해 주세요.',pollSelect:'진행 중인 투표',
+  choiceSec:'01 / 참여 항목',infoSec:'02 / 참여자 정보',alliance:'연맹',alliancePh:'예: NXT',nick:'게임 닉네임',nickPh:'게임 내 닉네임을 정확히 입력',
+  troop:'주병종',troops:['슈터','파이터','라이더'],industry:'산업 레벨',industryPh:'예: 7',squad1:'1편대 전투력',squad1Ph:'예: 6.22G',
+  note:'전달 사항',notePh:'운영진에게 전달할 내용이 있으면 입력',optional:'(선택)',updateNote:'같은 투표에 동일한 연맹과 닉네임으로 다시 제출하면 기존 응답이 수정됩니다.',
+  submit:'참여 응답 제출',submitting:'제출 중...',loading:'진행 중인 투표를 불러오는 중입니다...',noPoll:'현재 진행 중인 참여 투표가 없습니다.',
+  deadline:'마감',noDeadline:'마감 시간 없음',chooseOption:'참여 항목을 선택해 주세요.',errAlliance:'연맹을 입력해 주세요.',errNick:'닉네임을 입력해 주세요.',errTroop:'주병종을 선택해 주세요.',errIndustry:'산업 레벨을 숫자로 입력해 주세요.',errPower:'1편대 전투력을 확인해 주세요. (예: 6.22G 또는 6220)',
+  confirm:'아래 내용으로 참여 응답을 제출할까요?',networkErr:'투표 제출 중 오류가 발생했습니다',pollClosed:'투표가 마감되었거나 공개 상태가 아닙니다.',notTarget:'이 투표의 대상 연맹이 아닙니다.',badOption:'선택한 항목을 사용할 수 없습니다.',
+  done:'참여 응답이 제출되었습니다',doneTail:'마감 전까지 같은 정보로 다시 제출하면 기존 응답이 수정됩니다.',again:'응답 수정하기',home:'처음 화면으로',updated:'기존 응답이 있으면 최신 내용으로 변경되었습니다.',
+  doneSaved:'서버에 정상 저장되었습니다.',doneProof:'이 화면이 보이면 투표 제출이 완료된 것입니다.',receiptPoll:'투표',receiptChoice:'선택 항목',receiptPlayer:'제출자',receiptTime:'저장 확인',recentTitle:'이 기기에서 제출 완료',recentAt:'저장 확인',
+  statusToggle:'내 투표 완료 여부 확인',statusAlliancePh:'연맹, 예 NXT',statusNickPh:'게임 닉네임',statusCheck:'서버에서 확인',statusChecking:'확인 중...',statusNeedInput:'연맹과 게임 닉네임을 입력해 주세요.',statusChecked:'서버 기준 완료 현황을 불러왔습니다.',statusError:'완료 현황을 확인하지 못했습니다. 투표 제출은 계속할 수 있습니다.',statusSubmitted:'제출 완료',statusPending:'미제출',statusUnknown:'확인 전',statusNoteServer:'서버에 저장된 응답 기준입니다.',statusNoteUnknown:'연맹과 닉네임으로 확인하면 카톡과 일반 브라우저에서 동일하게 표시됩니다.',serverSubmittedTitle:'서버에서 제출 완료 확인',serverSubmittedText:'이 투표는 이미 제출되었습니다. 다시 제출하면 기존 응답이 수정됩니다.',completedCount:'완료',followupTitle:'진행 중 투표 확인',followupRemaining:n=>`아직 제출하지 않은 투표가 ${n}개 있습니다.`,followupAllDone:'진행 중인 투표를 모두 제출했습니다.',followupUnknown:'완료 현황을 확인하면 남은 투표를 정확하게 구분할 수 있습니다.',continueNext:'다음 미제출 투표 이어서 하기',followupServerNote:'서버 저장 기준으로 표시됩니다.',followupUnknownNote:'확인 전 항목은 다른 브라우저에서 이미 제출했을 수 있습니다.'
+},
+en:{
+  hubTitle:'213 SERVER',browserTitle:'Power & Participation',hubSub:'Choose what you would like to submit.',
+  powerTitle:'Combat Power Submission',powerDesc:'Submit your current squad power for staff review.',
+  voteTitle:'Participation Survey',voteDesc:'Submit your availability for the current event.',back:'Back to menu',
+  pollTitle:'Participation Survey',pollSub:'Select an active survey and enter your participation details.',pollSelect:'Active Survey',
+  choiceSec:'01 / Availability',infoSec:'02 / Player Information',alliance:'Alliance',alliancePh:'e.g. NXT',nick:'In-game Nickname',nickPh:'Enter your exact in-game nickname',
+  troop:'Main Troop Type',troops:['Shooter','Fighter','Rider'],industry:'Industry Level',industryPh:'e.g. 7',squad1:'Squad 1 Combat Power',squad1Ph:'e.g. 6.22G',
+  note:'Note for Staff',notePh:'Add any details staff should know',optional:'(optional)',updateNote:'Submitting again with the same alliance and nickname will update your previous response.',
+  submit:'Submit Response',submitting:'Submitting...',loading:'Loading active surveys...',noPoll:'There are no active participation surveys at this time.',
+  deadline:'Closes',noDeadline:'No deadline',chooseOption:'Please select your availability.',errAlliance:'Please enter your alliance.',errNick:'Please enter your nickname.',errTroop:'Please select your main troop type.',errIndustry:'Please enter your industry level as a number.',errPower:'Please check your Squad 1 power. (e.g. 6.22G or 6220)',
+  confirm:'Submit the response below?',networkErr:'An error occurred while submitting your response',pollClosed:'This survey is closed or no longer available.',notTarget:'Your alliance is not included in this survey.',badOption:'The selected option is no longer available.',
+  done:'Response Submitted',doneTail:'Submitting again with the same information before the deadline will update your response.',again:'Update Response',home:'Home',updated:'If you had already responded, your previous response has been updated.',
+  doneSaved:'Successfully saved to the server.',doneProof:'If you can see this screen, your response has been submitted.',receiptPoll:'Survey',receiptChoice:'Response',receiptPlayer:'Player',receiptTime:'Saved at',recentTitle:'Submitted from this device',recentAt:'Saved',
+  statusToggle:'Check my survey status',statusAlliancePh:'Alliance, e.g. NXT',statusNickPh:'In-game nickname',statusCheck:'Check on server',statusChecking:'Checking...',statusNeedInput:'Enter your alliance and in-game nickname.',statusChecked:'Your server-confirmed survey status has been loaded.',statusError:'Your survey status could not be checked. You can still submit a response.',statusSubmitted:'Submitted',statusPending:'Not submitted',statusUnknown:'Not checked',statusNoteServer:'Based on responses saved on the server.',statusNoteUnknown:'Check with your alliance and nickname to see the same status in KakaoTalk and other browsers.',serverSubmittedTitle:'Submission confirmed on server',serverSubmittedText:'You already submitted this survey. Submitting again will update your response.',completedCount:'completed',followupTitle:'Active survey status',followupRemaining:n=>`${n} survey${n===1?'':'s'} still need${n===1?'s':''} a response.`,followupAllDone:'You have submitted all active surveys.',followupUnknown:'Check your status to accurately identify the surveys still awaiting your response.',continueNext:'Continue to next survey',followupServerNote:'Displayed from server-saved responses.',followupUnknownNote:'Items not checked may already have been submitted in another browser.'
+},
+ja:{
+  hubTitle:'213 SERVER',browserTitle:'戦闘力・参加確認',hubSub:'入力する項目を選択してください。',
+  powerTitle:'戦闘力を提出',powerDesc:'現在の部隊戦力を入力し、運営側の確認を依頼します。',
+  voteTitle:'参加確認',voteDesc:'開催中のイベントへの参加可否を回答します。',back:'メニューに戻る',
+  pollTitle:'参加確認',pollSub:'受付中の投票を選び、参加情報を入力してください。',pollSelect:'受付中の投票',
+  choiceSec:'01 / 参加区分',infoSec:'02 / プレイヤー情報',alliance:'同盟',alliancePh:'例：NXT',nick:'ゲーム内ニックネーム',nickPh:'ゲーム内ニックネームを正確に入力',
+  troop:'主力兵種',troops:['シューター','ファイター','ライダー'],industry:'産業レベル',industryPh:'例：7',squad1:'第1部隊戦力',squad1Ph:'例：6.22G',
+  note:'運営への連絡事項',notePh:'運営側に伝えたい内容があれば入力',optional:'（任意）',updateNote:'同じ投票に同一の同盟名・ニックネームで再提出すると、以前の回答が更新されます。',
+  submit:'参加回答を提出',submitting:'提出中...',loading:'受付中の投票を読み込んでいます...',noPoll:'現在、受付中の参加投票はありません。',
+  deadline:'締切',noDeadline:'締切なし',chooseOption:'参加区分を選択してください。',errAlliance:'同盟名を入力してください。',errNick:'ニックネームを入力してください。',errTroop:'主力兵種を選択してください。',errIndustry:'産業レベルを数字で入力してください。',errPower:'第1部隊の戦力をご確認ください。（例：6.22G または 6220）',
+  confirm:'以下の内容で参加回答を提出しますか？',networkErr:'回答の提出中にエラーが発生しました',pollClosed:'この投票は締め切られたか、現在公開されていません。',notTarget:'この投票の対象同盟ではありません。',badOption:'選択した項目は現在利用できません。',
+  done:'参加回答を提出しました',doneTail:'締切前に同じ情報で再提出すると、以前の回答が更新されます。',again:'回答を変更する',home:'最初の画面へ',updated:'すでに回答済みの場合は、最新の内容に更新されています。',
+  doneSaved:'サーバーに正常に保存されました。',doneProof:'この画面が表示されていれば、回答の提出は完了しています。',receiptPoll:'投票',receiptChoice:'回答',receiptPlayer:'プレイヤー',receiptTime:'保存確認',recentTitle:'この端末から回答済み',recentAt:'保存',
+  statusToggle:'自分の回答状況を確認',statusAlliancePh:'同盟、例：NXT',statusNickPh:'ゲーム内ニックネーム',statusCheck:'サーバーで確認',statusChecking:'確認中...',statusNeedInput:'同盟名とゲーム内ニックネームを入力してください。',statusChecked:'サーバーに保存された回答状況を読み込みました。',statusError:'回答状況を確認できませんでした。投票への回答はそのまま続けられます。',statusSubmitted:'提出済み',statusPending:'未提出',statusUnknown:'未確認',statusNoteServer:'サーバーに保存された回答を基準に表示しています。',statusNoteUnknown:'同盟名とニックネームで確認すると、KakaoTalkとほかのブラウザでも同じ状況が表示されます。',serverSubmittedTitle:'サーバーで提出済みを確認',serverSubmittedText:'この投票はすでに提出済みです。再提出すると以前の回答が更新されます。',completedCount:'完了',followupTitle:'受付中の投票状況',followupRemaining:n=>`未提出の投票があと${n}件あります。`,followupAllDone:'受付中の投票すべてに回答済みです。',followupUnknown:'回答状況を確認すると、未提出の投票を正確に確認できます。',continueNext:'次の未提出投票へ',followupServerNote:'サーバーに保存された回答を基準に表示しています。',followupUnknownNote:'未確認の項目は、別のブラウザですでに提出済みの場合があります。'
+},
+zh:{
+  hubTitle:'213 SERVER',browserTitle:'战力与参与',hubSub:'请选择要填写的项目。',
+  powerTitle:'提交战力',powerDesc:'填写当前编队战力，提交给管理员审核。',
+  voteTitle:'参与调查',voteDesc:'提交您是否能够参加当前活动。',back:'返回菜单',
+  pollTitle:'参与调查',pollSub:'请选择正在进行的调查并填写参与信息。',pollSelect:'正在进行的调查',
+  choiceSec:'01 / 参与选项',infoSec:'02 / 玩家信息',alliance:'联盟',alliancePh:'例：NXT',nick:'游戏昵称',nickPh:'请准确输入游戏内昵称',
+  troop:'主兵种',troops:['射手','战士','骑手'],industry:'产业等级',industryPh:'例：7',squad1:'第1编队战力',squad1Ph:'例：6.22G',
+  note:'给管理员的备注',notePh:'如有需要告知管理员的内容，请在此填写',optional:'（选填）',updateNote:'在同一调查中使用相同的联盟和昵称再次提交，将更新原有回答。',
+  submit:'提交参与回答',submitting:'提交中...',loading:'正在加载进行中的调查...',noPoll:'目前没有正在进行的参与调查。',
+  deadline:'截止时间',noDeadline:'无截止时间',chooseOption:'请选择参与选项。',errAlliance:'请输入联盟。',errNick:'请输入昵称。',errTroop:'请选择主兵种。',errIndustry:'请用数字填写产业等级。',errPower:'请检查第1编队战力。（例：6.22G 或 6220）',
+  confirm:'确认提交以下参与信息吗？',networkErr:'提交回答时发生错误',pollClosed:'该调查已截止或当前未开放。',notTarget:'您的联盟不在本次调查范围内。',badOption:'所选项目当前不可用。',
+  done:'参与回答已提交',doneTail:'截止前使用相同信息再次提交时，将更新原有回答。',again:'修改回答',home:'返回首页',updated:'如您之前已经回答，原有回答已更新为最新内容。',
+  doneSaved:'已成功保存到服务器。',doneProof:'看到此页面即表示您的回答已提交完成。',receiptPoll:'调查',receiptChoice:'所选项目',receiptPlayer:'玩家',receiptTime:'保存确认',recentTitle:'已从此设备提交',recentAt:'保存',
+  statusToggle:'查看我的提交状态',statusAlliancePh:'联盟，例如 NXT',statusNickPh:'游戏昵称',statusCheck:'从服务器查询',statusChecking:'查询中...',statusNeedInput:'请输入联盟和游戏昵称。',statusChecked:'已加载服务器确认的提交状态。',statusError:'无法查询提交状态，但您仍可继续提交。',statusSubmitted:'已提交',statusPending:'未提交',statusUnknown:'未查询',statusNoteServer:'根据服务器中保存的回答显示。',statusNoteUnknown:'使用联盟和昵称查询后，在 KakaoTalk 和其他浏览器中都会显示相同状态。',serverSubmittedTitle:'服务器已确认提交',serverSubmittedText:'您已提交此调查。再次提交将更新原有回答。',completedCount:'已完成',followupTitle:'进行中的调查状态',followupRemaining:n=>`还有 ${n} 个调查尚未提交。`,followupAllDone:'您已完成所有进行中的调查。',followupUnknown:'查询提交状态后，可以准确确认尚未提交的调查。',continueNext:'继续下一个未提交调查',followupServerNote:'根据服务器中保存的回答显示。',followupUnknownNote:'未查询的项目可能已在其他浏览器中提交。'
+}};
+
+/*
+ * 운영진이 다국어 항목을 비워 둔 경우에도 자주 쓰는 참여 항목은
+ * 선택한 화면 언어로 표시한다. DB에 저장되는 option id와 분류값은 바꾸지 않는다.
+ */
+const COMMON_POLL_OPTION_LABELS={
+  '참여':{en:'Participating',ja:'参加',zh:'参加'},
+  '미참여':{en:'Not participating',ja:'不参加',zh:'不参加'},
+  '부분 참여':{en:'Partial participation',ja:'一部参加',zh:'部分参加'},
+  '기타':{en:'Other',ja:'その他',zh:'其他'},
+  '참여 가능':{en:'Available to participate',ja:'参加可能',zh:'可参加'},
+  '참여 불가능':{en:'Unable to participate',ja:'参加不可',zh:'无法参加'},
+  '디스코드 가능':{en:'Discord available',ja:'Discord利用可',zh:'可使用Discord'},
+  '디스코드 불가능':{en:'Discord unavailable',ja:'Discord利用不可',zh:'无法使用Discord'},
+  '참여(디스코드 가능)':{en:'Participating (Discord available)',ja:'参加（Discord利用可）',zh:'参加（可使用Discord）'},
+  '참여(디스코드 불가능)':{en:'Participating (Discord unavailable)',ja:'参加（Discord利用不可）',zh:'参加（无法使用Discord）'},
+  '부분 참여(디스코드 가능)':{en:'Partial participation (Discord available)',ja:'一部参加（Discord利用可）',zh:'部分参加（可使用Discord）'},
+  '부분 참여(디스코드 불가능)':{en:'Partial participation (Discord unavailable)',ja:'一部参加（Discord利用不可）',zh:'部分参加（无法使用Discord）'}
+};
+function normalizePollOptionLabel(value){
+  return String(value??'').normalize('NFKC').trim().replace(/\s+/g,' ').replace(/\s*\(\s*/g,'(').replace(/\s*\)\s*/g,')');
+}
+function optionTime24(period,hour){
+  let value=Number(hour);
+  if(period==='오후'&&value<12)value+=12;
+  if((period==='오전'||period==='새벽')&&value===12)value=0;
+  return value;
+}
+function formatOptionTime(period,hour,minute,targetLang){
+  const h24=optionTime24(period,hour),m=Number(minute||0);
+  if(targetLang==='en'){
+    const suffix=h24>=12?'PM':'AM',h12=h24%12||12;
+    return `${h12}:${String(m).padStart(2,'0')} ${suffix}`;
+  }
+  return `${String(h24).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+}
+function localizePollOptionLabel(option,targetLang=lang){
+  const raw=typeof option==='object'&&option!==null?option.label:option;
+  const original=String(raw??'').trim();
+  if(!original||targetLang==='ko'||!/[가-힣]/.test(original))return original;
+  const key=normalizePollOptionLabel(original),known=COMMON_POLL_OPTION_LABELS[key];
+  if(known?.[targetLang])return known[targetLang];
+
+  const from=key.match(/^(오전|오후|새벽)\s*(\d{1,2})시(?:\s*(\d{1,2})분)?부터\s*참여\s*가능$/);
+  if(from){
+    const time=formatOptionTime(from[1],from[2],from[3],targetLang);
+    if(targetLang==='en')return `Available to participate from ${time}`;
+    if(targetLang==='ja')return `${time}から参加可能`;
+    if(targetLang==='zh')return `${time}起可参加`;
+  }
+  const range=key.match(/^(오전|오후|새벽)\s*(\d{1,2})시(?:\s*(\d{1,2})분)?부터\s*(오전|오후|새벽)\s*(\d{1,2})시(?:\s*(\d{1,2})분)?까지\s*(?:풀\s*)?참여\s*가능$/);
+  if(range){
+    const start=formatOptionTime(range[1],range[2],range[3],targetLang);
+    const end=formatOptionTime(range[4],range[5],range[6],targetLang);
+    if(targetLang==='en')return `Available to participate from ${start} to ${end}`;
+    if(targetLang==='ja')return `${start}から${end}まで参加可能`;
+    if(targetLang==='zh')return `${start}至${end}可参加`;
+  }
+  return original;
+}
+// 시트에는 항상 한국어 병종으로 저장 (화면 표기만 번역)
+const TROOP_CANON=['슈터','파이터','라이더'];
+
+function readSubmitPreference(key){try{return window.localStorage.getItem(key);}catch(_error){return null;}}
+function writeSubmitPreference(key,value){try{window.localStorage.setItem(key,value);return true;}catch(_error){return false;}}
+function setLang(l){
+  l=I18N[l]?l:'ko';
+  lang=l; writeSubmitPreference('sub_lang',l);
+  document.documentElement.lang=({ko:'ko',en:'en',ja:'ja',zh:'zh-CN'})[l]||'ko';
+  document.querySelectorAll('#langbar button').forEach(b=>b.classList.toggle('active',b.dataset.l===l));
+  const t=I18N[l];
+  const copyright={ko:'© 2026 / UI 및 소스 무단 복제 금지',en:'© 2026 / Unauthorized copying of the UI or source code is prohibited.',ja:'© 2026 / UIおよびソースコードの無断複製を禁じます。',zh:'© 2026 / 禁止未经授权复制界面或源代码。'};
+  document.querySelectorAll('.copyright-note').forEach(el=>el.textContent=copyright[l]);
+  document.title='213 SERVER | '+t.title;
+  $('tSec1').textContent='01 / '+t.sec1;
+  $('tSec2').textContent='02 / '+t.sec2;
+  $('tTitle').textContent=t.title;
+  $('tSub').innerHTML=t.sub;
+  $('tRequired').innerHTML=t.required;
+  $('tPrivacy').textContent=t.privacy;
+  $('tGuide').textContent=t.guide;
+  $('tAlliance').textContent=t.alliance; $('fAlliance').placeholder=t.alliancePh;
+  $('tNick').textContent=t.nick; $('fNick').placeholder=t.nickPh;
+  $('tTroop').textContent=t.troop;
+  const cur=$('fTroop').value;
+  $('fTroop').innerHTML='<option value=""></option>'+TROOP_CANON.map((c,i)=>`<option value="${c}">${t.troops[i]}</option>`).join('');
+  $('fTroop').value=cur;
+  $('tShelter').textContent=t.shelter; $('fShelter').placeholder=t.shelterPh;
+  $('tS1').textContent=t.s1; $('fS1').placeholder=t.s1Ph;
+  $('tS2').textContent=t.s2; $('fS2').placeholder=t.s2Ph;
+  $('tS3').textContent=t.s3; $('fS3').placeholder=t.s3Ph;
+  $('tS4').textContent=t.s4; $('fS4').placeholder=t.s4Ph;
+  $('tKills').textContent=t.kills; $('fKills').placeholder=t.killsPh;
+  ['tOpt2','tOpt3','tOpt5'].forEach(id=>{$(id).innerHTML='<b style="color:var(--gold)">*</b>';});
+  $('tOpt4').textContent=t.opt;
+  $('submitBtn').textContent=submitting?t.submitting:t.submit;
+  $('tDone').textContent=t.done;
+  $('againBtn').textContent=t.again;
+  ['fS1','fS2','fS3','fS4','fKills'].forEach((id,i)=>refreshPreview(id,'pS'+(i+1)));
+  applyHubLanguage();
+  clearFieldErrors('formView');clearFieldErrors('voteView');
+  renderPowerDoneSummary();syncPowerUnitButtons();renderPowerDraftNotice();renderConnectionStatus();syncVoteBusyState();
+  document.querySelectorAll('#guideImgs img').forEach(image=>image.alt=t.guide);
+  if(sb&&currentPage.startsWith('vote')) loadOpenPolls(true);
+}
+
+function applyHubLanguage(){
+  const t=HUB_I18N[lang]||HUB_I18N.ko;
+  document.title='213 SERVER | '+(currentPage==='home'?t.browserTitle:currentPage.startsWith('vote')?t.voteTitle:I18N[lang].title);
+  $('hTitle').textContent=t.hubTitle;$('hSub').textContent=t.hubSub;
+  $('hPowerTitle').textContent=t.powerTitle;$('hPowerDesc').textContent=t.powerDesc;
+  $('hVoteTitle').textContent=t.voteTitle;$('hVoteDesc').textContent=t.voteDesc;
+  $('powerBackText').textContent=t.back;$('voteBackText').textContent=t.back;$('voteDoneHome').textContent=t.home;
+  $('vTitle').textContent=t.pollTitle;$('vSub').textContent=t.pollSub;$('vPollSelectLabel').textContent=t.pollSelect;
+  $('vSecChoice').textContent=t.choiceSec;$('vSecInfo').textContent=t.infoSec;
+  $('vAlliance').textContent=t.alliance;$('vAllianceInput').placeholder=t.alliancePh;
+  $('vNick').textContent=t.nick;$('vNickInput').placeholder=t.nickPh;
+  $('vTroop').textContent=t.troop;
+  const currentTroop=$('vTroopInput').value;
+  $('vTroopInput').innerHTML='<option value=""></option>'+TROOP_CANON.map((value,index)=>`<option value="${value}">${t.troops[index]}</option>`).join('');
+  $('vTroopInput').value=currentTroop;
+  $('vIndustry').textContent=t.industry;$('vIndustryInput').placeholder=t.industryPh;
+  $('vSquad1').textContent=t.squad1;$('vSquad1Input').placeholder=t.squad1Ph;
+  $('vNote').textContent=t.note;$('vNoteInput').placeholder=t.notePh;$('vOptional').textContent=t.optional;
+  $('vUpdateNote').textContent=t.updateNote;$('voteSubmitBtn').textContent=t.submit;
+  $('vDoneTitle').textContent=t.done;$('voteAgainBtn').textContent=t.again;
+  $('vDoneSaved').textContent=t.doneSaved;$('vDoneProof').textContent=t.doneProof;
+  $('vDonePollLabel').textContent=t.receiptPoll;$('vDoneChoiceLabel').textContent=t.receiptChoice;
+  $('vDonePlayerLabel').textContent=t.receiptPlayer;$('vDoneTimeLabel').textContent=t.receiptTime;
+  $('vStatusToggleText').textContent=t.statusToggle;
+  $('vStatusAllianceInput').placeholder=t.statusAlliancePh;$('vStatusAllianceInput').setAttribute('aria-label',t.statusAlliancePh);
+  $('vStatusNickInput').placeholder=t.statusNickPh;$('vStatusNickInput').setAttribute('aria-label',t.statusNickPh);
+  $('voteStatusCheckBtn').textContent=voteStatusState.loading?t.statusChecking:t.statusCheck;
+  $('vFollowupTitle').textContent=t.followupTitle;$('voteContinueBtn').textContent=t.continueNext;
+  $('voteDoneSummary').textContent=t.doneTail;
+  if($('pollLoading')&&!$('pollLoading').hidden&&!publicPolls.length)$('pollLoading').textContent=t.loading;
+  renderVoteDoneReceipt();
+  const poll=publicPolls.find(row=>String(row.id)===String(selectedPublicPollId));
+  if(poll)renderVoteReceiptNotice(poll);
+  renderVoteStatusViews();
+  updateVotePreview();
+}
+
+/* 전투력 해석: "6.22G"→6220M, "850m"→850M. 단위 없는 100 이상은 M, 100 미만은 G/M 확인. */
+function parsePower(value){
+  const parts=powerInputParts(value);
+  if(parts===null)return null;
+  if(!parts||(!parts.unit&&parts.number<100))return NaN;
+  const power=parts.unit==='G'?Number(parts.amount+'e3'):parts.number;
+  return Number.isFinite(power)&&power>0&&power<=Number.MAX_SAFE_INTEGER?power:NaN;
+}
+function parseKills(value){
+  if(value==null)return null;
+  const raw=normalizeNumericText(value).trim().replace(/\s/g,'');
+  if(!raw)return null;
+  if(!/^(?:\d{1,3}(?:,\d{3})+|\d+)$/.test(raw))return NaN;
+  const number=Number(raw.replace(/,/g,''));
+  return Number.isSafeInteger(number)&&number>=0?number:NaN;
+}
+function fmtG(value){
+  if(value==null||value==='')return '';
+  const number=Number(value);
+  if(!Number.isFinite(number))return '';
+  return Math.abs(number)>=1000?shiftPowerDecimal(number,-3)+'G':shiftPowerDecimal(number,0)+'M';
+}
+function refreshPreview(inputId,previewId){
+  const input=$(inputId),preview=$(previewId),t=I18N[lang]||I18N.ko;
+  if(!input||!preview)return;
+  const raw=input.value.trim();
+  if(!raw){preview.textContent='';preview.classList.remove('bad');syncPowerUnitButtons();return;}
+  if(inputId==='fKills'){
+    const kills=parseKills(raw),valid=Number.isSafeInteger(kills)&&kills>0;
+    preview.textContent=valid?t.preview(kills.toLocaleString(pollLocale())):t.errKills;
+    preview.classList.toggle('bad',!valid);return;
+  }
+  const value=parsePower(raw),valid=Number.isFinite(value)&&value>0;
+  preview.textContent=valid?t.preview(fmtG(value)):powerValidationMessage(raw,t.badNum);
+  preview.classList.toggle('bad',!valid);syncPowerUnitButtons();
+}
+['fS1','fS2','fS3','fS4','fKills'].forEach((id,i)=>$(id).addEventListener('input',()=>refreshPreview(id,'pS'+(i+1))));
+
+function setPage(page){
+  const ids={home:'homeView',power:'formView',powerDone:'doneView',vote:'voteView',voteDone:'voteDoneView'};
+  Object.entries(ids).forEach(([key,id])=>{const element=$(id),active=key===page;element.hidden=!active;element.style.display=active?'block':'none';});
+  currentPage=page;document.body.dataset.page=page;
+  const ht=HUB_I18N[lang]||HUB_I18N.ko;
+  document.title='213 SERVER | '+(page==='home'?ht.browserTitle:page.startsWith('vote')?ht.voteTitle:I18N[lang].title);
+  const reduced=window.matchMedia?.('(prefers-reduced-motion:reduce)').matches;
+  window.scrollTo({top:0,behavior:reduced?'auto':'smooth'});focusPageHeading(page);
+}
+function showHome(){setPage('home');}
+function showPowerForm(){setPage('power');clearFieldErrors('formView');$('formMsg').textContent='';ensureSubmissionService();renderPowerDraftNotice();}
+function showForm(){showPowerForm();}
+function showVoteForm(){setPage('vote');clearFieldErrors('voteView');$('voteMsg').textContent='';loadOpenPolls(true);}
+
+function pollLocale(){return ({ko:'ko-KR',en:'en-US',ja:'ja-JP',zh:'zh-CN'})[lang]||'ko-KR';}
+function voteReceiptKey(pollId){return 'vote_receipt_'+String(pollId||'');}
+function readVoteReceipt(pollId,identity){
+  const player=currentVoteReceiptIdentity(identity);
+  if(!player.complete)return null;
+  if(voteReceiptMatches(latestVoteReceipt,pollId,player))return latestVoteReceipt;
+  for(const key of [identityVoteReceiptKey(pollId,player),voteReceiptKey(pollId)]){
+    try{
+      const receipt=JSON.parse(readSubmitPreference(key)||'null');
+      if(voteReceiptMatches(receipt,pollId,player))return receipt;
+    }catch(_error){}
+  }
+  return null;
+}
+function saveVoteReceipt(receipt){
+  const player=currentVoteReceiptIdentity(receipt);
+  if(!voteReceiptMatches(receipt,receipt?.pollId,player))return;
+  latestVoteReceipt={...receipt};
+  writeSubmitPreference(identityVoteReceiptKey(receipt.pollId,player),JSON.stringify(latestVoteReceipt));
+}
+function normalizeVoteLookup(value){return String(value??'').normalize('NFKC').trim().toLowerCase().replace(/\s+/g,'');}
+function voteLookupKey(alliance,nickname){return normalizeVoteLookup(alliance)+'|'+normalizeVoteLookup(nickname);}
+function activePublicPolls(now=Date.now()){
+  return publicPolls.filter(poll=>{
+    if(!poll?.closes_at)return true;
+    const closesAt=new Date(poll.closes_at).getTime();
+    return Number.isNaN(closesAt)||closesAt>now;
+  });
+}
+function parseVoteStatusPayload(data){
+  let rows=data;
+  if(typeof rows==='string'){try{rows=JSON.parse(rows);}catch(error){rows=[];}}
+  if(!Array.isArray(rows))return new Set();
+  return new Set(rows.map(row=>String(row&&typeof row==='object'?row.poll_id:row)).filter(value=>value&&value!=='undefined'&&value!=='null'));
+}
+function pollSubmissionState(poll){
+  const pollId=String(poll?.id??'');
+  if(!pollId)return 'unknown';
+  if(hasCurrentVoteStatus())return voteStatusState.completedIds.has(pollId)?'submitted':'pending';
+  return readVoteReceipt(pollId)?'submitted':'unknown';
+}
+function voteStatusLabel(state,t=HUB_I18N[lang]||HUB_I18N.ko){
+  return state==='submitted'?t.statusSubmitted:state==='pending'?t.statusPending:t.statusUnknown;
+}
+function voteProgressData(){
+  const polls=activePublicPolls(),states=polls.map(poll=>pollSubmissionState(poll));
+  return {polls,states,total:polls.length,completed:states.filter(state=>state==='submitted').length,pending:states.filter(state=>state==='pending').length,unknown:states.filter(state=>state==='unknown').length};
+}
+function setVoteStatusMessage(message,bad=false){
+  const element=$('voteStatusMsg');if(!element)return;
+  element.textContent=message||'';element.classList.toggle('bad',bad);
+}
+function renderPollSelector(currentPoll){
+  const wrap=$('pollSelectWrap'),list=$('vPollSelectList');if(!wrap||!list)return;
+  const t=HUB_I18N[lang]||HUB_I18N.ko,data=voteProgressData();
+  wrap.hidden=!currentPoll;
+  const pickerHead=$('vPollSelectLabel')?.closest('.poll-picker-top');
+  if(pickerHead)pickerHead.hidden=data.total<=1;
+  list.hidden=data.total<=1;
+  $('vPollProgress').textContent=`${data.completed}/${data.total} ${t.completedCount}`;
+  $('vPollStatusNote').textContent=hasCurrentVoteStatus()?(voteStatusState.error?t.statusNoteCached:t.statusNoteServer):t.statusNoteUnknown;
+  list.innerHTML=data.total>1?data.polls.map(row=>{
+    const active=String(row.id)===String(currentPoll?.id),state=pollSubmissionState(row),status=voteStatusLabel(state,t);
+    return `<button class="poll-select-card ${state}${active?' active':''}" type="button" data-poll-id="${escapeHtml(row.id)}" aria-label="${escapeHtml(row.title+' / '+status)}" aria-pressed="${active?'true':'false'}" onclick="selectPublicPoll(this.dataset.pollId)"><span class="poll-select-copy"><b>${escapeHtml(row.title)}</b><span class="poll-select-meta"><small>${escapeHtml(formatPollDeadline(row.closes_at))}</small><span class="poll-device-status ${state}">${escapeHtml(status)}</span></span></span><span class="poll-select-mark" aria-hidden="true">✓</span></button>`;
+  }).join(''):'';
+}
+function renderVoteDoneFollowup(){
+  const wrap=$('voteFollowup');if(!wrap)return;
+  const data=voteProgressData();
+  if(!latestVoteReceipt||!data.total){wrap.hidden=true;return;}
+  const t=HUB_I18N[lang]||HUB_I18N.ko,currentId=String(latestVoteReceipt.pollId||''),known=hasCurrentVoteStatus();
+  wrap.hidden=false;$('vFollowupTitle').textContent=t.followupTitle;
+  $('vFollowupProgress').textContent=`${data.completed}/${data.total} ${t.completedCount}`;
+  $('vFollowupMessage').textContent=known?(data.pending?t.followupRemaining(data.pending):t.followupAllDone):t.followupUnknown;
+  $('vFollowupList').innerHTML=data.polls.map(row=>{
+    const state=pollSubmissionState(row),status=voteStatusLabel(state,t),current=String(row.id)===currentId;
+    return `<button class="vote-followup-card ${state}${current?' current':''}" type="button" data-poll-id="${escapeHtml(row.id)}" aria-label="${escapeHtml(row.title+' / '+status)}" onclick="openVotePoll(this.dataset.pollId)"><span class="vote-followup-card-copy"><b>${escapeHtml(row.title)}</b><span class="poll-select-meta"><small>${escapeHtml(formatPollDeadline(row.closes_at))}</small><span class="poll-device-status ${state}">${escapeHtml(status)}</span></span></span><span class="vote-followup-card-arrow" aria-hidden="true">›</span></button>`;
+  }).join('');
+  const next=nextUnsubmittedPoll();
+  $('voteContinueBtn').hidden=!next;$('voteContinueBtn').textContent=t.continueNext;
+  $('vFollowupNote').textContent=known?(voteStatusState.error?t.statusNoteCached:t.followupServerNote):t.followupUnknownNote;
+}
+function renderVoteStatusViews(){
+  const current=publicPolls.find(row=>String(row.id)===String(selectedPublicPollId));
+  if(current){renderPollSelector(current);renderVoteReceiptNotice(current);}
+  renderVoteDoneFollowup();
+}
+function toggleVoteStatusCheck(){
+  const form=$('voteStatusForm'),button=$('voteStatusToggle');if(!form||!button)return;
+  const willOpen=form.hidden;form.hidden=!willOpen;button.setAttribute('aria-expanded',String(willOpen));
+  if(willOpen){
+    $('vStatusAllianceInput').value=$('vAllianceInput').value||'';$('vStatusNickInput').value=$('vNickInput').value||'';
+    ($('vStatusAllianceInput').value?$('vStatusNickInput'):$('vStatusAllianceInput')).focus();
+  }
+}
+async function checkVoteStatus(){
+  if(voteSubmitting)return;
+  const t=HUB_I18N[lang]||HUB_I18N.ko;
+  if(!ensureSubmissionService())return;
+  const alliance=$('vStatusAllianceInput').value.trim(),nickname=$('vStatusNickInput').value.trim();
+  if(!alliance||!nickname){showFieldError(!alliance?'vStatusAllianceInput':'vStatusNickInput',t.statusNeedInput,'voteStatusMsg');return;}
+  if(alliance.length>30||nickname.length>60){showFieldError(alliance.length>30?'vStatusAllianceInput':'vStatusNickInput',I18N[lang].errLong,'voteStatusMsg');return;}
+  $('vAllianceInput').value=alliance;$('vNickInput').value=nickname;
+  writeSubmitPreference('vote_vAllianceInput',alliance);writeSubmitPreference('vote_vNickInput',nickname);
+  handleVoteIdentityChange();
+  await refreshVoteStatusFromServer(alliance,nickname,{quiet:false,force:true});
+}
+async function refreshVoteStatusFromServer(alliance,nickname,{quiet=false,force=false}={}){
+  const player=currentVoteReceiptIdentity({alliance,nickname}),key=player.key;
+  if(!sb||!player.complete)return false;
+  if(!force&&hasCurrentVoteStatus()&&voteStatusState.identity===key&&!voteStatusState.error){renderVoteStatusViews();return true;}
+  const requestId=++voteStatusRequestSeq;
+  const prior=voteStatusState.identity===key&&voteStatusState.loaded?{...voteStatusState,completedIds:new Set(voteStatusState.completedIds)}:null;
+  voteStatusState=prior?{...prior,loading:true,error:false}:{loaded:false,loading:true,identity:key,completedIds:new Set(),error:false};
+  $('voteStatusCheckBtn').disabled=true;$('voteStatusCheckBtn').textContent=(HUB_I18N[lang]||HUB_I18N.ko).statusChecking;
+  if(!quiet)setVoteStatusMessage((HUB_I18N[lang]||HUB_I18N.ko).statusChecking,false);
+  try{
+    const {data,error}=await sb.rpc('get_participation_submission_status',{p_alliance:alliance,p_nickname:nickname});
+    if(requestId!==voteStatusRequestSeq||currentVoteReceiptIdentity().key!==key)return false;
+    if(error)throw error;
+    voteStatusState={loaded:true,loading:false,identity:key,completedIds:parseVoteStatusPayload(data),error:false};
+    setVoteStatusMessage((HUB_I18N[lang]||HUB_I18N.ko).statusChecked,false);renderVoteStatusViews();return true;
+  }catch(_error){
+    if(requestId!==voteStatusRequestSeq||currentVoteReceiptIdentity().key!==key)return false;
+    voteStatusState=prior?{...prior,loading:false,error:true}:{loaded:false,loading:false,identity:key,completedIds:new Set(),error:true};
+    if(!quiet)setVoteStatusMessage((HUB_I18N[lang]||HUB_I18N.ko).statusError,true);
+    renderVoteStatusViews();return false;
+  }finally{
+    if(requestId===voteStatusRequestSeq){$('voteStatusCheckBtn').disabled=voteSubmitting;$('voteStatusCheckBtn').textContent=(HUB_I18N[lang]||HUB_I18N.ko).statusCheck;}
+  }
+}
+function handleVoteIdentityChange(){
+  const key=voteLookupKey($('vAllianceInput').value,$('vNickInput').value);
+  if(voteStatusState.identity&&key!==voteStatusState.identity){
+    voteStatusRequestSeq++;
+    voteStatusState={loaded:false,loading:false,identity:'',completedIds:new Set(),error:false};
+    setVoteStatusMessage('',false);
+    $('voteStatusCheckBtn').textContent=(HUB_I18N[lang]||HUB_I18N.ko).statusCheck;
+  }
+  renderVoteStatusViews();syncVoteBusyState();
+}
+function nextUnsubmittedPoll(){
+  const identity=currentVoteReceiptIdentity();
+  const currentId=voteReceiptMatches(latestVoteReceipt,latestVoteReceipt?.pollId,identity)?String(latestVoteReceipt.pollId):'';
+  return activePublicPolls().find(poll=>String(poll.id)!==currentId&&pollSubmissionState(poll)!=='submitted')||null;
+}
+function openVotePoll(pollId){
+  const poll=publicPolls.find(row=>String(row.id)===String(pollId));if(!poll){showVoteForm();return;}
+  selectedPublicPollId=String(poll.id);setPage('vote');$('voteMsg').textContent='';
+  const receipt=readVoteReceipt(poll.id);renderPublicPoll(receipt?.optionId||null);
+}
+function continueNextVote(){const next=nextUnsubmittedPoll();if(next)openVotePoll(next.id);}
+function editLatestSubmittedVote(){openVotePoll(latestVoteReceipt?.pollId||selectedPublicPollId);}
+function formatVoteReceiptTime(value){
+  const date=new Date(value);if(Number.isNaN(date.getTime()))return '-';
+  return new Intl.DateTimeFormat(pollLocale(),{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(date)+' (KST)';
+}
+function receiptLocalizedValues(receipt){
+  const poll=publicPolls.find(row=>String(row.id)===String(receipt?.pollId));
+  const option=(poll?.options||[]).find(row=>String(row.id)===String(receipt?.optionId));
+  return {pollTitle:poll?.title||receipt?.pollTitle||'-',optionLabel:localizePollOptionLabel(option||receipt?.optionLabel)||'-'};
+}
+function renderVoteDoneReceipt(){
+  const receipt=latestVoteReceipt;if(!receipt)return;
+  const values=receiptLocalizedValues(receipt);
+  $('vDonePollValue').textContent=values.pollTitle;
+  $('vDoneChoiceValue').textContent=values.optionLabel;
+  $('vDonePlayerValue').textContent=(receipt.alliance||'')+' / '+(receipt.nickname||'');
+  $('vDoneTimeValue').textContent=formatVoteReceiptTime(receipt.savedAt);
+}
+function renderVoteReceiptNotice(poll){
+  const notice=$('voteReceiptNotice');if(!notice)return;
+  const receipt=readVoteReceipt(poll?.id);
+  const t=HUB_I18N[lang]||HUB_I18N.ko;
+  if(receipt){
+    const values=receiptLocalizedValues(receipt);
+    $('voteReceiptNoticeTitle').textContent=t.recentTitle;
+    $('voteReceiptNoticeText').textContent=`${receipt.nickname||'-'} / ${values.optionLabel} / ${t.recentAt} ${formatVoteReceiptTime(receipt.savedAt)}`;
+    notice.hidden=false;return;
+  }
+  if(pollSubmissionState(poll)!=='submitted'){notice.hidden=true;return;}
+  $('voteReceiptNoticeTitle').textContent=t.serverSubmittedTitle;
+  $('voteReceiptNoticeText').textContent=t.serverSubmittedText;
+  notice.hidden=false;
+}
+function formatPollDeadline(value){
+  const t=HUB_I18N[lang]||HUB_I18N.ko;
+  if(!value)return t.noDeadline;
+  const date=new Date(value);
+  if(Number.isNaN(date.getTime()))return t.noDeadline;
+  return t.deadline+' / '+new Intl.DateTimeFormat(pollLocale(),{
+    timeZone:'Asia/Seoul',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:false
+  }).format(date)+' (KST)';
+}
+function parsePollPayload(data){
+  if(Array.isArray(data))return data;
+  if(typeof data==='string'){try{const parsed=JSON.parse(data);return Array.isArray(parsed)?parsed:[];}catch(e){return [];}}
+  return [];
+}
+let publicPollLoadSeq=0;
+async function loadOpenPolls(keepSelection=false){
+  const requestId=++publicPollLoadSeq,requestedLang=lang;
+  const t=HUB_I18N[lang]||HUB_I18N.ko,retry=$('pollRetryBtn');
+  if(retry)retry.hidden=true;
+  if(!ensureSubmissionService()){
+    $('pollLoading').hidden=false;$('pollLoading').textContent=I18N[lang].scriptFail;
+    if(!publicPolls.length)$('pollForm').hidden=true;
+    if(retry)retry.hidden=false;
+    return;
+  }
+  const oldPoll=keepSelection?selectedPublicPollId:null;
+  const oldOption=document.querySelector('input[name="publicPollOption"]:checked')?.value||null;
+  const cached=publicPolls.some(poll=>String(poll.id)===String(selectedPublicPollId));
+  $('pollLoading').hidden=false;$('pollLoading').textContent=t.loading;
+  if(!cached)$('pollForm').hidden=true;
+  try{
+    const {data,error}=await sb.rpc('get_open_participation_polls',{p_lang:lang});
+    if(requestId!==publicPollLoadSeq||lang!==requestedLang)return;
+    if(error)throw error;
+    const nextPolls=typeof data==='string'?JSON.parse(data):data;
+    if(!Array.isArray(nextPolls)||!nextPolls.every(poll=>poll&&typeof poll==='object'&&!Array.isArray(poll)&&poll.id!=null&&(!Object.prototype.hasOwnProperty.call(poll,'options')||Array.isArray(poll.options))))throw new Error('Invalid poll response');
+    const keepPoll=keepSelection?selectedPublicPollId:oldPoll;
+    const keepOption=keepSelection?(document.querySelector('input[name="publicPollOption"]:checked')?.value||oldOption):oldOption;
+    publicPolls=nextPolls;
+    selectedPublicPollId=publicPolls.some(poll=>String(poll.id)===String(keepPoll))?keepPoll:(publicPolls[0]?.id||null);
+    renderPublicPoll(keepOption);
+    const identity=currentVoteReceiptIdentity();
+    if(identity.complete&&(!hasCurrentVoteStatus()||voteStatusState.identity!==identity.key)&&!(voteStatusState.error&&voteStatusState.identity===identity.key))refreshVoteStatusFromServer(identity.alliance,identity.nickname,{quiet:true});
+  }catch(_error){
+    if(requestId!==publicPollLoadSeq||lang!==requestedLang)return;
+    $('pollLoading').hidden=false;
+    $('pollLoading').textContent=(HUB_I18N[lang]||HUB_I18N.ko).voteLoadFailed;
+    if(!publicPolls.length)$('pollForm').hidden=true;
+    if(retry)retry.hidden=false;
+  }
+}
+function selectPublicPoll(value){
+  selectedPublicPollId=value;
+  const receipt=readVoteReceipt(value);
+  renderPublicPoll(receipt?.optionId||null);
+}
+function renderPublicPoll(preserveOptionId=null){
+  const t=HUB_I18N[lang]||HUB_I18N.ko;
+  const poll=publicPolls.find(row=>String(row.id)===String(selectedPublicPollId));
+  if(!poll){
+    $('pollLoading').hidden=false;$('pollLoading').textContent=t.noPoll;$('pollForm').hidden=true;
+    return;
+  }
+  $('pollLoading').hidden=true;$('pollForm').hidden=false;
+  renderPollSelector(poll);
+  $('publicPollTitle').textContent=poll.title||t.pollTitle;
+  $('publicPollDescription').textContent=poll.description||'';
+  $('publicPollDeadline').textContent=formatPollDeadline(poll.closes_at);
+  renderVoteReceiptNotice(poll);
+  const options=Array.isArray(poll.options)?poll.options:[];
+  $('publicPollOptions').innerHTML=options.map(option=>{
+    const color=/^#[0-9a-f]{6}$/i.test(option.color||'')?option.color:'#4E9BFF';
+    const selected=String(option.id)===String(preserveOptionId);
+    return `<label class="choice-item${selected?' selected':''}" style="--choice:${color}">
+      <input type="radio" name="publicPollOption" value="${escapeHtml(option.id)}" ${selected?'checked':''} onchange="syncPublicChoice()">
+      <span class="choice-dot" aria-hidden="true"></span><span class="choice-label">${escapeHtml(localizePollOptionLabel(option))}</span>
+    </label>`;
+  }).join('');
+  const targets=Array.isArray(poll.target_alliances)?poll.target_alliances:[];
+  if(targets.length===1&&!$('vAllianceInput').value.trim())$('vAllianceInput').value=targets[0];
+  renderVoteDoneReceipt();renderVoteDoneFollowup();syncVoteBusyState();
+}
+function syncPublicChoice(){
+  document.querySelectorAll('.choice-item').forEach(label=>label.classList.toggle('selected',!!label.querySelector('input:checked')));
+}
+function updateVotePreview(){
+  const input=$('vSquad1Input'),preview=$('vPowerPreview');
+  if(!input||!preview)return;
+  const raw=input.value.trim(),t=I18N[lang]||I18N.ko;
+  if(!raw){preview.textContent='';preview.classList.remove('bad');return;}
+  const value=parsePower(raw);
+  if(value==null||Number.isNaN(value)||value<=0){preview.textContent=t.badNum;preview.classList.add('bad');}
+  else{preview.textContent=t.preview(fmtG(value));preview.classList.remove('bad');}
+}
+async function doVoteSubmit(){
+  if(voteSubmitting)return;
+  clearFieldErrors('voteView');
+  if(!ensureSubmissionService())return;
+  const t=HUB_I18N[lang]||HUB_I18N.ko;
+  const poll=publicPolls.find(row=>String(row.id)===String(selectedPublicPollId));
+  const optionId=document.querySelector('input[name="publicPollOption"]:checked')?.value;
+  const alliance=$('vAllianceInput').value.trim(),nickname=$('vNickInput').value.trim(),troop=$('vTroopInput').value;
+  const industryText=normalizeNumericText($('vIndustryInput').value).trim().replace(/\s/g,'');
+  const squad1=parsePower($('vSquad1Input').value),note=$('vNoteInput').value.trim();
+  const fail=(message,inputId)=>{
+    if(voteSubmitting){voteSubmitting=false;syncVoteBusyState();}
+    if(inputId)showFieldError(inputId,message,'voteMsg');
+    else{$('voteMsg').style.color='var(--red)';$('voteMsg').textContent=message;}
+  };
+  if(!poll||!activePublicPolls().some(row=>String(row.id)===String(poll.id))){fail(t.pollClosed,'publicPollOptions');return;}
+  if(!optionId){fail(t.chooseOption,'publicPollOptions');return;}
+  if(!alliance){fail(t.errAlliance,'vAllianceInput');return;}
+  if(!nickname){fail(t.errNick,'vNickInput');return;}
+  if(!TROOP_CANON.includes(troop)){fail(t.errTroop,'vTroopInput');return;}
+  if(!/^[0-9]{1,4}$/.test(industryText)||Number(industryText)<=0){fail(t.errIndustry,'vIndustryInput');return;}
+  if(squad1==null||!Number.isFinite(squad1)||squad1<=0){fail(t.errPower,'vSquad1Input');return;}
+  if(alliance.length>30||nickname.length>60||note.length>300){fail(I18N[lang].errLong,alliance.length>30?'vAllianceInput':nickname.length>60?'vNickInput':'vNoteInput');return;}
+  const option=(poll.options||[]).find(row=>String(row.id)===String(optionId));
+  if(!option){fail(t.badOption,'publicPollOptions');return;}
+  const optionLabel=localizePollOptionLabel(option);
+  const troopText=$('vTroopInput').selectedOptions[0]?.textContent||troop;
+  const lines=[poll.title,optionLabel,t.alliance+': '+alliance.toUpperCase(),t.nick+': '+nickname,t.troop+': '+troopText,t.industry+': '+industryText,t.squad1+': '+fmtG(squad1)];
+  if(note)lines.push(t.note+': '+note);
+  if(!confirm(t.confirm+'\n\n'+lines.join('\n')))return;
+  const capturedKey=voteLookupKey(alliance,nickname),capturedPollId=String(poll.id);
+  voteSubmitting=true;syncVoteBusyState();
+  $('voteMsg').style.color='var(--muted)';$('voteMsg').textContent=t.submitting;
+  try{
+    const {data,error}=await sb.rpc('submit_participation_vote',{
+      p_poll_id:+poll.id,p_option_id:+optionId,p_alliance:alliance,p_nickname:nickname,p_troop:troop,
+      p_industry:Number(industryText),p_squad1:squad1,p_note:note||null
+    });
+    if(error)throw error;
+    const live=HUB_I18N[lang]||HUB_I18N.ko;
+    const errors={poll_not_found:[live.pollClosed,'publicPollOptions'],poll_closed:[live.pollClosed,'publicPollOptions'],bad_option:[live.badOption,'publicPollOptions'],no_alliance:[live.errAlliance,'vAllianceInput'],no_nickname:[live.errNick,'vNickInput'],bad_troop:[live.errTroop,'vTroopInput'],bad_industry:[live.errIndustry,'vIndustryInput'],bad_power:[live.errPower,'vSquad1Input'],alliance_not_target:[live.notTarget,'vAllianceInput'],too_long:[I18N[lang].errLong,'vNoteInput']};
+    if(data!=='ok'){const known=errors[data];fail(known?known[0]:live.voteSaveUnconfirmed,known?.[1]);return;}
+    const receipt={pollId:capturedPollId,optionId:String(optionId),pollTitle:poll.title||t.pollTitle,optionLabel,optionCategory:option?.category||'',alliance:alliance.toUpperCase(),nickname,savedAt:new Date().toISOString()};
+    saveVoteReceipt(receipt);
+    const sameIdentity=currentVoteReceiptIdentity().key===capturedKey;
+    if(sameIdentity){
+      ['vAllianceInput','vNickInput','vTroopInput','vIndustryInput'].forEach(id=>writeSubmitPreference('vote_'+id,$(id).value));
+      if(voteStatusState.loaded&&voteStatusState.identity===capturedKey){
+        const completedIds=new Set(voteStatusState.completedIds);completedIds.add(capturedPollId);voteStatusState={...voteStatusState,completedIds};
+      }
+    }
+    if(currentPage==='vote'&&sameIdentity&&String(selectedPublicPollId)===capturedPollId){
+      renderVoteDoneReceipt();$('voteDoneSummary').textContent=live.doneTail;setPage('voteDone');renderVoteDoneFollowup();
+      await refreshVoteStatusFromServer(alliance,nickname,{quiet:true,force:true});
+    }else{
+      $('voteMsg').style.color='var(--green)';$('voteMsg').textContent=live.voteSavedElsewhere;renderVoteStatusViews();
+    }
+  }catch(_error){fail((HUB_I18N[lang]||HUB_I18N.ko).voteSaveUnconfirmed);}
+  finally{voteSubmitting=false;syncVoteBusyState();}
+}
+
+$('vSquad1Input').addEventListener('input',updateVotePreview);
+['vAllianceInput','vNickInput'].forEach(id=>$(id).addEventListener('input',()=>{writeSubmitPreference('vote_'+id,$(id).value);handleVoteIdentityChange();}));
+['vTroopInput','vIndustryInput'].forEach(id=>$(id).addEventListener('change',()=>writeSubmitPreference('vote_'+id,$(id).value)));
+['vStatusAllianceInput','vStatusNickInput'].forEach(id=>$(id).addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();checkVoteStatus();}}));
+
+['fAlliance','fNick'].forEach(id=>{
+  $(id).addEventListener('input',()=>{
+    writeSubmitPreference('sub_'+id,$(id).value);
+  });
+});
+['fTroop','fShelter'].forEach(id=>{
+  $(id).addEventListener('change',()=>{
+    writeSubmitPreference('sub_'+id,$(id).value);
+  });
+});
+
+
+async function doSubmit(){
+  if(submitting)return;
+  if(!ensureSubmissionService())return;
+  clearFieldErrors('formView');
+  const t=I18N[lang]||I18N.ko,alliance=$('fAlliance').value.trim(),nickname=$('fNick').value.trim();
+  if(!alliance){showFieldError('fAlliance',t.errAlliance,'formMsg');return;}
+  if(!nickname){showFieldError('fNick',t.errNick,'formMsg');return;}
+  const troop=$('fTroop').value;
+  if(!troop){showFieldError('fTroop',t.errTroop,'formMsg');return;}
+  const industry=normalizeNumericText($('fShelter').value).trim().replace(/\s/g,'');
+  if(!/^[0-9]{1,4}$/.test(industry)||Number(industry)<=0){showFieldError('fShelter',t.errShelter,'formMsg');return;}
+  const powers=[];
+  for(let index=1;index<=4;index++){
+    const id='fS'+index,raw=$(id).value.trim();
+    if(index===4&&!raw){powers.push(null);continue;}
+    const value=parsePower(raw);
+    if(!Number.isFinite(value)||value<=0){
+      const fallback=index===1?t.errS1:raw?t.badNum:t.errS234;
+      showFieldError(id,powerValidationMessage(raw,fallback),'formMsg');return;
+    }
+    powers.push(value);
+  }
+  const kills=parseKills($('fKills').value);
+  if(!Number.isSafeInteger(kills)||kills<=0){showFieldError('fKills',t.errKills,'formMsg');return;}
+  const troopText=$('fTroop').selectedOptions[0]?.textContent||troop;
+  const lines=[t.alliance+': '+alliance.toUpperCase(),t.nick+': '+nickname,t.troop+': '+troopText,t.shelter+': '+industry];
+  powers.forEach((value,index)=>{if(value!==null)lines.push(t.squadWord[index]+': '+fmtG(value));});
+  lines.push(t.kills+': '+kills.toLocaleString(pollLocale()));
+  if(!confirm(t.confirmQ+'\n\n'+lines.join('\n')))return;
+  submitting=true;setPowerInputsBusy(true);$('submitBtn').disabled=true;$('submitBtn').textContent=t.submitting;
+  $('formMsg').style.color='var(--muted)';$('formMsg').textContent=t.submitting;
+  let response=null,requestFailed=false;
+  try{
+    response=await sb.rpc('submit_power',{
+      p_server:'213',p_alliance:alliance,p_nickname:nickname,p_troop:troop,p_shelter:industry,
+      p_s1:powers[0],p_s2:powers[1],p_s3:powers[2],p_s4:powers[3],p_kills:kills
+    });
+  }catch(_error){requestFailed=true;}
+  finally{
+    submitting=false;setPowerInputsBusy(false);$('submitBtn').disabled=false;$('submitBtn').textContent=(I18N[lang]||I18N.ko).submit;
+  }
+  const current=I18N[lang]||I18N.ko;
+  if(requestFailed||response?.error){showFieldError('',current.submitUnconfirmed,'formMsg');return;}
+  if(response?.data!=='ok'){
+    const errors={no_nickname:['fNick',current.errNick],no_alliance:['fAlliance',current.errAlliance],no_troop:['fTroop',current.errTroop],no_shelter:['fShelter',current.errShelter],bad_shelter:['fShelter',current.errShelter],too_long:['',current.errLong],bad_power:['fS1',current.errS1]};
+    const error=Object.prototype.hasOwnProperty.call(errors,response?.data)?errors[response.data]:['',current.submitUnconfirmed];
+    showFieldError(error[0],error[1],'formMsg');return;
+  }
+  latestPowerReceipt={alliance:alliance.toUpperCase(),nickname,troop,industry,powers:powers.slice(),kills};
+  ['fAlliance','fNick','fTroop','fShelter'].forEach(id=>writeSubmitPreference('sub_'+id,$(id).value));
+  renderPowerDoneSummary();
+  ['fS1','fS2','fS3','fS4','fKills'].forEach(id=>{$(id).value='';});
+  ['pS1','pS2','pS3','pS4','pS5'].forEach(id=>{$(id).textContent='';$(id).classList.remove('bad');});
+  syncPowerUnitButtons();
+  if(typeof clearPowerDraft==='function')clearPowerDraft();
+  $('formMsg').textContent='';
+  if(currentPage==='power'||currentPage==='powerDone')setPage('powerDone');
+}
+
+async function loadGuideImgs(){
+  try{
+    const {data}=await sb.rpc('get_submit_guide');
+    const g=JSON.parse(data||'{}');
+    const urls=Array.isArray(g.images)
+      ? g.images.map(safeGuideUrl).filter(Boolean)
+      : [];
+
+    if(!urls.length) return;
+
+    const width=Math.min(100,Math.max(30,Number(g.width)||90))+'%';
+    const wrap=$('guideImgs');
+    wrap.replaceChildren();
+
+    urls.forEach(url=>{
+      const img=document.createElement('img');
+      img.src=url;
+      img.alt=I18N[lang].guide;
+      img.style.width=width;
+      img.loading='lazy';
+      img.addEventListener('click',()=>window.open(url,'_blank','noopener,noreferrer'));
+      wrap.appendChild(img);
+    });
+
+    $('guideSec').style.display='block';
+  }catch(e){}
+}
+
+window.onerror=function(msg,src,line){
+  try{
+    const el=$('formMsg');
+    if(el){
+      const t=I18N[lang]||I18N.ko;
+      el.style.color='var(--red)';
+      el.textContent=t.runtimeErr+' ('+line+')';
+    }
+  }catch(e){}
+};
+function init(){
+  const saved=readSubmitPreference('sub_lang'),nav=(navigator.language||'ko').slice(0,2);
+  setLang(saved||({'en':'en','ja':'ja','zh':'zh'}[nav]||'ko'));
+  ['fAlliance','fNick','fTroop','fShelter'].forEach(id=>{const value=readSubmitPreference('sub_'+id);if(value)$(id).value=value;});
+  ['vAllianceInput','vNickInput','vTroopInput','vIndustryInput'].forEach(id=>{const value=readSubmitPreference('vote_'+id);if(value)$(id).value=value;});
+  if(!$('vAllianceInput').value&&$('fAlliance').value)$('vAllianceInput').value=$('fAlliance').value;
+  if(!$('vNickInput').value&&$('fNick').value)$('vNickInput').value=$('fNick').value;
+  if(!$('vTroopInput').value&&$('fTroop').value)$('vTroopInput').value=$('fTroop').value;
+  if(!$('vIndustryInput').value&&$('fShelter').value)$('vIndustryInput').value=$('fShelter').value;
+  restorePowerDraft();syncPowerUnitButtons();
+  try{
+    if(!CONFIG.SUPABASE_URL.startsWith('https://')||typeof window.supabase?.createClient!=='function')throw new Error('Service unavailable');
+    sb=window.supabase.createClient(CONFIG.SUPABASE_URL,CONFIG.SUPABASE_ANON_KEY);
+    if(!sb||typeof sb.rpc!=='function')throw new Error('Service unavailable');
+    submissionServiceState='ready';
+  }catch(_error){sb=null;submissionServiceState='unavailable';}
+  showHome();renderConnectionStatus();
+  if(submissionServiceReady())loadGuideImgs();
+}
+
+/* Keep field labels, previews and validation messages connected. */
+function submitDescriptionIds(control){
+  return String(control.getAttribute('aria-describedby')||'').split(/\s+/).filter(Boolean);
+}
+function describeSubmitControl(control,id){
+  const ids=new Set(submitDescriptionIds(control));ids.add(id);control.setAttribute('aria-describedby',[...ids].join(' '));
+}
+function clearSubmitFieldError(control){
+  if(!control?.id)return;
+  const errorId=control.id+'Error',error=$(errorId);
+  control.removeAttribute('aria-invalid');control.closest('.field')?.classList.remove('field-invalid');
+  if(error){error.textContent='';error.hidden=true;}
+  const ids=submitDescriptionIds(control).filter(id=>id!==errorId);
+  if(ids.length)control.setAttribute('aria-describedby',ids.join(' '));else control.removeAttribute('aria-describedby');
+  document.querySelectorAll('[data-error-field]').forEach(summary=>{
+    if(summary.dataset.errorField===control.id){summary.textContent='';delete summary.dataset.errorField;}
+  });
+}
+function showFieldError(inputId,message,summaryId){
+  const control=$(inputId),summary=$(summaryId||'formMsg');
+  if(summary){summary.style.color='var(--red)';summary.textContent=String(message||'');summary.dataset.errorField=inputId;}
+  if(!control)return;
+  const id=inputId+'Error';let error=$(id);
+  if(!error){
+    error=document.createElement('div');error.id=id;error.className='field-error';error.setAttribute('role','alert');
+    const field=control.closest('.field');
+    if(field)field.appendChild(error);else control.insertAdjacentElement('afterend',error);
+  }
+  error.hidden=false;error.textContent=String(message||'');
+  control.setAttribute('aria-invalid','true');control.closest('.field')?.classList.add('field-invalid');describeSubmitControl(control,id);
+  if(!control.matches('input,select,textarea,button,a,[tabindex]'))control.tabIndex=-1;
+  try{control.focus({preventScroll:true});}catch(_error){control.focus();}
+  const reduced=window.matchMedia?.('(prefers-reduced-motion:reduce)').matches;
+  control.scrollIntoView({behavior:reduced?'auto':'smooth',block:'center',inline:'nearest'});
+}
+function clearFieldErrors(containerId){
+  const container=$(containerId);if(!container)return;
+  container.querySelectorAll('[aria-invalid="true"]').forEach(clearSubmitFieldError);
+  container.querySelectorAll('.field-error').forEach(error=>{error.textContent='';error.hidden=true;});
+  container.querySelectorAll('[data-error-field]').forEach(summary=>{summary.textContent='';delete summary.dataset.errorField;});
+}
+function setupFormAccessibility(){
+  const requiredIds=new Set(['fAlliance','fNick','fTroop','fShelter','fS1','fS2','fS3','fKills','vAllianceInput','vNickInput','vTroopInput','vIndustryInput','vSquad1Input']);
+  document.querySelectorAll('.field').forEach(field=>{
+    const label=field.querySelector('label'),control=field.querySelector('input,select,textarea');
+    if(!control?.id)return;
+    if(label)label.htmlFor=control.id;
+    if(requiredIds.has(control.id))control.setAttribute('aria-required','true');
+    field.querySelectorAll('.preview[id]').forEach(preview=>describeSubmitControl(control,preview.id));
+  });
+  const choices=$('publicPollOptions');
+  if(choices){choices.setAttribute('role','radiogroup');choices.setAttribute('aria-labelledby','vSecChoice');choices.setAttribute('aria-required','true');}
+}
+function setupUserInputValidation(){
+  document.querySelectorAll('.field input,.field select,.field textarea').forEach(control=>{
+    if(control.dataset.validationBound==='true')return;
+    control.dataset.validationBound='true';
+    control.addEventListener('input',()=>clearSubmitFieldError(control));
+    control.addEventListener('change',()=>clearSubmitFieldError(control));
+  });
+  const choices=$('publicPollOptions');
+  if(choices&&choices.dataset.validationBound!=='true'){
+    choices.dataset.validationBound='true';choices.addEventListener('change',()=>clearSubmitFieldError(choices));
+  }
+}
+function focusPageHeading(page){
+  const target=page==='home'?document.querySelector('#homeView .service-card'):$(({power:'tTitle',powerDone:'tDone',vote:'vTitle',voteDone:'vDoneTitle'})[page]);
+  if(!target||target.closest('[hidden]'))return;
+  if(!target.matches('button,a,input,select,textarea,[tabindex]'))target.tabIndex=-1;
+  try{target.focus({preventScroll:true});}catch(_error){target.focus();}
+}
+
+
+let latestPowerReceipt=null;
+let powerBusyControls=null;
+const POWER_UNIT_INPUT_IDS=['fS1','fS2','fS3','fS4','vSquad1Input'];
+
+function powerInputParts(value){
+  if(value==null)return null;
+  const raw=normalizeNumericText(value).trim();
+  if(!raw)return null;
+  const match=raw.match(/^((?:(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?|\.\d+))\s*([gm])?$/i);
+  if(!match)return false;
+  const amount=match[1].replace(/,/g,''),number=Number(amount);
+  return Number.isFinite(number)?{amount,number,unit:(match[2]||'').toUpperCase()}:false;
+}
+function powerInputNeedsUnit(value){
+  const parts=powerInputParts(value);
+  return Boolean(parts&&!parts.unit&&parts.number>0&&parts.number<100);
+}
+function powerValidationMessage(raw,fallback){
+  return powerInputNeedsUnit(raw)?(I18N[lang]||I18N.ko).powerUnitRequired:fallback;
+}
+function shiftPowerDecimal(value,shift){
+  const match=String(value).match(/^(-?)(\d+)(?:\.(\d*))?(?:e([+-]?\d+))?$/i);
+  if(!match)return '';
+  const sign=match[1],digits=match[2]+(match[3]||''),point=match[2].length+Number(match[4]||0)+shift;
+  let integer,fraction;
+  if(point<=0){integer='0';fraction='0'.repeat(-point)+digits;}
+  else if(point>=digits.length){integer=digits+'0'.repeat(point-digits.length);fraction='';}
+  else{integer=digits.slice(0,point);fraction=digits.slice(point);}
+  integer=integer.replace(/^0+(?=\d)/,'');fraction=fraction.replace(/0+$/,'');
+  return sign+integer+(fraction?'.'+fraction:'');
+}
+function setupPowerUnitButtons(){
+  POWER_UNIT_INPUT_IDS.forEach(id=>{
+    const input=$(id);if(!input||document.getElementById(id+'Units'))return;
+    input.closest('.row2')?.classList.add('power-row2');
+    const row=document.createElement('div');row.className='power-input-row';
+    input.before(row);row.appendChild(input);
+    const group=document.createElement('div');group.className='power-unit-buttons';group.id=id+'Units';group.setAttribute('role','group');
+    ['G','M'].forEach(unit=>{
+      const button=document.createElement('button');button.type='button';button.className='power-unit-button';button.dataset.unit=unit;button.textContent=unit;
+      button.addEventListener('click',()=>applyPowerUnit(id,unit));group.appendChild(button);
+    });
+    row.appendChild(group);
+    input.addEventListener('input',syncPowerUnitButtons);
+  });
+  syncPowerUnitButtons();
+}
+function syncPowerUnitButtons(){
+  const t=I18N[lang]||I18N.ko;
+  POWER_UNIT_INPUT_IDS.forEach(id=>{
+    const input=$(id),group=$(id+'Units');if(!input||!group)return;
+    const parts=powerInputParts(input.value),unit=parts?(parts.unit||((parts.number>=100)?'M':'')):'';
+    const label=input.labels?.[0]?.textContent?.replace(/\s+/g,' ').trim()||input.id;
+    group.setAttribute('aria-label',label+' / '+t.powerUnitLabel);
+    group.querySelectorAll('button').forEach(button=>{
+      const selected=button.dataset.unit===unit;
+      button.setAttribute('aria-pressed',String(selected));button.classList.toggle('active',selected);
+      button.setAttribute('aria-label',label+' / '+(button.dataset.unit==='G'?t.powerUseG:t.powerUseM));
+    });
+  });
+}
+function applyPowerUnit(inputId,unit){
+  const input=$(inputId);if(!input||input.disabled||!['G','M'].includes(unit))return;
+  const raw=normalizeNumericText(input.value).trim();
+  input.focus({preventScroll:true});if(!raw)return;
+  const amount=raw.replace(/\s*[gm]\s*$/i,'').trim();
+  input.value=amount+unit;
+  try{input.setSelectionRange(amount.length,amount.length);}catch(_error){}
+  input.dispatchEvent(new Event('input',{bubbles:true}));
+}
+function setPowerInputsBusy(busy){
+  if(busy){
+    if(powerBusyControls)return;
+    powerBusyControls=new Map();
+    document.querySelectorAll('#formView input,#formView select,#formView .power-unit-button').forEach(control=>{
+      powerBusyControls.set(control,control.disabled);control.disabled=true;
+    });
+  }else{
+    powerBusyControls?.forEach((disabled,control)=>{control.disabled=disabled;});powerBusyControls=null;
+  }
+}
+function renderPowerDoneSummary(){
+  const receipt=latestPowerReceipt;if(!receipt)return;
+  const t=I18N[lang]||I18N.ko;
+  const troopIndex=TROOP_CANON.indexOf(receipt.troop);
+  const details=[[t.troop,t.troops[troopIndex]||receipt.troop],[t.shelter,receipt.industry]];
+  receipt.powers.forEach((value,index)=>{if(value!==null)details.push([t.squadWord[index],fmtG(value)]);});
+  details.push([t.kills,receipt.kills.toLocaleString(pollLocale())]);
+  $('doneSummary').innerHTML='<b>'+escapeHtml(receipt.alliance)+' / '+escapeHtml(receipt.nickname)+'</b>'+
+    '<dl class="power-receipt">'+details.map(([label,value])=>'<div class="power-receipt-row"><dt>'+escapeHtml(label)+'</dt><dd>'+escapeHtml(value)+'</dd></div>').join('')+'</dl><p>'+t.doneTail+'</p>';
+}
+
+
+function currentVoteReceiptIdentity(identity){
+  const source=identity&&typeof identity==='object'?identity:{alliance:$('vAllianceInput')?.value||'',nickname:$('vNickInput')?.value||''};
+  const alliance=String(source.alliance??'').trim(),nickname=String(source.nickname??'').trim();
+  return {alliance,nickname,key:voteLookupKey(alliance,nickname),complete:Boolean(normalizeVoteLookup(alliance)&&normalizeVoteLookup(nickname))};
+}
+function identityVoteReceiptKey(pollId,identity){
+  return 'vote_receipt_v2_'+encodeURIComponent(String(pollId||''))+'_'+encodeURIComponent(currentVoteReceiptIdentity(identity).key);
+}
+function voteReceiptMatches(receipt,pollId,identity){
+  return Boolean(identity.complete&&receipt&&String(receipt.pollId)===String(pollId)&&
+    receipt.savedAt&&!Number.isNaN(new Date(receipt.savedAt).getTime())&&
+    voteLookupKey(receipt.alliance,receipt.nickname)===identity.key);
+}
+function hasCurrentVoteStatus(){
+  const identity=currentVoteReceiptIdentity();
+  return Boolean(identity.complete&&voteStatusState.loaded&&voteStatusState.identity===identity.key);
+}
+function syncVoteBusyState(){
+  ['vAllianceInput','vNickInput','vTroopInput','vIndustryInput','vSquad1Input','vNoteInput','vStatusAllianceInput','vStatusNickInput','voteStatusToggle'].forEach(id=>{if($(id))$(id).disabled=voteSubmitting;});
+  document.querySelectorAll('#publicPollOptions input, #vSquad1Input + .power-unit-buttons button, #voteView .power-unit-button').forEach(input=>input.disabled=voteSubmitting);
+  if($('voteStatusCheckBtn'))$('voteStatusCheckBtn').disabled=voteSubmitting||voteStatusState.loading;
+  if($('voteSubmitBtn')){
+    const serviceMissing=typeof submissionServiceReady==='function'?!submissionServiceReady():!sb;
+    $('voteSubmitBtn').disabled=voteSubmitting||serviceMissing;
+    $('voteSubmitBtn').setAttribute('aria-busy',String(voteSubmitting));
+    $('voteSubmitBtn').textContent=(HUB_I18N[lang]||HUB_I18N.ko)[voteSubmitting?'submitting':'submit'];
+  }
+}
+
+
+let submissionServiceState='initializing';
+let submissionRuntimeFailed=false;
+const POWER_DRAFT_KEY='213_power_draft_v1';
+const POWER_DRAFT_TTL=24*60*60*1000;
+const POWER_DRAFT_FIELDS=['fS1','fS2','fS3','fS4','fKills'];
+let currentPowerDraft=null;
+
+function submissionServiceReady(){return !submissionRuntimeFailed&&Boolean(sb&&typeof sb.rpc==='function');}
+function renderConnectionStatus(){
+  const panel=$('connectionStatus'),message=$('connectionMessage'),button=$('connectionRetry');
+  const t=I18N[lang]||I18N.ko,failed=submissionRuntimeFailed||submissionServiceState==='unavailable';
+  if(panel)panel.hidden=!failed;
+  if(message)message.textContent=submissionRuntimeFailed?t.runtimeErr:t.serviceUnavailable;
+  if(button)button.textContent=t.retry;
+  document.querySelectorAll('#homeView .service-card').forEach(control=>control.disabled=failed);
+  $('submitBtn').disabled=submitting||failed;$('submitBtn').textContent=submitting?t.submitting:t.submit;
+  const vt=HUB_I18N[lang]||HUB_I18N.ko;
+  $('voteSubmitBtn').disabled=voteSubmitting||failed;$('voteSubmitBtn').textContent=voteSubmitting?vt.submitting:vt.submit;
+  if($('pollRetryBtn'))$('pollRetryBtn').textContent=t.retry;
+}
+function ensureSubmissionService(){
+  const ready=submissionServiceReady();
+  submissionServiceState=ready?'ready':'unavailable';renderConnectionStatus();return ready;
+}
+function retrySubmissionService(){
+  if(submissionServiceReady()){
+    submissionServiceState='ready';renderConnectionStatus();
+    if(currentPage==='vote')loadOpenPolls(true);
+    return;
+  }
+  savePowerDraft();window.location.reload();
+}
+function retryPublicPolls(){
+  if(submissionServiceReady())return loadOpenPolls(true);
+  retrySubmissionService();
+}
+function handleSubmissionRuntimeError(){
+  submissionRuntimeFailed=true;submissionServiceState='unavailable';renderConnectionStatus();return false;
+}
+function removeSubmitPreference(key){try{window.localStorage.removeItem(key);return true;}catch(_error){return false;}}
+function powerDraftIdentity(){return {alliance:String($('fAlliance').value||'').normalize('NFKC').trim().toUpperCase(),nickname:String($('fNick').value||'').normalize('NFKC').trim()};}
+function samePowerDraftIdentity(a,b){return Boolean(a&&b&&a.alliance===b.alliance&&a.nickname===b.nickname);}
+function renderPowerDraftNotice(){
+  const panel=$('powerDraftNotice');if(!panel)return;
+  const t=I18N[lang]||I18N.ko,draft=currentPowerDraft;
+  panel.hidden=!draft||!samePowerDraftIdentity(draft.identity,powerDraftIdentity());
+  $('powerDraftClear').textContent=t.draftClear;
+  if(panel.hidden)return;
+  const locale=({ko:'ko-KR',en:'en-US',ja:'ja-JP',zh:'zh-CN'})[lang]||'ko-KR';
+  const time=new Intl.DateTimeFormat(locale,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(draft.savedAt));
+  $('powerDraftMessage').textContent=(draft.restored?t.draftRestored:t.draftSaved)+' '+t.draftSavedAt+' '+time;
+}
+function savePowerDraft(){
+  const identity=powerDraftIdentity();
+  if(!identity.alliance||!identity.nickname)return false;
+  const fields=Object.fromEntries(POWER_DRAFT_FIELDS.map(id=>[id,$(id).value.slice(0,id==='fKills'?20:16)]));
+  if(!Object.values(fields).some(value=>value.trim())){clearPowerDraft();return false;}
+  const draft={version:1,savedAt:Date.now(),identity,fields};
+  if(!writeSubmitPreference(POWER_DRAFT_KEY,JSON.stringify(draft)))return false;
+  currentPowerDraft={...draft,restored:Boolean(currentPowerDraft?.restored&&samePowerDraftIdentity(currentPowerDraft.identity,identity))};
+  renderPowerDraftNotice();return true;
+}
+function restorePowerDraft(){
+  let draft;try{draft=JSON.parse(readSubmitPreference(POWER_DRAFT_KEY)||'null');}catch(_error){removeSubmitPreference(POWER_DRAFT_KEY);return false;}
+  if(!draft)return false;
+  const age=Date.now()-Number(draft.savedAt);
+  if(draft.version!==1||!Number.isFinite(age)||age<0||age>POWER_DRAFT_TTL||!draft.fields||typeof draft.fields!=='object'||!draft.identity){removeSubmitPreference(POWER_DRAFT_KEY);return false;}
+  if(!samePowerDraftIdentity(draft.identity,powerDraftIdentity()))return false;
+  if(POWER_DRAFT_FIELDS.some(id=>$(id).value.trim()))return false;
+  POWER_DRAFT_FIELDS.forEach((id,index)=>{
+    const value=draft.fields[id];$(id).value=typeof value==='string'?value.slice(0,id==='fKills'?20:16):'';refreshPreview(id,'pS'+(index+1));
+  });
+  currentPowerDraft={...draft,restored:true};syncPowerUnitButtons();renderPowerDraftNotice();return true;
+}
+function clearPowerDraft(){removeSubmitPreference(POWER_DRAFT_KEY);currentPowerDraft=null;renderPowerDraftNotice();}
+function discardPowerDraft(){
+  if(submitting)return;
+  clearPowerDraft();POWER_DRAFT_FIELDS.forEach((id,index)=>{$(id).value='';refreshPreview(id,'pS'+(index+1));});
+  syncPowerUnitButtons();clearFieldErrors('formView');$('fS1').focus({preventScroll:true});
+}
+function setupPowerDraft(){
+  POWER_DRAFT_FIELDS.forEach(id=>$(id).addEventListener('input',savePowerDraft));
+  ['fAlliance','fNick'].forEach(id=>$(id).addEventListener('input',renderPowerDraftNotice));
+}
+
+
+Object.entries({"ko":{"powerUnitRequired":"전투력 단위를 선택해 주세요. 예: 99M / 6.22G","powerUnitLabel":"전투력 단위","powerUseG":"G 단위 적용","powerUseM":"M 단위 적용","badNum":"숫자와 G/M 단위를 확인해 주세요. 예: 100M / 6.22G","errKills":"킬수를 정확한 양의 정수로 입력해 주세요. 예: 27,066,265","submitUnconfirmed":"제출 결과를 확인하지 못했습니다. 입력 내용은 유지했습니다. 다시 제출하기 전에 운영진에게 접수 여부를 확인해 주세요."},"en":{"powerUnitRequired":"Choose G or M for this value, for example 99M or 6.22G.","powerUnitLabel":"Combat power unit","powerUseG":"Use G units","powerUseM":"Use M units","badNum":"Check the number and its G/M unit, for example 100M or 6.22G.","errKills":"Enter a valid positive whole-number kill count, for example 27,066,265.","submitUnconfirmed":"We could not confirm whether your submission was saved. Your entries are still here. Please check with staff before submitting again."},"ja":{"powerUnitRequired":"この値にはGまたはMを付けてください。例：99M / 6.22G","powerUnitLabel":"戦闘力の単位","powerUseG":"単位をGにする","powerUseM":"単位をMにする","badNum":"数値とG/Mの単位をご確認ください。例：100M / 6.22G","errKills":"キル数は正の整数で入力してください。例：27,066,265","submitUnconfirmed":"送信結果を確認できませんでした。入力内容は残っています。再送信する前に運営側へ受付状況をご確認ください。"},"zh":{"powerUnitRequired":"请选择G或M作为单位。例如：99M / 6.22G。","powerUnitLabel":"战力单位","powerUseG":"使用G单位","powerUseM":"使用M单位","badNum":"请检查数值及G/M单位。例如：100M / 6.22G。","errKills":"请输入有效的正整数击杀数。例如：27,066,265。","submitUnconfirmed":"无法确认是否提交成功，已保留填写内容。再次提交前，请先向管理员确认是否已收到。"}}).forEach(([locale,values])=>Object.assign(I18N[locale],values));
+
+Object.entries({"ko":{"serviceUnavailable":"연결에 필요한 파일을 불러오지 못했습니다. 인터넷 연결을 확인한 뒤 다시 시도해 주세요.","retry":"다시 시도","draftRestored":"이 기기에 임시 저장한 입력을 불러왔습니다. 최신 전투력인지 확인해 주세요.","draftSaved":"입력 내용이 이 기기에 임시 저장됩니다. 제출된 상태를 의미하지는 않습니다.","draftSavedAt":"저장 시간:","draftClear":"전투력 입력 지우기","done":"제출이 완료되었습니다"},"en":{"serviceUnavailable":"A file needed to connect could not be loaded. Check your internet connection and try again.","retry":"Try again","draftRestored":"Your draft from this device has been restored. Check that these power values are still current.","draftSaved":"Your entries are saved temporarily on this device. This does not mean they have been submitted.","draftSavedAt":"Saved:","draftClear":"Clear power entries","done":"Submission Complete"},"ja":{"serviceUnavailable":"接続に必要なファイルを読み込めませんでした。通信状態を確認して、もう一度お試しください。","retry":"再試行","draftRestored":"この端末に一時保存した入力を復元しました。現在の戦闘力と一致するかご確認ください。","draftSaved":"入力内容はこの端末に一時保存されます。提出が完了したことを示すものではありません。","draftSavedAt":"保存日時：","draftClear":"戦闘力の入力を消去","done":"提出が完了しました"},"zh":{"serviceUnavailable":"无法加载连接所需的文件。请检查网络连接后重试。","retry":"重试","draftRestored":"已恢复此设备暂存的内容，请确认战力是否仍为最新数值。","draftSaved":"填写内容会暂存在此设备上，不代表已经提交。","draftSavedAt":"保存时间：","draftClear":"清空战力输入","done":"提交成功"}}).forEach(([locale,values])=>Object.assign(I18N[locale],values));
+
+Object.entries({"ko":{"voteLoadFailed":"투표 목록을 새로 불러오지 못했습니다. 이전 목록이 있으면 그대로 표시합니다. 다시 시도해 주세요.","voteSaveUnconfirmed":"제출 결과를 확인하지 못했습니다. 다시 제출하기 전에 내 투표 완료 여부를 확인해 주세요.","voteSavedElsewhere":"선택했던 투표의 응답을 저장했습니다. 입력한 연맹과 닉네임으로 완료 여부를 확인할 수 있습니다.","statusNoteCached":"마지막으로 확인한 상태입니다. 최신 상태는 다시 조회해 주세요."},"en":{"voteLoadFailed":"The survey list could not be refreshed. Any previously loaded surveys remain available. Please try again.","voteSaveUnconfirmed":"We could not confirm whether your response was saved. Check your survey status before submitting again.","voteSavedElsewhere":"Your response to the previous survey was saved. You can check its status with the alliance and nickname you entered.","statusNoteCached":"Showing the last confirmed status. Check again for the latest information."},"ja":{"voteLoadFailed":"投票一覧を更新できませんでした。読み込み済みの一覧がある場合は、そのまま表示しています。もう一度お試しください。","voteSaveUnconfirmed":"回答の保存結果を確認できませんでした。再提出する前に、自分の回答状況を確認してください。","voteSavedElsewhere":"先ほど選択した投票への回答を保存しました。入力した同盟名とニックネームで回答状況を確認できます。","statusNoteCached":"最後に確認した状況を表示しています。最新の状況は再度確認してください。"},"zh":{"voteLoadFailed":"无法刷新调查列表。如有之前加载的调查，会继续显示。请重试。","voteSaveUnconfirmed":"无法确认回答是否已保存。请先查看提交状态，再决定是否重新提交。","voteSavedElsewhere":"已保存之前所选调查的回答。您可以使用填写的联盟和昵称查询提交状态。","statusNoteCached":"显示上次确认的状态。请重新查询最新状态。"}}).forEach(([locale,values])=>Object.assign(HUB_I18N[locale],values));
+
+setupPowerUnitButtons();setupFormAccessibility();setupUserInputValidation();setupPowerDraft();
+window.onerror=handleSubmissionRuntimeError;
+init();
+</script>
+</body>
+</html>
