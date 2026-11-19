@@ -1,0 +1,41 @@
+.dw-game-panel{margin:18px 0;border:1px solid var(--line,#344159);border-radius:14px;background:var(--panel,#141e2e);color:var(--text,#e8effa);overflow:hidden}
+.dw-game-panel>summary{display:flex;align-items:center;gap:12px;flex-wrap:wrap;cursor:pointer;padding:18px;font-size:16px;font-weight:800;list-style:none}
+.dw-game-panel>summary::-webkit-details-marker{display:none}
+.dw-game-panel>summary::before{content:'+';font-size:22px;color:var(--gold,#f2c14e)}
+.dw-game-panel[open]>summary::before{content:'−'}
+.dw-game-panel .dw-status{margin-left:auto;font-size:13px;font-weight:600;border:1px solid #53617a;border-radius:20px;padding:5px 10px;color:#c8d3e6}
+.dw-game-body{padding:0 18px 20px;font-size:16px;line-height:1.6}
+.dw-game-body p{margin:8px 0 14px;color:var(--muted,#adbad0)}
+.dw-game-body .dw-info{padding:12px 14px;border-left:3px solid var(--gold,#f2c14e);background:rgba(242,193,78,.06);font-size:14px}
+.dw-game-actions{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin:14px 0}
+.dw-game-body label{display:flex;flex-direction:column;gap:5px;font-size:14px;color:var(--muted,#adbad0)}
+.dw-game-body input,.dw-game-body select,.dw-game-body textarea{font:inherit;font-size:16px;min-height:44px;background:var(--bg,#0c1422);border:1px solid var(--line,#344159);border-radius:8px;color:var(--text,#e8effa);padding:9px 11px}
+.dw-game-body input[type=file]{max-width:100%;width:290px}
+.dw-game-body input[type=search]{width:240px;max-width:100%}
+.dw-game-body textarea{display:block;width:100%;min-height:130px;resize:vertical;font-family:ui-monospace,SFMono-Regular,monospace;line-height:1.5;box-sizing:border-box}
+.dw-game-body .btn{min-height:44px;padding:9px 14px;font-size:14px;white-space:normal}
+.dw-game-body .btn:disabled{opacity:.45;cursor:not-allowed}
+.dw-game-example{margin:12px 0;font-size:14px}
+.dw-game-example summary{cursor:pointer;color:var(--gold,#f2c14e);padding:6px 0}
+.dw-game-example pre{overflow:auto;font-size:13px;line-height:1.6;padding:12px;background:var(--bg,#0c1422);border-radius:8px;max-height:240px}
+.dw-game-state{min-height:28px;font-size:14px;color:var(--muted,#adbad0);white-space:pre-line;overflow-wrap:anywhere}
+.dw-game-state[data-error=true]{color:#ffb0aa}
+.dw-game-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:16px 0}
+.dw-game-stats>div{border:1px solid var(--line,#344159);border-radius:10px;padding:12px}
+.dw-game-stats span{display:block;font-size:13px;color:var(--muted,#adbad0)}
+.dw-game-stats b{display:block;font-size:22px;font-variant-numeric:tabular-nums;letter-spacing:-.04em}
+.dw-game-table-wrap{overflow:auto;max-height:560px;border:1px solid var(--line,#344159);border-radius:10px}
+.dw-game-table{width:100%;min-width:850px;border-collapse:collapse;font-size:14px}
+.dw-game-table th,.dw-game-table td{padding:12px 10px;text-align:left;border-bottom:1px solid var(--line,#344159);white-space:nowrap}
+.dw-game-table th{position:sticky;top:0;z-index:1;background:var(--panel,#141e2e);font-size:13px}
+.dw-game-table td.dw-num{font-variant-numeric:tabular-nums;text-align:right}
+.dw-game-table small{display:block;font-size:12px;color:var(--muted,#adbad0)}
+.dw-game-empty{padding:28px 15px;text-align:center;color:var(--muted,#adbad0);font-size:15px}
+.dw-game-mode{font-weight:700;font-size:14px;color:var(--gold,#f2c14e);margin:14px 0 4px}
+.dw-game-extra{font-size:14px;margin-top:12px}
+.dw-game-extra summary{cursor:pointer}
+.dw-game-extra dl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px}
+.dw-game-extra dt{color:var(--muted,#adbad0)}
+.dw-game-extra dd{margin:0}
+.dw-game-body button:focus-visible,.dw-game-body input:focus-visible,.dw-game-body select:focus-visible,.dw-game-body textarea:focus-visible,.dw-game-panel summary:focus-visible{outline:2px solid var(--gold,#f2c14e);outline-offset:3px}
+@media(max-width:640px){.dw-game-body{padding:0 12px 16px}.dw-game-panel>summary{padding:14px 12px}.dw-game-panel .dw-status{margin-left:0}.dw-game-actions{align-items:stretch}.dw-game-actions>*{flex:1 1 180px}.dw-game-body input[type=file],.dw-game-body input[type=search]{width:100%;box-sizing:border-box}.dw-game-stats{grid-template-columns:1fr}.dw-game-stats>div{display:flex;align-items:center;justify-content:space-between}.dw-game-stats b{font-size:20px}}
