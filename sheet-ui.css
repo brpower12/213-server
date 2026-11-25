@@ -99,6 +99,12 @@ body.tactical-tab-open #view-tactical{min-height:0}
 .hist-item .vals .changed{border-bottom:2px solid var(--gold);padding-bottom:3px}
 .history-help{font-size:13px;line-height:1.6;color:var(--muted);margin-bottom:10px}
 .migration-ui .sheet-info{margin:10px 0 14px}
+.migration-ui :is(.ranking-name,.ranking-meta,.ana-name,.brand-sub,.dark-select-option),
+.migration-ui .applicant-table :is(.edit-link,td.muted){
+ white-space:normal;overflow-wrap:anywhere;
+}
+.migration-ui .mcard-name strong{display:block;white-space:normal;overflow-wrap:anywhere}
+.migration-ui .applicant-table col:nth-child(10),.migration-ui .applicant-table col:nth-child(11){width:128px!important}
 button:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 @media(max-width:640px){
  html{font-size:16px}
@@ -155,6 +161,10 @@ button:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var
  #rankBox .rank-table .sub2{font-size:12px}
  #rankBox[data-extra-columns="true"] .rank-table{min-width:620px!important}
  #rankBox .rank-table .selected-power{min-width:80px!important}
+ #view-entry .entry-add-btn{align-self:end}
+ #entryCards .mcard .t b{min-width:0;white-space:normal;overflow-wrap:anywhere;line-height:1.35}
+ #entryCards .mcard .s>*{min-width:0;overflow-wrap:anywhere}
+ #memOverlay #memTitle{overflow-wrap:anywhere}
  #view-subs #subFilterSeg{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px;width:100%;margin:0}
  #appShell #view-subs #subFilterSeg button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;min-height:64px!important;padding:8px 6px!important;font-size:14px!important;line-height:1.3!important;white-space:nowrap!important}
  #view-subs #subFilterSeg .sub-filter-count{flex:0 0 auto;min-width:28px;min-height:22px;height:auto;margin:0;padding:2px 8px;font-size:12px;line-height:1.4;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -165,9 +175,14 @@ button:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var
  .sub-scope{min-width:0}
  #view-subs .sub-scopebar{grid-template-columns:minmax(0,1fr);gap:12px}
  #view-subs .sub-scope-field,#view-subs .sub-scope-field input,#view-subs .sub-scope-field select{min-width:0;max-width:100%}
+ #view-subs .sub-alliance-field{overflow-x:hidden;overflow-x:clip}
  #view-subs .sub-scope-field>span{font-size:13px;line-height:1.4}
  #subList .where,#subList .when,#subList .sub-audit-meta{font-size:12px!important;line-height:1.5}
  #subList .vals,#subList .sub-audit-name{font-size:14px!important;line-height:1.6}
+ #subList .sub-card .top>*,#subList .sub-audit-name,#subList .sub-match-note{min-width:0;max-width:100%;white-space:normal}
+ #subList .sub-card,#subList .sub-list-head,#subList .sub-audit-list,#subList .sub-audit-orphans,
+ #view-subs .sub-scope-summary{overflow-wrap:anywhere}
+ #subList .sub-list-head{flex-wrap:wrap}
  #subList .acts{flex-wrap:wrap}
  #subList .acts .btn{flex:1 1 100px}
  #view-polls .poll-panel-head>div{min-width:0;flex:1}
@@ -186,10 +201,13 @@ button:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var
  #view-manage .srv-card{width:100%;min-width:0!important;max-width:100%}
  #view-manage .srv-card .head,#view-manage .alli-chips{min-width:0;max-width:100%}
  #view-manage .chip{max-width:100%;min-width:0;flex-wrap:wrap}
+ #view-manage .srv-card .head>b,#view-manage .chip{overflow-wrap:anywhere}
+ #view-manage .chip a{flex-shrink:1;min-width:44px;max-width:100%;overflow-wrap:anywhere}
  #view-history .hist-item{font-size:14px;line-height:1.6}
  #view-history .hist-item .vals{font-size:13px;line-height:1.6}
  #view-history .hist-item .when{font-size:12px}
- #view-history .hist-item .who{font-size:12px;max-width:100%;white-space:normal}
+ #view-history .hist-item .who{font-size:12px;white-space:normal}
+ #view-history .hist-item .who,#view-history .hist-item .what{min-width:0;max-width:100%;overflow-wrap:anywhere}
  .savebar{padding-bottom:calc(8px + env(safe-area-inset-bottom,0px))}
  .modal{max-height:calc(100dvh - 24px);overflow-y:auto}
  .overlay{overflow-y:auto;padding:12px}

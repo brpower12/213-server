@@ -1977,7 +1977,6 @@ nav button.active::after{
 }
 @media(max-width:360px){
   .entry-action-group{grid-template-columns:minmax(0,1fr) 68px}
-  .entry-action-group>button:last-of-type{grid-column:1 / -1}
   .entry-add-count{width:68px;flex-basis:68px}
   .custom-top-hint{font-size:.63rem}
 }
@@ -2045,8 +2044,7 @@ nav button.active::after{
     gap:6px!important;
     align-items:stretch!important;
   }
-  #view-entry .entry-action-group>.btn,
-  #view-entry .entry-add-count{
+  #view-entry .entry-action-group>.btn{
     width:100%!important;
     min-width:0!important;
     height:44px!important;
@@ -2059,8 +2057,8 @@ nav button.active::after{
     align-items:center;
     justify-content:center;
     padding:6px 5px!important;
-    font-size:.67rem!important;
-    line-height:1.1;
+    font-size:14px!important;
+    line-height:1.35;
     white-space:nowrap!important;
     overflow:hidden;
   }
@@ -2070,38 +2068,23 @@ nav button.active::after{
     white-space:nowrap!important;
   }
   #view-entry .entry-add-count{
-    position:relative;
     display:grid!important;
-    grid-template-rows:16px 1fr;
-    gap:0!important;
-    padding:3px 5px 4px;
-    border:1px solid var(--line);
-    border-radius:9px;
-    background:var(--panel2);
+    align-self:end;
+    gap:4px;
   }
   #view-entry .entry-add-count>span{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    height:16px;
-    font-size:.58rem!important;
-    line-height:1;
-    white-space:nowrap;
+    font-size:13px;
+    line-height:1.35;
   }
   #view-entry .entry-add-count input{
-    width:100%!important;
-    height:20px!important;
-    min-height:20px!important;
-    padding:0 2px!important;
-    border:0!important;
-    border-radius:0!important;
-    background:transparent!important;
-    box-shadow:none!important;
-    text-align:center;
-    font-size:12px;
-    font-weight:900;
-    line-height:20px;
+    width:100%;
+    height:44px;
+    padding:7px 6px;
+    appearance:textfield;
+    -moz-appearance:textfield;
   }
+  #view-entry .entry-add-count input::-webkit-inner-spin-button,
+  #view-entry .entry-add-count input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
   #view-entry .entry-control-panel>.hint{
     margin-top:9px!important;
     font-size:.65rem;
@@ -2115,7 +2098,6 @@ nav button.active::after{
     gap:5px!important;
   }
   #view-entry .entry-action-group>.btn{
-    font-size:.62rem!important;
     padding-left:3px!important;
     padding-right:3px!important;
   }
@@ -2129,12 +2111,6 @@ nav button.active::after{
     grid-template-columns:minmax(0,.9fr) 52px minmax(0,1.28fr)!important;
     gap:4px!important;
   }
-  #view-entry .entry-action-group>.btn{
-    font-size:.57rem!important;
-    letter-spacing:-.045em;
-  }
-  #view-entry .entry-add-count>span{font-size:.53rem!important}
-  #view-entry .entry-add-count input{font-size:.72rem}
   .section-head{padding-left:9px;padding-right:9px}
   .section-head p{font-size:.59rem}
 }
@@ -3152,16 +3128,14 @@ body.migration-tab-open footer{display:none!important}
     height:44px!important;
     min-height:44px!important;
     padding:6px 8px!important;
-    font-size:.69rem!important;
-    overflow:hidden;
-    text-overflow:ellipsis;
+    font-size:14px!important;
   }
   #rankBox .user-rank-table{min-width:830px}
   #rankBox .group-rank-table{min-width:620px}
 }
 @media(max-width:360px){
   #view-entry .entry-action-group{grid-template-columns:minmax(0,1fr) 58px!important}
-  #view-entry .entry-excel-actions .btn{font-size:.65rem!important;padding-left:4px!important;padding-right:4px!important}
+  #view-entry .entry-excel-actions .btn{padding-left:4px!important;padding-right:4px!important}
 }
 </style>
 <!-- V3.28: iPhone device persistence + planning Excel export + rank header safety -->
@@ -3169,7 +3143,7 @@ body.migration-tab-open footer{display:none!important}
 /* 모바일 입력 툴바와 인원 편집 모달 정리 */
 .overlay{z-index:5000}
 .overlay .modal{position:relative;z-index:1}
-.toast{z-index:5100}
+.toast{z-index:5100;pointer-events:none}
 body.mem-modal-open{overflow:hidden}
 
 @media(max-width:640px){
@@ -3200,25 +3174,19 @@ body.mem-modal-open{overflow:hidden}
     align-items:stretch!important;
   }
   #view-entry .entry-action-group>.btn,
-  #view-entry .entry-add-count,
   #view-entry .entry-excel-actions .btn{
     min-height:42px!important;
     height:42px!important;
   }
   #view-entry .entry-add-btn{
     padding:7px 10px!important;
-    font-size:13px!important;
     font-weight:900!important;
     letter-spacing:0!important;
   }
   #view-entry .entry-add-count{
     width:70px!important;
-    padding:3px 6px 4px!important;
   }
-  #view-entry .entry-add-count>span{font-size:9px!important}
-  #view-entry .entry-add-count input{font-size:16px!important}
   #view-entry .entry-excel-actions{gap:6px!important}
-  #view-entry .entry-excel-actions .btn{font-size:12px!important}
 
   #memOverlay{
     align-items:center;
@@ -3286,7 +3254,6 @@ body.mem-modal-open{overflow:hidden}
 @media(max-width:300px){
   #view-entry .entry-action-group{grid-template-columns:minmax(0,1fr) 64px!important}
   #view-entry .entry-add-count{width:64px!important}
-  #view-entry .entry-add-btn{font-size:12px!important}
   #memOverlay{padding:6px}
   #memOverlay .mem-modal{
     max-height:calc(100vh - 12px)!important;
@@ -3295,7 +3262,7 @@ body.mem-modal-open{overflow:hidden}
   }
 }
 </style>
-<link rel="stylesheet" href="./sheet-ui.css?v=20261125-mobile4">
+<link rel="stylesheet" href="./sheet-ui.css?v=20261125-mobile5">
 <script src="./migration-config.js"></script>
 </head>
 <body>
@@ -3666,7 +3633,7 @@ body.mem-modal-open{overflow:hidden}
       <span class="hint">✓ 213서버 제출만 표시하며, 반영하면 해당 인원의 최신 기록으로 저장됩니다.</span>
     </div>
     <div class="sub-scopebar">
-      <label class="sub-scope-field"><span>연맹</span><select id="subAllianceFilter" onchange="onSubScopeChange()"><option value="all">전체 연맹</option></select></label>
+      <label class="sub-scope-field sub-alliance-field"><span>연맹</span><select id="subAllianceFilter" onchange="onSubScopeChange()"><option value="all">전체 연맹</option></select></label>
       <label class="sub-scope-field"><span>기준일</span><input id="subDateFrom" type="date" value="2026-07-20" onchange="onSubScopeChange()"></label>
       <div class="seg sub-audit-seg" id="subAuditSeg" style="display:none">
         <button class="active" data-audit="all" onclick="setSubAuditFilter('all')">전체</button>
@@ -4021,7 +3988,8 @@ function getEmbeddedTacticalMapHtml(){
   const raw=atob(TACTICAL_MAP_B64);
   const bytes=new Uint8Array(raw.length);
   for(let i=0;i<raw.length;i++) bytes[i]=raw.charCodeAt(i);
-  tacticalMapHtmlCache=new TextDecoder('utf-8').decode(bytes);
+  tacticalMapHtmlCache=new TextDecoder('utf-8').decode(bytes)
+    .replace('./tactical-ui.js?v=20261104-mobile3', './tactical-ui.js?v=20261125-mobile5');
   return tacticalMapHtmlCache;
 }
 const $=id=>document.getElementById(id);
@@ -4955,7 +4923,8 @@ const MIGRATION_MANAGER_B64='PCFkb2N0eXBlIGh0bWw+CjwhLS0gREVQTE9ZX0JVSUxEOiAyMDI
 function getEmbeddedMigrationManagerHtml(){
   const binary=atob(MIGRATION_MANAGER_B64),bytes=new Uint8Array(binary.length);
   for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
-  return new TextDecoder('utf-8').decode(bytes);
+  return new TextDecoder('utf-8').decode(bytes)
+    .replace('./sheet-ui.css"', './sheet-ui.css?v=20261125-mobile5"');
 }
 function ensureMigrationManagerLoaded(force=false){
   const frame=$('migrationFrame');if(!frame)return;

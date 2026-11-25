@@ -33,6 +33,14 @@
       .tactical-mode-banner{font-size:13px;padding:8px 10px}
       .tactical-mode-banner small{font-size:12px}
     }
+    #workspaceQuickStatus,.asset .al,.asset .ap{white-space:normal!important;overflow-wrap:anywhere}
+    #workspaceModeToggle>button>:is(span,b,em){pointer-events:none!important}
+    @media(max-width:620px){
+      body.embedded .topbar-actions #btnSaveSlot,body.embedded .topbar-actions #btnPublishTop{
+        min-height:44px!important;height:auto!important;padding-block:5px!important;align-items:center;
+        white-space:normal!important;line-height:1.25;text-align:center;
+      }
+    }
     @media(max-height:480px){
       .tactical-mode-banner{padding:6px 10px;font-size:13px}
       .tactical-mode-banner small,.tactical-tool-groups{display:none!important}
