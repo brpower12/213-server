@@ -49,6 +49,10 @@ body.tactical-tab-open #view-tactical{min-height:0}
 }
 #rankAdvanced{margin-bottom:12px}
 #rankAdvanced .rank-band-panel{margin:0;border:0;box-shadow:none}
+#rankAdvanced>summary,.rank-meta-pill{overflow-wrap:anywhere}
+#rankBox .rank-table td:nth-child(2),#rankBox .user-rank-table td:nth-child(3){white-space:normal;overflow-wrap:anywhere}
+#view-compare{isolation:isolate}
+#view-compare .combo-it{white-space:normal;overflow-wrap:anywhere}
 #view-compare .toolbar{display:grid!important;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"mode reset" "detail detail";align-items:end;gap:12px}
 #view-compare .toolbar>.segwrap:first-child{grid-area:mode}
 #view-compare .toolbar>.segwrap:last-child{grid-area:reset;align-self:end}
@@ -61,16 +65,27 @@ body.tactical-tab-open #view-tactical{min-height:0}
 #compareDetails .segwrap{display:block!important}
 #view-compare #compareDetails .segwrap{grid-column:auto}
 #compareDetails .seglb{display:block;margin:0 0 6px;text-align:left}
+#compareResult .verdict .who,#compareResult .kv>span{overflow-wrap:anywhere}
+#compareResult .powerbar{position:relative}
+#compareResult .powerbar>div>span{position:absolute;top:50%;transform:translateY(-50%)}
+#compareResult .powerbar .pa>span{left:10px}
+#compareResult .powerbar .pb>span{right:10px}
+#compareResult .bar-names span{flex:1;min-width:0;white-space:normal;overflow-wrap:anywhere}
+#compareResult .bar-names span:last-child{text-align:right}
+#compareResult .top-list th,#compareResult .top-list td:nth-child(2){white-space:normal;overflow-wrap:anywhere}
 #rankColumns{margin:0 0 12px}
 .sheet-column-options{display:flex;flex-wrap:wrap;gap:8px}
 .sheet-column-options label{display:flex;align-items:center;gap:8px;min-height:44px;padding:8px 10px;background:var(--panel2);border-radius:8px;cursor:pointer;font-size:14px}
 .sheet-column-options input{width:18px;height:18px;accent-color:var(--gold)}
-.sheet-rank-quick{display:none}
+.sheet-rank-quick,.sheet-rank-refresh{display:none}
 .sheet-info{font-size:13px;line-height:1.6;color:var(--muted);margin:8px 0}
 .sheet-more{width:100%;min-height:44px;margin:12px 0}
 .sheet-shortcuts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
 .sheet-shortcuts .btn{min-height:44px}
 .poll-count-explanation{margin-bottom:12px;padding:12px;border:1px solid #35445c;border-radius:10px;background:#142033;font-size:13px;line-height:1.6;color:#cbd8ed}
+#view-polls .poll-cell-nickname .poll-nickname-wrap b,#view-polls .poll-nickname-alias,
+#view-polls .poll-cell-alliance,#view-polls .poll-cell-choice .poll-choice-chip{white-space:normal;overflow-wrap:anywhere}
+#view-polls .poll-target-check,#view-polls .poll-result-summary{overflow-wrap:anywhere}
 #appShell #pollMobileFilterToggle{min-height:48px!important;font-size:15px!important;font-weight:750;gap:10px;color:#dce7f7}
 #pollMobileFilterToggle .poll-mobile-filter-state{flex:0 0 auto;padding:5px 9px;border:1px solid rgba(242,193,78,.35);border-radius:7px;background:rgba(242,193,78,.07);color:#ffda83;font-size:14px;line-height:1.4}
 .poll-stats{grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -126,7 +141,10 @@ button:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var
  .sheet-rank-quick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%}
  .sheet-rank-quick label{display:grid;gap:6px;font-size:13px;color:var(--muted);min-width:0}
  .sheet-rank-quick select{width:100%;min-width:0;color-scheme:dark}
- .sheet-rank-quick button{grid-column:1/-1;justify-self:end;min-width:100px}
+ #view-rank .rank-search-row{grid-template-columns:minmax(0,1fr) auto}
+ #view-rank .rank-search-wrap{grid-column:1/-1}
+ #view-rank .rank-result-count{text-align:left}
+ .sheet-rank-refresh{display:inline-flex;align-items:center;justify-content:center;min-width:100px}
  #rankBox{min-width:0;max-width:100%;padding:0;overflow:auto}
  #rankBox .rank-table{min-width:0!important;width:100%;table-layout:auto}
  #rankBox .rank-table [data-mobile-hidden="true"]{display:none!important}
@@ -155,7 +173,7 @@ button:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var
  #view-polls .poll-panel-head>div{min-width:0;flex:1}
  #view-polls .poll-panel-head>.btn{flex:0 0 auto;white-space:nowrap!important}
  .poll-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px}
- .poll-stats span{font-size:12px!important;line-height:1.4}
+ .poll-stats span{font-size:12px!important;line-height:1.4;white-space:normal}
  .poll-stats b{font-size:18px!important}
  #view-polls .poll-result-table td{font-size:13px;line-height:1.45}
  #view-polls .poll-result-table td::before{font-size:11px}

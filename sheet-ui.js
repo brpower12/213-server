@@ -40,11 +40,11 @@
   const band=byId('rankBandPanel');band.before(advanced);advanced.append(band);
   mobile.addEventListener('change',()=>{advanced.open=!mobile.matches;});
   const quick=document.createElement('div');quick.className='sheet-rank-quick';
-  quick.innerHTML='<label>순위 종류<select aria-label="순위 종류"></select></label><label>집계 범위<select aria-label="순위 집계 범위"></select></label><button type="button" class="btn">새로고침</button>';
+  quick.innerHTML='<label>순위 종류<select aria-label="순위 종류"></select></label><label>집계 범위<select aria-label="순위 집계 범위"></select></label>';
   byId('view-rank').querySelector('.toolbar').prepend(quick);
   const [quickMode,quickTop]=quick.querySelectorAll('select');
   quickMode.innerHTML=[...byId('rankSeg').querySelectorAll('button')].map(b=>`<option value="${b.dataset.r}">${esc(b.textContent.replace(/^[^\p{L}\p{N}]+/u,''))}</option>`).join('');
-  quickMode.onchange=()=>setRankMode(quickMode.value);quickTop.onchange=()=>setRankTop(Number(quickTop.value));quick.querySelector('button').onclick=()=>loadRank(true);
+  quickMode.onchange=()=>setRankMode(quickMode.value);quickTop.onchange=()=>setRankTop(Number(quickTop.value));
   const preferences=new Map();
   function syncRankColumns(){
     quickMode.value=rankMode;
