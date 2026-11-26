@@ -6705,7 +6705,8 @@ function renderSubAudit(){
     </div>`;
   }).join('');
 
-  const orphanHtml=unresolved.length
+  const showUnmatched=subAuditFilter==='all'||subAuditFilter==='unmatched';
+  const orphanHtml=showUnmatched&&unresolved.length
     ?`<div class="sub-audit-orphans"><b>⚠ 자동 일치 실패 ${unresolved.length}건</b><br>${unresolved.slice(0,subVisibleLimit).map(({submission})=>{
       const allianceResolved=resolveSubmissionAlliance(submission.alliance_name);
       const allianceText=allianceResolved.alliance&&normalizeIdentity(submission.alliance_name)!==normalizeIdentity(allianceResolved.alliance.name)
@@ -6714,9 +6715,10 @@ function renderSubAudit(){
       return `${esc(submission.nickname)}${allianceText} (${fmtTime(submission.submitted_at)})`;
     }).join('<br>')}</div>`
     :'';
+  const viewLabel={all:'전체 표시',submitted:'제출만 표시',missing:'미제출만 표시',unmatched:'명단 일치 실패만 표시'}[subAuditFilter];
 
   $('subList').innerHTML=`
-    <div class="sub-list-head"><h2>${esc(alliance)} 제출 현황</h2><span class="hint">${dateLabel} 이후 / 미제출 우선 표시</span></div>
+    <div class="sub-list-head"><h2>${esc(alliance)} 제출 현황</h2><span class="hint">${dateLabel} 이후 / ${viewLabel}</span></div>
     <div class="sub-audit-summary">
       <div class="sub-audit-stat"><span>전체 명단</span><b>${rows.length}명</b></div>
       <div class="sub-audit-stat submitted"><span>제출</span><b>${submittedCount}명</b></div>
@@ -6724,7 +6726,7 @@ function renderSubAudit(){
     </div>
     ${orphanHtml}
     ${subAuditFilter==='unmatched'?(unresolved.length?'':'<div class="empty">명단 일치 실패 항목이 없습니다</div>'):(filtered.length?`<div class="sub-audit-list">${rowHtml}</div>`:'<div class="empty">선택한 조건에 해당하는 인원이 없습니다</div>')}
-    ${subMoreButton(subAuditFilter==='unmatched'?unresolved.length:Math.max(filtered.length,unresolved.length))}`;
+    ${subMoreButton(Math.max(filtered.length,showUnmatched?unresolved.length:0))}`;
 }
 function renderSubs(){
   const all=subCache||[];
