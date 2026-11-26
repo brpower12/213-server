@@ -3262,7 +3262,7 @@ body.mem-modal-open{overflow:hidden}
   }
 }
 </style>
-<link rel="stylesheet" href="./sheet-ui.css?v=20261125-mobile5">
+<link rel="stylesheet" href="./sheet-ui.css?v=20261126-poll6">
 <script src="./migration-config.js?v=20261126-round"></script>
 </head>
 <body>
@@ -3714,6 +3714,11 @@ body.mem-modal-open{overflow:hidden}
       <div class="poll-stats" id="pollStats">
         <div><span>대상 인원</span><b>-</b></div><div><span>응답</span><b>-</b></div><div><span>참여</span><b>-</b></div><div><span>부분 참여</span><b>-</b></div><div><span>미참여</span><b>-</b></div><div><span>미응답</span><b>-</b></div>
       </div>
+      <section class="poll-alliance-summary" id="pollAllianceSummary" aria-labelledby="pollAllianceHeading" hidden>
+        <h4 id="pollAllianceHeading">연맹별 응답률</h4>
+        <p>현재 활성 연맹원 명단 기준</p>
+        <ul id="pollAllianceGroups"></ul>
+      </section>
       <button class="btn poll-mobile-filter-toggle" id="pollMobileFilterToggle" type="button" aria-expanded="false" aria-controls="pollFilters" onclick="togglePollMobileFilters()"><span>⚙ 필터 / 정렬</span><span class="poll-mobile-filter-state" id="pollMobileFilterState">펼치기</span></button>
       <div class="poll-filters" id="pollFilters">
         <select id="pollResultState" onchange="renderPollResults()"><option value="all">전체 상태</option><option value="attend">참여</option><option value="partial">부분 참여</option><option value="absent">미참여</option><option value="missing">미응답</option></select>
@@ -8335,6 +8340,7 @@ async function refreshPollBadge(){
   badge.textContent=count?`진행 ${count}`:'';badge.title=count?`현재 진행 중인 투표 ${count}개`:'현재 진행 중인 투표 없음';badge.setAttribute('aria-label',badge.title);badge.style.display=count?'inline-flex':'none';
 }
 let participationListSeq=0,participationLoadSeq=0,participationResultSeq=0;
+let pollAllianceSummaryData=null;
 let participationManualPollId=storageGet('participation_manual_poll_id')||null;
 function selectParticipationPoll(id){
   participationManualPollId=String(id);
@@ -8342,18 +8348,24 @@ function selectParticipationPoll(id){
   return loadPollDetails(id);
 }
 async function loadPollManager(force=false){
-  const requestId=++participationListSeq;
+  const requestId=++participationListSeq,selectionRequestId=participationLoadSeq;
+  participationResultSeq++;
+  resetPollResults('투표 목록을 불러오는 중...');
   $('pollManagerStatus').textContent='불러오는 중...';
   const {data,error}=await readAllRows(()=>sb.from('participation_polls').select('*').eq('server_name','213').order('created_at',{ascending:false}).order('id'));
   if(requestId!==participationListSeq)return;
   if(error){
+    if(selectionRequestId!==participationLoadSeq)return;
     const message=participationErrorText(error);$('pollManagerStatus').textContent='연결 필요';setPollMessage(message,'bad');
-    $('pollResultsTable').innerHTML='<div class="empty">'+esc(message)+'</div>';return;
+    resetPollResults(message);return;
   }
   participationPolls=data||[];
   const grouped=renderParticipationPollNavigation();
+  if(selectionRequestId!==participationLoadSeq){refreshPollBadge();return;}
   const candidate=participationPolls.find(p=>String(p.id)===participationManualPollId)||grouped.open[0]||grouped.draft[0]||grouped.past[0];
-  if(participationManualPollId===''&&participationCurrent&&!participationCurrent.id)updatePollManagerStatus();
+  if(participationManualPollId===''&&participationCurrent&&!participationCurrent.id){
+    resetPollResults('새 투표를 저장하면 결과를 확인할 수 있습니다.');updatePollManagerStatus();
+  }
   else if(candidate)await loadPollDetails(candidate.id);
   else{newParticipationPoll();updatePollManagerStatus();}
   refreshPollBadge();
@@ -8362,6 +8374,7 @@ async function loadPollDetails(id){
   if(!id){newParticipationPoll();return;}
   const requestId=++participationLoadSeq;participationResultSeq++;
   $('pollManagerSelect').value=String(id);$('pollManagerStatus').textContent='투표 불러오는 중...';
+  resetPollResults('투표를 불러오는 중...');
   const [pollResult,optionResult,responseResult]=await Promise.all([
     sb.from('participation_polls').select('*').eq('id',id).single(),
     sb.from('participation_poll_options').select('*').eq('poll_id',id).order('sort_order').order('id'),
@@ -8369,10 +8382,14 @@ async function loadPollDetails(id){
   ]);
   if(requestId!==participationLoadSeq)return;
   const error=pollResult.error||optionResult.error||responseResult.error;
-  if(error){setPollMessage(participationErrorText(error),'bad');return;}
+  if(error){
+    const message=participationErrorText(error);setPollMessage(message,'bad');
+    $('pollManagerStatus').textContent='연결 필요';resetPollResults(message);return;
+  }
   participationCurrent=pollResult.data;participationOptions=optionResult.data||[];participationPersistedOptionIds=participationOptions.map(option=>option.id);participationResponses=responseResult.data||[];updatePollMobileResultCount();
+  if(!participationPolls.some(poll=>String(poll.id)===String(id)))participationPolls=[...participationPolls,participationCurrent];
   fillParticipationEditor();
-  renderParticipationPollNavigation();updatePollManagerStatus();
+  renderParticipationPollNavigation();$('pollManagerSelect').value=String(id);updatePollManagerStatus();
   await loadPollResults(false);
 }
 function readParticipationForm(){
@@ -8444,6 +8461,8 @@ async function duplicateParticipationPoll(){
   await loadPollManager(true);await selectParticipationPoll(data.id);setParticipationMobileTab('editor');toast('✅ 투표를 새 초안으로 복제했습니다');
 }
 function resetPollResults(message='투표를 선택해 주세요.'){
+  pollAllianceSummaryData=null;participationDisplayRows=[];
+  $('pollAllianceSummary').hidden=true;$('pollAllianceGroups').replaceChildren();
   $('pollCountExplanation')?.remove();
   $('pollStats').innerHTML=['대상 명단','명단 응답','미응답','명단 일치 확인 필요','참여 응답','부분 참여 응답','미참여 응답','전체 응답 기록'].map(label=>`<div><span>${label}</span><b>-</b></div>`).join('');
   $('pollResultSummary').textContent=message;$('pollResultsTable').innerHTML='<div class="empty">'+esc(message)+'</div>';updatePollMobileResultCount();updatePollMobileFilterToggle();
@@ -8451,8 +8470,9 @@ function resetPollResults(message='투표를 선택해 주세요.'){
 async function loadPollResults(showToast=true){
   if(!participationCurrent?.id){resetPollResults();return;}
   const requestId=++participationResultSeq,poll=participationCurrent,pollId=poll.id;
-  const current=()=>requestId===participationResultSeq&&String(participationCurrent?.id)===String(pollId);
-  $('pollResultsTable').innerHTML='<div class="empty">응답과 미응답 명단을 불러오는 중...</div>';
+  const current=()=>requestId===participationResultSeq&&participationCurrent===poll&&$('pollManagerSelect').value===String(pollId);
+  if(!current())return;
+  resetPollResults('응답과 미응답 명단을 불러오는 중...');
   const [responseResult,optionResult]=await Promise.all([
     readAllRows(()=>sb.from('participation_responses').select('*').eq('poll_id',pollId).order('submitted_at',{ascending:false}).order('id')),
     sb.from('participation_poll_options').select('*').eq('poll_id',pollId).order('sort_order').order('id')
@@ -8469,7 +8489,9 @@ async function loadPollResults(showToast=true){
   if(!current())return;
   participationResponses=responseResult.data||[];participationOptions=optionResult.data||[];
   participationMembers=memberResult.data;participationLatest=latest;updatePollMobileResultCount();
-  populatePollResultFilters(targetAllianceRows);renderPollResults();updatePollManagerStatus();
+  const rows=buildParticipationRows();
+  renderPollAllianceSummary(poll,targetAllianceRows,rows);
+  populatePollResultFilters(targetAllianceRows);renderPollResults(rows);updatePollManagerStatus();
   if(powerError)setPollMessage('응답은 불러왔지만 최신 전투력을 불러오지 못했습니다. 전투력 표시를 확인한 뒤 다시 조회해 주세요.','bad');
   if(showToast&&!powerError)toast('✅ 투표 결과를 갱신했습니다');
 }
@@ -8524,6 +8546,41 @@ function buildParticipationRows(){
   return rows;
 }
 
+function renderPollAllianceSummary(poll,alliances,rows){
+  const groups=new Map(alliances.map(alliance=>[String(alliance.id),{name:alliance.name,answered:0,missing:[]}]));
+  for(const row of rows){
+    if(!row.member)continue;
+    const group=groups.get(String(row.member.alliance_id));
+    if(!group)continue;
+    if(row.response)group.answered++;
+    else group.missing.push(row.member.nickname);
+  }
+  pollAllianceSummaryData={poll,groups};
+  $('pollAllianceGroups').innerHTML=[...groups].map(([id,{name,answered,missing}])=>{
+    const total=answered+missing.length;
+    const stats=total?`응답 ${answered} / ${total}명 (${Math.round(answered/total*1000)/10}%) / 미응답 ${missing.length}명`:'대상 인원 없음';
+    return `<li data-poll-alliance="${esc(id)}">
+      <div><strong>${esc(name)}</strong><span>${stats}</span></div>
+      <button class="btn" type="button" data-copy-poll-alliance="${esc(id)}" aria-label="${esc(name)} 미응답 복사" ${missing.length?'':'disabled'}>미응답 복사</button>
+    </li>`;
+  }).join('');
+  $('pollAllianceSummary').hidden=!groups.size;
+}
+$('pollAllianceGroups').addEventListener('click',async event=>{
+  const button=event.target.closest('button[data-copy-poll-alliance]');
+  if(!button||button.disabled||!pollAllianceSummaryData)return;
+  const {poll,groups}=pollAllianceSummaryData;
+  if(poll!==participationCurrent||$('pollManagerSelect').value!==String(poll.id))return;
+  const group=groups.get(button.dataset.copyPollAlliance);
+  if(!group?.missing.length)return;
+  const singleLine=value=>String(value??'').replace(/\s+/g,' ').trim();
+  const names=group.missing.map(singleLine).sort((a,b)=>a.localeCompare(b,'ko'));
+  const text=[`[${singleLine(poll.title_ko)||'참여 투표'}]`,`${singleLine(group.name)} 미응답 ${names.length}명`,...names.map(name=>`- ${name}`)].join('\n');
+  let copied=false;
+  try{copied=await writeClipboardText(text);}catch(error){console.warn('미응답 명단 복사 실패',error);}
+  toast(copied?`✅ ${group.name} 미응답 ${names.length}명 복사 완료`:'명단을 복사하지 못했습니다. 다시 시도해 주세요.');
+});
+
 function renderPollMemberLinkOptions(query=''){
   const selected=String($('pollLinkMemberSelect')?.value||''),key=normalizeIdentity(query);
   const rows=pollMemberLinkCandidates.filter(member=>!key||normalizeIdentity(member.nickname).includes(key));
@@ -8570,9 +8627,9 @@ async function savePollMemberLink(){
 }
 $('pollLinkOverlay').addEventListener('click',event=>{if(event.target===$('pollLinkOverlay'))closePollMemberLink();});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&$('pollLinkOverlay').classList.contains('show'))closePollMemberLink();});
-function filteredParticipationRows(){
+function filteredParticipationRows(all){
   const state=$('pollResultState').value,option=$('pollResultOption').value,alliance=$('pollResultAlliance').value,troop=$('pollResultTroop').value,search=normalizeIdentity($('pollResultSearch').value),sort=$('pollResultSort').value;
-  const rows=buildParticipationRows().filter(row=>(state==='all'||row.state===state)&&(option==='all'||String(row.option?.id)===option)&&(alliance==='all'||normalizeIdentity(row.alliance)===normalizeIdentity(alliance))&&(troop==='all'||row.troop===troop)&&(!search||normalizeIdentity(row.nickname).includes(search)||normalizeIdentity(row.submittedNickname).includes(search)));
+  const rows=all.filter(row=>(state==='all'||row.state===state)&&(option==='all'||String(row.option?.id)===option)&&(alliance==='all'||normalizeIdentity(row.alliance)===normalizeIdentity(alliance))&&(troop==='all'||row.troop===troop)&&(!search||normalizeIdentity(row.nickname).includes(search)||normalizeIdentity(row.submittedNickname).includes(search)));
   rows.sort((a,b)=>{
     if(sort==='power_asc')return (a.power-b.power)||String(a.nickname).localeCompare(String(b.nickname),'ko');
     if(sort==='name')return String(a.nickname).localeCompare(String(b.nickname),'ko');
@@ -8581,16 +8638,17 @@ function filteredParticipationRows(){
   });
   return rows;
 }
-function renderPollResults(){
+function renderPollResults(rowsForPoll){
   if(!participationCurrent?.id){resetPollResults();return;}
   updatePollMobileFilterToggle();
-  const all=buildParticipationRows(),responses=all.filter(r=>r.response),missing=all.filter(r=>r.state==='missing'),attend=responses.filter(r=>r.state==='attend'),partial=responses.filter(r=>r.state==='partial'),absent=responses.filter(r=>r.state==='absent'),unresolved=responses.filter(r=>r.unresolved);
+  if(pollAllianceSummaryData?.poll!==participationCurrent)return;
+  const all=rowsForPoll||buildParticipationRows(),responses=all.filter(r=>r.response),missing=all.filter(r=>r.state==='missing'),attend=responses.filter(r=>r.state==='attend'),partial=responses.filter(r=>r.state==='partial'),absent=responses.filter(r=>r.state==='absent'),unresolved=responses.filter(r=>r.unresolved);
   const matched=responses.filter(r=>!r.unresolved),duplicates=participationResponses.length-responses.length;
   $('pollStats').innerHTML=`<div><span>대상 명단</span><b>${participationMembers.length}명</b></div><div class="stat-good"><span>명단 응답</span><b>${matched.length}명</b></div><div class="stat-warning"><span>미응답</span><b>${missing.length}명</b></div><div class="stat-warning"><span>명단 일치 확인 필요</span><b>${unresolved.length}건</b></div><div><span>참여 응답</span><b>${attend.length}건</b></div><div><span>부분 참여 응답</span><b>${partial.length}건</b></div><div><span>미참여 응답</span><b>${absent.length}건</b></div><div><span>전체 응답 기록</span><b>${participationResponses.length}건</b></div>`;
   let explanation=$('pollCountExplanation');
   if(!explanation){explanation=document.createElement('p');explanation.id='pollCountExplanation';explanation.className='poll-count-explanation';$('pollStats').after(explanation);}
   explanation.textContent=`명단 응답 ${matched.length}명 + 미응답 ${missing.length}명 = 대상 명단 ${participationMembers.length}명. 명단에 연결되지 않은 응답 ${unresolved.length}건은 별도로 확인해 주세요.${duplicates?` 같은 인원의 이전 응답 ${duplicates}건은 현재 집계에서 제외했습니다.`:''}`;
-  const rows=filteredParticipationRows();participationDisplayRows=rows;
+  const rows=filteredParticipationRows(all);participationDisplayRows=rows;
   const powerTotal=rows.reduce((sum,row)=>sum+(row.power||0),0);
   $('pollResultSummary').textContent=`${participationCurrent.title_ko} / 표시 ${rows.length}명 / 1편대 합계 ${fmtG(powerTotal)}${unresolved.length?` / 명단 자동 일치 실패 ${unresolved.length}명`:''}`;
   if(!rows.length){$('pollResultsTable').innerHTML='<div class="empty">선택한 조건에 해당하는 인원이 없습니다.</div>';return;}

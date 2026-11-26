@@ -83,6 +83,15 @@ body.tactical-tab-open #view-tactical{min-height:0}
 .sheet-shortcuts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
 .sheet-shortcuts .btn{min-height:44px}
 .poll-count-explanation{margin-bottom:12px;padding:12px;border:1px solid #35445c;border-radius:10px;background:#142033;font-size:13px;line-height:1.6;color:#cbd8ed}
+.poll-alliance-summary{margin:0 0 14px}
+.poll-alliance-summary h4{margin:0 0 3px;font-size:15px;color:var(--text)}
+.poll-alliance-summary p{margin:0 0 8px;font-size:13px;color:var(--muted)}
+.poll-alliance-summary ul{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr));gap:8px;margin:0;padding:0;list-style:none}
+.poll-alliance-summary li{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);overflow-wrap:anywhere}
+.poll-alliance-summary strong,.poll-alliance-summary span{display:block;line-height:1.45}
+.poll-alliance-summary strong{font-size:14px;color:var(--text)}
+.poll-alliance-summary span{margin-top:2px;font-size:13px;color:var(--muted)}
+#view-polls .poll-alliance-summary .btn{min-height:44px;padding:6px 10px;font-size:14px;white-space:nowrap}
 #view-polls .poll-cell-nickname .poll-nickname-wrap b,#view-polls .poll-nickname-alias,
 #view-polls .poll-cell-alliance,#view-polls .poll-cell-choice .poll-choice-chip{white-space:normal;overflow-wrap:anywhere}
 #view-polls .poll-target-check,#view-polls .poll-result-summary{overflow-wrap:anywhere}
