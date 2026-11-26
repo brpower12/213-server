@@ -3265,7 +3265,7 @@ body.mem-modal-open{overflow:hidden}
   }
 }
 </style>
-<link rel="stylesheet" href="./sheet-ui.css?v=20261126-poll6">
+<link rel="stylesheet" href="./sheet-ui.css?v=20261126-poll7">
 <script src="./migration-config.js?v=20261126-round"></script>
 </head>
 <body>
@@ -8563,9 +8563,11 @@ function renderPollAllianceSummary(poll,alliances,rows){
   pollAllianceSummaryData={poll,groups};
   $('pollAllianceGroups').innerHTML=[...groups].map(([id,{name,answered,missing}])=>{
     const total=answered+missing.length;
-    const stats=total?`응답 ${answered} / ${total}명 (${Math.round(answered/total*1000)/10}%) / 미응답 ${missing.length}명`:'대상 인원 없음';
+    const stats=total
+      ?`<span>응답 ${answered} / ${total}명 (${Math.round(answered/total*1000)/10}%)</span><span>미응답 ${missing.length}명</span>`
+      :'<span>대상 인원 없음</span>';
     return `<li data-poll-alliance="${esc(id)}">
-      <div><strong>${esc(name)}</strong><span>${stats}</span></div>
+      <div><strong>${esc(name)}</strong>${stats}</div>
       <button class="btn" type="button" data-copy-poll-alliance="${esc(id)}" aria-label="${esc(name)} 미응답 복사" ${missing.length?'':'disabled'}>미응답 복사</button>
     </li>`;
   }).join('');
