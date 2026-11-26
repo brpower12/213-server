@@ -3,7 +3,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<script src="./migration-config.js"></script>
+<script src="./migration-config.js?v=20261126-round"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>213 SERVER | MIGRATION</title>
 <meta name="description" content="Apply for migration to Server 213.">
@@ -45,6 +45,8 @@ body.lang-zh{font-family:'Noto Sans SC','Noto Sans KR','Microsoft YaHei','PingFa
 .hdr{padding:1.75rem 0 1.5rem;text-align:center;border-bottom:1px solid var(--border);margin-bottom:1.5rem}
 .live-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(46,184,122,.1);border:1px solid rgba(46,184,122,.3);color:#2dd47d;font-size:11px;padding:5px 16px;border-radius:20px;margin-bottom:14px;letter-spacing:1.5px;font-weight:500;box-shadow:0 0 12px rgba(46,184,122,.15)}
 .live-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 1.4s infinite;flex-shrink:0}
+.live-badge.inactive{background:rgba(212,168,67,.1);border-color:rgba(212,168,67,.35);color:#e9ca83;box-shadow:none}
+.live-badge.inactive .live-dot{background:currentColor;animation:none}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 .hdr-title{font-family:'Black Han Sans',sans-serif;font-size:32px;letter-spacing:2px;background:linear-gradient(135deg,#fff 30%,var(--accent2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
 .hdr-sub{font-size:13px;color:var(--text2);margin-bottom:8px}
@@ -219,14 +221,14 @@ select option{background:var(--bg3)}
   </div>
 
   <div class="hdr">
-    <div class="live-badge"><span class="live-dot"></span><span id="t-live"></span></div>
+    <div class="live-badge" id="application-status"><span class="live-dot" aria-hidden="true"></span><span id="t-live"></span></div>
     <div class="hdr-title" id="t-main-title"></div>
     <div class="hdr-sub" id="t-sub"></div>
     <div class="hdr-credit">Designed by <b>213NXT Bu-ang</b></div>
   </div>
 
   <!-- 01 플레이어 정보 -->
-  <div class="card card-uid" id="player-card">
+  <div class="card card-uid" id="player-card" hidden>
     <div class="sec-label"><span class="sec-num">01</span> <span id="t-sec1"></span></div>
     <div class="player-grid">
       <div>
@@ -456,6 +458,10 @@ const TX = {
   ko:{
     't-main-title':'213 이민 신청',
     't-live':'LIVE / 이민 신청 접수 중',
+    CLOSED_LABEL:'이민 신청 접수 마감',
+    CLOSED_MESSAGE:'이번 이민 회차의 신청 접수가 종료되었습니다.',
+    UNAVAILABLE_LABEL:'접수 상태 확인 불가',
+    UNAVAILABLE_MESSAGE:'접수 상태를 불러오지 못했습니다. 새로고침 후 다시 확인해 주세요.',
     't-sub':'다른 서버 → 213서버 합류',
     't-sec1':'플레이어 정보',
     't-sec-alliance':'연맹 정보',
@@ -527,6 +533,10 @@ const TX = {
   en:{
     't-main-title':'213 Migration Application',
     't-live':'LIVE / Applications Open',
+    CLOSED_LABEL:'Applications Closed',
+    CLOSED_MESSAGE:'Applications for this migration round have closed.',
+    UNAVAILABLE_LABEL:'Application Status Unavailable',
+    UNAVAILABLE_MESSAGE:'We could not load the application status. Refresh the page to try again.',
     't-sub':'Move from Another Server → Server 213',
     't-sec1':'Player Information',
     't-sec-alliance':'Alliance Info',
@@ -598,6 +608,10 @@ const TX = {
   ja:{
     't-main-title':'213サーバー移転申請',
     't-live':'LIVE / 移転申請受付中',
+    CLOSED_LABEL:'移転申請受付終了',
+    CLOSED_MESSAGE:'今回の移転申請の受付は終了しました。',
+    UNAVAILABLE_LABEL:'受付状況を確認できません',
+    UNAVAILABLE_MESSAGE:'受付状況を読み込めませんでした。ページを再読み込みしてください。',
     't-sub':'他サーバー → 213サーバーへ移転',
     't-sec1':'プレイヤー情報',
     't-sec-alliance':'連盟情報',
@@ -669,6 +683,10 @@ const TX = {
   zh:{
     't-main-title':'213服务器迁移申请',
     't-live':'LIVE / 迁移申请开放中',
+    CLOSED_LABEL:'迁移申请已截止',
+    CLOSED_MESSAGE:'本轮迁移申请已截止。',
+    UNAVAILABLE_LABEL:'无法确认申请状态',
+    UNAVAILABLE_MESSAGE:'无法加载申请状态。请刷新页面后重试。',
     't-sub':'从其他服务器迁入213服务器',
     't-sec1':'玩家信息',
     't-sec-alliance':'联盟信息',
@@ -741,6 +759,9 @@ const TX = {
 const MIGRATION_GRADES=['통솔자','특급','고급','중견'];
 const DESIRED_ALLIANCES=['NXT','AST','G','KABZ','VJP'];
 const APPLICATION_ROUND=window.MIGRATION_CONFIG?.applicationRound||'';
+const CLOSED_ROUNDS=window.MIGRATION_CONFIG?.closedRounds;
+const ROUND_AVAILABLE=/^\d{4}-(0[1-9]|1[0-2])$/.test(APPLICATION_ROUND)&&Array.isArray(CLOSED_ROUNDS);
+const APPLICATIONS_OPEN=ROUND_AVAILABLE&&!CLOSED_ROUNDS.includes(APPLICATION_ROUND);
 let lang='ko', pData=null, selModeVal='혼자', selIndVal=null, selSqVal='파이터', selDesiredAllianceVal='', lastSubmittedEntry=null;
 const getDB=()=>{try{const value=JSON.parse(localStorage.getItem('dw213')||'[]');return Array.isArray(value)?value:[];}catch{return[]}};
 const saveDB=d=>{try{localStorage.setItem('dw213',JSON.stringify(d));return true;}catch{return false;}};
@@ -792,6 +813,11 @@ function setLang(l){
     if(el.tagName==='INPUT'||el.tagName==='TEXTAREA') el.placeholder=t[id];
     else el.textContent=t[id];
   });
+  if(!APPLICATIONS_OPEN){
+    document.getElementById('application-status').classList.add('inactive');
+    document.getElementById('t-live').textContent=ROUND_AVAILABLE?t.CLOSED_LABEL:t.UNAVAILABLE_LABEL;
+    document.getElementById('t-sub').textContent=ROUND_AVAILABLE?t.CLOSED_MESSAGE:t.UNAVAILABLE_MESSAGE;
+  }
   buildDesiredAlliance();
   buildInd();
   if(lastSubmittedEntry&&document.getElementById('done-screen').classList.contains('on'))renderDoneInfo(lastSubmittedEntry);
@@ -852,6 +878,7 @@ function onUID(inp){
 
 // ═══════════ 플레이어 확인 ═══════════
 function confirmPlayer(){
+  if(!APPLICATIONS_OPEN)return;
   const t=TX[lang];
   const name=document.getElementById('inp-name').value.trim();
   const srv=document.getElementById('inp-server').value.trim();
@@ -935,9 +962,8 @@ function renderDoneInfo(entry){
 
 async function save(){
   const t=TX[lang];
-  if(!/^\d{4}-(0[1-9]|1[0-2])$/.test(APPLICATION_ROUND)){
-    const message={ko:'접수 회차 설정을 불러오지 못했습니다. 새로고침 후 다시 시도해 주세요.',en:'The application round could not be loaded. Please refresh the page and try again.',ja:'受付期間の設定を読み込めませんでした。ページを再読み込みして、もう一度お試しください。',zh:'无法加载本期申请设置。请刷新页面后重试。'};
-    alert(message[lang]||message.ko);return;
+  if(!APPLICATIONS_OPEN){
+    alert(ROUND_AVAILABLE?t.CLOSED_MESSAGE:t.UNAVAILABLE_MESSAGE);return;
   }
   if(!pData){alert(t.ERR_NAME);return;}
   const currentAlliance=document.getElementById('inp-current-alliance').value.trim();
@@ -1051,6 +1077,7 @@ function exportExcel(){
 }
 
 // ═══════════ 초기화 ═══════════
+document.getElementById('player-card').hidden=!APPLICATIONS_OPEN;
 setLang('ko');
 </script>
 </body>
