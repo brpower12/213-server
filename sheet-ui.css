@@ -115,15 +115,17 @@ body.tactical-tab-open #view-tactical{min-height:0}
 .history-help{font-size:13px;line-height:1.6;color:var(--muted);margin-bottom:10px}
 .growth-comparison{margin-bottom:14px}
 #growthForm{display:grid;grid-template-columns:minmax(0,1fr);align-items:end;gap:10px}
-.growth-controls,.growth-monthly,.growth-custom{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;min-width:0}
+.growth-controls,.growth-monthly,.growth-custom,.growth-member-fields{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;min-width:0}
 .growth-monthly{color:var(--muted);font-size:14px;line-height:1.5;word-break:keep-all}
 .growth-custom{margin:0;padding:0;border:0}
-.growth-custom .sheet-info{grid-column:1/-1;margin:0}
 .growth-monthly[hidden],.growth-custom[hidden]{display:none}
-.growth-field{display:grid;gap:5px;min-width:0;color:var(--text);font-size:13px}
+.growth-member-fields{padding:0 12px 10px}
+#growthMemberSelection{min-width:0;margin-left:auto;color:var(--muted);font-weight:500;text-align:right;overflow-wrap:anywhere}
+#growthMemberStatus{grid-column:1/-1;margin:0}
+#growthMemberStatus:empty{display:none}
+.growth-field{display:grid;grid-template-columns:minmax(0,1fr);gap:5px;min-width:0;color:var(--text);font-size:13px}
+.growth-select-field{overflow:hidden}
 .growth-field input,.growth-field select{width:100%;min-width:0;min-height:44px;color-scheme:dark}
-.growth-period{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;min-width:0;margin:0;padding:8px;border:1px solid var(--line);border-radius:9px}
-.growth-period legend{padding:0 4px;color:var(--text);font-size:14px;font-weight:700}
 #growthForm .btn{min-height:44px;white-space:nowrap}
 #growthStatus:empty{margin:0}
 .growth-alliances,.growth-people{display:grid;gap:8px;margin:8px 0;padding:0;list-style:none}
@@ -137,13 +139,14 @@ body.tactical-tab-open #view-tactical{min-height:0}
 .growth-person-row span,.growth-person-row small{font-size:12px}
 .growth-missing .growth-people{padding:0 8px 8px}
 @media(min-width:641px){
- .growth-controls,.growth-monthly,.growth-custom{grid-template-columns:repeat(2,minmax(0,1fr))}
- .growth-controls{max-width:580px}
+ .growth-monthly,.growth-custom,.growth-member-fields{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .growth-controls{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .growth-controls,.growth-member-picker{max-width:820px}
  #growthForm .btn{justify-self:start;min-width:120px}
 }
 @media(min-width:860px){
  #growthForm{grid-template-columns:minmax(0,1fr) auto}
- .growth-controls{grid-column:1/-1}
+ .growth-controls,.growth-member-picker{grid-column:1/-1}
  .growth-monthly{max-width:680px}
  #growthForm .btn{align-self:end;justify-self:end}
 }
