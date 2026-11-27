@@ -110,6 +110,30 @@ body.tactical-tab-open #view-tactical{min-height:0}
 .history-baseline{display:block;margin-top:7px;font-size:13px;color:var(--muted)}
 .hist-item .vals .changed{border-bottom:2px solid var(--gold);padding-bottom:3px}
 .history-help{font-size:13px;line-height:1.6;color:var(--muted);margin-bottom:10px}
+.growth-comparison{margin-bottom:14px}
+#growthForm{display:grid;grid-template-columns:minmax(0,1fr);align-items:end;gap:10px}
+.growth-field{display:grid;gap:5px;min-width:0;color:var(--text);font-size:13px}
+.growth-field input,.growth-field select{width:100%;min-width:0;min-height:44px;color-scheme:dark}
+.growth-period{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;min-width:0;margin:0;padding:8px;border:1px solid var(--line);border-radius:9px}
+.growth-period legend{padding:0 4px;color:var(--text);font-size:14px;font-weight:700}
+#growthForm .btn{min-height:44px;white-space:nowrap}
+#growthStatus:empty{margin:0}
+.growth-alliances,.growth-people{display:grid;gap:8px;margin:8px 0;padding:0;list-style:none}
+.growth-alliances{grid-template-columns:repeat(auto-fit,minmax(min(100%,215px),1fr))}
+.growth-alliance-card,.growth-person-row{min-width:0;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:var(--panel2);overflow-wrap:anywhere}
+.growth-alliance-card{display:grid;gap:3px;font-size:14px}
+.growth-alliance-card span,.growth-person-row span,.growth-person-row small{color:var(--muted)}
+.growth-alliance-card strong,.growth-person-row b{font-variant-numeric:tabular-nums}
+.growth-person-row{display:grid;grid-template-columns:minmax(0,1.3fr) repeat(3,minmax(0,1fr));gap:8px}
+.growth-person-row>div{display:grid;align-content:start;gap:3px;min-width:0;font-size:14px;line-height:1.4}
+.growth-person-row span,.growth-person-row small{font-size:12px}
+.growth-missing .growth-people{padding:0 8px 8px}
+@media(min-width:860px){#growthForm{grid-template-columns:minmax(106px,1fr) minmax(0,2fr) minmax(0,2fr) auto}}
+@media(max-width:640px){
+ .growth-field input{padding-inline:5px}
+ .growth-person-row{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .growth-name{grid-column:1/-1}
+}
 .migration-ui .sheet-info{margin:10px 0 14px}
 .migration-ui :is(.ranking-name,.ranking-meta,.ana-name,.brand-sub,.dark-select-option),
 .migration-ui .applicant-table :is(.edit-link,td.muted){

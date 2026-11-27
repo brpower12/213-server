@@ -3265,7 +3265,7 @@ body.mem-modal-open{overflow:hidden}
   }
 }
 </style>
-<link rel="stylesheet" href="./sheet-ui.css?v=20261126-poll7">
+<link rel="stylesheet" href="./sheet-ui.css?v=20261127-growth">
 <script src="./migration-config.js?v=20261126-round"></script>
 </head>
 <body>
@@ -3868,6 +3868,29 @@ body.mem-modal-open{overflow:hidden}
       <button class="btn" onclick="loadHistory()">↻ 새로고침</button>
     </div>
   </div>
+  <details class="sheet-disclosure growth-comparison" id="growthComparison">
+    <summary>연맹원 성장 비교</summary>
+    <div class="sheet-disclosure-body">
+      <p class="sheet-info">현재 213서버 활성 명단의 1편대를 비교합니다. 한국시간 기준 각 기간에 마지막으로 반영된 값을 사용합니다.</p>
+      <form id="growthForm" onsubmit="event.preventDefault();loadGrowthComparison()" onchange="resetGrowthComparison()">
+        <label class="growth-field">연맹<select id="growthAlliance"><option value="all">전체 연맹</option></select></label>
+        <fieldset class="growth-period">
+          <legend>이전 조사</legend>
+          <label class="growth-field">시작일<input id="growthBeforeStart" type="date" required></label>
+          <label class="growth-field">종료일<input id="growthBeforeEnd" type="date" aria-describedby="growthDatesHelp"></label>
+        </fieldset>
+        <fieldset class="growth-period">
+          <legend>이번 조사</legend>
+          <label class="growth-field">시작일<input id="growthAfterStart" type="date" required></label>
+          <label class="growth-field">종료일<input id="growthAfterEnd" type="date" aria-describedby="growthDatesHelp"></label>
+        </fieldset>
+        <button class="btn primary" type="submit">성장 비교</button>
+      </form>
+      <p class="sheet-info" id="growthDatesHelp">하루만 보려면 해당 조사의 시작일만 선택하세요.</p>
+      <p class="sheet-info" id="growthStatus" role="status"></p>
+      <div id="growthResults"></div>
+    </div>
+  </details>
   <div class="panel" id="histList"><div class="empty">불러오는 중...</div></div>
 </section>
 </main>
@@ -7944,6 +7967,93 @@ async function downloadBackup(){
 /* ---------- 이력 ---------- */
 function fillHistFilter(){
   $('histServer').innerHTML='<option value="">전체 서버</option>'+servers.map(s=>`<option value="${s.id}">${esc(s.name)} 서버</option>`).join('');
+  const growthAlliance=$('growthAlliance'),previous=growthAlliance.value;
+  growthAlliance.innerHTML='<option value="all">전체 연맹</option>'+get213Alliances().map(a=>`<option value="${esc(a.id)}">${esc(a.name)}</option>`).join('');
+  if([...growthAlliance.options].some(option=>option.value===previous))growthAlliance.value=previous;
+  else resetGrowthComparison();
+}
+let growthRequestSeq=0;
+function resetGrowthComparison(){
+  growthRequestSeq++;
+  $('growthStatus').textContent='';
+  $('growthResults').replaceChildren();
+}
+function growthDateRange(prefix){
+  const start=$('growth'+prefix+'Start').value,end=$('growth'+prefix+'End').value||start;
+  const first=new Date(`${start}T00:00:00+09:00`),last=new Date(`${end}T00:00:00+09:00`);
+  if(!start||!Number.isFinite(+first)||!Number.isFinite(+last)||first>last)return null;
+  return {from:first.toISOString(),until:new Date(+last+86400000).toISOString()};
+}
+async function readGrowthSnapshots(memberIds,range){
+  const latest=new Map();
+  for(const ids of chunk(memberIds,150)){
+    const {data,error}=await readAllRows(()=>sb.from('power_records').select('id,member_id,squad1,recorded_at')
+      .in('member_id',ids).not('squad1','is',null).gte('recorded_at',range.from).lt('recorded_at',range.until)
+      .order('recorded_at',{ascending:false}).order('id',{ascending:false}));
+    if(error)throw error;
+    for(const row of data){
+      const id=String(row.member_id);
+      if(row.squad1!=null&&Number.isFinite(Number(row.squad1))&&!latest.has(id))latest.set(id,row);
+    }
+  }
+  return latest;
+}
+const growthTime=new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'});
+function formatGrowthChange(delta){
+  const magnitude=Math.abs(delta);
+  const power=magnitude>0&&magnitude<0.1?`${magnitude.toLocaleString('ko-KR',{maximumFractionDigits:6})}M`:fmtG(magnitude);
+  return `${delta>0?'+':delta<0?'−':''}${power}`;
+}
+function renderGrowthComparison(targets,members,before,after){
+  const groups=new Map(targets.map(alliance=>[String(alliance.id),{alliance,members:0,paired:0,before:0,after:0}]));
+  const rows=members.map(member=>{
+    const group=groups.get(String(member.alliance_id));
+    const previous=before.get(String(member.id)),recent=after.get(String(member.id));
+    const delta=previous&&recent?Number((Number(recent.squad1)-Number(previous.squad1)).toFixed(6)):null;
+    group.members++;
+    if(delta!==null){group.paired++;group.before+=Number(previous.squad1);group.after+=Number(recent.squad1);}
+    return {member,alliance:group.alliance,previous,recent,delta};
+  });
+  const comparable=rows.filter(row=>row.delta!==null).sort((a,b)=>b.delta-a.delta||a.member.nickname.localeCompare(b.member.nickname,'ko'));
+  const missing=rows.filter(row=>row.delta===null);
+  const snapshot=record=>record?`<b>${fmtG(Number(record.squad1))}</b><small>${growthTime.format(new Date(record.recorded_at))}</small>`:'<b>기록 없음</b>';
+  const person=({member,alliance,previous,recent,delta})=>`<li class="growth-person-row">
+    <div class="growth-name"><b>${esc(member.nickname)}</b><small>${esc(alliance.name)}</small></div>
+    <div><span>이전</span>${snapshot(previous)}</div><div><span>이번</span>${snapshot(recent)}</div>
+    <div><span>변화</span><b>${delta===null?'비교 불가':formatGrowthChange(delta)}</b></div></li>`;
+  const allianceCards=[...groups.values()].map(group=>`<li class="growth-alliance-card"><b>${esc(group.alliance.name)}</b>
+    <span>비교 ${group.paired} / ${group.members}명</span>
+    ${group.paired?`<span>같은 인원 합계 ${fmtG(group.before)} → ${fmtG(group.after)}</span><strong>${formatGrowthChange(Number((group.after-group.before).toFixed(6)))}</strong>`:'<span>비교할 공통 기록 없음</span>'}</li>`);
+  $('growthStatus').textContent=`전체 ${rows.length}명 / 비교 가능 ${comparable.length}명 / 기록 부족 ${missing.length}명`;
+  $('growthResults').innerHTML=`<ul class="growth-alliances" aria-label="연맹별 성장 비교">${allianceCards.join('')}</ul>
+    ${comparable.length?`<ul class="growth-people" aria-label="인원별 성장 비교">${comparable.map(person).join('')}</ul>`:''}
+    ${missing.length?`<details class="sheet-disclosure growth-missing"><summary>비교할 기록 부족 ${missing.length}명</summary><ul class="growth-people">${missing.map(person).join('')}</ul></details>`:''}`;
+}
+async function loadGrowthComparison(){
+  if(!canView('history'))return;
+  resetGrowthComparison();
+  const request=growthRequestSeq,status=$('growthStatus');
+  const beforeRange=growthDateRange('Before'),afterRange=growthDateRange('After');
+  if(!beforeRange||!afterRange){status.textContent='각 조사의 종료일은 시작일과 같거나 뒤여야 합니다.';return;}
+  if(beforeRange.until>afterRange.from){status.textContent='이번 조사의 시작일은 이전 조사 종료일보다 뒤여야 합니다.';return;}
+  const value=$('growthAlliance').value;
+  const targets=get213Alliances().filter(alliance=>value==='all'||String(alliance.id)===value);
+  if(!targets.length){status.textContent='선택할 수 있는 213서버 연맹이 없습니다.';return;}
+  const current=()=>request===growthRequestSeq&&canView('history');
+  status.textContent='전투력 기록을 불러오는 중...';
+  try{
+    const {data:members,error}=await readAllRows(()=>sb.from('members').select('id,alliance_id,nickname')
+      .in('alliance_id',targets.map(alliance=>alliance.id)).eq('is_active',true).order('nickname').order('id'));
+    if(!current())return;
+    if(error)throw error;
+    if(!members.length){status.textContent='선택한 연맹에 활성 인원이 없습니다.';return;}
+    const ids=members.map(member=>member.id);
+    const [before,after]=await Promise.all([readGrowthSnapshots(ids,beforeRange),readGrowthSnapshots(ids,afterRange)]);
+    if(current())renderGrowthComparison(targets,members,before,after);
+  }catch(error){
+    if(current())status.textContent='성장 비교 기록을 불러오지 못했습니다. 다시 시도해 주세요.';
+    console.warn('성장 비교 조회 오류',error);
+  }
 }
 function historyDayKey(t){
   const d=new Date(t);
